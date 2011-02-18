@@ -1,0 +1,153 @@
+\chapter{Introduction}
+
+This specification defines a set of Java APIs for the development of Web services built according to the Representational State Transfer\cite{rest} (REST) architectural style. Readers are assumed to be familiar with 
+REST; for more information about the REST architectural style and RESTful Web services, see:
+
+\begin{itemize}
+\item Architectural Styles and the Design of Network-based Software Architectures\cite{rest}
+\item The REST Wiki\cite{restwiki}
+\item Representational State Transfer on Wikipedia\cite{restwikipedia}
+\end{itemize}
+
+\section{Status}
+
+This is an editors draft; this specification is not yet complete. A list of open issues can be found at:
+%This is a JCP public review draft; this specification is not yet final. A list of open issues can be found at:
+%This is a JCP final specification. A list of open issues can be found at:
+
+\begin{quote}
+https://jsr311.dev.java.net/servlets/ProjectIssues
+\end{quote}
+
+The corresponding Javadocs can be found online at:
+
+\begin{quote}
+%https://jsr311.dev.java.net/nonav/javadoc/index.html
+https://jsr311.dev.java.net/nonav/releases/1.1/index.html
+\end{quote}
+
+The reference implementation can be obtained from:
+
+\begin{quote}
+https://jersey.dev.java.net/
+\end{quote}
+
+The expert group seeks feedback from the community on any aspect of this specification, please send comments to:
+
+\begin{quote}
+users@jsr311.dev.java.net
+\end{quote}
+
+\section{Goals}
+
+The following are the goals of the API:
+
+\begin{description}
+
+\item[POJO-based] The API will provide a set of annotations and associated classes/interfaces that may be used with POJOs in order to expose them as Web resources. The specification will define object lifecycle and scope.
+
+\item[HTTP-centric] The specification will assume HTTP\cite{http11} is the underlying network protocol and will provide a clear mapping between HTTP and URI\cite{uri} elements and the corresponding API classes and annotations. The API will provide high level support for common HTTP usage patterns and will be sufficiently flexible to support a variety of HTTP applications including WebDAV\cite{webdav} and the Atom Publishing Protocol\cite{atompub}.
+
+\item[Format independence] The API will be applicable to a wide variety of HTTP entity body content types. It will provide the necessary pluggability to allow additional types to be added by an application in a standard manner.
+
+\item[Container independence] Artifacts using the API will be deployable in a variety of Web-tier containers. The specification will define how artifacts are deployed in a Servlet\cite{servlet} container and as a JAX-WS\cite{jsr224} Provider.
+
+\item[Inclusion in Java EE] The specification will define the environment for a Web resource class hosted in a Java EE container and will specify how to use Java EE features and components within a Web resource class.
+
+\end{description}
+
+\section{Non-Goals}
+
+The following are non-goals:
+
+\begin{description}
+
+\item[Support for Java versions prior to J2SE 5.0] The API will make extensive use of annotations and will require J2SE 5.0 or later.
+
+\item[Description, registration and discovery] The specification will neither define nor require any service description, registration or discovery capability.
+
+\item[Client APIs] The specification will not define client-side APIs. Other specifications are expected to provide such functionality.
+
+\item[HTTP Stack] The specification will not define a new HTTP stack. HTTP protocol support is provided by a container that hosts artifacts developed using the API.
+
+\item[Data model/format classes] The API will not define classes that support manipulation of entity body content, rather it will provide pluggability to allow such classes to be used by artifacts developed using the API.
+
+\end{description}
+
+\section{Conventions}
+
+The keywords `MUST', `MUST NOT', `REQUIRED', `SHALL', `SHALL NOT', `SHOULD', `SHOULD NOT', `RECOMMENDED', `MAY', and `OPTIONAL' in this document are to be interpreted as described in RFC 2119\cite{rfc2119}. 
+
+Java code and sample data fragments are formatted as shown in figure \ref{ex1}:
+
+\begin{figure}[hbtp]
+\caption{Example Java Code}
+\label{ex1}
+\begin{listing}{1}
+package com.example.hello;
+
+public class Hello {
+    public static void main(String args[]) {
+        System.out.println("Hello World");
+    }
+}\end{listing}
+\end{figure}
+
+URIs of the general form `http://example.org/...' and `http://example.com/...' represent application or context-dependent URIs.
+
+All parts of this specification are normative, with the exception of examples, notes and sections explicitly marked as `Non-Normative'. Non-normative notes are formatted as shown below.
+
+\begin{nnnote*}
+This is a note.
+\end{nnnote*}
+
+\section{Terminology}
+
+\begin{description}
+\item[Resource class] A Java class that uses \jaxrs\ annotations to implement a corresponding Web resource, see chapter \ref{resources}.
+\item[Root resource class] A {\em resource class} annotated with \Path. Root resource classes provide the roots of the resource class tree and provide access to sub-resources, see chapter \ref{resources}.
+\item[Request method designator] A runtime annotation annotated with \HttpMethod. Used to identify the HTTP request method to be handled by a {\em resource method}.
+\item[Resource method] A method of a {\em resource class} annotated with a {\em request method designator} that is used to handle requests on the corresponding resource, see section \ref{resource_method}.
+\item[Sub-resource locator] A method of a {\em resource class} that is used to locate sub-resources of the corresponding resource, see section \ref{sub_resources}.
+\item[Sub-resource method] A method of a {\em resource class} that is used to handle requests on a sub-resource of the corresponding resource, see section \ref{sub_resources}.
+\item[Provider] An implementation of a \jaxrs\ extension interface. Providers extend the capabilities of a \jaxrs\ runtime and are described in chapter \ref{providers}.
+\end{description}
+
+\section{Expert Group Members} 
+
+This specification is being developed as part of JSR 311 under the Java Community Process. This specification is the result of the collaborative work of the members of the JSR 311 Expert Group. The following are the present and former expert group members:
+
+Jan Algermissen (Individual Member) \\
+Heiko Braun (Red Hat Middleware LLC) \\
+Bill Burke (Red Hat Middleware LLC) \\
+Larry Cable (BEA Systems) \\
+Bill De Hora (Individual Member) \\ 
+Roy Fielding (Day Software, Inc.) \\
+Harpreet Geekee (Nortel) \\
+Nickolas Grabovas (Individual Member) \\
+Mark Hansen (Individual Member) \\
+John Harby (Individual Member) \\
+Hao He (Individual Member) \\
+Ryan Heaton (Individual Member) \\
+David Hensley (Individual Member) \\
+Stephan Koops (Individual Member) \\
+Changshin Lee (NCsoft Corporation) \\
+Francois Leygues (Alcatel-Lucent) \\
+Jerome Louvel (Individual Member) \\
+Hamid Ben Malek (Fujitsu Limited) \\
+Ryan J. McDonough (Individual Member) \\
+Felix Meschberger (Day Software, Inc.) \\
+David Orchard (BEA Systems) \\
+Dhanji R. Prasanna (Individual Member) \\
+Julian Reschke (Individual Member) \\
+Jan Schulz-Hofen (Individual Member) \\
+Joel Smith (IBM) \\
+Stefan Tilkov (innoQ Deutschland GmbH)
+
+\section{Acknowledgements}
+
+During the course of the JSR we received many excellent suggestions on the JSR and Jersey (RI) mailing lists, thanks in particular to James Manger (Telstra) and Reto Bachmann-Gm\"{u}r (Trialox) for their contributions. 
+
+The \code{GenericEntity} class was inspired by the Google Guice \code{Type\-Literal} class. Our thanks to Bob Lee and Google for donating this class to \jaxrs.
+
+The following individuals (all Sun Microsystems) have also made invaluable technical contributions: Roberto Chinnici, Dianne Jiao (TCK), Ron Monzillo, Rajiv Mordani, Eduardo Pelegri-Llopart, Jakub Podlesak (RI) and Bill Shannon.

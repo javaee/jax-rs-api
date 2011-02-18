@@ -1,0 +1,48 @@
+\chapter{Summary of Annotations}
+%\begin{center}
+\begin{longtable}{|l|p{1.2in}|p{3.5in}|}
+\hline
+\bfseries Annotation & \bfseries Target & \bfseries Description \tabularnewline
+\hline\hline\endhead
+\code{Consumes} & \raggedright Type or method & \raggedright Specifies a list of media types that can be consumed. \tabularnewline
+\hline
+\code{Produces} & \raggedright Type or method & \raggedright Specifies a list of media types that can be produced. \tabularnewline
+\hline
+\code{GET} & \raggedright Method & \raggedright Specifies that the annotated method handles HTTP GET requests.  \tabularnewline
+\hline
+\code{POST} & \raggedright Method & \raggedright Specifies that the annotated method handles HTTP POST requests.  \tabularnewline
+\hline
+\code{PUT} & \raggedright Method & \raggedright Specifies that the annotated method handles HTTP PUT requests.  \tabularnewline
+\hline
+\code{DELETE} & \raggedright Method & \raggedright Specifies that the annotated method handles HTTP DELETE requests.  \tabularnewline
+\hline
+\code{HEAD} & \raggedright Method & \raggedright Specifies that the annotated method handles HTTP HEAD requests. Note that HEAD may be automatically handled, see section \ref{head_and_options}. \tabularnewline
+\hline
+\code{ApplicationPath} & \raggedright Type & \raggedright Specifies the resource-wide application path that forms the base URI of all root resource classes. \tabularnewline
+\hline
+\code{Path} & \raggedright Type or method & \raggedright Specifies a relative path for a resource. When used on a class this annotation identifies that class as a root resource. When used on a method this annotation identifies a sub-resource method or locator. \tabularnewline
+\hline
+\code{PathParam} & \raggedright Parameter, field or method & \raggedright Specifies that the value of a method parameter, class field, or bean property is to be extracted from the request URI path. The value of the annotation identifies the name of a URI template parameter.\tabularnewline
+\hline
+\code{QueryParam} & \raggedright Parameter, field or method & \raggedright Specifies that the value of a method parameter, class field, or bean property is to be extracted from a URI query parameter. The value of the annotation identifies the name of a query parameter. \tabularnewline
+\hline
+\code{FormParam} & \raggedright Parameter, field or method & \raggedright Specifies that the value of a method parameter is to be extracted from a form parameter in a request entity body. The value of the annotation identifies the name of a form parameter. Note that whilst the annotation target allows use on fields and methods, the specification only requires support for use on resource method parameters.\tabularnewline
+\hline
+\code{MatrixParam} & \raggedright Parameter, field or method & \raggedright Specifies that the value of a method parameter, class field, or bean property is to be extracted from a URI matrix parameter. The value of the annotation identifies the name of a matrix parameter. \tabularnewline
+\hline
+\code{CookieParam} & \raggedright Parameter, field or method & \raggedright Specifies that the value of a method parameter, class field, or bean property is to be extracted from a HTTP cookie. The value of the annotation identifies the name of a the cookie. \tabularnewline
+\hline
+\code{HeaderParam} & \raggedright Parameter, field or method & \raggedright Specifies that the value of a method parameter, class field, or bean property is to be extracted from a HTTP header. The value of the annotation identifies the name of a HTTP header. \tabularnewline
+\hline
+\code{Encoded} & \raggedright Type, constructor, method, field or parameter & \raggedright Disables automatic URI decoding for path, query, form and matrix parameters. \tabularnewline
+\hline
+\code{DefaultValue} & \raggedright Parameter, field or method & \raggedright Specifies a default value for a field, property or method parameter annotated with \QueryParam, \MatrixParam, \CookieParam, \FormParam\ or \HeaderParam. The specified value will be used if the corresponding query or matrix parameter is not present in the request URI, if the corresponding form parameter is not in the request entity body, or if the corresponding HTTP header is not included in the request.\tabularnewline
+\hline
+\code{Context} & \raggedright Field, method or parameter & \raggedright Identifies an injection target for one of the types listed in section \ref{contexttypes} or the applicable section of chapter \ref{environment}. \tabularnewline
+\hline
+\code{HttpMethod} & \raggedright Annotation & \raggedright Specifies the HTTP method for a request method designator annotation. \tabularnewline
+\hline
+\code{Provider} & \raggedright Type & \raggedright Specifies that the annotated class implements a \jaxrs\ extension interface. \tabularnewline
+\hline
+\end{longtable}
+%\end{center}

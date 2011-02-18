@@ -1,0 +1,26 @@
+\chapter{Runtime Delegate}
+\label{runtimedelegate}
+
+\rd\ is an abstract factory class that provides various methods for the creation of objects that implement \jaxrs\ APIs. These methods are designed for use by other \jaxrs\ API classes and are not intended to be called directly by applications. \rd\ allows the standard \jaxrs\ API classes to use different \jaxrs\ implementations without any code changes.
+
+An implementation of \jaxrs\ MUST provide a concrete subclass of \rd. Using the supplied \rd\ this can be provided to \jaxrs\ in one of two ways:
+
+\begin{enumerate}
+\item An instance of \rd\ can be instantiated and injected using its static method \code{set\-Instance}. In this case the implementation is responsible for creating the instance; this option is intended for use with implementations based on IoC frameworks.
+\item The class to be used can be configured, see section \ref{rdconfig}. In this case \jaxrs\ is responsible for instantiating an instance of the class and the configured class MUST have a public constructor which takes no arguments.
+\end{enumerate}
+
+Note that an implementation MAY supply an alternate implementation of the \rd\ API class (provided it passes the TCK signature test and behaves according to the specification) that supports alternate means of locating a concrete subclass.
+
+A \jaxrs\ implementation may rely on a particular implementation of \rd\ being used -- applications SHOULD NOT override the supplied \rd\ instance with an application-supplied alternative and doing so may cause unexpected problems. 
+
+\section{Configuration}\label{rdconfig}
+
+If not supplied by injection, the supplied \rd\ API class obtains the concrete implementation class using the following algorithm. The steps listed below 
+are performed in sequence and, at each step, at most one candidate implementation class name will be produced. The implementation will then attempt to load the class with the given class name using the current context class loader or, missing one, the java.lang.Class.forName(String) method. As soon as a step results in an implementation class being successfully loaded, the algorithm terminates.
+\begin{enumerate}
+\item If a resource with the name of \code{META-INF/services/javax.ws.rs.ext.RuntimeDelegate} exists, then its first line, if present, is used as the UTF-8 encoded name of the implementation class. 
+\item If the \code{\$\{java.home\}/lib/jaxrs.properties} file exists and it is readable by the \code{java\-.util\-.Properties\-.load(\-InputStream)} method and it contains an entry whose key is \code{javax\-.ws\-.rs\-.ext\-.Runtime\-Delegate}, then the value of that entry is used as the name of the implementation class. 
+\item If a system property with the name \code{javax\-.ws\-.rs\-.ext\-.Runtime\-Delegate} is defined, then its value is used as the name of the implementation class. 
+\item Finally, a default implementation class name is used. 
+\end{enumerate}

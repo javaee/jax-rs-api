@@ -1,0 +1,128 @@
+\chapter{Providers}
+\label{providers}
+
+The \jaxrs\ runtime is extended using application-supplied provider classes. A provider is annotated with \Provider\ and implements one or more interfaces defined by \jaxrs.
+
+\section{Lifecycle and Environment}
+
+By default a single instance of each provider class is instantiated for each \jaxrs\ application. First the constructor (see section \ref{provider_class_constructor}) is called, then any requested dependencies are injected (see chapter \ref{context}), then the appropriate provider methods may be called multiple times (simultaneously), and finally the object is made available for garbage collection. Section \ref{providercontext} describes how a provider obtains access to other providers via dependency injection.
+
+An implementation MAY offer other provider lifecycles, mechanisms for specifying these are outside the scope of this specification. E.g. an implementation based on an inversion-of-control framework may support all of the lifecycle options provided by that framework.
+
+\subsection{Constructors}
+\label{provider_class_constructor}
+
+Provider classes are instantiated by the \jaxrs\ runtime and MUST have a public constructor for which the \jaxrs\ runtime can provide all parameter values. Note that a zero argument constructor is permissible under this rule.
+
+A public constructor MAY include parameters annotated with \Context - chapter \ref{context} defines the parameter types permitted for this annotation. Since providers may be created outside the scope of a particular request, only deployment-specific properties may be available from injected interfaces at construction time - request-specific properties are available when a provider method is called. If more than one public constructor can be used then an implementation MUST use the one with the most parameters. Choosing amongst constructors with the same number of parameters is implementation specific, implementations SHOULD generate a warning about such ambiguity.
+
+\section{Entity Providers}
+\label{entity_providers}
+
+Entity providers supply mapping services between representations and their associated Java types. Entity providers come in two flavors: \MsgRead\ and \MsgWrite\ described below. In the absence of a suitable entity provider, \jaxrs\ implementations are REQUIRED to use to the JavaBeans Activation Framework\cite{jaf} to try to obtain a suitable data handler to perform the mapping instead.
+
+\subsection{Message Body Reader}
+\label{message_body_reader}
+
+The \MsgRead\ interface defines the contract between the \jaxrs\ runtime and components that provide mapping services from representations to a corresponding Java type. A class wishing to provide such a service implements the \MsgRead\ interface and is annotated with \Provider.
+
+The following describes the logical\footnote{Implementations are free to optimize their processing provided the results are equivalent to those that would be obtained if these steps are followed.} steps taken by a \jaxrs\ implementation when mapping a request entity body to a Java method parameter:
+
+\begin{enumerate}
+\item Obtain the media type of the request. If the request does not contain a \code{Content-Type} header then use \code{application/octet-stream}.
+\item Identify the Java type of the parameter whose value will be mapped from the entity body. Section \ref{mapping_requests_to_java_methods} describes how the Java method is chosen.
+\item Select the set of \MsgRead\ classes that support the media type of the request, see section \ref{declaring_provider_capabilities}.
+\item\label{findreader} Iterate through the selected \MsgRead\ classes and, utilizing the \code{isReadable} method of each, choose a \MsgRead\ provider that supports the desired Java type.
+\item If step \ref{findreader} locates a suitable \MsgRead\ then use its \code{readFrom} method to map the entity body to the desired Java type.
+\item Else if a suitable data handler can be found using the JavaBeans Activation Framework\cite{jaf} then use it to map the entity body to the desired Java type.
+\item Else generate a \WebAppExc\ that contains an unsupported media type response (HTTP 415 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}.
+\end{enumerate}
+
+A \MsgRead\code{.readFrom} method MAY throw \WebAppExc. If thrown, the resource method is not invoked and the exception is treated as if it originated from a resource method, see section \ref{method_exc}.
+
+\subsection{Message Body Writer}
+\label{message_body_writer}
+
+The \MsgWrite\ interface defines the contract between the \jaxrs\ runtime and components that provide mapping services from a Java type to a representation. A class wishing to provide such a service implements the \MsgWrite\ interface and is annotated with \Provider.
+
+The following describes the logical steps taken by a \jaxrs\ implementation when mapping a return value to a response entity body:
+
+\begin{enumerate}
+\item Obtain the object that will be mapped to the response entity body. For a return type of \Response\ or subclasses the object is the value of the \code{entity} property, for other return types it is the returned object.
+\item Determine the media type of the response, see section \ref{determine_response_type}.
+\item Select the set of \MsgWrite\ providers that support (see section \ref{declaring_provider_capabilities}) the object and media type of the response entity body.
+\item Sort the selected \MsgWrite\ providers with a primary key of media type (see section \ref{declaring_provider_capabilities}) and a secondary key of generic type where providers whose generic type is the nearest superclass of the object class are sorted first.
+\item\label{findwriter} Iterate through the sorted \MsgWrite\ providers and, utilizing the \code{isWriteable} method of each, choose an \MsgWrite\ that supports the object that will be mapped to the entity body.
+\item If step \ref{findwriter} locates a suitable \MsgWrite\ then use its \code{writeTo} method to map the object to the entity body.
+\item Else if a suitable data handler can be found using the JavaBeans Activation Framework\cite{jaf} then use it to map the object to the entity body.
+\item Else generate a \WebAppExc\ with an internal server error response (HTTP 500 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}.
+\end{enumerate}
+
+A \MsgWrite\code{.write} method MAY throw \WebAppExc. If thrown before the response is committed, the exception is treated as if it originated from a resource method, see section \ref{method_exc}. To avoid an infinite loop, implementations SHOULD NOT attempt to map exceptions thrown during serialization of an response previously mapped from an exception and SHOULD instead simply return a server error (status code 500) response.
+
+\subsection{Declaring Media Type Capabilities}
+\label{declaring_provider_capabilities}
+
+Message body readers and writers MAY restrict the media types they support using the \Consumes\ and \Produces\ annotations respectively. The absence of these annotations is equivalent to their inclusion with media type (\lq\lq*/*\rq\rq), i.e. absence implies that any media type is supported. An implementation MUST NOT use an entity provider for a media type that is not supported by that provider.
+
+When choosing an entity provider an implementation sorts the available providers according to the media types they declare support for. Sorting of media types follows the general rule: x/y $<$ x/* $<$ */*, i.e. a provider that explicitly lists a media types is sorted before a provider that lists */*.
+
+\subsection{Standard Entity Providers}
+\label{standard_entity_providers}
+
+An implementation MUST include pre-packaged \MsgRead\ and \MsgWrite\ implementations for the following Java and media type combinations:
+
+\begin{description}
+\item[\code{byte[]}] All media types (\code{*/*}).
+\item[\code{java.lang.String}] All media types (\code{*/*}).
+\item[\code{java.io.InputStream}] All media types (\code{*/*}).
+\item[\code{java.io.Reader}] All media types (\code{*/*}).
+\item[\code{java.io.File}] All media types (\code{*/*}).
+\item[\code{javax.activation.DataSource}] All media types (\code{*/*}).
+\item[\code{javax.xml.transform.Source}] XML types (\code{text/xml}, \code{application\-/\-xml} and \code{application\-/\-*+xml}).
+\item[\code{javax.xml.bind.JAXBElement} and application-supplied JAXB classes] XML media types (\code{text\-/\-xml}, \code{application/xml} and \code{application/*+xml}).
+\item[\code{MultivaluedMap<String,String>}] Form content (\code{application/x-www-form-urlencoded}).
+\item[\code{StreamingOutput}] All media types (\code{*/*}), \MsgWrite\ only.
+\end{description}
+
+When reading zero-length request entities, all implementation-supplied \MsgRead\ implementations except the JAXB-related one MUST create a corresponding Java object that represents zero-length data; they MUST NOT return null. The implementation-supplied JAXB \MsgRead\ implementation MUST throw a \WebAppExc\ with a client error response (HTTP 400) for zero-length request entities.
+
+The implementation-supplied entity provider(s) for \code{javax\-.xml\-.bind\-.JAXBElement} and application-supplied JAXB classes MUST use \code{JAXBContext} instances provided by application-supplied context resolvers, see section \ref{contextprovider}. If an application does not supply a \code{JAXBContext} for a particular type, the implementation-supplied entity provider MUST use its own default context instead.
+
+When writing responses, implementations SHOULD respect application-supplied character set metadata and SHOULD use UTF-8 if a character set is not specified by the application or if the application specifies a character set that is unsupported.
+
+An implementation MUST support application-provided entity providers and MUST use those in preference to its own pre-packaged providers when either could handle the same request.
+
+\subsection{Transfer Encoding}
+\label{transfer_encoding}
+
+Transfer encoding for inbound data is handled by a component of the container or the \jaxrs\ runtime. \MsgRead\ providers always operate on the decoded HTTP entity body rather than directly on the HTTP message body.
+
+A JAX-RS runtime or container MAY transfer encode outbound data or this MAY be done by application code.
+
+\subsection{Content Encoding}
+
+Content encoding is the responsibility of the application. Application-supplied entity providers MAY perform such encoding and manipulate the HTTP headers accordingly.
+
+\section{Context Providers}
+\label{contextprovider}
+
+Context providers supply context to resource classes and other providers. A context provider class implements the \code{ContextResolver<T>} interface and is annotated with \Provider. E.g. an application wishing to provide a customized \code{JAXBContext} to the default JAXB entity providers would supply a class implementing \code{ContextResolver<JAXBContext>}.
+
+Context providers MAY return \code{null} from the \code{getContext} method if they do not wish to provide their context for a particular Java type. E.g. a JAXB context provider may wish to only provide the context for certain JAXB classes. Context providers MAY also manage multiple contexts of the same type keyed to different Java types.
+
+\subsection{Declaring Media Type Capabilities}
+\label{context_media_type}
+
+Context provider implementations MAY restrict the media types they support using the \Produces\ annotation. The absence of this annotation is equivalent to its inclusion with media type (\lq\lq*/*\rq\rq), i.e. absence implies that any media type is supported.
+
+When choosing a context provider an implementation sorts the available providers according to the media types they declare support for. Sorting of media types follows the general rule: x/y $<$ x/* $<$ */*, i.e. a provider that explicitly lists a media type is sorted before a provider that lists */*.
+
+\section{Exception Mapping Providers}
+\label{exceptionmapper}
+
+When a resource class or provider method throws an exception, the \jaxrs\ runtime will attempt to map the exception to a suitable HTTP response - see section \ref{method_exc}. An application can supply exception mapping providers to customize this mapping.
+
+Exception mapping providers map a checked or runtime exception to an instance of \Response. An exception mapping provider implements the \code{ExceptionMapper<T>} interface and is annotated with \Provider. When a resource method throws an exception for which there is an exception mapping provider, the matching provider is used to obtain a \Response\ instance. The resulting \Response\ is processed as if the method throwing the exception had instead returned the \Response, see section \ref{resource_method_return}.
+
+When choosing an exception mapping provider to map an exception, an implementation MUST use the provider whose generic type is the nearest superclass of the exception.

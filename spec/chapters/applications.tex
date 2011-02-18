@@ -1,0 +1,52 @@
+\chapter{Applications}
+\label{applications}
+
+A \jaxrs\ application consists of one or more resources (see chapter \ref{resources}) and zero or more providers (see chapter \ref{providers}). This chapter describes aspects of \jaxrs\ that apply to an application as a whole, subsequent chapters describe particular aspects of a \jaxrs\ application and requirements on \jaxrs\ implementations.
+
+\section{Configuration}
+\label{config}
+
+The resources and providers that make up a \jaxrs\ application are configured via an application-supplied subclass of \code{Application}. An implementation MAY provide alternate mechanisms for locating resource classes and providers (e.g. runtime class scanning) but use of \code{Application} is the only portable means of configuration.
+
+\section{Validation}
+
+Specific validation requirements are detailed throughout this specification and the \jaxrs\ Javadocs. Implementations MAY perform additional validation where feasible and SHOULD report any issues arising from such validation to the user.
+
+\section{Publication}
+
+Applications are published in different ways depending on whether the application is run in a Java SE environment or within a container. This section describes the alternate means of publication.
+
+\subsection{Java SE}
+
+In a Java SE environment a configured instance of an endpoint class can be obtained using the \code{create\-Endpoint} method of \rd. The application supplies an instance of \code{Application} and the type of endpoint required. An implementation MAY support zero or more endpoint types of any desired type.
+
+How the resulting endpoint class instance is used to publish the application is outside the scope of this specification.
+
+\subsubsection{JAX-WS}
+
+An implementation that supports publication via JAX-WS MUST support \code{create\-Endpoint} with an endpoint type of \code{javax\-.xml\-.ws\-.Provider}. JAX-WS describes how a \code{Provider} based endpoint can be published in an SE environment.
+
+\subsection{Servlet}
+\label{servlet}
+
+A \jaxrs\ application is packaged as a Web application in a \code{.war} file. The application classes are packaged in \code{WEB-INF/classes} or \code{WEB-INF/lib} and required libraries are packaged in \code{WEB-INF/lib}. See the Servlet specification for full details on packaging of web applications.
+
+It is RECOMMENDED that implementations support the Servlet 3 framework pluggability mechanism to enable portability between containers and to avail themselves of container-supplied class scanning facilities. When using the pluggability mechanism the following conditions MUST be met:
+
+\begin{itemize}
+\item If no \code{Application} subclass is present the added servlet MUST be named:
+\begin{quote}\code{javax.\-ws.\-rs.\-core.\-Application}\end{quote} and all root resource classes and providers packaged in the web application MUST be included in the published \jaxrs\ application. The application MUST be packaged with a \code{web.xml} that specifies a servlet mapping for the added servlet.
+
+\item If an \code{Application} subclass is present and there is already a servlet defined that has a servlet initialization parameter named: \begin{quote}\code{javax.ws.rs.Application}\end{quote} whose value is the fully qualified name of the \code{Application} subclass then no new servlet should be added by the \jaxrs\ implementation's \code{ContainerInitializer} since the application is already being handled by an existing servlet.
+
+\item If an \code{Application} subclass is present that is not being handled by an existing servlet then the servlet added by the \code{ContainerInitializer} MUST be named with the fully qualified name of the \code{Application} subclass. If the \code{Application} subclass is annotated with \code{@ApplicationPath} and no servlet-mapping exists for the added servlet then a new servlet mapping is added with the value of the \code{@ApplicationPath} annotation with "/*" appended otherwise the existing mapping is used. If the \code{Application }subclass is not annotated with \code{@ApplicationPath}\ then the application MUST be packaged with a \code{web.xml} that specifies a servlet mapping for the added servlet. It is an error for more than one application to be deployed at the same effective servlet mapping
+\end{itemize}
+
+In either of the latter two cases, if both \code{Application.getClasses} and \code{Application.getSingletons} return an empty list then all root resource classes and providers packaged in the web application MUST be included in the published \jaxrs\ application. If either \code{getClasses} or \code{getSingletons} return a non-empty list then only those classes or singletons returned MUST be included in the published \jaxrs\ application.
+
+If not using the Servlet 3 framework pluggability mechanism (e.g. in a pre-Servet 3.0 container), the \code{servlet-class} or \code{filter-class} element of the \code{web.xml} descriptor SHOULD name the \jaxrs\ implementation-supplied servlet or filter class respectively. The \code{Application} subclass SHOULD be identified using an \code{init-param} with a \code{param-name} of \code{javax.\-ws.\-rs.\-Application}.
+
+
+\subsection{Other Container}
+
+An implementation MAY provide facilities to host a \jaxrs\ application in other types of container, such facilities are outside the scope of this specification.

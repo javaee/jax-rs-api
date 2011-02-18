@@ -1,0 +1,14 @@
+% set up page styles for frontmatter, no page headers, normal footer
+\fancyhf{}
+\fancyfoot[CO,CE]{JAX-RS}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[RE,LO]{\today} 
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[CO,CE]{JAX-RS}
+  \fancyfoot[LE,RO]{\thepage}
+  \fancyfoot[RE,LO]{\today} 
+  \renewcommand{\footrulewidth}{0pt}
+  \renewcommand{\headrulewidth}{0pt}
+}
+\renewcommand{\headrulewidth}{0pt}

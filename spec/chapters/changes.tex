@@ -1,0 +1,45 @@
+\chapter{Change Log}
+
+\section{Changes Since 1.0 Release}
+
+\begin{itemize}
+\item Section \ref{servlet}: new requirements for Servlet 3 containers.
+\item Section \ref{javaee}: requirements for Java EE 6 containers.
+\item Section \ref{standard_entity_providers}: requirements on standard entity providers when presented with an empty request entity.
+\item Section \ref{message_body_writer}: add closeness of generic type as secondary sort key.
+\item Section \ref{message_body_reader}: default to application/octet-stream if a request does not contain a content-type header.
+\item Section \ref{resource_field}: add support for static fromString method.
+\item Section \ref{annotationinheritance}: clarify annotation inheritance.
+\item Section \ref{security_context}: fix typo.
+\item Section \ref{servlet_container}: additional considerations related to filters consuming request bodies.
+\end{itemize}
+
+\section{Changes Since Proposed Final Draft}
+
+\begin{itemize}
+\item Section \ref{request_matching}: Additional sort criteria so that templates with explicit regexs are sorted ahead of those with the default.
+\item Sections \ref{request_matching}, \ref{determine_response_type}, \ref{declaring_provider_capabilities} and \ref{context_media_type}: Q-values not used in \Consumes\ or \Produces.
+\item Section \ref{message_body_writer}: Fixed algorithm to refer to section \ref{determine_response_type} instead of restating it. Fixed status code returned when the media type has been determined but an appropriate message body writer cannot be located.
+\item Chapter \ref{runtimedelegate}: Clarify that an implementation can supply an alternate \rd\ API class.
+\end{itemize}
+
+\section{Changes Since Public Review Draft}
+
+\begin{itemize}
+\item Chapter \ref{applications}: Renamed ApplicationConfig class to Application.
+\item Chapter \ref{resources}: UriBuilder reworked to always encode components.
+\item Sections \ref{resource_class_constructor} and \ref{provider_class_constructor}: Added requirement to warn when choice of constructor is ambiguous.
+\item Section \ref{resource_field}: \code{FormParam} no longer required to be supported on fields or properties.
+\item Section \ref{resource_method_return}: Added text describing how to determine raw and generic types from method return type and returned instance.
+\item Section \ref{uritemplates}: Template parameters can specify the regular expression that forms their capturing group.
+\item Section \ref{reqpreproc}: Make pre-processed URIs available rather than original request URI. Added URI normalization.
+\item Section \ref{reqpreproc}: Removed URI-based content negotiation.
+\item Section \ref{request_matching}: Reorganized the request matching algorithm to remove redundancy and improve readability, no functional change.
+\item Section \ref{template_to_regex}: Changes to regular expressions to eliminate edge cases.
+\item Section \ref{entity_providers}: Added requirement to use JavaBean Activation Framework when no entity provider can be found.
+\item Section \ref{standard_entity_providers}: Require standard JAXB entity providers to use application-supplied JAXB contexts in preference to their own.
+\item Section \ref{contextprovider}: Added support for specifying media type capabilities of context providers.
+\item Section \ref{contexttypes}: Removed \code{ContextResolver} from list of injectable resources.
+\item Section \ref{providercontext}: Changed name to Providers, removed entity provider-specific text to reflect more generic capabilities.
+\item Chapter \ref{headersupport}: New appendix describing where particular HTTP headers are supported.
+\end{itemize}

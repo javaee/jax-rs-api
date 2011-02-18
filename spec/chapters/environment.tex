@@ -1,0 +1,38 @@
+\chapter{Environment}
+\label{environment}
+
+The container-managed resources available to a \jaxrs\ root resource class or provider depend on the environment in which it is deployed. Section \ref{contexttypes} describes the types of context available regardless of container. The following sections describe the additional container-managed resources available to a \jaxrs\ root resource class or provider deployed in a variety of environments.
+
+\section{Servlet Container}
+\label{servlet_container}
+
+The \Context\ annotation can be used to indicate a dependency on a Servlet-defined resource. A Servlet-based implementation MUST support injection of the following Servlet-defined types: \code{Servlet\-Config}, \code{Servlet\-Context}, \code{Http\-Servlet\-Request} and \code{Http\-Servlet\-Response}.
+
+An injected \code{Http\-Servlet\-Request} allows a resource method to stream the contents of a request entity. If the resource method has a parameter whose value is derived from the request entity then the stream will have already been consumed and an attempt to access it MAY result in an exception.
+
+An injected \code{Http\-Servlet\-Response} allows a resource method to commit the HTTP response prior to returning. An implementation MUST check the committed status and only process the return value if the response is not yet committed.
+
+Servlet filters may trigger consumption of a request body by accessing request parameters. In a servlet container the @FormParam annotation and the standard entity provider for \code{application\-/x-\-www-\-form-\-urlencoded} MUST obtain their values from the servlet request parameters if the request body has already been consumed. Servlet APIs do not differentiate between parameters in the URI and body of a request so URI-based query parameters may be included in the entity parameter.
+
+\section{Java EE Container}
+\label{javaee}
+
+This section describes the additional requirements that apply to a \jaxrs\ implementation when combined in a product that supports these other Java specifications:
+
+\begin{itemize}
+\item In a product that also supports the Servlet specification, implementations MUST support \jaxrs\ applications that are packaged as a web application. Implementations MUST behave as if built using the Servlet 3 pluggability mechanism, see section \ref{servlet}.
+\item In a product that also supports Managed Beans, implementations MUST support use of Managed Beans as root resource classes, providers and \code{Application} subclasses. In a product that also supports JSR 299, implementations MUST similarly support use of JSR299-style managed beans. Providers and \code{Application} subclasses MUST be singletons or use application scope.
+\item In a product that also supports EJB, an implementation MUST support use of stateless and singleton session beans as root resource classes, providers and \code{Application} subclasses. \jaxrs\ annotations MAY be applied to a bean's local interface or directly to a no-interface bean. If an \code{Exception\-Mapper} for a \code{EJBException} or subclass is not included with an application then exceptions thrown by an EJB resource class or provider method MUST be treated as EJB application exceptions: the embedded cause of the \code{EJBException} MUST be unwrapped and processed as described in section \ref{method_exc}.
+\end{itemize}
+
+The following additional requirements apply when using Managed Beans, JSR299-style Managed Beans or EJBs as resource classes, providers or \code{Application} subclasses:
+
+\begin{itemize}
+\item Field and property injection of \jaxrs\ resources MUST be performed prior to the container invoking any \code{@PostConstruct} annotated method.
+\item Support for constructor injection of \jaxrs\ resources is OPTIONAL. Portable applications MUST instead use fields or bean properties in conjunction with a \code{@PostConstruct} annotated method. Implementations SHOULD warn users about use of non-portable constructor injection.
+\item Implementations MUST NOT require use of \code{@Inject} or \code{@Resource} to trigger injection of \jaxrs\ annotated fields or properties. Implementations MAY support such usage but SHOULD warn users about non-portability.
+\end{itemize}
+
+\section{Other}
+
+Other container technologies MAY specify their own set of injectable resources but MUST, at a minimum, support access to the types of context listed in section \ref{contexttypes}.
