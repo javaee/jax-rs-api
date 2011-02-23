@@ -42,146 +42,172 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>javax.ws.rs</groupId>
-  <artifactId>javax.ws.rs-api</artifactId>
-  <version>2.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
-  <name>javax.ws.rs-api</name>
-  <url>http://jax-rs-spec.java.net</url>
+    <groupId>javax.ws.rs</groupId>
+    <artifactId>javax.ws.rs-api</artifactId>
+    <version>2.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>javax.ws.rs-api</name>
+    <url>http://jax-rs-spec.java.net</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
   
-  <organization>
-    <name>Oracle Corporation</name>
-    <url>http://www.oracle.com/</url>
-  </organization>
+    <organization>
+        <name>Oracle Corporation</name>
+        <url>http://www.oracle.com/</url>
+    </organization>
 
-  <issueManagement>
-    <system>jira</system>
-    <url>http://java.net/jira/browse/JAX_RS_SPEC</url>
-  </issueManagement>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://java.net/jira/browse/JAX_RS_SPEC</url>
+    </issueManagement>
 
-  <mailingLists>
-    <mailingList>
-      <name>JSR339 Expert Group List</name>
-      <archive>jsr339-experts@jax-rs-spec.java.net</archive>
-    </mailingList>
-    <mailingList>
-      <name>JAX-RS Users List</name>
-      <archive>users@jax-rs-spec.java.net</archive>
-    </mailingList>
-  </mailingLists>
+    <mailingLists>
+        <mailingList>
+            <name>JSR339 Expert Group List</name>
+            <archive>jsr339-experts@jax-rs-spec.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JAX-RS Users List</name>
+            <archive>users@jax-rs-spec.java.net</archive>
+        </mailingList>
+    </mailingLists>
 
-  <licenses>
-    <license>
-      <name>CDDL 1.1</name>
-      <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
-      <distribution>repo</distribution>
-    </license>
-    <license>
-      <name>GPL2 w/ CPE</name>
-      <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>CDDL 1.1</name>
+            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>GPL2 w/ CPE</name>
+            <url>http://glassfish.java.net/public/CDDL+GPL_1_1.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <build>
-    <plugins>    
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3</version>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.2</version>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Specification-Title>Java API for RESTful Web Services (JAX-RS)</Specification-Title>
-              <Specification-Version>${project.version}</Specification-Version>
-              <Specification-Vendor>Oracle Corporation</Specification-Vendor>
-              <Extension-Name>javax.ws.rs</Extension-Name>
-              <Build-Id>${buildNumber}</Build-Id>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.0-beta-3</version>
-        <configuration>
-          <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
-          <items>
-            <item>timestamp</item>
-          </items>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.5</version>
-        <configuration>
-          <doctitle>JAX-RS ${project.version} API Specification</doctitle>
-          <bottom>Copyright &#169; 2007-2011 Oracle Corporation. All Rights Reserved. Use is subject to license terms.</bottom>
-        </configuration>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.0-beta-3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Specification-Title>Java API for RESTful Web Services (JAX-RS)</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>Oracle Corporation</Specification-Vendor>
+                            <Extension-Name>javax.ws.rs</Extension-Name>
+                            <Build-Id>${buildNumber}</Build-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <configuration>
+                    <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
+                    <items>
+                        <item>timestamp</item>
+                    </items>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doctitle>JAX-RS ${project.version} API Specification</doctitle>
+                    <bottom>Copyright &#169; 2007-2011 Oracle Corporation. All Rights Reserved. Use is subject to license terms.</bottom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
-  <repositories>
-    <repository>
-      <id>java.net.m2</id>
-      <url>http://download.java.net/maven/2</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
+    <repositories>
+        <repository>
+            <id>java.net.m2</id>
+            <url>http://download.java.net/maven/2</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
   	
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
