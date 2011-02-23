@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -50,14 +50,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class GenericEntityTest extends TestCase {
-    
-    public GenericEntityTest(String testName) {
-        super(testName);
-    }            
+import static org.junit.Assert.*;
 
+public class GenericEntityTest {
+
+    @Test
     public void testListOfString() {
         System.out.println("testListOfString");
         List<String> list = new ArrayList<String>();
@@ -74,6 +73,7 @@ public class GenericEntityTest extends TestCase {
         assertEquals(typeArgType, String.class);
     }
 
+    @Test
     public void testMapOfStringInteger() {
         System.out.println("testMapOfStringInteger");
         Map<String,Integer> map = new HashMap<String,Integer>();
@@ -93,6 +93,7 @@ public class GenericEntityTest extends TestCase {
         assertEquals(typeArgType, Integer.class);
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testArrayOfListOfString() {
         System.out.println("testArrayOfListOfString");
@@ -112,6 +113,7 @@ public class GenericEntityTest extends TestCase {
         assertEquals(typeArgType, String.class);
     }
     
+    @Test
     public void testNumber() {
         System.out.println("testNumber");
         Number n = new Integer(0);
@@ -124,6 +126,7 @@ public class GenericEntityTest extends TestCase {
         assertEquals(genericType, Number.class);
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testCtor() {
         System.out.println("testCtor");

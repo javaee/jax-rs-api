@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,31 +40,29 @@
 
 package javax.ws.rs.core;
 
-import junit.framework.TestCase;
-
 import javax.ws.rs.ext.RuntimeDelegate;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class CookieTest extends TestCase {
+import static org.junit.Assert.*;
+
+public class CookieTest {
     
-    public CookieTest(String testName) {
-        super(testName);
-    }            
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         RuntimeDelegate.setInstance(new RuntimeDelegateStub());
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         RuntimeDelegate.setInstance(null);
     }
 
     /**
      * Test of equals method, of class Cookie and NewCookie.
      */
+    @Test
     public void testEquals() {
         System.out.println("equals");
         Object nullObj = null;
