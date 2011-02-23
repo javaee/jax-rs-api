@@ -1,0 +1,11 @@
+# maven noise
+target
+
+# osx noise
+.DS_Store
+profile
+
+#IntelliJ Idea noise
+*.iws
+*.ipr
+*.iml
