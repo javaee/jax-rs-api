@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -74,6 +74,7 @@ public abstract class RuntimeDelegate {
     protected RuntimeDelegate() {
     }
 
+    private static final Object rdLock = new Object();
     private static volatile RuntimeDelegate rd;
     
     /**
@@ -110,17 +111,18 @@ public abstract class RuntimeDelegate {
      * @return an instance of RuntimeDelegate
      */
     public static RuntimeDelegate getInstance() {
-       // Double-check idiom for lazy initialization of fields.
-       RuntimeDelegate result = rd;
-       if (result == null) { // First check (no locking)
-           synchronized(RuntimeDelegate.class) {
-               result = rd;
-               if (result == null) { // Second check (with locking)
-                   rd = result = findDelegate();
-               }
-           }
-       }
-       return result;
+        // Double-check idiom for lazy initialization of fields.
+        // Local variable is used to limit the number of more expensive accesses to a volatile field.
+        RuntimeDelegate result = rd;
+        if (result == null) { // First check (no locking)
+            synchronized (rdLock) {
+                result = rd;
+                if (result == null) { // Second check (with locking)
+                    rd = result = findDelegate();
+                }
+            }
+        }
+        return result;
     }
     
     /**
@@ -164,7 +166,7 @@ public abstract class RuntimeDelegate {
         if (security != null) {
             security.checkPermission(rp);
         }
-        synchronized(RuntimeDelegate.class) {
+        synchronized(rdLock) {
             RuntimeDelegate.rd = rd;
         }
     }
