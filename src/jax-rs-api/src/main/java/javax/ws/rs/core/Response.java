@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -61,7 +61,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * 
  * Several methods have parameters of type URI, {@link UriBuilder} provides
  * convenient methods to create such values as does 
- * {@link <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/net/URI.html#create(java.lang.String)">URI.create()</a>}.
+ * {@link <a href="http://download.oracle.com/javase/6/docs/api/java/net/URI.html#create(java.lang.String)">URI.create()</a>}.
  * 
  * @see Response.ResponseBuilder
  */
