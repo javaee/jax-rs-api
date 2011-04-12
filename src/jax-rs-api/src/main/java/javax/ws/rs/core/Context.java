@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * Context.java
- *
- * Created on November 16, 2006, 3:37 PM
- *
- */
-
 package javax.ws.rs.core;
 
 import java.lang.annotation.Documented;
@@ -56,12 +48,16 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used to inject information into a class
  * field, bean property or method parameter.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see Application
  * @see UriInfo
  * @see Request
  * @see HttpHeaders
  * @see SecurityContext
  * @see javax.ws.rs.ext.Providers
+ * @since 1.0
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

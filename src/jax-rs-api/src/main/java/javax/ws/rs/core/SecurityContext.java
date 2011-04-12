@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package javax.ws.rs.core;
 
 import java.security.Principal;
@@ -46,25 +45,25 @@ import java.security.Principal;
  * An injectable interface that provides access to security related
  * information.
  * 
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see Context
+ * @since 1.0
  */
 public interface SecurityContext {
-    
+
     /**
      * String identifier for Basic authentication. Value "BASIC"
      */
     public static final String BASIC_AUTH = "BASIC";
-    
     /**
      * String identifier for Client Certificate authentication. Value "CLIENT_CERT"
      */
-    public static final String CLIENT_CERT_AUTH	= "CLIENT_CERT";
-    
+    public static final String CLIENT_CERT_AUTH = "CLIENT_CERT";
     /**
      * String identifier for Digest authentication. Value "DIGEST"
      */
     public static final String DIGEST_AUTH = "DIGEST";
-    
     /**
      * String identifier for Form authentication. Value "FORM"
      */
@@ -81,7 +80,7 @@ public interface SecurityContext {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public Principal getUserPrincipal();
-    
+
     /**
      * Returns a boolean indicating whether the authenticated user is included 
      * in the specified logical "role". If the user has not been authenticated,
@@ -94,7 +93,7 @@ public interface SecurityContext {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public boolean isUserInRole(String role);
-    
+
     /**
      * Returns a boolean indicating whether this request was made 
      * using a secure channel, such as HTTPS.
@@ -104,7 +103,7 @@ public interface SecurityContext {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public boolean isSecure();
-    
+
     /**
      * Returns the string value of the authentication scheme used to protect 
      * the resource. If the resource is not authenticated, null is returned.
@@ -118,5 +117,4 @@ public interface SecurityContext {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public String getAuthenticationScheme();
-    
 }

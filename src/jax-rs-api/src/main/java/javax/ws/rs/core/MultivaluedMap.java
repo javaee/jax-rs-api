@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * MultivaluedMap.java
- *
- * Created on February 13, 2007, 2:30 PM
- *
- */
-
 package javax.ws.rs.core;
 
 import java.util.List;
@@ -53,9 +45,15 @@ import java.util.Map;
 /**
  * A map of key-values pairs. Each key can have zero or more values.
  * 
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
  */
 public interface MultivaluedMap<K, V> extends Map<K, List<V>> {
-    
+
     /**
      * Set the key's value to be a one item list consisting of the supplied value.
      * Any existing values will be replaced.
@@ -64,14 +62,14 @@ public interface MultivaluedMap<K, V> extends Map<K, List<V>> {
      * @param value the single value of the key
      */
     void putSingle(K key, V value);
-    
+
     /**
      * Add a value to the current list of values for the supplied key.
      * @param key the key 
      * @param value the value to be added.
      */
     void add(K key, V value);
-    
+
     /**
      * A shortcut to get the first value of the supplied key.
      * @param key the key
@@ -79,6 +77,4 @@ public interface MultivaluedMap<K, V> extends Map<K, List<V>> {
      * not in the map.
      */
     V getFirst(K key);
-    
 }
-

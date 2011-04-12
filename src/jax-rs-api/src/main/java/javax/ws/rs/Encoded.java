@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * Encoded.java
- *
- * Created on June 29, 2007, 11:40 AM
- *
- */
-
 package javax.ws.rs;
 
 import java.lang.annotation.Documented;
@@ -60,14 +52,16 @@ import java.lang.annotation.Target;
  * Using this annotation on a class will disable decoding for all parameters of
  * all methods.
  *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see QueryParam
  * @see MatrixParam
  * @see PathParam
  * @see FormParam
+ * @since 1.0
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Encoded {
-    
 }

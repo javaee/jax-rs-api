@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,13 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * CacheControl.java
- *
- * Created on March 5, 2007, 3:36 PM
- */
-
 package javax.ws.rs.core;
 
 import java.util.ArrayList;
@@ -56,8 +49,13 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 /**
  * An abstraction for the value of a HTTP Cache-Control response header.
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">HTTP/1.1 section 14.9</a>
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
  */
 public class CacheControl {
+
     private boolean _private;
     private List<String> privateFields;
     private boolean noCache;
@@ -69,11 +67,9 @@ public class CacheControl {
     private int maxAge = -1;
     private int sMaxAge = -1;
     private Map<String, String> cacheExtension;
-    
-    private static final HeaderDelegate<CacheControl> delegate = 
+    private static final HeaderDelegate<CacheControl> delegate =
             RuntimeDelegate.getInstance().createHeaderDelegate(CacheControl.class);
 
-    
     /**
      * Create a new instance of CacheControl. The new instance will have the 
      * following default settings:
@@ -109,7 +105,7 @@ public class CacheControl {
     public static CacheControl valueOf(String value) throws IllegalArgumentException {
         return delegate.fromString(value);
     }
-    
+
     /**
      * Corresponds to the must-revalidate cache control directive.
      * @return true if the must-revalidate cache control directive will be included in the
@@ -195,8 +191,9 @@ public class CacheControl {
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public List<String> getNoCacheFields() {
-        if (noCacheFields == null)
+        if (noCacheFields == null) {
             noCacheFields = new ArrayList<String>();
+        }
         return noCacheFields;
     }
 
@@ -242,8 +239,9 @@ public class CacheControl {
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public List<String> getPrivateFields() {
-        if (privateFields == null)
+        if (privateFields == null) {
             privateFields = new ArrayList<String>();
+        }
         return privateFields;
     }
 
@@ -308,8 +306,9 @@ public class CacheControl {
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.6">HTTP/1.1 section 14.9.6</a>
      */
     public Map<String, String> getCacheExtension() {
-        if (cacheExtension == null)
+        if (cacheExtension == null) {
             cacheExtension = new HashMap<String, String>();
+        }
         return cacheExtension;
     }
 
@@ -394,5 +393,4 @@ public class CacheControl {
         }
         return true;
     }
-    
 }

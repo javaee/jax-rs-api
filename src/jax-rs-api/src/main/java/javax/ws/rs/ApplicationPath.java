@@ -8,7 +8,7 @@
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * ApplicationPath.java
- *
- * Created on August 21, 2009
- *
- */
-
 package javax.ws.rs;
 
 import java.lang.annotation.ElementType;
@@ -60,6 +52,8 @@ import java.lang.annotation.Target;
  * <p>When published in a Servlet container, the value of the application path
  * may be overridden using a servlet-mapping element in the web.xml.</p>
  *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see javax.ws.rs.core.Application
  * @see Path
  * @since 1.1
@@ -67,6 +61,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApplicationPath {
+
     /**
      * Defines the base URI for all resource URIs. A trailing '/' character will
      * be automatically appended if one is not present.
@@ -79,5 +74,4 @@ public @interface ApplicationPath {
      * encode the '%' character.</p>
      */
     String value();
-
 }

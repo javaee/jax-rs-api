@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * DefaultValue.java
- *
- * Created on November 16, 2006, 2:04 PM
- *
- */
-
 package javax.ws.rs;
 
 import java.lang.annotation.ElementType;
@@ -74,18 +66,24 @@ import java.lang.annotation.Target;
  * <code>List</code>, <code>Set</code> or <code>SortedSet</code>, null for 
  * other object types, and the Java-defined default for primitive types.</p>
  * 
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see PathParam
  * @see QueryParam
  * @see FormParam
  * @see HeaderParam
  * @see MatrixParam
  * @see CookieParam
+ * @since 1.0
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DefaultValue {
+
     /**
      * The default value.
+     *
+     * @return specified default value.
      */
     String value();
 }

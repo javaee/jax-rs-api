@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * HttpMethod.java
- *
- * Created on October 25, 2006, 2:02 PM
- *
- */
-
 package javax.ws.rs;
 
 import java.lang.annotation.Documented;
@@ -60,44 +52,49 @@ import java.lang.annotation.Target;
  * for a method to be annotated with more than one annotation that is annotated
  * with {@code HttpMethod}.
  *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see GET
  * @see POST
  * @see PUT
  * @see DELETE
  * @see HEAD
+ * @since 1.0
  */
 @Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface HttpMethod {
-    
+
     /**
      * HTTP GET method
      */
-    public static final String GET="GET";
+    public static final String GET = "GET";
     /**
      * HTTP POST method
      */
-    public static final String POST="POST"; 
+    public static final String POST = "POST";
     /**
      * HTTP PUT method
      */
-    public static final String PUT="PUT";
+    public static final String PUT = "PUT";
     /**
      * HTTP DELETE method
      */
-    public static final String DELETE="DELETE";
+    public static final String DELETE = "DELETE";
     /**
      * HTTP HEAD method
      */
-    public static final String HEAD="HEAD";
+    public static final String HEAD = "HEAD";
     /**
      * HTTP OPTIONS method
      */
-    public static final String OPTIONS="OPTIONS";
-    
+    public static final String OPTIONS = "OPTIONS";
+
     /**
      * Specifies the name of a HTTP method. E.g. "GET".
+     *
+     * @return specified HTTP method name.
      */
-    String value();        
+    String value();
 }

@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package javax.ws.rs.ext;
 
 import javax.ws.rs.core.Response;
@@ -46,9 +45,14 @@ import javax.ws.rs.core.Response;
  * Contract for a provider that maps Java exceptions to 
  * {@link javax.ws.rs.core.Response}. An implementation of this interface must 
  * be annotated with {@link Provider}.
- * 
+ *
+ * @param <E> exception type supported by the provider.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see Provider
  * @see javax.ws.rs.core.Response
+ * @since 1.0
  */
 public interface ExceptionMapper<E extends Throwable> {
 

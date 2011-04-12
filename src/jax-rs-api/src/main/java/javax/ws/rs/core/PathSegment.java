@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * PathSegment.java
- *
- * Created on January 30, 2007, 4:35 PM
- *
- */
-
 package javax.ws.rs.core;
 
 /**
@@ -55,8 +47,11 @@ package javax.ws.rs.core;
  * instance that supplies the path and matrix parameter values in
  * URI encoded form.
  *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see UriInfo#getPathSegments
  * @see javax.ws.rs.PathParam
+ * @since 1.0
  */
 public interface PathSegment {
 
@@ -66,7 +61,7 @@ public interface PathSegment {
      * @return the path segment
      */
     String getPath();
-    
+
     /**
      * Get a map of the matrix parameters associated with the path segment.
      * The map keys are the names of the matrix parameters with any
@@ -76,5 +71,4 @@ public interface PathSegment {
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
     MultivaluedMap<String, String> getMatrixParameters();
-    
 }

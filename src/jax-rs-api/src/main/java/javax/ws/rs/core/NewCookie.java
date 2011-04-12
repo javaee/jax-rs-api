@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * NewCookie.java
- *
- * Created on March 12, 2007, 5:08 PM
- *
- */
-
 package javax.ws.rs.core;
 
 import javax.ws.rs.ext.RuntimeDelegate;
@@ -52,24 +44,27 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 /**
  * Used to create a new HTTP cookie, transferred in a response.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see <a href="http://www.ietf.org/rfc/rfc2109.txt">IETF RFC 2109</a>
+ * @since 1.0
  */
 public class NewCookie extends Cookie {
-    
+
     /**
      * Specifies that the cookie expires with the current application/browser session.
      */
     public static final int DEFAULT_MAX_AGE = -1;
-    
-    private static final HeaderDelegate<NewCookie> delegate = 
+    private static final HeaderDelegate<NewCookie> delegate =
             RuntimeDelegate.getInstance().createHeaderDelegate(NewCookie.class);
-
     private String comment = null;
     private int maxAge = DEFAULT_MAX_AGE;
     private boolean secure = false;
-    
+
     /**
      * Create a new instance.
+     *
      * @param name the name of the cookie
      * @param value the value of the cookie
      * @throws IllegalArgumentException if name is null
@@ -77,9 +72,10 @@ public class NewCookie extends Cookie {
     public NewCookie(String name, String value) {
         super(name, value);
     }
-    
+
     /**
      * Create a new instance.
+     *
      * @param name the name of the cookie
      * @param value the value of the cookie
      * @param path the URI path for which the cookie is valid
@@ -95,9 +91,10 @@ public class NewCookie extends Cookie {
         this.maxAge = maxAge;
         this.secure = secure;
     }
-    
+
     /**
      * Create a new instance.
+     *
      * @param name the name of the cookie
      * @param value the value of the cookie
      * @param path the URI path for which the cookie is valid
@@ -114,22 +111,24 @@ public class NewCookie extends Cookie {
         this.maxAge = maxAge;
         this.secure = secure;
     }
-    
+
     /**
      * Create a new instance copying the information in the supplied cookie.
+     *
      * @param cookie the cookie to clone
      * @throws IllegalArgumentException if cookie is null
      */
     public NewCookie(Cookie cookie) {
-        super(cookie==null ? null : cookie.getName(), 
-              cookie==null ? null : cookie.getValue(),
-              cookie==null ? null : cookie.getPath(),
-              cookie==null ? null : cookie.getDomain(),
-              cookie==null ? Cookie.DEFAULT_VERSION : cookie.getVersion());
+        super(cookie == null ? null : cookie.getName(),
+                cookie == null ? null : cookie.getValue(),
+                cookie == null ? null : cookie.getPath(),
+                cookie == null ? null : cookie.getDomain(),
+                cookie == null ? Cookie.DEFAULT_VERSION : cookie.getVersion());
     }
 
     /**
      * Create a new instance supplementing the information in the supplied cookie.
+     *
      * @param cookie the cookie to clone
      * @param comment the comment
      * @param maxAge the maximum age of the cookie in seconds
@@ -145,6 +144,7 @@ public class NewCookie extends Cookie {
 
     /**
      * Creates a new instance of NewCookie by parsing the supplied string.
+     *
      * @param value the cookie string
      * @return the newly created NewCookie
      * @throws IllegalArgumentException if the supplied string cannot be parsed
@@ -153,9 +153,10 @@ public class NewCookie extends Cookie {
     public static NewCookie valueOf(String value) throws IllegalArgumentException {
         return delegate.fromString(value);
     }
-    
+
     /**
      * Get the comment associated with the cookie.
+     *
      * @return the comment or null if none set
      */
     public String getComment() {
@@ -168,6 +169,7 @@ public class NewCookie extends Cookie {
      * cookie with maximum age of 0 since it will overwrite any existing cookie
      * and then be immediately discarded. The default value of -1 indicates that the cookie
      * will be discarded at the end of the browser/application session.
+     *
      * @return the maximum age in seconds
      */
     public int getMaxAge() {
@@ -177,28 +179,31 @@ public class NewCookie extends Cookie {
     /**
      * Whether the cookie will only be sent over a secure connection. Defaults
      * to false.
+     *
      * @return true if the cookie will only be sent over a secure connection,
      * false otherwise.
      */
     public boolean isSecure() {
         return secure;
     }
-    
+
     /**
      * Obtain a new instance of a {@link Cookie} with the same name, value, path,
      * domain and version as this {@code NewCookie}. This method can be used to
      * obtain an object that can be compared for equality with another {@code Cookie};
      * since a {@code Cookie} will never compare equal to a {@code NewCookie}.
+     *
      * @return a {@link Cookie}
      */
     public Cookie toCookie() {
-        return new Cookie(this.getName(),this.getValue(), this.getPath(), 
+        return new Cookie(this.getName(), this.getValue(), this.getPath(),
                 this.getDomain(), this.getVersion());
     }
 
     /**
      * Convert the cookie to a string suitable for use as the value of the
      * corresponding HTTP header.
+     *
      * @return a stringified cookie
      */
     @Override
@@ -207,7 +212,8 @@ public class NewCookie extends Cookie {
     }
 
     /**
-     * Generate a hashcode by hashing all of the properties
+     * Generate a hashcode by hashing all of the properties.
+     *
      * @return the hashcode
      */
     @Override
@@ -223,7 +229,8 @@ public class NewCookie extends Cookie {
      * Compare for equality. Use {@link #toCookie()} to compare a 
      * {@code NewCookie} to a {@code Cookie} considering only the common
      * properties.
-     * @param obj
+     *
+     * @param obj the object to compare to
      * @return true if the object is a {@code NewCookie} with the same value for
      * all properties, false otherwise.
      */
@@ -262,5 +269,4 @@ public class NewCookie extends Cookie {
         }
         return true;
     }
-    
 }

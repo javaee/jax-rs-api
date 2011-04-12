@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -55,7 +55,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package javax.ws.rs.core;
 
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -99,6 +98,12 @@ import java.lang.reflect.Type;
  * <p>The above obtains the generic type from the return type of the method,
  * the raw type is the class of entity.</p> 
  * </ol>
+ *
+ * @param <T> response entity instance type
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
  */
 public class GenericEntity<T> {
 
@@ -122,7 +127,7 @@ public class GenericEntity<T> {
         this.type = getSuperclassTypeParameter(getClass());
         this.rawType = entity.getClass();
     }
-    
+
     /**
      * Create a new instance of GenericEntity, supplying the generic type
      * information. The entity must be assignable to a variable of the
@@ -137,7 +142,7 @@ public class GenericEntity<T> {
      * is null.
      */
     public GenericEntity(T entity, Type genericType) {
-        if (entity == null || genericType==null) {
+        if (entity == null || genericType == null) {
             throw new IllegalArgumentException("Arguments must not be null");
         }
         this.entity = entity;
@@ -145,26 +150,27 @@ public class GenericEntity<T> {
         checkTypeCompatibility(this.rawType, genericType);
         this.type = genericType;
     }
-    
+
     private void checkTypeCompatibility(Class<?> c, Type t) {
         if (t instanceof Class) {
-            Class<?> ct = (Class<?>)t;
-            if (ct.isAssignableFrom(c))
+            Class<?> ct = (Class<?>) t;
+            if (ct.isAssignableFrom(c)) {
                 return;
+            }
         } else if (t instanceof ParameterizedType) {
-            ParameterizedType pt = (ParameterizedType)t;
+            ParameterizedType pt = (ParameterizedType) t;
             Type rt = pt.getRawType();
             checkTypeCompatibility(c, rt);
             return;
         } else if (c.isArray() && (t instanceof GenericArrayType)) {
-            GenericArrayType at = (GenericArrayType)t;
+            GenericArrayType at = (GenericArrayType) t;
             Type rt = at.getGenericComponentType();
             checkTypeCompatibility(c.getComponentType(), rt);
             return;
         }
         throw new IllegalArgumentException("The type is incompatible with the class of the entity");
     }
-    
+
     /**
      * Returns the type from super class's type parameter.
      */

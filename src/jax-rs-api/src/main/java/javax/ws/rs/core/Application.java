@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package javax.ws.rs.core;
 
 import java.util.Collections;
@@ -51,12 +50,16 @@ import java.util.Set;
  * <p>The implementation-created instance of an Application subclass may be
  * injected into resource classes and providers using
  * {@link javax.ws.rs.core.Context}.<p>
- * 
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
  */
 public class Application {
+
     private static final Set<Object> emptyObjectSet = Collections.emptySet();
     private static final Set<Class<?>> emptyClassSet = Collections.emptySet();
-    
+
     /**
      * Get a set of root resource and provider classes. The default lifecycle
      * for resource class instances is per-request. The default lifecycle for
@@ -76,7 +79,7 @@ public class Application {
     public Set<Class<?>> getClasses() {
         return emptyClassSet;
     }
-    
+
     /**
      * Get a set of root resource and provider instances. Fields and properties
      * of returned instances are injected with their declared dependencies
@@ -96,5 +99,4 @@ public class Application {
     public Set<Object> getSingletons() {
         return emptyObjectSet;
     }
-    
 }

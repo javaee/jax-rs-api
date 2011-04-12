@@ -8,7 +8,7 @@
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * Path.java
- *
- * Created on September 15, 2006, 2:33 PM
- *
- */
-
 package javax.ws.rs;
 
 import java.lang.annotation.ElementType;
@@ -85,13 +77,17 @@ import java.lang.annotation.Target;
  * <p>Classes and methods may also be annotated with {@link Consumes} and 
  * {@link Produces} to filter the requests they will receive.</p>
  * 
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see Consumes
  * @see Produces
  * @see PathParam
+ * @since 1.0
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Path {
+
     /**
      * Defines a URI template for the resource class or method, must not 
      * include matrix parameters.
@@ -127,7 +123,8 @@ public @interface Path {
      * Note that percent encoded values are allowed in the literal part of the
      * value, an implementation will recognize such values and will not double
      * encode the '%' character.</p>
+     *
+     * @return specified URI path template.
      */
     String value();
-    
 }

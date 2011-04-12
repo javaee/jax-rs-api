@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,31 +37,27 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * UriBuilderException.java
- *
- * Created on August 22, 2007, 4:41 PM
- *
- */
-
 package javax.ws.rs.core;
 
 /**
  * A runtime exception thrown by {@link UriBuilder#build} methods when a {@link
  * java.net.URI} cannot be constructed based on the current state of the
  * builder.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
  */
 public class UriBuilderException extends java.lang.RuntimeException {
-    private static final long serialVersionUID = 956255913370721193L;    
-    
+
+    private static final long serialVersionUID = 956255913370721193L;
+
     /**
      * Creates a new instance of <code>UriBuilderException</code> without detail message.
      */
     public UriBuilderException() {
     }
-    
-    
+
     /**
      * Constructs an instance of <code>UriBuilderException</code> with the specified detail message.
      * @param msg the detail message (which is saved for later retrieval by the Throwable.getMessage() method).
@@ -79,7 +75,7 @@ public class UriBuilderException extends java.lang.RuntimeException {
     public UriBuilderException(String msg, Throwable cause) {
         super(msg, cause);
     }
-    
+
     /**
      * Constructs a new exception with the specified cause and a detail message
      * of (<code>cause==null ? null : cause.toString()</code>) (which typically contains

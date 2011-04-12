@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * EntityTag.java
- *
- * Created on March 21, 2007, 3:14 PM
- *
- */
-
 package javax.ws.rs.core;
 
 import javax.ws.rs.ext.RuntimeDelegate;
@@ -53,14 +45,17 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 /**
  * An abstraction for the value of a HTTP Entity Tag, used as the value 
  * of an ETag response header.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP/1.1 section 3.11</a>
+ * @since 1.0
  */
 public class EntityTag {
-    
+
     private String value;
     private boolean weak;
-    
-    private static final HeaderDelegate<EntityTag> delegate = 
+    private static final HeaderDelegate<EntityTag> delegate =
             RuntimeDelegate.getInstance().createHeaderDelegate(EntityTag.class);
 
     /**
@@ -71,7 +66,7 @@ public class EntityTag {
     public EntityTag(String value) {
         this(value, false);
     }
-    
+
     /**
      * Creates a new instance of an EntityTag
      * @param value the value of the tag, quotes not included.
@@ -79,12 +74,13 @@ public class EntityTag {
      * @throws IllegalArgumentException if value is null
      */
     public EntityTag(String value, boolean weak) {
-        if (value == null)
+        if (value == null) {
             throw new IllegalArgumentException("value==null");
+        }
         this.value = value;
         this.weak = weak;
     }
-    
+
     /**
      * Creates a new instance of EntityTag by parsing the supplied string.
      * @param value the entity tag string
@@ -95,7 +91,7 @@ public class EntityTag {
     public static EntityTag valueOf(String value) throws IllegalArgumentException {
         return delegate.fromString(value);
     }
-    
+
     /**
      * Check the strength of an EntityTag
      * @return true if this represents a weak tag, false otherwise
@@ -103,7 +99,7 @@ public class EntityTag {
     public boolean isWeak() {
         return weak;
     }
-    
+
     /**
      * Get the value of an EntityTag
      * @return the value of the tag
@@ -111,7 +107,7 @@ public class EntityTag {
     public String getValue() {
         return value;
     }
-    
+
     /**
      * Compares obj to this tag to see if they are the same considering weakness and
      * value.
@@ -120,13 +116,16 @@ public class EntityTag {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (!(obj instanceof EntityTag))
+        }
+        if (!(obj instanceof EntityTag)) {
             return super.equals(obj);
-        EntityTag other = (EntityTag)obj;
-        if (value.equals(other.getValue()) && weak==other.isWeak())
+        }
+        EntityTag other = (EntityTag) obj;
+        if (value.equals(other.getValue()) && weak == other.isWeak()) {
             return true;
+        }
         return false;
     }
 
@@ -145,7 +144,7 @@ public class EntityTag {
     /**
      * Convert the entity tag to a string suitable for use as the value of the
      * corresponding HTTP header.
-     * @return a stringified entity tag
+     * @return a string version of the entity tag
      */
     @Override
     public String toString() {

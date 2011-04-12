@@ -8,7 +8,7 @@
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * RuntimeDelegate.java
- *
- * Created on November 15, 2007, 4:00 PM
- *
- */
-
 package javax.ws.rs.ext;
 
 import java.lang.reflect.ReflectPermission;
@@ -61,22 +53,21 @@ import javax.ws.rs.core.UriBuilder;
  * directly and overriding an implementation of this class with a user supplied
  * subclass may cause unexpected behavior.
  * 
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
  */
 public abstract class RuntimeDelegate {
-    
-    public static final String JAXRS_RUNTIME_DELEGATE_PROPERTY
-        = "javax.ws.rs.ext.RuntimeDelegate";
-    private static final String JAXRS_DEFAULT_RUNTIME_DELEGATE
-        = "com.sun.ws.rs.ext.RuntimeDelegateImpl";
-    
+
+    public static final String JAXRS_RUNTIME_DELEGATE_PROPERTY = "javax.ws.rs.ext.RuntimeDelegate";
+    private static final String JAXRS_DEFAULT_RUNTIME_DELEGATE = "com.sun.ws.rs.ext.RuntimeDelegateImpl";
     private static ReflectPermission rp = new ReflectPermission("suppressAccessChecks");
 
     protected RuntimeDelegate() {
     }
-
     private static final Object rdLock = new Object();
     private static volatile RuntimeDelegate rd;
-    
+
     /**
      * Obtain a RuntimeDelegate instance. If an instance had not already been
      * created and set via {@link #setInstance}, the first invocation will
@@ -124,7 +115,7 @@ public abstract class RuntimeDelegate {
         }
         return result;
     }
-    
+
     /**
      * Obtain a RuntimeDelegate instance using the method described in
      * {@link #getInstance}.
@@ -139,13 +130,13 @@ public abstract class RuntimeDelegate {
                 Class pClass = RuntimeDelegate.class;
                 String classnameAsResource = pClass.getName().replace('.', '/') + ".class";
                 ClassLoader loader = pClass.getClassLoader();
-                if(loader == null) {
+                if (loader == null) {
                     loader = ClassLoader.getSystemClassLoader();
                 }
-                URL targetTypeURL  = loader.getResource(classnameAsResource);
-                throw new LinkageError("ClassCastException: attempting to cast" +
-                        delegate.getClass().getClassLoader().getResource(classnameAsResource) +
-                        "to" + targetTypeURL.toString() );
+                URL targetTypeURL = loader.getResource(classnameAsResource);
+                throw new LinkageError("ClassCastException: attempting to cast"
+                        + delegate.getClass().getClassLoader().getResource(classnameAsResource)
+                        + "to" + targetTypeURL.toString());
             }
             return (RuntimeDelegate) delegate;
         } catch (Exception ex) {
@@ -166,25 +157,25 @@ public abstract class RuntimeDelegate {
         if (security != null) {
             security.checkPermission(rp);
         }
-        synchronized(rdLock) {
+        synchronized (rdLock) {
             RuntimeDelegate.rd = rd;
         }
     }
-    
+
     /**
      * Create a new instance of a {@link javax.ws.rs.core.UriBuilder}.
      * @return new UriBuilder instance
      * @see javax.ws.rs.core.UriBuilder
      */
     public abstract UriBuilder createUriBuilder();
-    
+
     /**
      * Create a new instance of a {@link javax.ws.rs.core.Response.ResponseBuilder}.
      * @return new ResponseBuilder instance
      * @see javax.ws.rs.core.Response.ResponseBuilder
      */
     public abstract ResponseBuilder createResponseBuilder();
-    
+
     /**
      * Create a new instance of a {@link javax.ws.rs.core.Variant.VariantListBuilder}.
      * 
@@ -192,11 +183,13 @@ public abstract class RuntimeDelegate {
      * @see javax.ws.rs.core.Variant.VariantListBuilder
      */
     public abstract VariantListBuilder createVariantListBuilder();
-    
+
     /**
      * Create a configured instance of the supplied endpoint type. How the
      * returned endpoint instance is published is dependent on the type of
      * endpoint.
+     *
+     * @param <T> endpoint type.
      * @param application the application configuration
      * @param endpointType the type of endpoint instance to be created. 
      * @return a configured instance of the requested type.
@@ -207,13 +200,15 @@ public abstract class RuntimeDelegate {
      */
     public abstract <T> T createEndpoint(Application application,
             Class<T> endpointType) throws IllegalArgumentException, UnsupportedOperationException;
-        
+
     /**
      * Obtain an instance of a HeaderDelegate for the supplied class. An 
      * implementation is required to support the following values for type:
      * {@link javax.ws.rs.core.Cookie}, {@link javax.ws.rs.core.CacheControl},
      * {@link javax.ws.rs.core.EntityTag}, {@link javax.ws.rs.core.NewCookie}, 
      * {@link javax.ws.rs.core.MediaType} and {@code java.util.Date}.
+     *
+     * @param <T> header type.
      * @param type the class of the header
      * @return an instance of HeaderDelegate for the supplied type
      * @throws java.lang.IllegalArgumentException if type is null
@@ -224,9 +219,10 @@ public abstract class RuntimeDelegate {
      * Defines the contract for a delegate that is responsible for
      * converting between the String form of a HTTP header and 
      * the corresponding JAX-RS type <code>T</code>.
-     * @param T a JAX-RS type that corresponds to the value of a HTTP header
+     * @param <T> a JAX-RS type that corresponds to the value of a HTTP header
      */
-    public static interface HeaderDelegate<T> { 
+    public static interface HeaderDelegate<T> {
+
         /**
          * Parse the supplied value and create an instance of <code>T</code>.
          * @param value the string value

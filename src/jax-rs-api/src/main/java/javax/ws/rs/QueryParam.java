@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * QueryParam.java
- *
- * Created on November 16, 2006, 2:04 PM
- *
- */
-
 package javax.ws.rs;
 
 import java.lang.annotation.ElementType;
@@ -81,13 +73,17 @@ import java.lang.annotation.Target;
  * other lifecycles should only use this annotation on resource method
  * parameters.</p>
  *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see DefaultValue
  * @see Encoded
  * @see javax.ws.rs.core.UriInfo#getQueryParameters
+ * @since 1.0
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QueryParam {
+
     /**
      * Defines the name of the HTTP query parameter whose value will be used
      * to initialize the value of the annotated method argument, class field or
@@ -95,6 +91,8 @@ public @interface QueryParam {
      * literals within the value will not be decoded and will instead be 
      * treated as literal text. E.g. if the parameter name is "a b" then the 
      * value of the annotation is "a b", <i>not</i> "a+b" or "a%20b".
+     *
+     * @return  specified name of the HTTP query parameter.
      */
     String value();
 }

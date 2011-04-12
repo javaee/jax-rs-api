@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * Cookie.java
- *
- * Created on March 12, 2007, 5:01 PM
- *
- */
-
 package javax.ws.rs.core;
 
 import javax.ws.rs.ext.RuntimeDelegate;
@@ -54,7 +46,11 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
  * Represents the value of a HTTP cookie, transferred in a request. 
  * RFC 2109 specifies the legal characters for name,
  * value, path and domain. The default version of 1 corresponds to RFC 2109.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see <a href="http://www.ietf.org/rfc/rfc2109.txt">IETF RFC 2109</a>
+ * @since 1.0
  */
 public class Cookie {
 
@@ -62,10 +58,8 @@ public class Cookie {
      * Cookies using the default version correspond to RFC 2109.
      */
     public static final int DEFAULT_VERSION = 1;
-    
-    private static final HeaderDelegate<Cookie> delegate = 
+    private static final HeaderDelegate<Cookie> delegate =
             RuntimeDelegate.getInstance().createHeaderDelegate(Cookie.class);
-    
     private String name;
     private String value;
     private int version;
@@ -82,15 +76,16 @@ public class Cookie {
      * @throws IllegalArgumentException if name is null
      */
     public Cookie(String name, String value, String path, String domain, int version) {
-        if (name == null)
+        if (name == null) {
             throw new IllegalArgumentException("name==null");
+        }
         this.name = name;
         this.value = value;
         this.version = version;
         this.domain = domain;
         this.path = path;
     }
-    
+
     /**
      * Create a new instance.
      * @param name the name of the cookie
@@ -102,7 +97,7 @@ public class Cookie {
     public Cookie(String name, String value, String path, String domain) {
         this(name, value, path, domain, DEFAULT_VERSION);
     }
-    
+
     /**
      * Create a new instance.
      * @param name the name of the cookie
@@ -112,7 +107,7 @@ public class Cookie {
     public Cookie(String name, String value) {
         this(name, value, null, null);
     }
-    
+
     /**
      * Creates a new instance of Cookie by parsing the supplied string.
      * @param value the cookie string
@@ -123,7 +118,7 @@ public class Cookie {
     public static Cookie valueOf(String value) throws IllegalArgumentException {
         return delegate.fromString(value);
     }
-    
+
     /**
      * Get the name of the cookie
      * @return the name
@@ -139,7 +134,7 @@ public class Cookie {
     public String getValue() {
         return value;
     }
-    
+
     /**
      * Get the version of the cookie
      * @return the version
@@ -221,6 +216,4 @@ public class Cookie {
         }
         return true;
     }
-    
-    
 }

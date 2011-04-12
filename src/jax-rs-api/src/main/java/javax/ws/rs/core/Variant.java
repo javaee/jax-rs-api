@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * Variant.java
- *
- * Created on September 27, 2007, 3:12 PM
- *
- */
-
 package javax.ws.rs.core;
 
 import java.io.StringWriter;
@@ -53,16 +45,21 @@ import java.util.Locale;
 import javax.ws.rs.ext.RuntimeDelegate;
 
 /**
- * Abstraction for a resource representation variant. 
+ * Abstraction for a resource representation variant.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
  */
 public class Variant {
-    
+
     private Locale language;
     private MediaType mediaType;
     private String encoding;
-    
+
     /**
-     * Create a new instance of Variant
+     * Create a new instance of Variant.
+     * 
      * @param mediaType the media type of the variant - may be null
      * @param language the language of the variant - may be null
      * @param encoding the content encoding of the variant - may be null
@@ -70,13 +67,14 @@ public class Variant {
      * null
      */
     public Variant(MediaType mediaType, Locale language, String encoding) {
-        if (mediaType==null && language==null && encoding==null)
+        if (mediaType == null && language == null && encoding == null) {
             throw new IllegalArgumentException("mediaType, language, encoding all null");
+        }
         this.encoding = encoding;
         this.language = language;
         this.mediaType = mediaType;
     }
-    
+
     /**
      * Get the language of the variant
      * @return the language or null if none set
@@ -100,7 +98,7 @@ public class Variant {
     public String getEncoding() {
         return encoding;
     }
-    
+
     /**
      * Create a {@link VariantListBuilder} initialized with a set of supported
      * media types.
@@ -116,7 +114,7 @@ public class Variant {
         b.mediaTypes(mediaTypes);
         return b;
     }
-    
+
     /**
      * Create a {@link VariantListBuilder} initialized with a set of supported
      * languages.
@@ -130,7 +128,7 @@ public class Variant {
         b.languages(languages);
         return b;
     }
-    
+
     /**
      * Create a {@link VariantListBuilder} initialized with a set of supported
      * encodings.
@@ -189,26 +187,27 @@ public class Variant {
     public String toString() {
         StringWriter w = new StringWriter();
         w.append("Variant[mediaType=");
-        w.append(mediaType==null ? "null" : mediaType.toString());
+        w.append(mediaType == null ? "null" : mediaType.toString());
         w.append(", language=");
-        w.append(language==null ? "null" : language.toString());
+        w.append(language == null ? "null" : language.toString());
         w.append(", encoding=");
-        w.append(encoding==null ? "null" : encoding);
+        w.append(encoding == null ? "null" : encoding);
         w.append("]");
         return w.toString();
     }
-    
+
     /**
      * A builder for a list of representation variants. 
      */
     public static abstract class VariantListBuilder {
-        
+
         /**
          * Protected constructor, use the static <code>newInstance</code>
          * method to obtain an instance.
          */
-        protected VariantListBuilder() {}
-        
+        protected VariantListBuilder() {
+        }
+
         /**
          * Create a new builder instance.
          * @return a new Builder
@@ -217,7 +216,7 @@ public class Variant {
             VariantListBuilder b = RuntimeDelegate.getInstance().createVariantListBuilder();
             return b;
         }
-                
+
         /**
          * Build a list of representation variants from the current state of
          * the builder. After this method is called the builder is reset to
@@ -225,7 +224,7 @@ public class Variant {
          * @return a list of representation variants
          */
         public abstract List<Variant> build();
-        
+
         /**
          * Add the current combination of metadata to the list of supported variants,
          * after this method is called the current combination of metadata is emptied.
@@ -240,21 +239,21 @@ public class Variant {
          * mediaType, language or encoding set for the current variant.
          */
         public abstract VariantListBuilder add();
-        
+
         /**
          * Set the language[s] for this variant.
          * @param languages the available languages
          * @return the updated builder
          */
         public abstract VariantListBuilder languages(Locale... languages);
-        
+
         /**
          * Set the encoding[s] for this variant.
          * @param encodings the available encodings
          * @return the updated builder
          */
         public abstract VariantListBuilder encodings(String... encodings);
-        
+
         /**
          * Set the media type[s] for this variant.
          * @param mediaTypes the available mediaTypes. If specific charsets

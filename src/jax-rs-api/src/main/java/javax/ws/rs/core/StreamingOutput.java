@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * StreamingOutput.java
- * 
- * Created on March 3, 2008, 4:00 PM
- * 
- */
-
 package javax.ws.rs.core;
 
 import java.io.IOException;
@@ -57,10 +49,14 @@ import javax.ws.rs.WebApplicationException;
  * This is a lightweight alternative to a 
  * {@link javax.ws.rs.ext.MessageBodyWriter}.
  * 
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see javax.ws.rs.ext.MessageBodyWriter
  * @see javax.ws.rs.core.Response
+ * @since 1.0
  */
 public interface StreamingOutput {
+
     /**
      * Called to write the message body. 
      * @param output the OutputStream to write to.
@@ -69,5 +65,5 @@ public interface StreamingOutput {
      * HTTP error response needs to be produced. Only effective if thrown prior
      * to any bytes being written to output.
      */
-    void write(OutputStream output) throws IOException, WebApplicationException; 
+    void write(OutputStream output) throws IOException, WebApplicationException;
 }

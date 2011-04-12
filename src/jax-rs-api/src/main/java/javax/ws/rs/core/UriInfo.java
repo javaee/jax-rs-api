@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * UriInfo.java
- *
- * Created on April 13, 2007, 2:55 PM
- *
- */
-
 package javax.ws.rs.core;
 
 import java.net.URI;
@@ -58,10 +50,13 @@ import java.util.List;
  * <p>All methods throw <code>java.lang.IllegalStateException</code>
  * if called outside the scope of a request (e.g. from a provider constructor).</p>
  * 
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see Context
+ * @since 1.0
  */
 public interface UriInfo {
-    
+
     /**
      * Get the path of the current request relative to the base URI as
      * a string. All sequences of escaped octets are decoded, equivalent to
@@ -71,7 +66,7 @@ public interface UriInfo {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public String getPath();
-    
+
     /**
      * Get the path of the current request relative to the base URI as
      * a string.
@@ -97,7 +92,7 @@ public interface UriInfo {
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
     public List<PathSegment> getPathSegments();
-    
+
     /**
      * Get the path of the current request relative to the base URI as a 
      * list of {@link PathSegment}. This method is useful when the
@@ -112,21 +107,21 @@ public interface UriInfo {
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
     public List<PathSegment> getPathSegments(boolean decode);
-    
+
     /**
      * Get the absolute request URI including any query parameters.
      * @return the absolute request URI
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public URI getRequestUri();
-    
+
     /**
      * Get the absolute request URI in the form of a UriBuilder.
      * @return a UriBuilder initialized with the absolute request URI
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public UriBuilder getRequestUriBuilder();
-    
+
     /**
      * Get the absolute path of the request. This includes everything preceding
      * the path (host, port etc) but excludes query parameters.
@@ -136,7 +131,7 @@ public interface UriInfo {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public URI getAbsolutePath();
-    
+
     /**
      * Get the absolute path of the request in the form of a UriBuilder.
      * This includes everything preceding the path (host, port etc) but excludes
@@ -152,13 +147,13 @@ public interface UriInfo {
      * @return the base URI of the application
      */
     public URI getBaseUri();
-    
+
     /**
      * Get the base URI of the application in the form of a UriBuilder.
      * @return a UriBuilder initialized with the base URI of the application.
      */
     public UriBuilder getBaseUriBuilder();
-    
+
     /**
      * Get the values of any embedded URI template parameters.
      * All sequences of escaped octets are decoded,
@@ -169,7 +164,7 @@ public interface UriInfo {
      * @see javax.ws.rs.PathParam
      */
     public MultivaluedMap<String, String> getPathParameters();
-    
+
     /**
      * Get the values of any embedded URI template parameters.
      * 
@@ -181,7 +176,7 @@ public interface UriInfo {
      * @see javax.ws.rs.PathParam
      */
     public MultivaluedMap<String, String> getPathParameters(boolean decode);
-    
+
     /**
      * Get the URI query parameters of the current request.
      * The map keys are the names of the query parameters with any
@@ -192,7 +187,7 @@ public interface UriInfo {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public MultivaluedMap<String, String> getQueryParameters();
-    
+
     /**
      * Get the URI query parameters of the current request.
      * The map keys are the names of the query parameters with any
@@ -203,7 +198,7 @@ public interface UriInfo {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     public MultivaluedMap<String, String> getQueryParameters(boolean decode);
-    
+
     /**
      * Get a read-only list of URIs for matched resources. Each entry is a 
      * relative URI that matched a resource class, a 
@@ -259,7 +254,7 @@ public interface UriInfo {
      * @return a read-only list of URI paths for matched resources.
      */
     public List<String> getMatchedURIs();
-    
+
     /**
      * Get a read-only list of URIs for matched resources. Each entry is a 
      * relative URI that matched a resource class, a sub-resource 
@@ -274,7 +269,7 @@ public interface UriInfo {
      * @return a read-only list of URI paths for matched resources.
      */
     public List<String> getMatchedURIs(boolean decode);
-    
+
     /**
      * Get a read-only list of the currently matched resource class instances.
      * Each entry is a resource class instance that matched the request URI 

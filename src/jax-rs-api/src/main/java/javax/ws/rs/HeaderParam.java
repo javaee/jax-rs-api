@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * HeaderParam.java
- *
- * Created on January 24, 2007, 2:33 PM
- *
- */
-
 package javax.ws.rs;
 
 import java.lang.annotation.Documented;
@@ -76,21 +68,27 @@ import java.lang.annotation.Target;
  *
  * <p>Because injection occurs at object creation time, use of this annotation 
  * on resource class fields and bean properties is only supported for the 
- * default per-request resource class lifecycle. Resource classes using 
+ * default per-request resource class lifecycle. Resource classes using
  * other lifecycles should only use this annotation on resource method
  * parameters.</p>
  *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see DefaultValue
  * @see javax.ws.rs.core.HttpHeaders
+ * @since 1.0
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface HeaderParam {
+
     /**
      * Defines the name of the HTTP header whose value will be used
      * to initialize the value of the annotated method argument, class field or
      * bean property. Case insensitive.
+     *
+     * @return specified HTTP header parameter name.
      */
     String value();
 }

@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package javax.ws.rs;
 
 import javax.ws.rs.core.Response;
@@ -51,11 +50,11 @@ import javax.ws.rs.core.Response;
  * the response being committed.
  *
  * @author Paul.Sandoz@Sun.Com
+ * @since 1.0
  */
 public class WebApplicationException extends RuntimeException {
 
     private static final long serialVersionUID = 11660101L;
-    
     private Response response;
 
     /**
@@ -72,9 +71,9 @@ public class WebApplicationException extends RuntimeException {
      * code 500)
      */
     public WebApplicationException(Response response) {
-        this(null,response);        
+        this(null, response);
     }
-    
+
     /**
      * Construct a new instance with a blank message and specified HTTP status code
      * @param status the HTTP status code that will be returned to the client
@@ -82,7 +81,7 @@ public class WebApplicationException extends RuntimeException {
     public WebApplicationException(int status) {
         this(null, status);
     }
-    
+
     /**
      * Construct a new instance with a blank message and specified HTTP status code
      * @param status the HTTP status code that will be returned to the client
@@ -91,15 +90,15 @@ public class WebApplicationException extends RuntimeException {
     public WebApplicationException(Response.Status status) {
         this(null, status);
     }
-    
+
     /**
      * Construct a new instance with a blank message and default HTTP status code of 500
      * @param cause the underlying cause of the exception
      */
     public WebApplicationException(Throwable cause) {
-        this(cause,Response.Status.INTERNAL_SERVER_ERROR);
+        this(cause, Response.Status.INTERNAL_SERVER_ERROR);
     }
-    
+
     /**
      * Construct a new instance using the supplied response
      * @param response the response that will be returned to the client, a value
@@ -109,12 +108,13 @@ public class WebApplicationException extends RuntimeException {
      */
     public WebApplicationException(Throwable cause, Response response) {
         super(cause);
-        if (response==null)
+        if (response == null) {
             this.response = Response.serverError().build();
-        else
-            this.response = response;        
+        } else {
+            this.response = response;
+        }
     }
-    
+
     /**
      * Construct a new instance with a blank message and specified HTTP status code
      * @param status the HTTP status code that will be returned to the client
@@ -123,7 +123,7 @@ public class WebApplicationException extends RuntimeException {
     public WebApplicationException(Throwable cause, int status) {
         this(cause, Response.status(status).build());
     }
-    
+
     /**
      * Construct a new instance with a blank message and specified HTTP status code
      * @param status the HTTP status code that will be returned to the client
@@ -133,7 +133,7 @@ public class WebApplicationException extends RuntimeException {
     public WebApplicationException(Throwable cause, Response.Status status) {
         this(cause, Response.status(status).build());
     }
-    
+
     /**
      * Get the HTTP response.
      *

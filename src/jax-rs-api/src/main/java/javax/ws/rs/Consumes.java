@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * Consumes.java
- *
- * Created on September 15, 2006, 2:40 PM
- *
- */
-
 package javax.ws.rs;
 
 import java.lang.annotation.ElementType;
@@ -62,18 +54,24 @@ import java.lang.annotation.Target;
  * the media type of the HTTP request entity body. If no such method is
  * available the container must respond with a HTTP "415 Unsupported Media Type"
  * as specified by RFC 2616.
- * 
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see javax.ws.rs.ext.MessageBodyReader
+ * @since 1.0
  */
 @Inherited
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Consumes {
+
     /**
      * A list of media types. Each entry may specify a single type or consist
      * of a comma separated list of types. E.g. {"image/jpeg,image/gif",
      * "image/png"}. Use of the comma-separated form allows definition of a
      * common string constant for use on multiple targets.
+     *
+     * @return specified list of media types.
      */
     String[] value() default "*/*";
 }

@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,13 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * FactoryFinder.java
- *
- * Created on November 16, 2007, 3:14 PM
- *
- */
 package javax.ws.rs.ext;
 
 import java.io.BufferedReader;
@@ -55,19 +48,29 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Properties;
 
+/**
+ * Factory finder utility class.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
+ */
 class FactoryFinder {
-    
-    static ClassLoader getContextClassLoader() { 
-        return AccessController.doPrivileged( 
-            new PrivilegedAction<ClassLoader>() { 
-                public ClassLoader run() { 
-                    ClassLoader cl = null;
-                    try { 
-                        cl = Thread.currentThread().getContextClassLoader(); 
-                    } catch (SecurityException ex) { } 
-                    return cl; 
-                } 
-        }); 
+
+    static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged(
+                new PrivilegedAction<ClassLoader>() {
+
+                    @Override
+                    public ClassLoader run() {
+                        ClassLoader cl = null;
+                        try {
+                            cl = Thread.currentThread().getContextClassLoader();
+                        } catch (SecurityException ex) {
+                        }
+                        return cl;
+                    }
+                });
     }
 
     /**
@@ -84,11 +87,11 @@ class FactoryFinder {
             if (classLoader == null) {
                 spiClass = Class.forName(className);
             } else {
-                try { 
-                    spiClass = Class.forName(className, false, classLoader); 
-                } catch (ClassNotFoundException ex) { 
-                    spiClass = Class.forName(className); 
-                } 
+                try {
+                    spiClass = Class.forName(className, false, classLoader);
+                } catch (ClassNotFoundException ex) {
+                    spiClass = Class.forName(className);
+                }
             }
             return spiClass.newInstance();
         } catch (ClassNotFoundException x) {
@@ -140,8 +143,8 @@ class FactoryFinder {
                 String factoryClassName = rd.readLine();
                 rd.close();
 
-                if (factoryClassName != null &&
-                        !"".equals(factoryClassName)) {
+                if (factoryClassName != null
+                        && !"".equals(factoryClassName)) {
                     return newInstance(factoryClassName, classLoader);
                 }
             }
@@ -152,8 +155,8 @@ class FactoryFinder {
         // try to read from $java.home/lib/jaxrs.properties
         try {
             String javah = System.getProperty("java.home");
-            String configFile = javah + File.separator +
-                    "lib" + File.separator + "jaxrs.properties";
+            String configFile = javah + File.separator
+                    + "lib" + File.separator + "jaxrs.properties";
             File f = new File(configFile);
             if (f.exists()) {
                 Properties props = new Properties();

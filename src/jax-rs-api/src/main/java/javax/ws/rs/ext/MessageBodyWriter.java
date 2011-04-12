@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * MessageBodyWriter.java
- *
- * Created on November 8, 2007, 3:57 PM
- *
- */
-
 package javax.ws.rs.ext;
 
 import java.io.IOException;
@@ -64,12 +56,16 @@ import javax.ws.rs.core.MultivaluedMap;
  * with {@link javax.ws.rs.Produces} to restrict the media types for which it will
  * be considered suitable.
  *
- * @param T the type that can be written
+ * @param <T> the type that can be written
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see Provider
  * @see javax.ws.rs.Produces
+ * @since 1.0
  */
 public interface MessageBodyWriter<T> {
-    
+
     /**
      * Ascertain if the MessageBodyWriter supports a particular type.
      *
@@ -85,7 +81,7 @@ public interface MessageBodyWriter<T> {
      */
     boolean isWriteable(Class<?> type, Type genericType,
             Annotation annotations[], MediaType mediaType);
-    
+
     /**
      * Called before <code>writeTo</code> to ascertain the length in bytes of 
      * the serialized form of <code>t</code>. A non-negative return value is 
@@ -102,7 +98,7 @@ public interface MessageBodyWriter<T> {
      * @return length in bytes or -1 if the length cannot be determined in
      * advance
      */
-    long getSize(T t, Class<?> type, Type genericType, Annotation annotations[], 
+    long getSize(T t, Class<?> type, Type genericType, Annotation annotations[],
             MediaType mediaType);
 
     /**
@@ -127,8 +123,8 @@ public interface MessageBodyWriter<T> {
      * HTTP error response needs to be produced. Only effective if thrown prior
      * to the response being committed.
      */
-    void writeTo(T t, Class<?> type, Type genericType, Annotation annotations[], 
-            MediaType mediaType, 
+    void writeTo(T t, Class<?> type, Type genericType, Annotation annotations[],
+            MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders,
-            OutputStream entityStream) throws IOException, WebApplicationException;    
+            OutputStream entityStream) throws IOException, WebApplicationException;
 }

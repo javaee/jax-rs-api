@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,14 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-/*
- * Request.java
- *
- * Created on September 27, 2007, 5:39 PM
- *
- */
-
 package javax.ws.rs.core;
 
 import java.util.Date;
@@ -68,9 +60,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.5">HTTP/1.1, section 10.3.5</a>
  * for details of the headers that are expected to accompany a <code>304 Not Modified</code>
  * response.
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
+ * @since 1.0
  */
 public interface Request {
-    
+
     /**
      * Get the request method, e.g. GET, POST, etc.
      * @return the request method
@@ -92,7 +88,7 @@ public interface Request {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     Variant selectVariant(List<Variant> variants) throws IllegalArgumentException;
-    
+
     /**
      * Evaluate request preconditions based on the passed in value. 
      * 
@@ -115,7 +111,7 @@ public interface Request {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     ResponseBuilder evaluatePreconditions(Date lastModified);
-    
+
     /**
      * Evaluate request preconditions based on the passed in value.
      * 
@@ -128,7 +124,7 @@ public interface Request {
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     ResponseBuilder evaluatePreconditions(Date lastModified, EntityTag eTag);
-    
+
     /**
      * Evaluate request preconditions for a resource that does not currently
      * exist. The primary use of this method is to support the {@link <a
@@ -150,6 +146,7 @@ public interface Request {
      * the appropriate status if the preconditions are not met.
      * @throws java.lang.IllegalStateException if called outside the scope of
      * a request
+     * @since 1.1
      */
     ResponseBuilder evaluatePreconditions();
 }

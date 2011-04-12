@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -38,13 +38,6 @@
  * holder.
  */
 
-/*
- * MessageBodyReader.java
- *
- * Created on November 8, 2007, 3:57 PM
- *
- */
-
 package javax.ws.rs.ext;
 
 import java.io.IOException;
@@ -64,34 +57,40 @@ import javax.ws.rs.core.MultivaluedMap;
  * with {@link javax.ws.rs.Consumes} to restrict the media types for which it will
  * be considered suitable.
  *
+ * @param <T> Java type supported by the provider
+ *
+ * @author Paul Sandoz
+ * @author Marc Hadley
  * @see Provider
  * @see javax.ws.rs.Consumes
+ * @since 1.0
  */
 public interface MessageBodyReader<T> {
     
     /**
      * Ascertain if the MessageBodyReader can produce an instance of a
-     * particular type. The type parameter gives the
-     * class of the object that should be produced, the genericType parameter
-     * gives the java.lang.reflect.Type of the object that should be produced.
-     * E.g. if the object to be produced is List<String>, the type parameter
-     * will be java.util.List and the genericType parameter will be
-     * java.lang.reflect.ParameterizedType.
+     * particular type. The {@code type} parameter gives the
+     * class of the object that should be produced, the {@code genericType} parameter
+     * gives the {@link java.lang.reflect.Type java.lang.reflect.Type} of the object
+     * that should be produced.
+     * E.g. if the object to be produced is List&lt;String&gt;, the {@code type} parameter
+     * will be {@code java.util.List} and the {@code genericType} parameter will be
+     * {@link java.lang.reflect.ParameterizedType java.lang.reflect.ParameterizedType}.
      *
      * @param type the class of object to be produced.
      * @param genericType the type of object to be produced. E.g. if the 
-     * message body is to be converted into a method parameter, this will be
-     * the formal type of the method parameter as returned by 
-     * <code>Method.getGenericParameterTypes</code>.
+     *     message body is to be converted into a method parameter, this will be
+     *     the formal type of the method parameter as returned by
+     *     {@code Method.getGenericParameterTypes}.
      * @param annotations an array of the annotations on the declaration of the
-     * artifact that will be initialized with the produced instance. E.g. if the 
-     * message body is to be converted into a method parameter, this will be
-     * the annotations on that parameter returned by 
-     * <code>Method.getParameterAnnotations</code>.
+     *     artifact that will be initialized with the produced instance. E.g. if the
+     *     message body is to be converted into a method parameter, this will be
+     *     the annotations on that parameter returned by
+     *     {@code Method.getParameterAnnotations}.
      * @param mediaType the media type of the HTTP entity, if one is not
-     * specified in the request then <code>application/octet-stream</code> is
-     * used.
-     * @return true if the type is supported, otherwise false.
+     *     specified in the request then {@code application/octet-stream} is
+     *     used.
+     * @return {@code true} if the type is supported, otherwise {@code false}.
      */
     boolean isReadable(Class<?> type, Type genericType, 
             Annotation annotations[], MediaType mediaType);
