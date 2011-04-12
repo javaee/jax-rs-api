@@ -60,8 +60,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * methods to create an instance using a ResponseBuilder.
  * 
  * Several methods have parameters of type URI, {@link UriBuilder} provides
- * convenient methods to create such values as does 
- * {@link <a href="http://download.oracle.com/javase/6/docs/api/java/net/URI.html#create(java.lang.String)">URI.create()</a>}.
+ * convenient methods to create such values as does {@link URI#create(java.lang.String)}.
  * 
  * @see Response.ResponseBuilder
  */
@@ -731,6 +730,7 @@ public abstract class Response {
          * Get the class of status code
          * @return the class of status code
          */
+        @Override
         public Family getFamily() {
             return family;
         }
@@ -739,6 +739,7 @@ public abstract class Response {
          * Get the associated status code
          * @return the status code
          */
+        @Override
         public int getStatusCode() {
             return code;
         }
@@ -747,6 +748,7 @@ public abstract class Response {
          * Get the reason phrase
          * @return the reason phrase
          */
+        @Override
         public String getReasonPhrase() {
             return toString();
         }
