@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,50 +37,41 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+package javax.ws.rs.client;
 
-package javax.ws.rs.core;
+import javax.ws.rs.core.GenericType;
 
-import javax.ws.rs.client.ClientConfiguration;
-import javax.ws.rs.client.ClientRequest.Builder;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Variant.VariantListBuilder;
-import javax.ws.rs.ext.RuntimeDelegate;
+/**
+ * A listener to be implemented by clients that wish to receive callback
+ * notification of the completion of asynchronous request invocations.
+ * <p>
+ * Developers may wish to extend from the abstract skeleton class
+ * {@link AbstractTypeListener} rather than implement this interface directly.
+ *
+ * @param <T> the type of the response entity.
+ *
+ * @author Paul Sandoz
+ * @author Marek Potociar
+ * @since 2.0
+ */
+public interface TypeListener<T> extends FutureListener<T> {
 
-public class RuntimeDelegateStub extends RuntimeDelegate {
+    /**
+     * Get the class of the instance to receive for
+     * {@link #onComplete(java.util.concurrent.Future) }.
+     * 
+     * @return the class of the response.
+     */
+    Class<T> getType();
 
-    @Override
-    public UriBuilder createUriBuilder() {
-        return null;
-    }
-
-    @Override
-    public ResponseBuilder createResponseBuilder() {
-        return null;
-    }
-
-    @Override
-    public VariantListBuilder createVariantListBuilder() {
-        return null;
-    }
-
-    @Override
-    public <T> T createEndpoint(Application application, Class<T> endpointType) throws IllegalArgumentException, UnsupportedOperationException {
-        return null;
-    }
-
-    @Override
-    public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
-        return null;
-    }
-
-    @Override
-    public ClientConfiguration createClientConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Builder<?> createClientRequestBuilder() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    /**
+     * Get the generic type declaring the Java type of the instance to
+     * receive for {@link #onComplete(java.util.concurrent.Future) }.
+     * 
+     * @return the generic type of the response. If null then the method
+     *         {@link #getType() } must not return null. Otherwise, if not null,
+     *         the type information declared by the generic type takes
+     *         precedence over the value returned by {@link #getType() }.
+     */
+    GenericType<T> getGenericType();
 }

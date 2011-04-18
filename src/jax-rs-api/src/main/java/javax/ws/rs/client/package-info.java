@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,50 +37,27 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
-package javax.ws.rs.core;
-
-import javax.ws.rs.client.ClientConfiguration;
-import javax.ws.rs.client.ClientRequest.Builder;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Variant.VariantListBuilder;
-import javax.ws.rs.ext.RuntimeDelegate;
-
-public class RuntimeDelegateStub extends RuntimeDelegate {
-
-    @Override
-    public UriBuilder createUriBuilder() {
-        return null;
-    }
-
-    @Override
-    public ResponseBuilder createResponseBuilder() {
-        return null;
-    }
-
-    @Override
-    public VariantListBuilder createVariantListBuilder() {
-        return null;
-    }
-
-    @Override
-    public <T> T createEndpoint(Application application, Class<T> endpointType) throws IllegalArgumentException, UnsupportedOperationException {
-        return null;
-    }
-
-    @Override
-    public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
-        return null;
-    }
-
-    @Override
-    public ClientConfiguration createClientConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Builder<?> createClientRequestBuilder() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-}
+/**
+ * JAX-RS core client API.
+ * <p />
+ * The JAX-RS core client API is a Java based API for interoperating with RESTful
+ * web services. It's goal is to enable developers to concisely and efficiently
+ * implement reusable client-side solutions that leverage existing and well
+ * established client-side HTTP implementations.
+ * <p />
+ * The JAX-RS client API can be utilized to interoperate with any RESTful web service.
+ * It is not restricted to services implemented using JAX-RS. The goals of the
+ * JAX-RS client API are threefold:
+ * <ol>
+ *     <li>Encapsulate a key constraint of the REST architectural style, namely 
+ *         the Uniform Interface Constraint and associated data elements, as 
+ *         client-side Java artifacts;</li>
+ *     <li>Make it as easy to interoperate with RESTful Web services as JAX-RS 
+ *         makes it easy to build RESTful Web services; and</li>
+ *     <li>Leverage artifacts of the JAX-RS API for the client side.</li>
+ * </ol>
+ * 
+ * The JAX-RS Client API supports a pluggable architecture by defining multiple
+ * extension points.
+ */
+package javax.ws.rs.client;

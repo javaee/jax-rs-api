@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -38,49 +38,24 @@
  * holder.
  */
 
-package javax.ws.rs.core;
+package javax.ws.rs.client;
 
-import javax.ws.rs.client.ClientConfiguration;
-import javax.ws.rs.client.ClientRequest.Builder;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Variant.VariantListBuilder;
-import javax.ws.rs.ext.RuntimeDelegate;
-
-public class RuntimeDelegateStub extends RuntimeDelegate {
-
-    @Override
-    public UriBuilder createUriBuilder() {
-        return null;
-    }
-
-    @Override
-    public ResponseBuilder createResponseBuilder() {
-        return null;
-    }
-
-    @Override
-    public VariantListBuilder createVariantListBuilder() {
-        return null;
-    }
-
-    @Override
-    public <T> T createEndpoint(Application application, Class<T> endpointType) throws IllegalArgumentException, UnsupportedOperationException {
-        return null;
-    }
-
-    @Override
-    public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
-        return null;
-    }
-
-    @Override
-    public ClientConfiguration createClientConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Builder<?> createClientRequestBuilder() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+/**
+ * A client handler that handles a HTTP request and returns the HTTP response.
+ * 
+ * @author Paul Sandoz
+ * @author Marek Potociar
+ * @since 2.0
+ */
+public interface ClientHandler {
+    /**
+     * Handle a HTTP request as a {@link ClientRequest} and return the HTTP
+     * response as a {@link ClientResponse}.
+     * 
+     * @param request the HTTP request.
+     * @return the HTTP response.
+     * @throws ClientHandlerException if the client
+     * handler fails to process the request or response.
+     */
+    ClientResponse handle(ClientRequest request) throws ClientHandlerException;
 }

@@ -41,6 +41,8 @@ package javax.ws.rs.ext;
 
 import java.lang.reflect.ReflectPermission;
 import java.net.URL;
+import javax.ws.rs.client.ClientConfiguration;
+import javax.ws.rs.client.ClientRequest;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
@@ -202,7 +204,7 @@ public abstract class RuntimeDelegate {
             Class<T> endpointType) throws IllegalArgumentException, UnsupportedOperationException;
 
     /**
-     * Obtain an instance of a HeaderDelegate for the supplied class. An 
+     * Obtain an instance of a {@link HeaderDelegate} for the supplied class. An
      * implementation is required to support the following values for type:
      * {@link javax.ws.rs.core.Cookie}, {@link javax.ws.rs.core.CacheControl},
      * {@link javax.ws.rs.core.EntityTag}, {@link javax.ws.rs.core.NewCookie}, 
@@ -241,4 +243,25 @@ public abstract class RuntimeDelegate {
          */
         public String toString(T value);
     }
+
+    /**
+     * Obtain a new instance of a default {@link ClientConfiguration}
+     * implementation.
+     *
+     * @return new instance of the default client configuration implementation.
+     *
+     * @since 2.0
+     */
+    public abstract ClientConfiguration createClientConfiguration();
+
+    /**
+     * Obtain a new instance of a default {@link ClientRequest.Builder}
+     * implementation.
+     *
+     * @return new instance of the default {@link ClientRequest.Builder}
+     *     implementation
+     *
+     * @since 2.0
+     */
+    public abstract ClientRequest.Builder<?> createClientRequestBuilder();
 }

@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,50 +37,32 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+package javax.ws.rs.client;
 
-package javax.ws.rs.core;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import javax.ws.rs.client.ClientConfiguration;
-import javax.ws.rs.client.ClientRequest.Builder;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Variant.VariantListBuilder;
-import javax.ws.rs.ext.RuntimeDelegate;
+/**
+ * Adapter for the client request to adapt the output stream to write the
+ * entity. This mechanism can be used to enable logging or compression of
+ * the request entity.
+ * 
+ * @author Paul Sandoz
+ * @author Marek Potociar
+ * @since 2.0
+ */
+public interface ClientRequestAdapter {
 
-public class RuntimeDelegateStub extends RuntimeDelegate {
-
-    @Override
-    public UriBuilder createUriBuilder() {
-        return null;
-    }
-
-    @Override
-    public ResponseBuilder createResponseBuilder() {
-        return null;
-    }
-
-    @Override
-    public VariantListBuilder createVariantListBuilder() {
-        return null;
-    }
-
-    @Override
-    public <T> T createEndpoint(Application application, Class<T> endpointType) throws IllegalArgumentException, UnsupportedOperationException {
-        return null;
-    }
-
-    @Override
-    public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
-        return null;
-    }
-
-    @Override
-    public ClientConfiguration createClientConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Builder<?> createClientRequestBuilder() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    /**
+     * Adapt the output stream of the client request.
+     * 
+     * @param request the client request
+     * @param out the output stream to write the request entity.
+     * @return the adapted output stream to write the request entity.
+     * @throws java.io.IOException in case of any I/O issues with adapting the
+     *     existing client request output stream. This method declares the
+     *     {@link IOException} so that the client request adapter implementations
+     *     do not have to catch and wrap the I/O exceptions.
+     */
+    OutputStream adapt(ClientRequest request, OutputStream out) throws IOException;
 }
