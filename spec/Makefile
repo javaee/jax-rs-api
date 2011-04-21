@@ -25,10 +25,10 @@ SOURCES=spec.tex \
 all: spec.pdf
 
 spec.pdf: ${SOURCES}
-	latex spec.tex
+	pdflatex spec.tex
 	bibtex spec.aux
-	latex spec.tex
-	latex spec.tex
+	pdflatex spec.tex
+	pdflatex spec.tex
 
 clean:
 	rm -f spec.aux spec.bbl spec.blg spec.log spec.out spec.pdf spec.thm spec.toc
