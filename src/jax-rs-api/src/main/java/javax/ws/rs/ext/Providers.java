@@ -41,6 +41,7 @@ package javax.ws.rs.ext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -67,7 +68,7 @@ public interface Providers {
      * The list of matching readers is then ordered with those with the best 
      * matching values of {@link javax.ws.rs.Consumes} (x/y > x&#47;* > *&#47;*)
      * sorted first. Finally, the 
-     * {@link MessageBodyReader#isReadable}
+     * {@link MessageBodyReader#isReadable(Class, Type, Annotation[], MediaType)}
      * method is called on each reader in order using the supplied criteria and
      * the first reader that returns {@code true} is selected and returned.
      * 
@@ -99,7 +100,7 @@ public interface Providers {
      * The list of matching writers is then ordered with those with the best 
      * matching values of {@link javax.ws.rs.Produces} (x/y > x&#47;* > *&#47;*)
      * sorted first. Finally, the 
-     * {@link MessageBodyWriter#isWriteable}
+     * {@link MessageBodyWriter#isWriteable(Class, Type, Annotation[], MediaType)}
      * method is called on each writer in order using the supplied criteria and
      * the first writer that returns {@code true} is selected and returned.
      * 

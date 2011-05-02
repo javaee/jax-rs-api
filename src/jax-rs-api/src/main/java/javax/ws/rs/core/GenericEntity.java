@@ -173,6 +173,9 @@ public class GenericEntity<T> {
 
     /**
      * Returns the type from super class's type parameter.
+     *
+     * @param subclass class to return the super class's type for.
+     * @return super class's type.
      */
     private static Type getSuperclassTypeParameter(Class<?> subclass) {
         Type superclass = subclass.getGenericSuperclass();

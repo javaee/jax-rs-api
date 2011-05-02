@@ -41,11 +41,12 @@ package javax.ws.rs.core;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
- * An injectable helper for request processing, all methods throw
- * java.lang.IllegalStateException if called outside the scope of a request
+ * An injectable helper for request processing, all methods throw an
+ * {@link java.lang.IllegalStateException} if called outside the scope of a request
  * (e.g. from a provider constructor).
  * 
  * Precondition processing (see the <code>evaluatePreconditions</code> methods)
@@ -54,7 +55,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * a non-null return value to indicate that preconditions were not met. In the
  * event that preconditions were not met, the returned <code>ResponseBuilder</code>
  * instance will have an appropriate status and will also include a <code>Vary</code>
- * header if the {@link #selectVariant} method was called prior to to calling
+ * header if the {@link #selectVariant(List)} method was called prior to to calling
  * <code>evaluatePreconditions</code>. It is the responsibility of the caller
  * to check the status and add additional metadata if required. E.g., see
  * <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.5">HTTP/1.1, section 10.3.5</a>

@@ -42,6 +42,7 @@ package javax.ws.rs.core;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Map;
+
 import javax.ws.rs.ext.RuntimeDelegate;
 
 /**
@@ -156,7 +157,7 @@ public abstract class UriBuilder {
     /**
      * Create a copy of the UriBuilder preserving its state. This is a more
      * efficient means of creating a copy than constructing a new UriBuilder
-     * from a URI returned by the {@link #build} method.
+     * from a URI returned by the {@link #build(Object...)} method.
      * @return a copy of the UriBuilder
      */
     @Override
@@ -167,7 +168,7 @@ public abstract class UriBuilder {
      * any existing values for those components.
      * @param uri the URI to copy components from
      * @return the updated UriBuilder
-     * @throws IllegalArgumentException if uri is null
+     * @throws IllegalArgumentException if the {@code uri} parameter is null
      */
     public abstract UriBuilder uri(URI uri) throws IllegalArgumentException;
 

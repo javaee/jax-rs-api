@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
@@ -186,8 +187,8 @@ public class CacheControl {
      * Corresponds to the value of the no-cache cache control directive.
      * @return a mutable list of field-names that will form the value of the no-cache cache control directive.
      * An empty list results in a bare no-cache directive.
-     * @see #isNoCache
-     * @see #setNoCache
+     * @see #isNoCache()
+     * @see #setNoCache(boolean)
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public List<String> getNoCacheFields() {
@@ -201,7 +202,7 @@ public class CacheControl {
      * Corresponds to the no-cache cache control directive.
      * @param noCache true if the no-cache cache control directive should be included in the
      * response, false otherwise.
-     * @see #getNoCacheFields
+     * @see #getNoCacheFields()
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public void setNoCache(boolean noCache) {
@@ -212,7 +213,7 @@ public class CacheControl {
      * Corresponds to the no-cache cache control directive.
      * @return true if the no-cache cache control directive will be included in the
      * response, false otherwise.
-     * @see #getNoCacheFields
+     * @see #getNoCacheFields()
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public boolean isNoCache() {
@@ -223,7 +224,7 @@ public class CacheControl {
      * Corresponds to the private cache control directive.
      * @return true if the private cache control directive will be included in the
      * response, false otherwise.
-     * @see #getPrivateFields
+     * @see #getPrivateFields()
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public boolean isPrivate() {
@@ -234,8 +235,8 @@ public class CacheControl {
      * Corresponds to the value of the private cache control directive.
      * @return a mutable list of field-names that will form the value of the private cache control directive.
      * An empty list results in a bare no-cache directive.
-     * @see #isPrivate
-     * @see #setPrivate
+     * @see #isPrivate()
+     * @see #setPrivate(boolean)
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public List<String> getPrivateFields() {
@@ -249,7 +250,7 @@ public class CacheControl {
      * Corresponds to the private cache control directive.
      * @param _private true if the private cache control directive should be included in the
      * response, false otherwise.
-     * @see #getPrivateFields
+     * @see #getPrivateFields()
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public void setPrivate(boolean _private) {
@@ -344,7 +345,7 @@ public class CacheControl {
     }
 
     /**
-     * Compares obj to this cache control to see if they are the same 
+     * Compares object argument to this cache control to see if they are the same 
      * considering all property values.
      * @param obj the object to compare to
      * @return true if the two cache controls are the same, false otherwise.

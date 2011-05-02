@@ -40,8 +40,8 @@
 package javax.ws.rs.core;
 
 /**
- * A runtime exception thrown by {@link UriBuilder#build} methods when a {@link
- * java.net.URI} cannot be constructed based on the current state of the
+ * A runtime exception thrown by {@link UriBuilder#build(Object...)} methods when 
+ * a {@link java.net.URI} cannot be constructed based on the current state of the
  * builder.
  *
  * @author Paul Sandoz

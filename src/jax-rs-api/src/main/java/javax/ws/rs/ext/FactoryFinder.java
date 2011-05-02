@@ -77,6 +77,9 @@ class FactoryFinder {
      * Creates an instance of the specified class using the specified 
      * <code>ClassLoader</code> object.
      *
+     * @param className name of the class to be instantiated.
+     * @param classLoader class loader to be used.
+     * @return instance of the specified class.
      * @exception ClassNotFoundException if the given class could not be found
      *            or could not be instantiated
      */
