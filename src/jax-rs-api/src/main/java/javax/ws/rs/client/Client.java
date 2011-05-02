@@ -84,7 +84,7 @@ public abstract class Client extends Filterable {
      * implementation of a default client instantiation delegate as part of the
      * default client configuration.
      * <p />
-     * Users of the JAX-RS client APi are free to plug in their own implementations
+     * Users of the JAX-RS client API are free to plug in their own implementations
      * of the client instantiation delegate by replacing the default instantiation
      * delegate in a client configuration instance with their custom implementation.
      *
@@ -111,7 +111,7 @@ public abstract class Client extends Filterable {
      * @return a default client.
      */
     public static Client create() {
-        final ClientConfiguration cfg = defaultConfiguration();
+        final ClientConfiguration cfg = getDefaultConfiguration();
         return cfg.getInstatiationDelegate().instantiate(cfg);
     }
 
@@ -120,7 +120,7 @@ public abstract class Client extends Filterable {
      *
      * @param configuration the client configuration.
      * @return a default client.
-     * @see #defaultConfiguration() 
+     * @see #getDefaultConfiguration() 
      */
     public static Client create(ClientConfiguration configuration) {
         return configuration.getInstatiationDelegate().instantiate(configuration);
@@ -134,7 +134,7 @@ public abstract class Client extends Filterable {
      *
      * @return Instance representing a default client configuration.
      */
-    public static ClientConfiguration defaultConfiguration() {
+    public static ClientConfiguration getDefaultConfiguration() {
         return RuntimeDelegate.getInstance().createClientConfiguration();
     }
 

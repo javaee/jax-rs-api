@@ -46,10 +46,10 @@ import java.util.Set;
  * JAX-RS client configuration contract.
  * <p />
  * A new default client configuration instance can be obtained by calling
- * the {@link Client#defaultConfiguration()} factory method. Once obtained,
+ * the {@link Client#getDefaultConfiguration() } factory method. Once obtained,
  * the client configuration instance can be customized by specifying various 
  * configuration properties and their values. The resulting configuration instance
- * can be then passed to the {@link Client#create(javax.ws.rs.client.ClientConfiguration)}
+ * can be then passed to the {@link Client#create(javax.ws.rs.client.ClientConfiguration) }
  * factory method which will return a configured {@link Client} instance.
  *
  * @author Paul Sandoz
@@ -178,7 +178,7 @@ public interface ClientConfiguration {
      * as a {@link ClientResponse} instance.
      * 
      * @return root client handler.
-     * @see #setRootHandler()
+     * @see #setRootHandler(ClientHandler)
      * @see Filterable
      */
     ClientHandler getRootHandler();

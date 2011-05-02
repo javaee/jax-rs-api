@@ -92,8 +92,9 @@ public interface ClientResponse {
      * value.
      *
      * @return the status type instance, or {@code null} if the underlying status
-     * code was set using the method {@link #setStatus(int)} and there is no mapping
-     * between the integer value and the {@link Response.Status} enumeration value.
+     * code was set using the method {@link #setStatusCode(int)} and there is no 
+     * mapping between the integer value and the 
+     * {@link javax.ws.rs.core.Response.Status response status enumeration} value.
      */
     Status getResponseStatus();
 

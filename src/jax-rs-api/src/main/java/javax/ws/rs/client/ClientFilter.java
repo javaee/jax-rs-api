@@ -50,7 +50,7 @@ package javax.ws.rs.client;
  * instances to compose a client request and response handler chain.
  * <p>
  * An application-based client filter extends this class and implements the
- * {@link ClientHandler#handle} method. The general implementation pattern
+ * {@link ClientHandler#handle(ClientRequest)} method. The general implementation pattern
  * is as follows:
  * <blockquote><pre>
  *     class AppClientFilter extends ClientFilter {

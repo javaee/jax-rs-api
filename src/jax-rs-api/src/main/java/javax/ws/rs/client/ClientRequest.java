@@ -42,6 +42,7 @@ package javax.ws.rs.client;
 
 import java.net.URI;
 import java.util.Map;
+
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
@@ -116,16 +117,17 @@ public abstract class ClientRequest implements Cloneable {
     /**
      * Sets properties (replaces everything previously set).
      *
-     * @param properties 
+     * @param properties set of properties for the client request. The content of 
+     *     the map will replace any existing properties set on the client request.
      */
     public abstract void setProperties(Map<String, Object> properties);
 
     /**
      * Get a feature that is boolean property of the property bag.
      *
-     * @param name the name of the feature;
+     * @param name the name of the feature.
      * @return true if the feature value is present and is an instance of
-     *         <code>Boolean</code> and that value is true, otherwise false.
+     *         {@link java.lang.Boolean} and that value is true, otherwise false.
      */
     public boolean getPropertyAsFeature(String name) {
         return getPropertyAsFeature(name, false);
@@ -134,10 +136,10 @@ public abstract class ClientRequest implements Cloneable {
     /**
      * Get a feature that is boolean property of the property bag.
      *
-     * @param name the name of the feature;
+     * @param name the name of the feature.
      * @param defaultValue the default boolean value if the property is absent.
      * @return true if the feature value is present and is an instance of
-     *         <code>Boolean</code> and that value is true, otherwise the
+     *         {@link java.lang.Boolean} and that value is true, otherwise the
      *         <code>defaultValue</code>.
      */
     public boolean getPropertyAsFeature(String name, boolean defaultValue) {
@@ -156,8 +158,8 @@ public abstract class ClientRequest implements Cloneable {
      * Set the client request adapter.
      * <p>
      * If an existing adapter is set then usually this adapter is wrapped in the
-     * new adapter to be set such that the current adaption behaviour is
-     * retained and augmented with the new adaption behaviour.
+     * new adapter to be set such that the current adaption behavior is
+     * retained and augmented with the new adaption behavior.
      *
      * @param adapter the client request adapter.
      */
@@ -177,10 +179,10 @@ public abstract class ClientRequest implements Cloneable {
      * Convert a header value, represented as a general object, to the
      * string value.
      * <p>
-     * This method defers to {@link RuntimeDelegate#createHeaderDelegate} to
-     * obtain a {@link HeaderDelegate} to convert the value to a string. If
-     * a {@link HeaderDelegate} is not found then the <code>toString</code>
-     * is utilized.
+     * This method defers to {@link RuntimeDelegate#createHeaderDelegate(java.lang.Class)} 
+     * to obtain a {@link HeaderDelegate} to convert the value to a string. If
+     * a {@link HeaderDelegate} is not found then the {@link Object#toString() toString()}
+     * method is utilized.
      *
      * @param headerValue the header value as an object.
      * @return the string value

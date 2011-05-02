@@ -256,10 +256,10 @@ public abstract class RuntimeDelegate {
     public abstract ClientConfiguration createClientConfiguration();
 
     /**
-     * Obtain a new instance of a default {@link ClientRequest.Builder}
+     * Obtain a new instance of a default {@link javax.ws.rs.client.ClientRequest.Builder}
      * implementation.
      *
-     * @return new instance of the default {@link ClientRequest.Builder}
+     * @return new instance of the default {@link javax.ws.rs.client.ClientRequest.Builder}
      *     implementation
      *
      * @since 2.0

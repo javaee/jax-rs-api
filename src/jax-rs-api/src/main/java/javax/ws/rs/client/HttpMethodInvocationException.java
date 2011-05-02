@@ -40,9 +40,15 @@
 package javax.ws.rs.client;
 
 /**
- * A runtime exception thrown by a method on the {@link UniformInterface} or
- * {@link ClientResponse} when the status code of the HTTP response indicates
- * a response that is not expected.
+ * A runtime exception thrown when the status code of the returned HTTP response 
+ * indicates a response that is not expected.
+ * <p />
+ * This exception is typically thrown by {@link HttpMethodInvoker} methods. It is 
+ * also thrown by any of the {@code get(...)} methods of the typed response 
+ * {@link java.util.concurrent.Future} returned from {@link AsyncHttpMethodInvoker} 
+ * methods. Additionally, the exception is also thrown by 
+ * {@link ClientResponse} {@code getEntity(...)} methods in case the returned response
+ * is HTTP 204 (No Content).
  * 
  * @author Paul Sandoz
  * @author Marek Potociar

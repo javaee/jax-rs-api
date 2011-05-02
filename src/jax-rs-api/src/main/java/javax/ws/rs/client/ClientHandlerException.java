@@ -56,7 +56,7 @@ public class ClientHandlerException extends RuntimeException {
     /**
      * Constructs a new client handler exception with {@code null} as its
      * detail message. The cause is not initialized and may subsequently be
-     * initialized by a call to {@link #initCause}.
+     * initialized by a call to {@link #initCause(java.lang.Throwable)}.
      */
     public ClientHandlerException() {
         super();
@@ -65,7 +65,7 @@ public class ClientHandlerException extends RuntimeException {
     /**
      * Constructs a new client handler exception with the specified detail message.
      * The cause is not initialized, and may subsequently be initialized by a
-     * call to {@link #initCause}.
+     * call to {@link #initCause(java.lang.Throwable)}.
      *
      * @param message the detail message. The detail message is saved for
      *     later retrieval by the {@link #getMessage()} method.

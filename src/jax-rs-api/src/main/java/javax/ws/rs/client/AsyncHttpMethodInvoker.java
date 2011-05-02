@@ -71,14 +71,14 @@ public interface AsyncHttpMethodInvoker {
 
     /**
      * Invoke the HEAD method.
-     * 
+     *
      * @return the HTTP response.
      */
     Future<ClientResponse> head();
 
     /**
      * Invoke the HEAD method.
-     * 
+     *
      * @param responseListener the listener to receive asynchronous callbacks.
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
@@ -88,76 +88,82 @@ public interface AsyncHttpMethodInvoker {
     /**
      * Invoke the OPTIONS method.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the type of the returned response.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> options(Class<T> responseType);
+     <T> Future<T> options(Class<T> responseType);
 
     /**
      * Invoke the OPTIONS method.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the generic type of the returned response.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> options(GenericType<T> responseType);
+     <T> Future<T> options(GenericType<T> responseType);
 
     /**
      * Invoke the OPTIONS method.
+     * <p />
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not for the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param responseListener the listener to receive asynchronous callbacks.
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> options(TypeListener<T> responseListener);
+     <T> Future<T> options(TypeListener<T> responseListener);
 
     /**
      * Invoke the GET method.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the type of the returned response.
      * @return an instance of type <code>c</code>.
-     * @throws HttpMethodInvocationException
      */
-    <T> Future<T> get(Class<T> responseType) throws HttpMethodInvocationException;
+     <T> Future<T> get(Class<T> responseType);
 
     /**
      * Invoke the GET method.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the generic type of the returned response.
      * @return an instance of type represented by the generic type.
-     * @throws HttpMethodInvocationException
      */
-    <T> Future<T> get(GenericType<T> responseType) throws HttpMethodInvocationException;
+     <T> Future<T> get(GenericType<T> responseType);
 
     /**
      * Invoke the GET method.
-     * 
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseListener the listener to receive asynchronous callbacks.
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> get(TypeListener<T> responseListener);
+     <T> Future<T> get(TypeListener<T> responseListener);
 
     /**
      * Invoke the PUT method with no request entity or response.
@@ -165,9 +171,9 @@ public interface AsyncHttpMethodInvoker {
      * If the status of the HTTP response is less than 300 and a representation
      * is present then that representation is ignored.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300.
-     * 
+     *
      * @return a void future.
      */
     Future<?> put();
@@ -178,9 +184,9 @@ public interface AsyncHttpMethodInvoker {
      * If the status of the HTTP response is less than 300 and a representation
      * is present then that representation is ignored.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300.
-     * 
+     *
      * @param requestEntity the request entity.
      * @return a void future.
      */
@@ -189,69 +195,77 @@ public interface AsyncHttpMethodInvoker {
     /**
      * Invoke the PUT method with no request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the type of the returned response.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> put(Class<T> responseType);
+     <T> Future<T> put(Class<T> responseType);
 
     /**
      * Invoke the PUT method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the generic type of the returned response.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> put(GenericType<T> responseType);
+     <T> Future<T> put(GenericType<T> responseType);
 
     /**
      * Invoke the PUT method.
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseType} is not the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param responseListener the listener to receive asynchronous callbacks.
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> put(TypeListener<T> responseListener);
+     <T> Future<T> put(TypeListener<T> responseListener);
 
     /**
      * Invoke the PUT method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the type of the returned response.
      * @param requestEntity the request entity.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> put(Class<T> responseType, Object requestEntity);
+     <T> Future<T> put(Class<T> responseType, Object requestEntity);
 
     /**
      * Invoke the PUT method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the generic type of the returned response.
      * @param requestEntity the request entity.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> put(GenericType<T> responseType, Object requestEntity);
+     <T> Future<T> put(GenericType<T> responseType, Object requestEntity);
 
     /**
      * Invoke the PUT method.
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param responseListener the listener to receive asynchronous callbacks.
@@ -259,7 +273,7 @@ public interface AsyncHttpMethodInvoker {
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> put(TypeListener<T> responseListener, Object requestEntity);
+     <T> Future<T> put(TypeListener<T> responseListener, Object requestEntity);
 
     /**
      * Invoke the POST method with no request entity or response.
@@ -267,9 +281,9 @@ public interface AsyncHttpMethodInvoker {
      * If the status of the HTTP response is less than 300 and a representation
      * is present then that representation is ignored.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300.
-     * 
+     *
      * @return a void future.
      */
     Future<?> post();
@@ -280,9 +294,9 @@ public interface AsyncHttpMethodInvoker {
      * If the status of the HTTP response is less than 300 and a representation
      * is present then that representation is ignored.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300.
-     * 
+     *
      * @return a void future.
      * @param requestEntity the request entity.
      */
@@ -291,69 +305,77 @@ public interface AsyncHttpMethodInvoker {
     /**
      * Invoke the POST method with no request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the type of the returned response.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> post(Class<T> responseType);
+     <T> Future<T> post(Class<T> responseType);
 
     /**
      * Invoke the POST method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the generic type of the returned response.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> post(GenericType<T> responseType);
+     <T> Future<T> post(GenericType<T> responseType);
 
     /**
      * Invoke the POST method.
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param responseListener the listener to receive asynchronous callbacks.
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> post(TypeListener<T> responseListener);
+     <T> Future<T> post(TypeListener<T> responseListener);
 
     /**
      * Invoke the POST method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the type of the returned response.
      * @param requestEntity the request entity.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> post(Class<T> responseType, Object requestEntity);
+     <T> Future<T> post(Class<T> responseType, Object requestEntity);
 
     /**
      * Invoke the POST method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the generic type of the returned response.
      * @param requestEntity the request entity.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> post(GenericType<T> responseType, Object requestEntity);
+     <T> Future<T> post(GenericType<T> responseType, Object requestEntity);
 
     /**
      * Invoke the POST method.
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param responseListener the listener to receive asynchronous callbacks.
@@ -361,7 +383,7 @@ public interface AsyncHttpMethodInvoker {
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> post(TypeListener<T> responseListener, Object requestEntity);
+     <T> Future<T> post(TypeListener<T> responseListener, Object requestEntity);
 
     /**
      * Invoke the DELETE method with no request entity or response.
@@ -369,9 +391,9 @@ public interface AsyncHttpMethodInvoker {
      * If the status of the HTTP response is less than 300 and a representation
      * is present then that representation is ignored.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300.
-     * 
+     *
      * @return a void future.
      */
     Future<?> delete();
@@ -382,9 +404,9 @@ public interface AsyncHttpMethodInvoker {
      * If the status of the HTTP response is less than 300 and a representation
      * is present then that representation is ignored.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300.
-     * 
+     *
      * @return a void future.
      * @param requestEntity the request entity.
      */
@@ -393,69 +415,77 @@ public interface AsyncHttpMethodInvoker {
     /**
      * Invoke the DELETE method with no request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the type of the returned response.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> delete(Class<T> responseType);
+     <T> Future<T> delete(Class<T> responseType);
 
     /**
      * Invoke the DELETE method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the generic type of the returned response.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> delete(GenericType<T> responseType);
+     <T> Future<T> delete(GenericType<T> responseType);
 
     /**
      * Invoke the DELETE method.
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param responseListener the listener to receive asynchronous callbacks.
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> delete(TypeListener<T> responseListener);
+     <T> Future<T> delete(TypeListener<T> responseListener);
 
     /**
      * Invoke the DELETE method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the type of the returned response.
      * @param requestEntity the request entity.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> delete(Class<T> responseType, Object requestEntity);
+     <T> Future<T> delete(Class<T> responseType, Object requestEntity);
 
     /**
      * Invoke the DELETE method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param responseType the generic type of the returned response.
      * @param requestEntity the request entity.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> delete(GenericType<T> responseType, Object requestEntity);
+     <T> Future<T> delete(GenericType<T> responseType, Object requestEntity);
 
     /**
      * Invoke the DELETE method.
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param responseListener the listener to receive asynchronous callbacks.
@@ -463,7 +493,7 @@ public interface AsyncHttpMethodInvoker {
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> delete(TypeListener<T> responseListener, Object requestEntity);
+     <T> Future<T> delete(TypeListener<T> responseListener, Object requestEntity);
 
     /**
      * Invoke a HTTP method with no request entity or response.
@@ -471,9 +501,9 @@ public interface AsyncHttpMethodInvoker {
      * If the status of the HTTP response is less than 300 and a representation
      * is present then that representation is ignored.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300.
-     * 
+     *
      * @return a void future.
      * @param method the HTTP method.
      */
@@ -485,9 +515,9 @@ public interface AsyncHttpMethodInvoker {
      * If the status of the HTTP response is less than 300 and a representation
      * is present then that representation is ignored.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300.
-     * 
+     *
      * @return a void future.
      * @param method the HTTP method.
      * @param requestEntity the request entity.
@@ -497,33 +527,37 @@ public interface AsyncHttpMethodInvoker {
     /**
      * Invoke a HTTP method with no request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param method the HTTP method.
      * @param responseType the type of the returned response.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> method(String method, Class<T> responseType);
+     <T> Future<T> method(String method, Class<T> responseType);
 
     /**
      * Invoke a HTTP method with no request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param method the HTTP method.
      * @param responseType the generic type of the returned response.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> method(String method, GenericType<T> responseType);
+     <T> Future<T> method(String method, GenericType<T> responseType);
 
     /**
      * Invoke a HTTP method with no request entity that returns a response.
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param method the HTTP method.
@@ -531,40 +565,44 @@ public interface AsyncHttpMethodInvoker {
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> method(String method, TypeListener<T> responseListener);
+     <T> Future<T> method(String method, TypeListener<T> responseListener);
 
     /**
      * Invoke a HTTP method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>c</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param method the HTTP method.
      * @param responseType the type of the returned response.
      * @param requestEntity the request entity.
      * @return an instance of type <code>c</code>.
      */
-    <T> Future<T> method(String method, Class<T> responseType, Object requestEntity);
+     <T> Future<T> method(String method, Class<T> responseType, Object requestEntity);
 
     /**
      * Invoke a HTTP method with a request entity that returns a response.
      * <p>
-     * The {@link Future#get} method will throw a HttpMethodInvocationException
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
      * if the status of the HTTP response is greater than or equal to 300 and
-     * <code>gt</code> is not the type {@link ClientResponse}.
-     * 
+     * {@code responseType} is not the type {@link ClientResponse}.
+     *
      * @param <T> the type of the response.
      * @param method the HTTP method.
      * @param responseType the generic type of the returned response.
      * @param requestEntity the request entity.
      * @return an instance of type represented by the generic type.
      */
-    <T> Future<T> method(String method, GenericType<T> responseType, Object requestEntity);
+     <T> Future<T> method(String method, GenericType<T> responseType, Object requestEntity);
 
     /**
      * Invoke a HTTP method with a request entity that returns a response.
+     * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseListener} is not the type {@link ClientResponse}.
      *
      * @param <T> the type of the response.
      * @param method the HTTP method.
@@ -573,5 +611,5 @@ public interface AsyncHttpMethodInvoker {
      * @return a future that may be used to wait until the future completes and
      *         obtain the client response state, or cancel the request.
      */
-    <T> Future<T> method(String method, TypeListener<T> responseListener, Object requestEntity);
+     <T> Future<T> method(String method, TypeListener<T> responseListener, Object requestEntity);
 }

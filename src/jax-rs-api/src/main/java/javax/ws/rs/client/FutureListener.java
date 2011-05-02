@@ -60,6 +60,10 @@ public interface FutureListener<T> {
     /**
      * Invoked when a {@link Future} has reached the completed termination state.
      * <p>
+     * The {@link Future#get} method will throw a {@link HttpMethodInvocationException}
+     * if the status of the HTTP response is greater than or equal to 300 and
+     * {@code responseType} is not the type {@link ClientResponse}.
+     * <p>
      * The catching of an {@link ExecutionException} when {@code Future.get(...)}
      * is invoked may be utilized to determine if the future terminated with an
      * exception. The original exception can be obtained by invoking
