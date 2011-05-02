@@ -73,7 +73,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * @author Marek Potociar
  * @since 2.0
  */
-public abstract class Client extends Filterable {
+public abstract class Client extends Filterable implements ClientHandler  {
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
 
     /**
