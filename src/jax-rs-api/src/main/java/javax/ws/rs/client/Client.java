@@ -145,10 +145,10 @@ public abstract class Client extends Filterable {
      * Use one of the static {@code Client.create(...)} factory methods to obtain
      * a new JAX-RS client instance.
      *
-     * @param config
+     * @param configuration holder for the client configuration
      */
-    protected Client(ClientConfiguration config) {
-        super(config.getRootHandler());
+    protected Client(ClientConfiguration configuration) {
+        super(configuration.getRootHandler());
     }
 
     private final AtomicBoolean destroyed = new AtomicBoolean(false);
