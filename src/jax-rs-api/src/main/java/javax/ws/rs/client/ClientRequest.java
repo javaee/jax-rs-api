@@ -196,10 +196,8 @@ public abstract class ClientRequest implements Cloneable {
 
     /**
      * The builder for building a {@link ClientRequest} instance.
-     * 
-     * @param <T> specific Java type of the client request builder.
      */
-    public static interface Builder<T extends ClientRequestBuilder> extends ClientRequestBuilder<T> {
+    public static interface Builder extends ClientRequestBuilder<Builder> {
         /**
          * Build the {@link ClientRequest} instance.
          *
@@ -210,7 +208,7 @@ public abstract class ClientRequest implements Cloneable {
         public ClientRequest build(URI uri, String method);
     }
 
-    public static Builder<?> builder() {
+    public static Builder builder() {
         return rd.createClientRequestBuilder();
     }
 }

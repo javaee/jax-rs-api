@@ -79,7 +79,7 @@ public class RuntimeDelegateStub extends RuntimeDelegate {
     }
 
     @Override
-    public Builder<?> createClientRequestBuilder() {
+    public Builder createClientRequestBuilder() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

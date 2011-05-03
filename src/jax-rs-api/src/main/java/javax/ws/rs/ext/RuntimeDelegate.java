@@ -264,5 +264,5 @@ public abstract class RuntimeDelegate {
      *
      * @since 2.0
      */
-    public abstract ClientRequest.Builder<?> createClientRequestBuilder();
+    public abstract ClientRequest.Builder createClientRequestBuilder();
 }
