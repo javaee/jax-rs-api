@@ -45,16 +45,22 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 
 /**
- * An interface for building requests. The build methods for constructing
- * the request from the built information are left undefined and 
- * implementations must define such methods.
+ * An uniform interface for building and configuring HTTP request invocations.
+ * <p />
+ * The interface defines common set of methods for the JAX-RS client API
+ * classes that provide configuration (and optionally subsequent invocation) 
+ * of HTTP requests, e.g. {@link WebResource}.
  * 
- * @param <T> the type than implements {@link ClientRequestBuilder}.
+ * @param <T> the type that implements {@link InvocationBuilder}.
  * @author Paul Sandoz
  * @author Marek Potociar
+ * @see WebResource
+ * @see AsyncWebResource
+ * @see ClientRequest.Builder ClientRequest.Builder
+ * 
  * @since 2.0
  */
-public interface ClientRequestBuilder<T extends ClientRequestBuilder> {
+public interface InvocationBuilder<T extends InvocationBuilder> {
 
     /**
      * Set the request entity.
@@ -160,5 +166,5 @@ public interface ClientRequestBuilder<T extends ClientRequestBuilder> {
      * @param value the HTTP header value.
      * @return the builder.
      */
-    T header(String name, Object value);   
+    T header(String name, Object value);
 }

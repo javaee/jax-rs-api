@@ -98,6 +98,6 @@ public abstract class WebResource extends WebResourceBase<WebResource, WebResour
      * request building methods of the builder while producing a synchronous response
      * to the built request in a single step.
      */
-    public static interface Builder extends HttpMethodInvoker, ClientRequestBuilder<Builder> {
+    public static interface Builder extends HttpMethodInvoker, InvocationBuilder<Builder> {
     }
 }

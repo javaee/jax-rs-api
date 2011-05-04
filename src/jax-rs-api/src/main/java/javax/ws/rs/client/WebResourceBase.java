@@ -66,7 +66,7 @@ import javax.ws.rs.core.UriBuilder;
  * @see AsyncHttpMethodInvoker
  * @since 2.0
  */
-public abstract class WebResourceBase<T extends WebResourceBase, B extends ClientRequestBuilder> extends Filterable implements ClientRequestBuilder<B> {
+public abstract class WebResourceBase<T extends WebResourceBase, B extends InvocationBuilder> extends Filterable implements InvocationBuilder<B> {
 
     private final URI uri;
 

@@ -97,6 +97,6 @@ public abstract class AsyncWebResource extends WebResourceBase<AsyncWebResource,
      * request building methods of the builder while producing a response
      * {@link java.util.concurrent.Future} to the built request in a single step.
      */
-    public static interface Builder extends AsyncHttpMethodInvoker, ClientRequestBuilder<Builder> {
+    public static interface Builder extends AsyncHttpMethodInvoker, InvocationBuilder<Builder> {
     }
 }

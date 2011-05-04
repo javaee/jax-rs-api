@@ -197,7 +197,7 @@ public abstract class ClientRequest implements Cloneable {
     /**
      * The builder for building a {@link ClientRequest} instance.
      */
-    public static interface Builder extends ClientRequestBuilder<Builder> {
+    public static interface Builder extends InvocationBuilder<Builder> {
         /**
          * Build the {@link ClientRequest} instance.
          *
