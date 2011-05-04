@@ -654,10 +654,14 @@ public abstract class Response {
         NO_CONTENT(204, "No Content"),
         /**
          * 205 Reset Content, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.6">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         RESET_CONTENT(205, "Reset Content"),
         /**
          * 206 Reset Content, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.7">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         PARTIAL_CONTENT(206, "Partial Content"),
         /**
@@ -666,6 +670,8 @@ public abstract class Response {
         MOVED_PERMANENTLY(301, "Moved Permanently"),
         /**
          * 302 Found, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.3">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         FOUND(302, "Found"),
         /**
@@ -678,6 +684,8 @@ public abstract class Response {
         NOT_MODIFIED(304, "Not Modified"),
         /**
          * 305 Use Proxy, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.6">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         USE_PROXY(305, "Use Proxy"),
         /**
@@ -694,6 +702,8 @@ public abstract class Response {
         UNAUTHORIZED(401, "Unauthorized"),
         /**
          * 402 Payment Required, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.3">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         PAYMENT_REQUIRED(402, "Payment Required"),
         /**
@@ -706,6 +716,8 @@ public abstract class Response {
         NOT_FOUND(404, "Not Found"),
         /**
          * 405 Method Not Allowed, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.6">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         METHOD_NOT_ALLOWED(405, "Method Not Allowed"),
         /**
@@ -714,10 +726,14 @@ public abstract class Response {
         NOT_ACCEPTABLE(406, "Not Acceptable"),
         /**
          * 407 Proxy Authentication Required, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.8">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         PROXY_AUTHENTICATION_REQUIRED(407, "Proxy Authentication Required"),
         /**
          * 408 Request Timeout, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.9">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         REQUEST_TIMEOUT(408, "Request Timeout"),
         /**
@@ -730,6 +746,8 @@ public abstract class Response {
         GONE(410, "Gone"),
         /**
          * 411 Length Required, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.12">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         LENGTH_REQUIRED(411, "Length Required"),
         /**
@@ -738,10 +756,14 @@ public abstract class Response {
         PRECONDITION_FAILED(412, "Precondition Failed"),
         /**
          * 413 Request Entity Too Large, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.14">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         REQUEST_ENTITY_TOO_LARGE(413, "Request Entity Too Large"),
         /**
          * 414 Request-URI Too Long, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.15">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         REQUEST_URI_TOO_LONG(414, "Request-URI Too Long"),
         /**
@@ -750,10 +772,14 @@ public abstract class Response {
         UNSUPPORTED_MEDIA_TYPE(415, "Unsupported Media Type"),
         /**
          * 416 Requested Range Not Satisfiable, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.17">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         REQUESTED_RANGE_NOT_SATIFIABLE(416, "Requested Range Not Satisfiable"),
         /**
          * 417 Expectation Failed, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.18">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         EXPECTATION_FAILED(417, "Expectation Failed"),
         /**
@@ -762,10 +788,14 @@ public abstract class Response {
         INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
         /**
          * 501 Not Implemented, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.2">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         NOT_IMPLEMENTED(501, "Not Implemented"),
         /**
          * 502 Bad Gateway, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.3">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         BAD_GATEWAY(502, "Bad Gateway"),
         /**
@@ -774,10 +804,14 @@ public abstract class Response {
         SERVICE_UNAVAILABLE(503, "Service Unavailable"),
         /**
          * 504 Gateway Timeout, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.5">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         GATEWAY_TIMEOUT(504, "Gateway Timeout"),
         /**
          * 505 HTTP Version Not Supported, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.6">HTTP/1.1 documentation</a>}.
+         * 
+         * @since 2.0
          */
         HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version Not Supported");
         private final int code;
