@@ -83,18 +83,6 @@ public abstract class WebResourceBase<T extends WebResourceBase, B extends Invoc
     }
 
     /**
-     * Construct from an existing web resource base instance using the provided 
-     * {@code URI} as an identifier of the newly constructed web resource.
-     *
-     * @param that the web resource base instance to copy.
-     * @param uri {@link URI} identifying the new web resource.
-     */
-    protected WebResourceBase(T that, URI uri) {
-        super(that);
-        this.uri = uri;
-    }
-
-    /**
      * Create a new {@link UriBuilder} from this web resource using the provided
      * {@link URI} instance and following set of rules:
      * <p>
@@ -170,14 +158,6 @@ public abstract class WebResourceBase<T extends WebResourceBase, B extends Invoc
     }
 
     /**
-     * Get the client request builder specific to the concrete web resource
-     * implementation.
-     *
-     * @return the client request builder.
-     */
-    public abstract B getRequestBuilder();
-
-    /**
      * Get the mutable {@link Map} containing the key-value pairs representing 
      * properties of the web resource.
      * <p />
@@ -202,7 +182,7 @@ public abstract class WebResourceBase<T extends WebResourceBase, B extends Invoc
      * (using {@link UriBuilder#path(java.lang.String)}).
      * <p>
      * Any filters on this web resource are inherited. Subsequent removal of
-     * filters may cause undefined behaviour.
+     * filters may cause undefined behavior.
      *
      * @param path the additional path identifying the new web resource.
      * @return the new web resource.

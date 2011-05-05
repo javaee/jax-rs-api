@@ -42,22 +42,87 @@ package javax.ws.rs.client;
 import java.net.URI;
 
 /**
- * An encapsulation of a web resource capable of building HTTP requests to send
- * to the web resource, synchronous HTTP method invocation as well as processing
- * responses returned from the web resource.
- * <p>
- * A {@code WebResource} instance is obtained from the {@link Client} instance.
- * <p>
- * The web resource implements the {@link HttpMethodInvoker} interface to invoke
- * the HTTP methods on the web resource. A client request may be built before
- * the actual HTTP method invocation.
- * <p>
+ * An encapsulation of a web resource.
+ * <p />
+ * The instance of this class provides method for preparing and invoking HTTP
+ * requests on a web resource both synchronously as well as asynchronously, 
+ * including the subsequent processing of responses returned from the web 
+ * resource.
+ * <p />
+ * A {@code WebResource} instance is obtained from the {@link Client} instance 
+ * by calling one of the {@code Client.resource(...)} methods.
+ * <p />
+ * The web resource implements the synchronous {@link HttpMethodInvoker} interface 
+ * to allow direct synchronous invocations of the HTTP methods on the underlying
+ * web resource. Additionally, {@link #async()} as well as {@link Builder#async()} 
+ * methods are defined to provide means for accessing {@link AsyncHttpMethodInvoker} 
+ * interface for subsequent asynchronous invocations of the HTTP methods on the 
+ * underlying web resource.
+ * <p />
  * Methods to create a request and return a response are thread-safe. Methods
  * that modify filters are not guaranteed to be thread-safe.
- * <p>
+ * <p />
  * JAX-RS client API providers are expected to extend this abstract class to provide
  * their own implementation of resource building and synchronous HTTP method
  * invocations.
+ * <p />
+ * Following are few examples of the intended programming models using the same 
+ * web resource instance created using the {@link Client} API:
+ * 
+ * <pre>
+ * final Client client = Client.create();
+ * final WebResource resource = client.resource("someUri");
+ * </pre>
+ * 
+ * <b>Synchronous invocation:</b>
+ * 
+ * <pre>
+ * String response = resource.accept(MediaType.MEDIA_TYPE_WILDCARD)
+ *         .acceptLanguage("EN")
+ *         .entity("Hello world!")
+ *         .post(String.class);
+ * </pre>
+ * 
+ * <b>Asynchronous invocation using response {@link java.util.concurrent.Future}:</b>
+ * 
+ * <pre>
+ * java.util.concurrent.Future&lt;String&gt; responseFuture = 
+ *         resource.accept(MediaType.MEDIA_TYPE_WILDCARD)
+ *         .acceptLanguage("EN")
+ *         .entity("Hello world!")
+ *         .async().post(String.class);
+ * </pre>
+ * 
+ * <b>Asynchronous invocation using {@link TypeListener}:</b>
+ * 
+ * <pre>
+ * resource.accept(MediaType.MEDIA_TYPE_WILDCARD)
+ *         .acceptLanguage("EN")
+ *         .entity("Hello world!")
+ *         .async()
+ *         .post(new TypeListener&lt;String&gt;() {
+ * 
+ *     &#64;Override
+ *     public Class&lt;String&gt; getType() {
+ *         return String.class;
+ *     }
+ * 
+ *     &#64;Override
+ *     public GenericType&lt;String&gt; getGenericType() {
+ *         return new GenericType&lt;String&gt;(String.class);
+ *     }
+ * 
+ *     &#64;Override
+ *     public void onComplete(Future&lt;String&gt; result) throws InterruptedException {
+ *         try {
+ *             String response = result.get();
+ *             // process request
+ *         } catch (ExecutionException ex) {
+ *             // handle exception
+ *         }
+ *     }
+ * });
+ * </pre>
  *
  * @author Paul Sandoz
  * @author Marek Potociar
@@ -77,15 +142,16 @@ public abstract class WebResource extends WebResourceBase<WebResource, WebResour
     }
 
     /**
-     * Construct from an existing web resource base instance using the provided
-     * {@code URI} as an identifier of the newly constructed web resource.
-     *
-     * @param that the web resource base instance to copy.
-     * @param uri {@link URI} identifying the new web resource.
+     * Provide access to asynchronous HTTP method invoker.
+     * <p />
+     * The returned invoker provides access to the asynchronous version of the 
+     * synchronous HTTP invocation methods (that are available for convenience 
+     * directly on the  {@link WebResource}).
+     * 
+     * @return asynchronous HTTP method invoker.
+     * @see AsyncHttpMethodInvoker
      */
-    protected WebResource(WebResource that, URI uri) {
-        super(that, uri);
-    }
+    public abstract AsyncHttpMethodInvoker async();
 
     /**
      * The request builder interface specific to the {@link WebResource} implementation
@@ -99,5 +165,17 @@ public abstract class WebResource extends WebResourceBase<WebResource, WebResour
      * to the built request in a single step.
      */
     public static interface Builder extends HttpMethodInvoker, InvocationBuilder<Builder> {
+
+        /**
+         * Provide access to asynchronous HTTP method invoker.
+         * <p />
+         * The returned invoker provides access to the asynchronous version of the 
+         * synchronous HTTP invocation methods (that are available for convenience 
+         * directly on the  {@link WebResource}).
+         * 
+         * @return asynchronous HTTP method invoker.
+         * @see AsyncHttpMethodInvoker
+         */
+        public abstract AsyncHttpMethodInvoker async();
     }
 }

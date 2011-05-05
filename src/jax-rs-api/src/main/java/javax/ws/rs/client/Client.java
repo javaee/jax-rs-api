@@ -229,24 +229,4 @@ public abstract class Client extends Filterable implements ClientHandler  {
      * @return the Web resource.
      */
     public abstract WebResource resource(URI uri);
-
-    /**
-     * Create an asynchronous Web resource from the client.
-     *
-     * @param uri the URI of the resource.
-     * @return the Web resource.
-     * @throws IllegalArgumentException If the given string violates RFC 2396.
-     * @throws NullPointerException If the input argument is {@code null}.
-     */
-    public AsyncWebResource asyncResource(String uri) throws IllegalArgumentException, NullPointerException {
-        return asyncResource(URI.create(uri));
-    }
-
-    /**
-     * Create an asynchronous Web resource from the client.
-     *
-     * @param uri the URI of the resource.
-     * @return the Web resource.
-     */
-    public abstract AsyncWebResource asyncResource(URI uri);
 }
