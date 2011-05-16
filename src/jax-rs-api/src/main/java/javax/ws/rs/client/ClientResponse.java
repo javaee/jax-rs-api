@@ -43,7 +43,6 @@ package javax.ws.rs.client;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -99,11 +98,23 @@ public interface ClientResponse {
     Status getResponseStatus();
 
     /**
-     * Get the list of cookies.
+     * Get the set of cookies.
      *
      * @return the cookies.
      */
-    List<NewCookie> getCookies();
+    Set<NewCookie> getCookies();
+    
+    /**
+     * Get the entity of the response as a generic {@link Object} instance.
+     * <p>
+     * The entity input stream is closed prior to returning from this method.
+     *
+     * @return a response entity instance as a generic Java object.
+     *
+     * @throws ClientHandlerException if there is an error processing the response.
+     * @throws HttpMethodInvocationException if the response status is 204 (No Content).
+     */
+    Object getEntity() throws ClientHandlerException, HttpMethodInvocationException;
 
     /**
      * Get the entity of the response.
