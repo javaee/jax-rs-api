@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
- *
+ * 
+ * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- *
+ * 
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- *
+ * 
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- *
+ * 
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- *
+ * 
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -39,30 +39,69 @@
  */
 package javax.ws.rs.client;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * Adapter for the client request to adapt the output stream to write the
- * entity. This mechanism can be used to enable logging or compression of
- * the request entity.
- * 
- * @author Paul Sandoz
+ * A default client configuration.
+ * <p>
+ * This class may be extended for specific configuration purposes.
+ *
  * @author Marek Potociar
- * @since 2.0
  */
-public interface ClientRequestAdapter {
+public class DefaultClientConfiguration implements ClientConfiguration {
+    private final Set<Class<?>> providerClasses = new LinkedHashSet<Class<?>>();    
+    private final Set<Object> singletonProviders = new LinkedHashSet<Object>();
+    private final Map<String, Boolean> features = new HashMap<String, Boolean>();    
+    private final Map<String, Object> properties = new HashMap<String, Object>();
 
-    /**
-     * Adapt the output stream of the client request.
-     * 
-     * @param request the client request
-     * @param out the output stream to write the request entity.
-     * @return the adapted output stream to write the request entity.
-     * @throws java.io.IOException in case of any I/O issues with adapting the
-     *     existing client request output stream. This method declares the
-     *     {@link IOException} so that the client request adapter implementations
-     *     do not have to catch and wrap the I/O exceptions.
-     */
-    OutputStream adapt(ClientRequest request, OutputStream out) throws IOException;
+    public DefaultClientConfiguration() {}
+    
+    public DefaultClientConfiguration(Class<?>... providerClasses) {
+        Collections.addAll(this.providerClasses, providerClasses);
+    }
+
+    public DefaultClientConfiguration(Set<Class<?>> providerClasses) {
+       this.providerClasses.addAll(providerClasses);
+    }
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        return providerClasses;
+    }
+    
+    @Override
+    public Set<Object> getSingletons() {
+        return singletonProviders;
+    }
+    
+    @Override
+    public Map<String, Boolean> getFeatures() {
+        return features;
+    }
+    
+    @Override
+    public boolean getFeature(String featureName) {
+        final Boolean v = features.get(featureName);
+        return (v != null) ? v : false;
+    }
+    
+    @Override
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    @Override
+    public Object getProperty(String propertyName) {
+        return properties.get(propertyName);
+    }
+    
+    @Override
+    public boolean getPropertyAsFeature(String name) {
+        Boolean v = (Boolean)getProperties().get(name);
+        return (v != null) ? v : false;
+    }
 }

@@ -73,18 +73,6 @@ public interface ClientConfiguration {
     Set<Class<?>> getClasses();
 
     /**
-     * Get the value of a feature represented by a boolean property in the
-     * property bag.
-     *
-     * @param featureName the name of the feature.
-     * @return true if the feature value is present and is an instance of
-     *     {@link java.lang.Boolean} and that value is {@code true}, otherwise
-     *     {@code false}.
-     * @see #getFeatures()
-     */
-    boolean getPropertyAsFeature(String featureName);
-
-    /**
      * Get the singleton provider instances to be utilized by the client.
      * <p>
      * When the client is initialized the set of provider instances
@@ -97,6 +85,18 @@ public interface ClientConfiguration {
      * @see #getClasses()
      */
     Set<Object> getSingletons();
+
+    /**
+     * Get the value of a feature represented by a boolean property in the
+     * property bag.
+     *
+     * @param featureName the name of the feature.
+     * @return true if the feature value is present and is an instance of
+     *     {@link java.lang.Boolean} and that value is {@code true}, otherwise
+     *     {@code false}.
+     * @see #getFeatures()
+     */
+    boolean getPropertyAsFeature(String featureName);
 
     /**
      * Get the map of features associated with the client.
@@ -141,59 +141,4 @@ public interface ClientConfiguration {
      * @see #getProperties()
      */
     Object getProperty(String propertyName);
-
-    /**
-     * Get the configured {@link Client.InstantiationDelegate}.
-     *<p />
-     * Client instantiation delegate is used by the {@code Client.create(...)}
-     * methods to instantiate the concrete implementation of JAX-RS {@link Client}.
-     * 
-     * @return client instantiation delegate.
-     * @see #setInstatiationDelegate(Client.InstantiationDelegate)
-     * @see Client.InstantiationDelegate
-     */
-    Client.InstantiationDelegate getInstatiationDelegate();
-
-    /**
-     * Set the new {@link Client.InstantiationDelegate}.
-     * <p />
-     * This method may be used to override the default client instantiation delegate
-     * provided by the client configuration implementation. Custom client
-     * instantiation delegate can be used to plug in a custom {@link Client}
-     * implementation.
-     * 
-     * @param delegate new client instantiation delegate instance.
-     * @see #getInstatiationDelegate()
-     * @see Client.InstantiationDelegate
-     */
-    void setInstatiationDelegate(Client.InstantiationDelegate delegate);
-
-    /**
-     * Get the configured root {@link ClientHandler}.
-     * <p />
-     * Root client handler is passed to every new web resource created by the
-     * configured JAX-RS {@link Client}. It is the last client handler in the
-     * request processing filter chain and is responsible for the ultimate
-     * handling of the HTTP request and returning the HTTP response represented
-     * as a {@link ClientResponse} instance.
-     * 
-     * @return root client handler.
-     * @see #setRootHandler(ClientHandler)
-     * @see Filterable
-     */
-    ClientHandler getRootHandler();
-
-    /**
-     * Set the new root {@link ClientHandler}.
-     * <p />
-     * This method may be used to override the default root client handler
-     * provided by the client configuration implementation. Custom root client
-     * handler can be used to plug in a custom implementation of HTTP request
-     * processing.
-     * 
-     * @param handler the new root client handler instance.
-     * @see #getRootHandler()
-     * @see Filterable
-     */
-    void setRootHandler(ClientHandler handler);
 }

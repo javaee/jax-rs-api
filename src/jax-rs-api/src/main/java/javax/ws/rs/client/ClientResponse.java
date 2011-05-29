@@ -40,6 +40,7 @@
 
 package javax.ws.rs.client;
 
+import javax.ws.rs._client.ClientHandlerException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
@@ -112,9 +113,9 @@ public interface ClientResponse {
      * @return a response entity instance as a generic Java object.
      *
      * @throws ClientHandlerException if there is an error processing the response.
-     * @throws HttpMethodInvocationException if the response status is 204 (No Content).
+     * @throws InvocationException if the response status is 204 (No Content).
      */
-    Object getEntity() throws ClientHandlerException, HttpMethodInvocationException;
+    Object getEntity() throws ClientHandlerException, InvocationException;
 
     /**
      * Get the entity of the response.
@@ -127,9 +128,9 @@ public interface ClientResponse {
      * @return a response entity instance of the specified type.
      *
      * @throws ClientHandlerException if there is an error processing the response.
-     * @throws HttpMethodInvocationException if the response status is 204 (No Content).
+     * @throws InvocationException if the response status is 204 (No Content).
      */
-    <T> T getEntity(Class<T> entityType) throws ClientHandlerException, HttpMethodInvocationException;
+    <T> T getEntity(Class<T> entityType) throws ClientHandlerException, InvocationException;
 
     /**
      * Get the entity of the response represented by a generic type.
@@ -142,9 +143,9 @@ public interface ClientResponse {
      * @return a response entity instance of the specified generic type.
      *
      * @throws ClientHandlerException if there is an error processing the response.
-     * @throws HttpMethodInvocationException if the response status is 204 (No Content).
+     * @throws InvocationException if the response status is 204 (No Content).
      */
-    <T> T getEntity(GenericType<T> entityType) throws ClientHandlerException, HttpMethodInvocationException;
+    <T> T getEntity(GenericType<T> entityType) throws ClientHandlerException, InvocationException;
 
     /**
      * Get the response input stream.

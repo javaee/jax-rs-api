@@ -43,7 +43,6 @@ import java.lang.reflect.ReflectPermission;
 import java.net.URL;
 
 import javax.ws.rs.client.ClientConfiguration;
-import javax.ws.rs.client.ClientRequest;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
@@ -254,15 +253,4 @@ public abstract class RuntimeDelegate {
      * @since 2.0
      */
     public abstract ClientConfiguration createClientConfiguration();
-
-    /**
-     * Obtain a new instance of a default {@link javax.ws.rs.client.ClientRequest.Builder}
-     * implementation.
-     *
-     * @return new instance of the default {@link javax.ws.rs.client.ClientRequest.Builder}
-     *     implementation
-     *
-     * @since 2.0
-     */
-    public abstract ClientRequest.Builder createClientRequestBuilder();
 }

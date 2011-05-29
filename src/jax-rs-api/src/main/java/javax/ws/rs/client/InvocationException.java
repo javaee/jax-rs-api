@@ -54,7 +54,7 @@ package javax.ws.rs.client;
  * @author Marek Potociar
  * @since 2.0
  */
-public class HttpMethodInvocationException extends RuntimeException {
+public class InvocationException extends RuntimeException {
 
     private static final long serialVersionUID = -8551966770517714263L;
 
@@ -69,7 +69,7 @@ public class HttpMethodInvocationException extends RuntimeException {
      * @param r the client response. The message of the exception is set to
      *        r.toString();
      */
-    public HttpMethodInvocationException(ClientResponse r) {
+    public InvocationException(ClientResponse r) {
         this(r, true);
     }
 
@@ -81,7 +81,7 @@ public class HttpMethodInvocationException extends RuntimeException {
      * @param bufferResponseEntity if true buffer the client response entity by calling
      *                             {@link ClientResponse#bufferEntity() }.
      */
-    public HttpMethodInvocationException(ClientResponse r, boolean bufferResponseEntity) {
+    public InvocationException(ClientResponse r, boolean bufferResponseEntity) {
         super(r.toString());
         if (bufferResponseEntity) {
             r.bufferEntity();
@@ -99,7 +99,7 @@ public class HttpMethodInvocationException extends RuntimeException {
      * @param r the client response.
      *
      */
-    public HttpMethodInvocationException(String message, ClientResponse r) {
+    public InvocationException(String message, ClientResponse r) {
         this(message, r, true);
     }
 
@@ -112,7 +112,7 @@ public class HttpMethodInvocationException extends RuntimeException {
      *                             {@link ClientResponse#bufferEntity() }.
      *
      */
-    public HttpMethodInvocationException(String message, ClientResponse r, boolean bufferResponseEntity) {
+    public InvocationException(String message, ClientResponse r, boolean bufferResponseEntity) {
         super(message);
         if (bufferResponseEntity) {
             r.bufferEntity();

@@ -37,27 +37,33 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package javax.ws.rs.client;
 
 import java.net.URI;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Future;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 /**
- * A client (out-bound) HTTP request.
+ * A mutable client (out-bound) HTTP request.
  * <p>
- * Instances may be created by using the {@link ClientRequest.Builder} methods.
+ * Instances may be created by using the {@link Client#request(String uri, String method)} 
+ * or {@link Client#request(java.net.URI uri, String method)} factory methods.
  *
  * @author Paul Sandoz
  * @author Marek Potociar
  * @since 2.0
  */
-public abstract class ClientRequest implements Cloneable {
+public abstract class ClientRequest {
 
+    // Getters
     /**
      * Get the URI of the request. The URI shall contain sufficient
      * components to correctly dispatch a request
@@ -67,26 +73,11 @@ public abstract class ClientRequest implements Cloneable {
     public abstract URI getURI();
 
     /**
-     * Set the URI of the request. The URI shall contain sufficient
-     * components to correctly dispatch a request
-     *
-     * @param uri the URI of the request.
-     */
-    public abstract void setURI(URI uri);
-
-    /**
      * Get the HTTP method of the request.
      *
      * @return the HTTP method.
      */
     public abstract String getMethod();
-
-    /**
-     * Set the HTTP method of the request.
-     *
-     * @param method the HTTP method.
-     */
-    public abstract void setMethod(String method);
 
     /**
      * Get the entity of the request.
@@ -96,41 +87,29 @@ public abstract class ClientRequest implements Cloneable {
     public abstract Object getEntity();
 
     /**
-     * Set the entity of the request.
-     * <p>
-     * Any Java type instance for a request entity, that is supported by the client
-     * configuration of the client, can be passed. If generic information is
-     * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
-     * be used.
+     * Get the HTTP headers of the request.
      *
-     * @param entity the entity of the request.
+     * @return the HTTP headers of the request.
      */
-    public abstract void setEntity(Object entity);
+    public abstract MultivaluedMap<String, Object> getHeaders();
 
     /**
      * Get the mutable property bag.
-     *
+     * 
      * @return the property bag.
      */
     public abstract Map<String, Object> getProperties();
 
     /**
-     * Sets properties (replaces everything previously set).
+     * Determine if a feature is enabled.
      *
-     * @param properties set of properties for the client request. The content of 
-     *     the map will replace any existing properties set on the client request.
+     * @param featureName the name of the feature.
+     * @return {@code true} if the feature value is present in the property bag 
+     *     and is an instance of {@link java.lang.Boolean} and that value is {@code true},
+     *     otherwise {@code false}.
      */
-    public abstract void setProperties(Map<String, Object> properties);
-
-    /**
-     * Get a feature that is boolean property of the property bag.
-     *
-     * @param name the name of the feature.
-     * @return true if the feature value is present and is an instance of
-     *         {@link java.lang.Boolean} and that value is true, otherwise false.
-     */
-    public boolean getPropertyAsFeature(String name) {
-        return getPropertyAsFeature(name, false);
+    public boolean isEnabled(String featureName) {
+        return getPropertyAsFeature(featureName, false);
     }
 
     /**
@@ -142,37 +121,139 @@ public abstract class ClientRequest implements Cloneable {
      *         {@link java.lang.Boolean} and that value is true, otherwise the
      *         <code>defaultValue</code>.
      */
-    public boolean getPropertyAsFeature(String name, boolean defaultValue) {
-        Boolean v = (Boolean)getProperties().get(name);
+    private boolean getPropertyAsFeature(String name, boolean defaultValue) {
+        Boolean v = (Boolean) getProperties().get(name);
         return (v != null) ? v : defaultValue;
     }
+    
+    // Path builder methods
 
+    public abstract ClientRequest formParam(String name, Object value) throws IllegalArgumentException;
+
+    public abstract ClientRequest formParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;    
+
+    public abstract ClientRequest queryParam(String name, Object value) throws IllegalArgumentException;
+
+    public abstract ClientRequest queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;    
+    
+    public abstract ClientRequest pathParam(String name, Object value) throws IllegalArgumentException;
+
+    public abstract ClientRequest pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;    
+
+    // Request builder methods
+    
     /**
-     * Get the client request adapter.
-     *
-     * @return the client request adapter.
+     * TODO javadoc
+     * 
+     * @param name property name.
+     * @param value property value.
+     * @return the updated request.
      */
-    public abstract ClientRequestAdapter getAdapter();
+    public abstract ClientRequest property(String name, Object value);
 
     /**
-     * Set the client request adapter.
+     * TODO javadoc
+     * 
+     * @param name feature name.
+     * @return the updated request.
+     */
+    public abstract ClientRequest enableFeature(String name);
+
+    /**
+     * TODO javadoc
+     * 
+     * @param name feature name.
+     * @return the updated request.
+     */
+    public abstract ClientRequest disableFeature(String name);
+
+    /**
+     * Sets properties (replaces everything previously set).
+     *
+     * @param properties set of properties for the client request. The content of 
+     *     the map will replace any existing properties set on the client request.
+     * @return the updated request 
+     */
+    public abstract ClientRequest properties(Map<String, Object> properties);
+
+    /**
+     * Set the request entity.
      * <p>
-     * If an existing adapter is set then usually this adapter is wrapped in the
-     * new adapter to be set such that the current adaption behavior is
-     * retained and augmented with the new adaption behavior.
-     *
-     * @param adapter the client request adapter.
+     * Any Java type instance for a request entity, that is supported by the client
+     * configuration of the client, can be passed. If generic information is
+     * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
+     * be used.
+     * 
+     * @param entity the request entity
+     * @return the builder.
      */
-    public abstract void setAdapter(ClientRequestAdapter adapter);
-
+    public abstract ClientRequest entity(Object entity);
 
     /**
-     * Get the HTTP headers of the request.
-     *
-     * @return the HTTP headers of the request.
+     * Set the media type.
+     * 
+     * @param type the media type
+     * @return the builder.
      */
-    public abstract MultivaluedMap<String, Object> getHeaders();
+    public abstract ClientRequest type(MediaType type);
 
+    /**
+     * Set the media type.
+     * 
+     * @param type the media type
+     * @return the builder.
+     */
+    public abstract ClientRequest type(String type);
+
+    /**
+     * Add acceptable media types.
+     * 
+     * @param types an array of the acceptable media types
+     * @return the builder.
+     */
+    public abstract ClientRequest accept(MediaType... types);
+
+    /**
+     * Add acceptable media types.
+     * 
+     * @param types an array of the acceptable media types
+     * @return the builder.
+     */
+    public abstract ClientRequest accept(String... types);
+
+    /**
+     * Add acceptable languages
+     * 
+     * @param locales an array of the acceptable languages
+     * @return the builder.
+     */     
+    public abstract ClientRequest acceptLanguage(Locale... locales);
+
+    /**
+     * Add acceptable languages
+     * 
+     * @param locales an array of the acceptable languages
+     * @return the builder.
+     */
+    public abstract ClientRequest acceptLanguage(String... locales);
+
+    /**
+     * Add a cookie to be set.
+     * 
+     * @param cookie to be set.
+     * @return the builder
+     */
+    public abstract ClientRequest cookie(Cookie cookie);
+
+    /**
+     * Add an HTTP header and value.
+     * 
+     * @param name the HTTP header name.
+     * @param value the HTTP header value.
+     * @return the builder.
+     */
+    public abstract ClientRequest header(String name, Object value);
+    
     private static final RuntimeDelegate rd = RuntimeDelegate.getInstance();
 
     /**
@@ -188,27 +269,26 @@ public abstract class ClientRequest implements Cloneable {
      * @return the string value
      */
     @SuppressWarnings("unchecked")
-    public static String getHeaderValue(Object headerValue) {
+    protected static String getHeaderValue(Object headerValue) {
         HeaderDelegate hp = rd.createHeaderDelegate(headerValue.getClass());
 
         return (hp != null) ? hp.toString(headerValue) : headerValue.toString();
     }
-
-    /**
-     * The builder for building a {@link ClientRequest} instance.
-     */
-    public static interface Builder extends InvocationBuilder<Builder> {
-        /**
-         * Build the {@link ClientRequest} instance.
-         *
-         * @param uri the URI of the request.
-         * @param method the HTTP method.
-         * @return the client request.
-         */
-        public ClientRequest build(URI uri, String method);
-    }
-
-    public static Builder builder() {
-        return rd.createClientRequestBuilder();
-    }
+    
+    // Invocation methods
+    
+    public abstract ClientResponse invoke() throws InvocationException;
+    
+    public abstract <T> T invoke(Class<T> responseType) throws InvocationException;
+    
+    public abstract <T> T invoke(GenericType<T> responseType) throws InvocationException;
+    
+    
+    public abstract Future<ClientResponse> start();
+    
+    public abstract <T> Future<T> start(Class<T> responseType);
+    
+    public abstract <T> Future<T> start(GenericType<T> responseType);
+    
+    public abstract <T> Future<T> start(InvocationCallback<T> callback);            
 }

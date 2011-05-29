@@ -41,7 +41,6 @@
 package javax.ws.rs.core;
 
 import javax.ws.rs.client.ClientConfiguration;
-import javax.ws.rs.client.ClientRequest.Builder;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
 import javax.ws.rs.ext.RuntimeDelegate;
@@ -77,10 +76,4 @@ public class RuntimeDelegateStub extends RuntimeDelegate {
     public ClientConfiguration createClientConfiguration() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Override
-    public Builder createClientRequestBuilder() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }

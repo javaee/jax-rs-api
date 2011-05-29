@@ -47,11 +47,11 @@ import javax.ws.rs.core.GenericType;
  * {@link TypeListener#getType() } and {@link TypeListener#getGenericType() }.
  * <p>
  * Instances of this class may be passed to appropriate methods on
- * {@link AsyncWebResource} (or more specifically methods on
- * {@link AsyncHttpMethodInvoker}). For example,
+ * {@link AsyncHttpMethodInvoker} accessed through {@link WebResource#async()}. 
+ * For example,
  * <blockquote><pre>
- *     AsyncWebResource r = ...;
- *     Future&lt;String&gt; f = r.get(new AbstractTypeListener&lt;String&gt;(String.class) {
+ *     WebResource r = ...;
+ *     Future&lt;String&gt; f = r.async().get(new AbstractInvocationCallback&lt;String&gt;(String.class) {
  *         public void onComplete(Future&lt;String&gt; f) throws InterruptedException {
  *             try {
  *                 String s = f.get();
@@ -76,22 +76,23 @@ import javax.ws.rs.core.GenericType;
  * @author Marek Potociar
  * @since 2.0
  */
-public abstract class AbstractTypeListener<T> implements TypeListener<T> {
+public abstract class AbstractInvocationCallback<T> implements InvocationCallback<T> {
 
     private final Class<T> type;
     private final GenericType<T> genericType;
 
-// TODO implement determining type or genericType from reflection
-//    public AbstractTypeListener() {
-//        // determine type or genericType from reflection
-//    }
-//
+    public AbstractInvocationCallback() {
+        // TODO implement determining type or genericType from reflection
+        type = null;
+        genericType = null;
+    }
+
     /**
      * Construct a new listener defining the class of the response to receive.
      *
      * @param type the class of the response.
      */
-    public AbstractTypeListener(Class<T> type) {
+    public AbstractInvocationCallback(Class<T> type) {
         this.type = type;
         this.genericType = null;
     }
@@ -102,7 +103,7 @@ public abstract class AbstractTypeListener<T> implements TypeListener<T> {
      *
      * @param genericType the generic type of the response.
      */
-    public AbstractTypeListener(GenericType<T> genericType) {
+    public AbstractInvocationCallback(GenericType<T> genericType) {
         this.type = genericType.getRawClass();
         this.genericType = genericType;
     }
