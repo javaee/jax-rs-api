@@ -67,34 +67,32 @@ import java.lang.annotation.Target;
 public @interface HttpMethod {
 
     /**
-     * HTTP GET method
+     * HTTP GET method.
      */
     public static final String GET = "GET";
     /**
-     * HTTP POST method
+     * HTTP POST method.
      */
     public static final String POST = "POST";
     /**
-     * HTTP PUT method
+     * HTTP PUT method.
      */
     public static final String PUT = "PUT";
     /**
-     * HTTP DELETE method
+     * HTTP DELETE method.
      */
     public static final String DELETE = "DELETE";
     /**
-     * HTTP HEAD method
+     * HTTP HEAD method.
      */
     public static final String HEAD = "HEAD";
     /**
-     * HTTP OPTIONS method
+     * HTTP OPTIONS method.
      */
     public static final String OPTIONS = "OPTIONS";
 
     /**
      * Specifies the name of a HTTP method. E.g. "GET".
-     *
-     * @return specified HTTP method name.
      */
     String value();
 }

@@ -48,7 +48,7 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 /**
  * An abstraction for a media type. Instances are immutable.
- * 
+ *
  * @author Paul Sandoz
  * @author Marc Hadley
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">HTTP/1.1 section 3.7</a>
@@ -130,10 +130,10 @@ public class MediaType {
 
     /**
      * Creates a new instance of MediaType with the supplied type, subtype and
-     * parameters. 
-     * @param type the primary type, null is equivalent to 
+     * parameters.
+     * @param type the primary type, null is equivalent to
      * {@link #MEDIA_TYPE_WILDCARD}.
-     * @param subtype the subtype, null is equivalent to 
+     * @param subtype the subtype, null is equivalent to
      * {@link #MEDIA_TYPE_WILDCARD}.
      * @param parameters a map of media type parameters, null is the same as an
      * empty map.
@@ -160,9 +160,9 @@ public class MediaType {
 
     /**
      * Creates a new instance of MediaType with the supplied type and subtype.
-     * @param type the primary type, null is equivalent to 
+     * @param type the primary type, null is equivalent to
      * {@link #MEDIA_TYPE_WILDCARD}
-     * @param subtype the subtype, null is equivalent to 
+     * @param subtype the subtype, null is equivalent to
      * {@link #MEDIA_TYPE_WILDCARD}
      */
     public MediaType(String type, String subtype) {
@@ -203,7 +203,7 @@ public class MediaType {
 
     /**
      * Checks if the subtype is a wildcard
-     * @return true if the subtype is a wildcard  
+     * @return true if the subtype is a wildcard
      */
     public boolean isWildcardSubtype() {
         return this.getSubtype().equals(MEDIA_TYPE_WILDCARD);

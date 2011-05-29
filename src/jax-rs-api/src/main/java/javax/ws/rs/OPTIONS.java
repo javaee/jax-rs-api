@@ -46,7 +46,7 @@ import java.lang.annotation.Target;
 
 /**
  * Indicates that the annotated method responds to HTTP OPTIONS requests.
- * 
+ *
  * @author Paul Sandoz
  * @author Marc Hadley
  * @see HttpMethod

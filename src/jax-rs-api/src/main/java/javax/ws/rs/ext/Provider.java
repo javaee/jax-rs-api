@@ -47,7 +47,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks an implementation of an extension interface.
- * 
+ *
  * @author Paul Sandoz
  * @author Marc Hadley
  * @see MessageBodyReader

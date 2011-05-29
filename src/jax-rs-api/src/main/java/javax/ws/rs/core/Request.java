@@ -48,7 +48,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * An injectable helper for request processing, all methods throw an
  * {@link java.lang.IllegalStateException} if called outside the scope of a request
  * (e.g. from a provider constructor).
- * 
+ *
  * Precondition processing (see the <code>evaluatePreconditions</code> methods)
  * can result in either a <code>null</code> return value to indicate that
  * preconditions have been met and that the request should continue, or
@@ -78,9 +78,11 @@ public interface Request {
     /**
      * Select the representation variant that best matches the request. More
      * explicit variants are chosen ahead of less explicit ones. A vary header
-     * is computed from the supplied list and automatically added to the 
+     * is computed from the supplied list and automatically added to the
      * response.
-     * 
+     *
+     * TODO fix the above sentence about vary header?
+     *
      * @param variants a list of Variant that describe all of the
      * available representation variants.
      * @return the variant that best matches the request.
@@ -91,8 +93,8 @@ public interface Request {
     Variant selectVariant(List<Variant> variants) throws IllegalArgumentException;
 
     /**
-     * Evaluate request preconditions based on the passed in value. 
-     * 
+     * Evaluate request preconditions based on the passed in value.
+     *
      * @param eTag an ETag for the current state of the resource
      * @return null if the preconditions are met or a ResponseBuilder set with
      * the appropriate status if the preconditions are not met. A returned
@@ -104,7 +106,7 @@ public interface Request {
 
     /**
      * Evaluate request preconditions based on the passed in value.
-     * 
+     *
      * @param lastModified a date that specifies the modification date of the resource
      * @return null if the preconditions are met or a ResponseBuilder set with
      * the appropriate status if the preconditions are not met.
@@ -115,7 +117,7 @@ public interface Request {
 
     /**
      * Evaluate request preconditions based on the passed in value.
-     * 
+     *
      * @param lastModified a date that specifies the modification date of the resource
      * @param eTag an ETag for the current state of the resource
      * @return null if the preconditions are met or a ResponseBuilder set with

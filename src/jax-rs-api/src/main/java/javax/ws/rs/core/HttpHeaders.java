@@ -45,7 +45,7 @@ import java.util.Map;
 
 /**
  * An injectable interface that provides access to HTTP header information.
- * All methods throw {@link java.lang.IllegalStateException} if called outside the 
+ * All methods throw {@link java.lang.IllegalStateException} if called outside the
  * scope of a request (e.g. from a provider constructor).
  *
  * @author Paul Sandoz

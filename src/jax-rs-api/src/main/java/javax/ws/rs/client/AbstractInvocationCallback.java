@@ -42,45 +42,48 @@ package javax.ws.rs.client;
 import javax.ws.rs.core.GenericType;
 
 /**
- * This class provides a skeletal implementation of the {@link TypeListener}
+ * This class provides a skeletal implementation of the {@link InvocationCallback}
  * interface. It provides implementation for the methods
- * {@link TypeListener#getType() } and {@link TypeListener#getGenericType() }.
+ * {@link InvocationCallback#getType() } and {@link InvocationCallback#getGenericType() }.
  * <p>
- * Instances of this class may be passed to appropriate methods on
- * {@link AsyncHttpMethodInvoker} accessed through {@link WebResource#async()}. 
+ * Instances of this class may be passed to appropriate HTTP invocation methods on
+ * {@link ClientRequest}.
  * For example,
  * <blockquote><pre>
- *     WebResource r = ...;
- *     Future&lt;String&gt; f = r.async().get(new AbstractInvocationCallback&lt;String&gt;(String.class) {
- *         public void onComplete(Future&lt;String&gt; f) throws InterruptedException {
- *             try {
- *                 String s = f.get();
- *             } catch (CancellationException ex) {
- *                 // Do processing of cancelled operation
- *             } catch (ExecutionException ex) {
- *                 // Do error processing
- *                 Exception cause = ex.getCause();
- *                 if (cause instanceof HttpMethodInvocationException) {
- *                     // Request/response error
- *                 } else
- *                     // Error making request e.g. timeout
- *                 }
+ * Client client = Client.create("http://jaxrs.example.com/jaxrsApplication/someResourceUri");
+ * ClientRequest getRequest = client.get();
+ * Future&lt;String&gt; f = getRequest.start(new AbstractInvocationCallback&lt;String&gt;(String.class) {
+ *     public void onComplete(Future&lt;String&gt; f) throws InterruptedException {
+ *         try {
+ *             String s = f.get();
+ *         } catch (CancellationException ex) {
+ *             // Do processing of cancelled operation
+ *         } catch (ExecutionException ex) {
+ *             // Do error processing
+ *             Exception cause = ex.getCause();
+ *             if (cause instanceof HttpMethodInvocationException) {
+ *                 // Request/response error
+ *             } else
+ *                 // Error making request e.g. timeout
  *             }
  *         }
- *     });
+ *     }
+ * });
  * </pre></blockquote>
  *
- * @param <T> the type of the response entity.
+ * @param <Response> the type of the response entity.
  *
- * @author Paul Sandoz
  * @author Marek Potociar
  * @since 2.0
  */
-public abstract class AbstractInvocationCallback<T> implements InvocationCallback<T> {
+public abstract class AbstractInvocationCallback<Response> implements InvocationCallback<Response> {
 
-    private final Class<T> type;
-    private final GenericType<T> genericType;
+    private final Class<Response> type;
+    private final GenericType<Response> genericType;
 
+    /**
+     * TODO javadoc.
+     */
     public AbstractInvocationCallback() {
         // TODO implement determining type or genericType from reflection
         type = null;
@@ -92,7 +95,7 @@ public abstract class AbstractInvocationCallback<T> implements InvocationCallbac
      *
      * @param type the class of the response.
      */
-    public AbstractInvocationCallback(Class<T> type) {
+    public AbstractInvocationCallback(final Class<Response> type) {
         this.type = type;
         this.genericType = null;
     }
@@ -103,18 +106,18 @@ public abstract class AbstractInvocationCallback<T> implements InvocationCallbac
      *
      * @param genericType the generic type of the response.
      */
-    public AbstractInvocationCallback(GenericType<T> genericType) {
+    public AbstractInvocationCallback(final GenericType<Response> genericType) {
         this.type = genericType.getRawClass();
         this.genericType = genericType;
     }
 
     @Override
-    public Class<T> getType() {
+    public Class<Response> getType() {
         return type;
     }
 
     @Override
-    public GenericType<T> getGenericType() {
+    public GenericType<Response> getGenericType() {
         return genericType;
     }
 }

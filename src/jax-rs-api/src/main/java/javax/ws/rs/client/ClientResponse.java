@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -40,7 +40,6 @@
 
 package javax.ws.rs.client;
 
-import javax.ws.rs._client.ClientHandlerException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
@@ -60,7 +59,6 @@ import javax.ws.rs.core.Response.StatusType;
  *
  * TODO consider merging with core.Response
  *
- * @author Paul Sandoz
  * @author Marek Potociar
  * @since 2.0
  */
@@ -92,8 +90,8 @@ public interface ClientResponse {
      * value.
      *
      * @return the status type instance, or {@code null} if the underlying status
-     * code was set using the method {@link #setStatusCode(int)} and there is no 
-     * mapping between the integer value and the 
+     * code was set using the method {@link #setStatusCode(int)} and there is no
+     * mapping between the integer value and the
      * {@link javax.ws.rs.core.Response.Status response status enumeration} value.
      */
     Status getResponseStatus();
@@ -104,7 +102,7 @@ public interface ClientResponse {
      * @return the cookies.
      */
     Set<NewCookie> getCookies();
-    
+
     /**
      * Get the entity of the response as a generic {@link Object} instance.
      * <p>
@@ -112,10 +110,10 @@ public interface ClientResponse {
      *
      * @return a response entity instance as a generic Java object.
      *
-     * @throws ClientHandlerException if there is an error processing the response.
-     * @throws InvocationException if the response status is 204 (No Content).
+     * @throws HttpInvocationException if there is an error processing the response
+     *     or if the response status is 204 (No Content).
      */
-    Object getEntity() throws ClientHandlerException, InvocationException;
+    Object getEntity() throws HttpInvocationException;
 
     /**
      * Get the entity of the response.
@@ -127,10 +125,10 @@ public interface ClientResponse {
      * @param entityType the type of the entity.
      * @return a response entity instance of the specified type.
      *
-     * @throws ClientHandlerException if there is an error processing the response.
-     * @throws InvocationException if the response status is 204 (No Content).
+     * @throws HttpInvocationException if there is an error processing the response
+     *     or if the response status is 204 (No Content).
      */
-    <T> T getEntity(Class<T> entityType) throws ClientHandlerException, InvocationException;
+    <T> T getEntity(Class<T> entityType) throws HttpInvocationException;
 
     /**
      * Get the entity of the response represented by a generic type.
@@ -142,10 +140,10 @@ public interface ClientResponse {
      * @param entityType the generic type of the entity.
      * @return a response entity instance of the specified generic type.
      *
-     * @throws ClientHandlerException if there is an error processing the response.
-     * @throws InvocationException if the response status is 204 (No Content).
+     * @throws HttpInvocationException if there is an error processing the response
+     *     or if the response status is 204 (No Content).
      */
-    <T> T getEntity(GenericType<T> entityType) throws ClientHandlerException, InvocationException;
+    <T> T getEntity(GenericType<T> entityType) throws HttpInvocationException;
 
     /**
      * Get the response input stream.
@@ -233,19 +231,18 @@ public interface ClientResponse {
      * <p>
      * All the bytes of the original entity input stream will be read and stored
      * in memory. The original entity input stream will then be closed.
-     * 
-     * @throws ClientHandlerException if there is an error processing the response.
+     *
+     * @throws HttpInvocationException if there is an error processing the response.
      */
-    void bufferEntity() throws ClientHandlerException;
+    void bufferEntity() throws HttpInvocationException;
 
     /**
      * Close the response and all resources associated with the response.
-     * <p>
      * As part of the operation, if open, the entity input stream is closed.
      *
-     * @throws ClientHandlerException if there is an error closing the response.
+     * @throws HttpInvocationException if there is an error closing the response.
      */
-    void close() throws ClientHandlerException;
+    void close() throws HttpInvocationException;
 
     /**
      * Set the input stream of the response.

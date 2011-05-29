@@ -44,11 +44,11 @@ import java.io.OutputStream;
 import javax.ws.rs.WebApplicationException;
 
 /**
- * A type that may be used as a resource method return value or as the entity 
- * in a {@link Response} when the application wishes to stream the output. 
- * This is a lightweight alternative to a 
+ * A type that may be used as a resource method return value or as the entity
+ * in a {@link Response} when the application wishes to stream the output.
+ * This is a lightweight alternative to a
  * {@link javax.ws.rs.ext.MessageBodyWriter}.
- * 
+ *
  * @author Paul Sandoz
  * @author Marc Hadley
  * @see javax.ws.rs.ext.MessageBodyWriter
@@ -58,10 +58,10 @@ import javax.ws.rs.WebApplicationException;
 public interface StreamingOutput {
 
     /**
-     * Called to write the message body. 
+     * Called to write the message body.
      * @param output the OutputStream to write to.
      * @throws java.io.IOException if an IO error is encountered
-     * @throws javax.ws.rs.WebApplicationException if a specific 
+     * @throws javax.ws.rs.WebApplicationException if a specific
      * HTTP error response needs to be produced. Only effective if thrown prior
      * to any bytes being written to output.
      */

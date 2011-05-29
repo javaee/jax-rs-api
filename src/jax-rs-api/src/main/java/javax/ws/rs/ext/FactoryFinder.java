@@ -47,6 +47,8 @@ import java.io.InputStreamReader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Factory finder utility class.
@@ -55,7 +57,13 @@ import java.util.Properties;
  * @author Marc Hadley
  * @since 1.0
  */
-class FactoryFinder {
+final class FactoryFinder {
+
+    private static final Logger LOGGER = Logger.getLogger(FactoryFinder.class.getName());
+
+    private FactoryFinder() {
+        // prevents instantiation
+    }
 
     static ClassLoader getContextClassLoader() {
         return AccessController.doPrivileged(
@@ -67,6 +75,10 @@ class FactoryFinder {
                         try {
                             cl = Thread.currentThread().getContextClassLoader();
                         } catch (SecurityException ex) {
+                            LOGGER.log(
+                                    Level.WARNING,
+                                    "Unable to get context classloader instance.",
+                                    ex);
                         }
                         return cl;
                     }
@@ -74,7 +86,7 @@ class FactoryFinder {
     }
 
     /**
-     * Creates an instance of the specified class using the specified 
+     * Creates an instance of the specified class using the specified
      * <code>ClassLoader</code> object.
      *
      * @param className name of the class to be instantiated.
@@ -83,8 +95,8 @@ class FactoryFinder {
      * @exception ClassNotFoundException if the given class could not be found
      *            or could not be instantiated
      */
-    private static Object newInstance(String className,
-            ClassLoader classLoader) throws ClassNotFoundException {
+    private static Object newInstance(final String className,
+            final ClassLoader classLoader) throws ClassNotFoundException {
         try {
             Class spiClass;
             if (classLoader == null) {
@@ -93,6 +105,12 @@ class FactoryFinder {
                 try {
                     spiClass = Class.forName(className, false, classLoader);
                 } catch (ClassNotFoundException ex) {
+                    LOGGER.log(
+                            Level.FINE,
+                            "Unable to load provider class " + className
+                            + " using custom classloader " + classLoader.getClass().getName()
+                            + " trying again with current classloader.",
+                            ex);
                     spiClass = Class.forName(className);
                 }
             }
@@ -100,9 +118,7 @@ class FactoryFinder {
         } catch (ClassNotFoundException x) {
             throw x;
         } catch (Exception x) {
-            throw new ClassNotFoundException(
-                    "Provider " + className + " could not be instantiated: " + x,
-                    x);
+            throw new ClassNotFoundException("Provider " + className + " could not be instantiated: " + x, x);
         }
     }
 
@@ -126,7 +142,7 @@ class FactoryFinder {
      *                              there is no fallback class name
      * @exception WebServiceException if there is an error
      */
-    static Object find(String factoryId, String fallbackClassName) throws ClassNotFoundException {
+    static Object find(final String factoryId, final String fallbackClassName) throws ClassNotFoundException {
         ClassLoader classLoader = getContextClassLoader();
 
         String serviceId = "META-INF/services/" + factoryId;
@@ -140,18 +156,17 @@ class FactoryFinder {
             }
 
             if (is != null) {
-                BufferedReader rd =
-                        new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
                 String factoryClassName = rd.readLine();
                 rd.close();
 
-                if (factoryClassName != null
-                        && !"".equals(factoryClassName)) {
+                if (factoryClassName != null && !"".equals(factoryClassName)) {
                     return newInstance(factoryClassName, classLoader);
                 }
             }
         } catch (Exception ex) {
+            LOGGER.log(Level.FINER, "Failed to load service " + factoryId + " from " + serviceId, ex);
         }
 
 
@@ -168,17 +183,20 @@ class FactoryFinder {
                 return newInstance(factoryClassName, classLoader);
             }
         } catch (Exception ex) {
+            LOGGER.log(Level.FINER, "Failed to load service " + factoryId
+                    + " from $java.home/lib/jaxrs.properties", ex);
         }
 
 
         // Use the system property
         try {
-            String systemProp =
-                    System.getProperty(factoryId);
+            String systemProp = System.getProperty(factoryId);
             if (systemProp != null) {
                 return newInstance(systemProp, classLoader);
             }
         } catch (SecurityException se) {
+            LOGGER.log(Level.FINER, "Failed to load service " + factoryId
+                    + " from a system property", se);
         }
 
         if (fallbackClassName == null) {

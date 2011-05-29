@@ -49,14 +49,14 @@
  * It is not restricted to services implemented using JAX-RS. The goals of the
  * JAX-RS client API are threefold:
  * <ol>
- *     <li>Encapsulate a key constraint of the REST architectural style, namely 
- *         the Uniform Interface Constraint and associated data elements, as 
+ *     <li>Encapsulate a key constraint of the REST architectural style, namely
+ *         the Uniform Interface Constraint and associated data elements, as
  *         client-side Java artifacts;</li>
- *     <li>Make it as easy to interoperate with RESTful Web services as JAX-RS 
+ *     <li>Make it as easy to interoperate with RESTful Web services as JAX-RS
  *         makes it easy to build RESTful Web services; and</li>
  *     <li>Leverage artifacts of the JAX-RS API for the client side.</li>
  * </ol>
- * 
+ *
  * The JAX-RS Client API supports a pluggable architecture by defining multiple
  * extension points.
  */

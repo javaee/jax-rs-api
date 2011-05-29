@@ -112,7 +112,7 @@ public class GenericEntityTest {
         Class<?> typeArgType = (Class<?>)typeArgs[0];
         assertEquals(typeArgType, String.class);
     }
-    
+
     @Test
     public void testNumber() {
         System.out.println("testNumber");
@@ -190,7 +190,7 @@ public class GenericEntityTest {
             fail("Unhandled Exception");
         }
     }
-    
+
     private Number getNumber() {return null;}
     private Number[] getNumbers() {return null;}
     private List<String> getList() {return null;}

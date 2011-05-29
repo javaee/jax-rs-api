@@ -59,7 +59,7 @@ public class Variant {
 
     /**
      * Create a new instance of Variant.
-     * 
+     *
      * @param mediaType the media type of the variant - may be null
      * @param language the language of the variant - may be null
      * @param encoding the content encoding of the variant - may be null
@@ -157,7 +157,7 @@ public class Variant {
     }
 
     /**
-     * Compares obj to this variant to see if they are the same 
+     * Compares obj to this variant to see if they are the same
      * considering all property values.
      * @param obj the object to compare to
      * @return true if the two variants are the same, false otherwise.
@@ -197,7 +197,7 @@ public class Variant {
     }
 
     /**
-     * A builder for a list of representation variants. 
+     * A builder for a list of representation variants.
      */
     public static abstract class VariantListBuilder {
 
@@ -233,7 +233,7 @@ public class Variant {
          * in the following <code>list</code> would have four members:
          * <p><pre>List<Variant> list = VariantListBuilder.newInstance().languages("en","fr")
          *   .encodings("zip", "identity").add().build()</pre>
-         * 
+         *
          * @return the updated builder
          * @throws java.lang.IllegalStateException if there is not at least one
          * mediaType, language or encoding set for the current variant.

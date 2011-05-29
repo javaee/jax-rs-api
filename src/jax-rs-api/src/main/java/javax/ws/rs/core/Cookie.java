@@ -43,7 +43,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 /**
- * Represents the value of a HTTP cookie, transferred in a request. 
+ * Represents the value of a HTTP cookie, transferred in a request.
  * RFC 2109 specifies the legal characters for name,
  * value, path and domain. The default version of 1 corresponds to RFC 2109.
  *
@@ -58,7 +58,7 @@ public class Cookie {
      * Cookies using the default version correspond to RFC 2109.
      */
     public static final int DEFAULT_VERSION = 1;
-    private static final HeaderDelegate<Cookie> delegate =
+    private static final HeaderDelegate<Cookie> HEADER_DELEGATE =
             RuntimeDelegate.getInstance().createHeaderDelegate(Cookie.class);
     private String name;
     private String value;
@@ -68,14 +68,16 @@ public class Cookie {
 
     /**
      * Create a new instance.
-     * @param name the name of the cookie
-     * @param value the value of the cookie
-     * @param path the URI path for which the cookie is valid
-     * @param domain the host domain for which the cookie is valid
-     * @param version the version of the specification to which the cookie complies
-     * @throws IllegalArgumentException if name is null
+     *
+     * @param name the name of the cookie.
+     * @param value the value of the cookie.
+     * @param path the URI path for which the cookie is valid.
+     * @param domain the host domain for which the cookie is valid.
+     * @param version the version of the specification to which the cookie complies.
+     * @throws IllegalArgumentException if name is {@code null}.
      */
-    public Cookie(String name, String value, String path, String domain, int version) {
+    public Cookie(final String name, final String value, final String path, final String domain, final int version)
+            throws IllegalArgumentException {
         if (name == null) {
             throw new IllegalArgumentException("name==null");
         }
@@ -88,72 +90,82 @@ public class Cookie {
 
     /**
      * Create a new instance.
-     * @param name the name of the cookie
-     * @param value the value of the cookie
-     * @param path the URI path for which the cookie is valid
-     * @param domain the host domain for which the cookie is valid
-     * @throws IllegalArgumentException if name is null
+     *
+     * @param name the name of the cookie.
+     * @param value the value of the cookie.
+     * @param path the URI path for which the cookie is valid.
+     * @param domain the host domain for which the cookie is valid.
+     * @throws IllegalArgumentException if name is {@code null}.
      */
-    public Cookie(String name, String value, String path, String domain) {
+    public Cookie(final String name, final String value, final String path, final String domain)
+            throws IllegalArgumentException {
         this(name, value, path, domain, DEFAULT_VERSION);
     }
 
     /**
      * Create a new instance.
-     * @param name the name of the cookie
-     * @param value the value of the cookie
-     * @throws IllegalArgumentException if name is null
+     *
+     * @param name the name of the cookie.
+     * @param value the value of the cookie.
+     * @throws IllegalArgumentException if name is {@code null}.
      */
-    public Cookie(String name, String value) {
+    public Cookie(final String name, final String value)
+            throws IllegalArgumentException {
         this(name, value, null, null);
     }
 
     /**
-     * Creates a new instance of Cookie by parsing the supplied string.
-     * @param value the cookie string
-     * @return the newly created Cookie
+     * Creates a new instance of {@code Cookie} by parsing the supplied string.
+     *
+     * @param value the cookie string.
+     * @return the newly created {@code Cookie}.
      * @throws IllegalArgumentException if the supplied string cannot be parsed
-     * or is null
+     *     or is {@code null}.
      */
-    public static Cookie valueOf(String value) throws IllegalArgumentException {
-        return delegate.fromString(value);
+    public static Cookie valueOf(final String value) throws IllegalArgumentException {
+        return HEADER_DELEGATE.fromString(value);
     }
 
     /**
-     * Get the name of the cookie
-     * @return the name
+     * Get the name of the cookie.
+     *
+     * @return the cookie name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Get the value of the cookie
-     * @return the value
+     * Get the value of the cookie.
+     *
+     * @return the cookie value.
      */
     public String getValue() {
         return value;
     }
 
     /**
-     * Get the version of the cookie
-     * @return the version
+     * Get the version of the cookie.
+     *
+     * @return the cookie version.
      */
     public int getVersion() {
         return version;
     }
 
     /**
-     * Get the domain of the cookie
-     * @return the domain
+     * Get the domain of the cookie.
+     *
+     * @return the cookie domain.
      */
     public String getDomain() {
         return domain;
     }
 
     /**
-     * Get the path of the cookie
-     * @return the path
+     * Get the path of the cookie.
+     *
+     * @return the cookie path.
      */
     public String getPath() {
         return path;
@@ -162,16 +174,18 @@ public class Cookie {
     /**
      * Convert the cookie to a string suitable for use as the value of the
      * corresponding HTTP header.
-     * @return a stringified cookie
+     *
+     * @return a stringified cookie.
      */
     @Override
     public String toString() {
-        return delegate.toString(this);
+        return HEADER_DELEGATE.toString(this);
     }
 
     /**
-     * Generate a hashcode by hashing all of the cookies properties
-     * @return the hashcode
+     * Generate a hash code by hashing all of the cookies properties.
+     *
+     * @return the cookie hash code.
      */
     @Override
     public int hashCode() {
@@ -185,13 +199,14 @@ public class Cookie {
     }
 
     /**
-     * Compare for equality
-     * @param obj the object to compare to
-     * @return true if the object is a {@code Cookie} with the same value for
-     * all properties, false otherwise.
+     * Compare for equality.
+     *
+     * @param obj the object to compare to.
+     * @return {@code true}, if the object is a {@code Cookie} with the same
+     *     value for all properties, {@code false} otherwise.
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }

@@ -43,7 +43,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 /**
- * An abstraction for the value of a HTTP Entity Tag, used as the value 
+ * An abstraction for the value of a HTTP Entity Tag, used as the value
  * of an ETag response header.
  *
  * @author Paul Sandoz
@@ -53,27 +53,29 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
  */
 public class EntityTag {
 
+    private static final HeaderDelegate<EntityTag> HEADER_DELEGATE =
+            RuntimeDelegate.getInstance().createHeaderDelegate(EntityTag.class);
     private String value;
     private boolean weak;
-    private static final HeaderDelegate<EntityTag> delegate =
-            RuntimeDelegate.getInstance().createHeaderDelegate(EntityTag.class);
 
     /**
-     * Creates a new instance of a strong EntityTag. 
-     * @param value the value of the tag, quotes not included. 
-     * @throws IllegalArgumentException if value is null
+     * Creates a new instance of a strong {@code EntityTag}.
+     *
+     * @param value the value of the tag, quotes not included.
+     * @throws IllegalArgumentException if value is {@code null}.
      */
-    public EntityTag(String value) {
+    public EntityTag(final String value) throws IllegalArgumentException {
         this(value, false);
     }
 
     /**
-     * Creates a new instance of an EntityTag
+     * Creates a new instance of an {@code EntityTag}.
+     *
      * @param value the value of the tag, quotes not included.
-     * @param weak true if this represents a weak tag, false otherwise
-     * @throws IllegalArgumentException if value is null
+     * @param weak {@code true} if this represents a weak tag, {@code false} otherwise.
+     * @throws IllegalArgumentException if value is {@code null}.
      */
-    public EntityTag(String value, boolean weak) {
+    public EntityTag(final String value, final boolean weak) throws IllegalArgumentException {
         if (value == null) {
             throw new IllegalArgumentException("value==null");
         }
@@ -82,40 +84,44 @@ public class EntityTag {
     }
 
     /**
-     * Creates a new instance of EntityTag by parsing the supplied string.
-     * @param value the entity tag string
-     * @return the newly created EntityTag
+     * Creates a new instance of {@code EntityTag} by parsing the supplied string.
+     *
+     * @param value the entity tag string.
+     * @return the newly created entity tag.
      * @throws IllegalArgumentException if the supplied string cannot be parsed
-     * or is null
+     * or is {@code null}.
      */
-    public static EntityTag valueOf(String value) throws IllegalArgumentException {
-        return delegate.fromString(value);
+    public static EntityTag valueOf(final String value) throws IllegalArgumentException {
+        return HEADER_DELEGATE.fromString(value);
     }
 
     /**
-     * Check the strength of an EntityTag
-     * @return true if this represents a weak tag, false otherwise
+     * Check the strength of an {@code EntityTag}.
+     *
+     * @return {@code true} if this represents a weak tag, {@code false} otherwise.
      */
     public boolean isWeak() {
         return weak;
     }
 
     /**
-     * Get the value of an EntityTag
-     * @return the value of the tag
+     * Get the value of an {@code EntityTag}.
+     *
+     * @return the value of the tag.
      */
     public String getValue() {
         return value;
     }
 
     /**
-     * Compares obj to this tag to see if they are the same considering weakness and
-     * value.
-     * @param obj the object to compare to
-     * @return true if the two tags are the same, false otherwise.
+     * Compares {@code obj} to this tag to see if they are the same considering
+     * weakness and value.
+     *
+     * @param obj the object to compare to.
+     * @return {@code true} if the two tags are the same, {@code false} otherwise.
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
@@ -131,7 +137,8 @@ public class EntityTag {
 
     /**
      * Generate hashCode based on value and weakness.
-     * @return the hashCode
+     *
+     * @return the entity tag hash code.
      */
     @Override
     public int hashCode() {
@@ -144,10 +151,11 @@ public class EntityTag {
     /**
      * Convert the entity tag to a string suitable for use as the value of the
      * corresponding HTTP header.
-     * @return a string version of the entity tag
+     *
+     * @return a string version of the entity tag.
      */
     @Override
     public String toString() {
-        return delegate.toString(this);
+        return HEADER_DELEGATE.toString(this);
     }
 }

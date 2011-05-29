@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -50,20 +50,19 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Providers;
 
 /**
- * TODO javadoc
+ * TODO javadoc.
  *
  * @author Marek Potociar
  * @since 2.0
  */
 public abstract class Client {
-    
+
     /**
-     * TODO javadoc
-     * @param <T>
+     * TODO javadoc.
      */
     public static interface Builder {
         public Builder using(ClientConfiguration config);
-        
+
         public Client create();
     }
 
@@ -80,32 +79,32 @@ public abstract class Client {
      * @param uri resource URI
      * @return a default client.
      */
-    public static Client.Builder of(String uri) {
+    public static Client.Builder of(final String uri) {
         // todo implement
         return null;
     }
 
-    public static Client.Builder of(URI uri) {
+    public static Client.Builder of(final URI uri) {
         // todo implement
         return null;
     }
 
-    public static Client.Builder of(UriBuilder uri) {
+    public static Client.Builder of(final UriBuilder uri) {
         // todo implement
         return null;
     }
 
-    public static Client create(String uri) {
+    public static Client create(final String uri) {
         // todo implement
         return null;
     }
 
-    public static Client create(URI uri) {
+    public static Client create(final URI uri) {
         // todo implement
         return null;
     }
 
-    public static Client create(UriBuilder uri) {
+    public static Client create(final UriBuilder uriBuilder) {
         // todo implement
         return null;
     }
@@ -117,16 +116,16 @@ public abstract class Client {
      * Use one of the static {@code Client.create(...)} factory methods to obtain
      * a new JAX-RS client instance.
      *
-     * @param uri TODO
+     * @param uriBuilder TODO
      * @param configuration holder for the client configuration
      */
-    protected Client(UriBuilder uri, ClientConfiguration configuration) {
+    protected Client(final UriBuilder uriBuilder, final ClientConfiguration configuration) {
         // todo implement
     }
 
     // Clean-up
     /**
-     * Destroy the client. Any system resources associated with the client
+     * Closes the client. Any system resources associated with the client
      * will be cleaned up.
      * <p>
      * This method must be called when there are not responses pending otherwise
@@ -134,6 +133,8 @@ public abstract class Client {
      * <p>
      * The client must not be reused after this method is called otherwise
      * undefined behavior will occur.
+     *
+     * TODO implement auto-closeable from JavaSE 7?
      */
     public final void close() {
         if (closed.compareAndSet(false, true)) {
@@ -146,14 +147,10 @@ public abstract class Client {
      * the client instance MUST be cleaned up in this method. It is guaranteed that
      * the method will be called only once.
      *
-     * @see #destroy() 
+     * @see #close()
      */
     protected abstract void onClose();
 
-    /**
-     * Defers to {@link #destroy()} and calls {@link Object#finalize() finalizer}
-     * method of the superclass.
-     */
     @Override
     @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
@@ -207,12 +204,12 @@ public abstract class Client {
 
     public abstract Client queryParam(String name, Object value) throws IllegalArgumentException;
 
-    public abstract Client queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;    
-    
+    public abstract Client queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+
     public abstract Client pathParam(String name, Object value) throws IllegalArgumentException;
 
-    public abstract Client pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;    
-    
+    public abstract Client pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+
     // Request builder methods
     public abstract ClientRequest get();
 

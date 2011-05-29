@@ -40,7 +40,7 @@
 package javax.ws.rs.core;
 
 /**
- * A runtime exception thrown by {@link UriBuilder#build(Object...)} methods when 
+ * A runtime exception thrown by {@link UriBuilder#build(Object...)} methods when
  * a {@link java.net.URI} cannot be constructed based on the current state of the
  * builder.
  *
@@ -79,7 +79,7 @@ public class UriBuilderException extends java.lang.RuntimeException {
     /**
      * Constructs a new exception with the specified cause and a detail message
      * of (<code>cause==null ? null : cause.toString()</code>) (which typically contains
-     * the class and detail message of cause). This constructor is useful 
+     * the class and detail message of cause). This constructor is useful
      * for exceptions that are little more than wrappers for other throwables.
      * @param cause the original exception
      */

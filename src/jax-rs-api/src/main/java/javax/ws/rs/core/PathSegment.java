@@ -66,7 +66,7 @@ public interface PathSegment {
      * Get a map of the matrix parameters associated with the path segment.
      * The map keys are the names of the matrix parameters with any
      * percent-escaped octets decoded.
-     * 
+     *
      * @return the map of matrix parameters
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */

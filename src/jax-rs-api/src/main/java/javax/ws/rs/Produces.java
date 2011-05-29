@@ -75,8 +75,6 @@ public @interface Produces {
      * of a comma separated list of types. E.g. {"image/jpeg,image/gif",
      * "image/png"}. Use of the comma-separated form allows definition of a
      * common string constant for use on multiple targets.
-     *
-     * @return specified list of media types.
      */
     String[] value() default "*/*";
 }

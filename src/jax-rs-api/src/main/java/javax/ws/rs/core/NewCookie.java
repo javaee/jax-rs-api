@@ -226,7 +226,7 @@ public class NewCookie extends Cookie {
     }
 
     /**
-     * Compare for equality. Use {@link #toCookie()} to compare a 
+     * Compare for equality. Use {@link #toCookie()} to compare a
      * {@code NewCookie} to a {@code Cookie} considering only the common
      * properties.
      *

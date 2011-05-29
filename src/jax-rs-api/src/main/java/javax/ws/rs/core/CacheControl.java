@@ -57,7 +57,9 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
  */
 public class CacheControl {
 
-    private boolean _private;
+    private static final HeaderDelegate<CacheControl> HEADER_DELEGATE =
+            RuntimeDelegate.getInstance().createHeaderDelegate(CacheControl.class);
+    private boolean privateFlag;
     private List<String> privateFields;
     private boolean noCache;
     private List<String> noCacheFields;
@@ -68,11 +70,9 @@ public class CacheControl {
     private int maxAge = -1;
     private int sMaxAge = -1;
     private Map<String, String> cacheExtension;
-    private static final HeaderDelegate<CacheControl> delegate =
-            RuntimeDelegate.getInstance().createHeaderDelegate(CacheControl.class);
 
     /**
-     * Create a new instance of CacheControl. The new instance will have the 
+     * Create a new instance of CacheControl. The new instance will have the
      * following default settings:
      *
      * <ul>
@@ -88,7 +88,7 @@ public class CacheControl {
      * </ul>
      */
     public CacheControl() {
-        _private = false;
+        privateFlag = false;
         noCache = false;
         noStore = false;
         noTransform = true;
@@ -103,8 +103,8 @@ public class CacheControl {
      * @throws IllegalArgumentException if the supplied string cannot be parsed
      * or is null
      */
-    public static CacheControl valueOf(String value) throws IllegalArgumentException {
-        return delegate.fromString(value);
+    public static CacheControl valueOf(final String value) throws IllegalArgumentException {
+        return HEADER_DELEGATE.fromString(value);
     }
 
     /**
@@ -123,7 +123,7 @@ public class CacheControl {
      * response, false otherwise.
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.4">HTTP/1.1 section 14.9.4</a>
      */
-    public void setMustRevalidate(boolean mustRevalidate) {
+    public void setMustRevalidate(final boolean mustRevalidate) {
         this.mustRevalidate = mustRevalidate;
     }
 
@@ -143,7 +143,7 @@ public class CacheControl {
      * response, false otherwise.
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.4">HTTP/1.1 section 14.9.4</a>
      */
-    public void setProxyRevalidate(boolean proxyRevalidate) {
+    public void setProxyRevalidate(final boolean proxyRevalidate) {
         this.proxyRevalidate = proxyRevalidate;
     }
 
@@ -161,7 +161,7 @@ public class CacheControl {
      * @param maxAge the value of the max-age cache control directive, a value of -1 will disable the directive.
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3">HTTP/1.1 section 14.9.3</a>
      */
-    public void setMaxAge(int maxAge) {
+    public void setMaxAge(final int maxAge) {
         this.maxAge = maxAge;
     }
 
@@ -179,7 +179,7 @@ public class CacheControl {
      * @param sMaxAge the value of the s-maxage cache control directive, a value of -1 will disable the directive.
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3">HTTP/1.1 section 14.9.3</a>
      */
-    public void setSMaxAge(int sMaxAge) {
+    public void setSMaxAge(final int sMaxAge) {
         this.sMaxAge = sMaxAge;
     }
 
@@ -205,7 +205,7 @@ public class CacheControl {
      * @see #getNoCacheFields()
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
-    public void setNoCache(boolean noCache) {
+    public void setNoCache(final boolean noCache) {
         this.noCache = noCache;
     }
 
@@ -228,7 +228,7 @@ public class CacheControl {
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
     public boolean isPrivate() {
-        return _private;
+        return privateFlag;
     }
 
     /**
@@ -248,13 +248,13 @@ public class CacheControl {
 
     /**
      * Corresponds to the private cache control directive.
-     * @param _private true if the private cache control directive should be included in the
+     * @param flag true if the private cache control directive should be included in the
      * response, false otherwise.
      * @see #getPrivateFields()
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP/1.1 section 14.9.1</a>
      */
-    public void setPrivate(boolean _private) {
-        this._private = _private;
+    public void setPrivate(final boolean flag) {
+        this.privateFlag = flag;
     }
 
     /**
@@ -273,7 +273,7 @@ public class CacheControl {
      * response, false otherwise.
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.5">HTTP/1.1 section 14.9.5</a>
      */
-    public void setNoTransform(boolean noTransform) {
+    public void setNoTransform(final boolean noTransform) {
         this.noTransform = noTransform;
     }
 
@@ -293,7 +293,7 @@ public class CacheControl {
      * response, false otherwise.
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.2">HTTP/1.1 section 14.9.2</a>
      */
-    public void setNoStore(boolean noStore) {
+    public void setNoStore(final boolean noStore) {
         this.noStore = noStore;
     }
 
@@ -302,7 +302,7 @@ public class CacheControl {
      * @return a mutable map of cache control extension names and their values.
      * If a key has a null value, it will appear as a bare directive. If a key has
      * a value that contains no whitespace then the directive will appear as
-     * a simple name=value pair. If a key has a value that contains whitespace 
+     * a simple name=value pair. If a key has a value that contains whitespace
      * then the directive will appear as a quoted name="value" pair.
      * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.6">HTTP/1.1 section 14.9.6</a>
      */
@@ -320,7 +320,7 @@ public class CacheControl {
      */
     @Override
     public String toString() {
-        return delegate.toString(this);
+        return HEADER_DELEGATE.toString(this);
     }
 
     /**
@@ -330,7 +330,7 @@ public class CacheControl {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 41 * hash + (this._private ? 1 : 0);
+        hash = 41 * hash + (this.privateFlag ? 1 : 0);
         hash = 41 * hash + (this.privateFields != null ? this.privateFields.hashCode() : 0);
         hash = 41 * hash + (this.noCache ? 1 : 0);
         hash = 41 * hash + (this.noCacheFields != null ? this.noCacheFields.hashCode() : 0);
@@ -345,13 +345,13 @@ public class CacheControl {
     }
 
     /**
-     * Compares object argument to this cache control to see if they are the same 
+     * Compares object argument to this cache control to see if they are the same
      * considering all property values.
      * @param obj the object to compare to
      * @return true if the two cache controls are the same, false otherwise.
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
@@ -359,16 +359,18 @@ public class CacheControl {
             return false;
         }
         final CacheControl other = (CacheControl) obj;
-        if (this._private != other._private) {
+        if (this.privateFlag != other.privateFlag) {
             return false;
         }
-        if (this.privateFields != other.privateFields && (this.privateFields == null || !this.privateFields.equals(other.privateFields))) {
+        if (this.privateFields != other.privateFields
+                && (this.privateFields == null || !this.privateFields.equals(other.privateFields))) {
             return false;
         }
         if (this.noCache != other.noCache) {
             return false;
         }
-        if (this.noCacheFields != other.noCacheFields && (this.noCacheFields == null || !this.noCacheFields.equals(other.noCacheFields))) {
+        if (this.noCacheFields != other.noCacheFields
+                && (this.noCacheFields == null || !this.noCacheFields.equals(other.noCacheFields))) {
             return false;
         }
         if (this.noStore != other.noStore) {
@@ -389,7 +391,8 @@ public class CacheControl {
         if (this.sMaxAge != other.sMaxAge) {
             return false;
         }
-        if (this.cacheExtension != other.cacheExtension && (this.cacheExtension == null || !this.cacheExtension.equals(other.cacheExtension))) {
+        if (this.cacheExtension != other.cacheExtension
+                && (this.cacheExtension == null || !this.cacheExtension.equals(other.cacheExtension))) {
             return false;
         }
         return true;

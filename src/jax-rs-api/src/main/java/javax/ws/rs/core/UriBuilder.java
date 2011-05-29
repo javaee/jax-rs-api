@@ -48,29 +48,29 @@ import javax.ws.rs.ext.RuntimeDelegate;
 /**
  * URI template aware utility class for building URIs from their components. See
  * {@link javax.ws.rs.Path#value} for an explanation of URI templates.
- * 
+ *
  * <p>Builder methods perform contextual encoding of characters not permitted in
- * the corresponding URI component following the rules of the 
+ * the corresponding URI component following the rules of the
  * <a href="http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.1">application/x-www-form-urlencoded</a>
  * media type for query parameters and
  * <a href="http://ietf.org/rfc/rfc3986.txt">RFC 3986</a> for all other
  * components. Note that only characters not permitted in a particular component
  * are subject to encoding so, e.g., a path supplied to one of the {@code path}
  * methods may contain matrix parameters or multiple path segments since the
- * separators are legal characters and will not be encoded. Percent encoded 
+ * separators are legal characters and will not be encoded. Percent encoded
  * values are also recognized where allowed and will not be double encoded.</p>
- * 
+ *
  * <p>URI templates are allowed in most components of a URI but their value is
- * restricted to a particular component. E.g. 
+ * restricted to a particular component. E.g.
  * <blockquote><code>UriBuilder.fromPath("{arg1}").build("foo#bar");</code></blockquote>
- * would result in encoding of the '#' such that the resulting URI is 
+ * would result in encoding of the '#' such that the resulting URI is
  * "foo%23bar". To create a URI "foo#bar" use
  * <blockquote><code>UriBuilder.fromPath("{arg1}").fragment("{arg2}").build("foo", "bar")</code></blockquote>
- * instead. URI template names and delimiters are never encoded but their 
+ * instead. URI template names and delimiters are never encoded but their
  * values are encoded when a URI is built.
  * Template parameter regular expressions are ignored when building a URI, i.e.
  * no validation is performed.
- * 
+ *
  * @author Paul Sandoz
  * @author Marc Hadley
  * @see java.net.URI
@@ -127,7 +127,7 @@ public abstract class UriBuilder {
     /**
      * Create a new instance representing a relative URI initialized from a
      * URI path.
-     * @param path a URI path that will be used to initialize the UriBuilder, 
+     * @param path a URI path that will be used to initialize the UriBuilder,
      * may contain URI template parameters.
      * @return a new UriBuilder
      * @throws IllegalArgumentException if path is null
@@ -139,13 +139,13 @@ public abstract class UriBuilder {
     }
 
     /**
-     * Create a new instance representing a relative URI initialized from a 
+     * Create a new instance representing a relative URI initialized from a
      * root resource class.
-     * 
+     *
      * @param resource a root resource whose {@link javax.ws.rs.Path} value will
      * be used to initialize the UriBuilder.
      * @return a new UriBuilder
-     * @throws IllegalArgumentException if resource is not annotated with 
+     * @throws IllegalArgumentException if resource is not annotated with
      * {@link javax.ws.rs.Path} or resource is null.
      */
     public static UriBuilder fromResource(Class<?> resource) throws IllegalArgumentException {
@@ -182,7 +182,7 @@ public abstract class UriBuilder {
     public abstract UriBuilder scheme(String scheme) throws IllegalArgumentException;
 
     /**
-     * Set the URI scheme-specific-part (see {@link java.net.URI}). This 
+     * Set the URI scheme-specific-part (see {@link java.net.URI}). This
      * method will overwrite any existing
      * values for authority, user-info, host, port and path.
      * @param ssp the URI scheme-specific-part, may contain URI template parameters
@@ -217,9 +217,9 @@ public abstract class UriBuilder {
     public abstract UriBuilder port(int port) throws IllegalArgumentException;
 
     /**
-     * Set the URI path. This method will overwrite 
-     * any existing path and associated matrix parameters. 
-     * Existing '/' characters are preserved thus a single value can 
+     * Set the URI path. This method will overwrite
+     * any existing path and associated matrix parameters.
+     * Existing '/' characters are preserved thus a single value can
      * represent multiple URI path segments.
      * @param path the path, may contain URI template parameters.
      * A null value will unset the path component of the URI.
@@ -228,10 +228,10 @@ public abstract class UriBuilder {
     public abstract UriBuilder replacePath(String path);
 
     /**
-     * Append path to the existing path. 
+     * Append path to the existing path.
      * When constructing the final path, a '/' separator will be inserted
      * between the existing path and the supplied path if necessary.
-     * Existing '/' characters are preserved thus a single value can 
+     * Existing '/' characters are preserved thus a single value can
      * represent multiple URI path segments.
      * @param path the path, may contain URI template parameters
      * @return the updated UriBuilder
@@ -244,8 +244,8 @@ public abstract class UriBuilder {
      * existing path.
      * When constructing the final path, a '/' separator will be inserted
      * between the existing path and the supplied path if necessary.
-     * 
-     * @param resource a resource whose {@link javax.ws.rs.Path} value will be 
+     *
+     * @param resource a resource whose {@link javax.ws.rs.Path} value will be
      * used to obtain the path to append.
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if resource is null, or
@@ -261,13 +261,13 @@ public abstract class UriBuilder {
      * This method is a convenience shortcut to <code>path(Method)</code>, it
      * can only be used in cases where there is a single method with the
      * specified name that is annotated with {@link javax.ws.rs.Path}.
-     * 
+     *
      * @param resource the resource containing the method
-     * @param method the name of the method whose {@link javax.ws.rs.Path} value will be 
+     * @param method the name of the method whose {@link javax.ws.rs.Path} value will be
      * used to obtain the path to append
      * @return the updated UriBuilder
-     * @throws IllegalArgumentException if resource or method is null, 
-     * or there is more than or less than one variant of the method annotated with 
+     * @throws IllegalArgumentException if resource or method is null,
+     * or there is more than or less than one variant of the method annotated with
      * {@link javax.ws.rs.Path}
      */
     public abstract UriBuilder path(Class resource, String method) throws IllegalArgumentException;
@@ -277,8 +277,8 @@ public abstract class UriBuilder {
      * existing path.
      * When constructing the final path, a '/' separator will be inserted
      * between the existing path and the supplied path if necessary.
-     * 
-     * @param method a method whose {@link javax.ws.rs.Path} value will be 
+     *
+     * @param method a method whose {@link javax.ws.rs.Path} value will be
      * used to obtain the path to append to the existing path
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if method is null or is
@@ -289,9 +289,9 @@ public abstract class UriBuilder {
     /**
      * Append path segments to the existing path.
      * When constructing the final path, a '/' separator will be inserted
-     * between the existing path and the first path segment if necessary and 
+     * between the existing path and the first path segment if necessary and
      * each supplied segment will also be separated by '/'.
-     * Existing '/' characters are encoded thus a single value can 
+     * Existing '/' characters are encoded thus a single value can
      * only represent a single URI path segment.
      * @param segments the path segment values, each may contain URI template
      * parameters
@@ -317,7 +317,7 @@ public abstract class UriBuilder {
     public abstract UriBuilder replaceMatrix(String matrix) throws IllegalArgumentException;
 
     /**
-     * Append a matrix parameter to the existing set of matrix parameters of 
+     * Append a matrix parameter to the existing set of matrix parameters of
      * the current final segment of the URI path. If multiple values are supplied
      * the parameter will be added once per value. Note that the matrix parameters
      * are tied to a particular path segment; subsequent addition of path segments
@@ -333,7 +333,7 @@ public abstract class UriBuilder {
     public abstract UriBuilder matrixParam(String name, Object... values) throws IllegalArgumentException;
 
     /**
-     * Replace the existing value(s) of a matrix parameter on 
+     * Replace the existing value(s) of a matrix parameter on
      * the current final segment of the URI path. If multiple values are supplied
      * the parameter will be added once per value. Note that the matrix parameters
      * are tied to a particular path segment; subsequent addition of path segments
@@ -341,7 +341,7 @@ public abstract class UriBuilder {
      * @param name the matrix parameter name, may contain URI template parameters
      * @param values the matrix parameter value(s), each object will be converted
      * to a {@code String} using its {@code toString()} method. Stringified
-     * values may contain URI template parameters. If {@code values} is empty 
+     * values may contain URI template parameters. If {@code values} is empty
      * or null then all current values of the parameter are removed.
      * @return the updated UriBuilder
      * @throws IllegalArgumentException if name is null.
@@ -415,7 +415,7 @@ public abstract class UriBuilder {
      * the supplied map. Values are converted to <code>String</code> using
      * their <code>toString</code> method and are then encoded to match the
      * rules of the URI component to which they pertain.  All % characters in
-     * the stringified values that are not followed by two hexadecimal numbers 
+     * the stringified values that are not followed by two hexadecimal numbers
      * will be encoded.
      * The state of the builder is unaffected; this method may be called
      * multiple times on the same builder instance.
@@ -458,7 +458,7 @@ public abstract class UriBuilder {
      * order. Values are converted to <code>String</code> using
      * their <code>toString</code> method and are then encoded to match the
      * rules of the URI component to which they pertain. All % characters in
-     * the stringified values that are not followed by two hexadecimal numbers 
+     * the stringified values that are not followed by two hexadecimal numbers
      * will be encoded.
      * The state of the builder is unaffected; this method may be called
      * multiple times on the same builder instance.

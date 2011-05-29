@@ -38,7 +38,7 @@
  * holder.
  */
 /**
- * High-level interfaces and annotations used to create RESTful service 
+ * High-level interfaces and annotations used to create RESTful service
  * resources. E.g.:
 <pre>
 &#064;Path("widgets/{widgetid}")
@@ -50,13 +50,13 @@ public class WidgetResource {
   public String getWidget(&#064;PathParam("widgetid") String id) {
     return getWidgetAsXml(id);
   }
-  
+
   &#064;PUT
   public void updateWidget(&#064;PathParam("widgetid") String id,
     Source update) {
     updateWidgetFromXml(id, update);
   }
-  
+
   ...
 }
 </pre>

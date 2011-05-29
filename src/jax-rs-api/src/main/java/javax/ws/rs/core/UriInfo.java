@@ -43,13 +43,13 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * An injectable interface that provides access to application and request 
+ * An injectable interface that provides access to application and request
  * URI information. Relative URIs are relative to the base URI of the
  * application, see {@link #getBaseUri}.
- * 
+ *
  * <p>All methods throw <code>java.lang.IllegalStateException</code>
  * if called outside the scope of a request (e.g. from a provider constructor).</p>
- * 
+ *
  * @author Paul Sandoz
  * @author Marc Hadley
  * @see Context
@@ -61,7 +61,7 @@ public interface UriInfo {
      * Get the path of the current request relative to the base URI as
      * a string. All sequences of escaped octets are decoded, equivalent to
      * <code>getPath(true)</code>.
-     * 
+     *
      * @return the relative URI path
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
@@ -79,7 +79,7 @@ public interface UriInfo {
     public String getPath(boolean decode);
 
     /**
-     * Get the path of the current request relative to the base URI as a 
+     * Get the path of the current request relative to the base URI as a
      * list of {@link PathSegment}. This method is useful when the
      * path needs to be parsed, particularly when matrix parameters may be
      * present in the path. All sequences of escaped octets in path segments
@@ -94,7 +94,7 @@ public interface UriInfo {
     public List<PathSegment> getPathSegments();
 
     /**
-     * Get the path of the current request relative to the base URI as a 
+     * Get the path of the current request relative to the base URI as a
      * list of {@link PathSegment}. This method is useful when the
      * path needs to be parsed, particularly when matrix parameters may be
      * present in the path.
@@ -167,7 +167,7 @@ public interface UriInfo {
 
     /**
      * Get the values of any embedded URI template parameters.
-     * 
+     *
      * @param decode controls whether sequences of escaped octets are decoded
      * (true) or not (false).
      * @return an unmodifiable map of parameter names and values
@@ -200,33 +200,33 @@ public interface UriInfo {
     public MultivaluedMap<String, String> getQueryParameters(boolean decode);
 
     /**
-     * Get a read-only list of URIs for matched resources. Each entry is a 
-     * relative URI that matched a resource class, a 
-     * sub-resource method or a sub-resource locator. All sequences of escaped 
+     * Get a read-only list of URIs for matched resources. Each entry is a
+     * relative URI that matched a resource class, a
+     * sub-resource method or a sub-resource locator. All sequences of escaped
      * octets are decoded, equivalent to {@code getMatchedURIs(true)}.
      * Entries do not include query parameters but do include matrix parameters
-     * if present in the request URI. Entries are ordered in reverse request 
+     * if present in the request URI. Entries are ordered in reverse request
      * URI matching order, with the current resource URI first.  E.g. given the
      * following resource classes:
-     * 
+     *
      * <pre>&#064;Path("foo")
      *public class FooResource {
      *  &#064;GET
      *  public String getFoo() {...}
-     * 
+     *
      *  &#064;Path("bar")
      *  public BarResource getBarResource() {...}
      *}
-     * 
+     *
      *public class BarResource {
      *  &#064;GET
      *  public String getBar() {...}
      *}
      * </pre>
-     * 
-     * <p>The values returned by this method based on request uri and where 
+     *
+     * <p>The values returned by this method based on request uri and where
      * the method is called from are:</p>
-     * 
+     *
      * <table border="1">
      * <tr>
      *   <th>Request</th>
@@ -249,21 +249,21 @@ public interface UriInfo {
      *   <td>foo/bar, foo</td>
      * </tr>
      * </table>
-     * 
-     * 
+     *
+     *
      * @return a read-only list of URI paths for matched resources.
      */
     public List<String> getMatchedURIs();
 
     /**
-     * Get a read-only list of URIs for matched resources. Each entry is a 
-     * relative URI that matched a resource class, a sub-resource 
+     * Get a read-only list of URIs for matched resources. Each entry is a
+     * relative URI that matched a resource class, a sub-resource
      * method or a sub-resource locator. Entries do not include query
      * parameters but do include matrix parameters if present in the request URI.
-     * Entries are ordered in reverse request URI matching order, with the 
+     * Entries are ordered in reverse request URI matching order, with the
      * current resource URI first. See {@link #getMatchedURIs()} for an
      * example.
-     * 
+     *
      * @param decode controls whether sequences of escaped octets are decoded
      * (true) or not (false).
      * @return a read-only list of URI paths for matched resources.
@@ -272,30 +272,30 @@ public interface UriInfo {
 
     /**
      * Get a read-only list of the currently matched resource class instances.
-     * Each entry is a resource class instance that matched the request URI 
-     * either directly or via a sub-resource method or a sub-resource locator. 
+     * Each entry is a resource class instance that matched the request URI
+     * either directly or via a sub-resource method or a sub-resource locator.
      * Entries are ordered according to reverse request URI matching order,
-     * with the current resource first. E.g. given the following resource 
+     * with the current resource first. E.g. given the following resource
      * classes:
-     * 
+     *
      * <pre>&#064;Path("foo")
      *public class FooResource {
      *  &#064;GET
      *  public String getFoo() {...}
-     * 
+     *
      *  &#064;Path("bar")
      *  public BarResource getBarResource() {...}
      *}
-     * 
+     *
      *public class BarResource {
      *  &#064;GET
      *  public String getBar() {...}
      *}
      * </pre>
-     * 
-     * <p>The values returned by this method based on request uri and where 
+     *
+     * <p>The values returned by this method based on request uri and where
      * the method is called from are:</p>
-     * 
+     *
      * <table border="1">
      * <tr>
      *   <th>Request</th>
@@ -318,7 +318,7 @@ public interface UriInfo {
      *   <td>BarResource, FooResource</td>
      * </tr>
      * </table>
-     * 
+     *
      * @return a read-only list of matched resource class instances.
      */
     public List<Object> getMatchedResources();

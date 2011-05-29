@@ -54,26 +54,33 @@ import javax.ws.rs.core.Variant.VariantListBuilder;
  * functionality. Regular users of JAX-RS are not expected to use this class
  * directly and overriding an implementation of this class with a user supplied
  * subclass may cause unexpected behavior.
- * 
+ *
  * @author Paul Sandoz
  * @author Marc Hadley
  * @since 1.0
  */
 public abstract class RuntimeDelegate {
 
+    /**
+     * Name of the property identifying the {@link RuntimeDelegate} implementation
+     * to be returned from {@link RuntimeDelegate#getInstance()}.
+     */
     public static final String JAXRS_RUNTIME_DELEGATE_PROPERTY = "javax.ws.rs.ext.RuntimeDelegate";
     private static final String JAXRS_DEFAULT_RUNTIME_DELEGATE = "com.sun.ws.rs.ext.RuntimeDelegateImpl";
-    private static ReflectPermission rp = new ReflectPermission("suppressAccessChecks");
+    private static final Object RD_LOCK = new Object();
+    private static ReflectPermission suppressAccessChecksPermission = new ReflectPermission("suppressAccessChecks");
+    private static volatile RuntimeDelegate cachedDelegate;
 
+    /**
+     * Allows custom implementations to extend the {@code RuntimeDelegate} class.
+     */
     protected RuntimeDelegate() {
     }
-    private static final Object rdLock = new Object();
-    private static volatile RuntimeDelegate rd;
 
     /**
      * Obtain a RuntimeDelegate instance. If an instance had not already been
-     * created and set via {@link #setInstance(RuntimeDelegate)}, the first invocation will
-     * create an instance which will then be cached for future use.
+     * created and set via {@link #setInstance(RuntimeDelegate)}, the first
+     * invocation will create an instance which will then be cached for future use.
      *
      * <p>
      * The algorithm used to locate the RuntimeDelegate subclass to use consists
@@ -106,12 +113,12 @@ public abstract class RuntimeDelegate {
     public static RuntimeDelegate getInstance() {
         // Double-check idiom for lazy initialization of fields.
         // Local variable is used to limit the number of more expensive accesses to a volatile field.
-        RuntimeDelegate result = rd;
+        RuntimeDelegate result = cachedDelegate;
         if (result == null) { // First check (no locking)
-            synchronized (rdLock) {
-                result = rd;
+            synchronized (RD_LOCK) {
+                result = cachedDelegate;
                 if (result == null) { // Second check (with locking)
-                    rd = result = findDelegate();
+                    cachedDelegate = result = findDelegate();
                 }
             }
         }
@@ -121,6 +128,7 @@ public abstract class RuntimeDelegate {
     /**
      * Obtain a RuntimeDelegate instance using the method described in
      * {@link #getInstance}.
+     *
      * @return an instance of RuntimeDelegate
      */
     private static RuntimeDelegate findDelegate() {
@@ -150,17 +158,18 @@ public abstract class RuntimeDelegate {
      * Set the runtime delegate that will be used by JAX-RS classes. If this method
      * is not called prior to {@link #getInstance} then an implementation will
      * be sought as described in {@link #getInstance}.
+     *
      * @param rd the runtime delegate instance
      * @throws SecurityException if there is a security manager and the permission
      * ReflectPermission("suppressAccessChecks") has not been granted.
      */
-    public static void setInstance(RuntimeDelegate rd) throws SecurityException {
+    public static void setInstance(final RuntimeDelegate rd) throws SecurityException {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
-            security.checkPermission(rp);
+            security.checkPermission(suppressAccessChecksPermission);
         }
-        synchronized (rdLock) {
-            RuntimeDelegate.rd = rd;
+        synchronized (RD_LOCK) {
+            RuntimeDelegate.cachedDelegate = rd;
         }
     }
 
@@ -180,7 +189,7 @@ public abstract class RuntimeDelegate {
 
     /**
      * Create a new instance of a {@link javax.ws.rs.core.Variant.VariantListBuilder}.
-     * 
+     *
      * @return new VariantListBuilder instance
      * @see javax.ws.rs.core.Variant.VariantListBuilder
      */
@@ -193,7 +202,7 @@ public abstract class RuntimeDelegate {
      *
      * @param <T> endpoint type.
      * @param application the application configuration
-     * @param endpointType the type of endpoint instance to be created. 
+     * @param endpointType the type of endpoint instance to be created.
      * @return a configured instance of the requested type.
      * @throws java.lang.IllegalArgumentException if application is null or the
      * requested endpoint type is not supported.
@@ -207,7 +216,7 @@ public abstract class RuntimeDelegate {
      * Obtain an instance of a {@link HeaderDelegate} for the supplied class. An
      * implementation is required to support the following values for type:
      * {@link javax.ws.rs.core.Cookie}, {@link javax.ws.rs.core.CacheControl},
-     * {@link javax.ws.rs.core.EntityTag}, {@link javax.ws.rs.core.NewCookie}, 
+     * {@link javax.ws.rs.core.EntityTag}, {@link javax.ws.rs.core.NewCookie},
      * {@link javax.ws.rs.core.MediaType} and {@code java.util.Date}.
      *
      * @param <T> header type.
@@ -215,12 +224,13 @@ public abstract class RuntimeDelegate {
      * @return an instance of HeaderDelegate for the supplied type
      * @throws java.lang.IllegalArgumentException if type is null
      */
-    public abstract <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type);
+    public abstract <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) throws IllegalArgumentException;
 
     /**
      * Defines the contract for a delegate that is responsible for
-     * converting between the String form of a HTTP header and 
+     * converting between the String form of a HTTP header and
      * the corresponding JAX-RS type <code>T</code>.
+     *
      * @param <T> a JAX-RS type that corresponds to the value of a HTTP header
      */
     public static interface HeaderDelegate<T> {
@@ -229,19 +239,20 @@ public abstract class RuntimeDelegate {
          * Parse the supplied value and create an instance of <code>T</code>.
          * @param value the string value
          * @return the newly created instance of <code>T</code>
-         * @throws IllegalArgumentException if the supplied string cannot be 
+         * @throws IllegalArgumentException if the supplied string cannot be
          * parsed or is null
          */
         public T fromString(String value) throws IllegalArgumentException;
 
         /**
          * Convert the supplied value to a String.
+         *
          * @param value the value of type <code>T</code>
          * @return a String representation of the value
          * @throws IllegalArgumentException if the supplied object cannot be
          * serialized or is null
          */
-        public String toString(T value);
+        public String toString(T value) throws IllegalArgumentException;
     }
 
     /**

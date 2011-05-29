@@ -47,7 +47,7 @@ import java.lang.annotation.Target;
 
 /**
  * Disables automatic decoding of parameter values bound using {@link QueryParam},
- * {@link PathParam}, {@link FormParam} or {@link MatrixParam}. 
+ * {@link PathParam}, {@link FormParam} or {@link MatrixParam}.
  * Using this annotation on a method will disable decoding for all parameters.
  * Using this annotation on a class will disable decoding for all parameters of
  * all methods.

@@ -46,7 +46,7 @@ import java.lang.reflect.Type;
 
 /**
  * Represents a generic type {@code T}.
- * 
+ *
  * @param <T> the generic type parameter.
  *
  * @author Paul Sandoz
@@ -55,14 +55,12 @@ import java.lang.reflect.Type;
 public class GenericType<T> {
 
     private final Type t;
-
     private final Class c;
-    
+
     /**
      * Constructs a new generic type, deriving the generic type and class from
      * type parameter. Note that this constructor is protected, users should create
      * a (usually anonymous) subclass as shown above.
-     *
      */
     protected GenericType() {
         Type superclass = getClass().getGenericSuperclass();
@@ -70,11 +68,11 @@ public class GenericType<T> {
             throw new RuntimeException("Missing type parameter.");
         }
         ParameterizedType parameterized = (ParameterizedType) superclass;
-        
+
         this.t = parameterized.getActualTypeArguments()[0];
         this.c = getClass(this.t);
     }
-    
+
     /**
      * Constructs a new generic type, supplying the generic type
      * information and deriving the class.
@@ -84,7 +82,7 @@ public class GenericType<T> {
      * is null or is neither an instance of Class or ParameterizedType whose raw
      * type is not an instance of Class.
      */
-    public GenericType(Type genericType) {
+    public GenericType(final Type genericType) throws IllegalArgumentException {
         if (genericType == null) {
             throw new IllegalArgumentException("Type must not be null");
         }
@@ -92,27 +90,27 @@ public class GenericType<T> {
         this.t = genericType;
         this.c = getClass(this.t);
     }
-    
-    private static Class getClass(Type type) {
+
+    private static Class getClass(final Type type) {
         if (type instanceof Class) {
-            return (Class)type;
+            return (Class) type;
         } else if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType)type;
+            ParameterizedType parameterizedType = (ParameterizedType) type;
             if (parameterizedType.getRawType() instanceof Class) {
-                return (Class)parameterizedType.getRawType();
+                return (Class) parameterizedType.getRawType();
             }
         } else if (type instanceof GenericArrayType) {
             GenericArrayType array = (GenericArrayType) type;
             return getArrayClass((Class) ((ParameterizedType) array.getGenericComponentType()).getRawType());
         }
-        throw new IllegalArgumentException("Type parameter not a class or " +
-                "parameterized type whose raw type is a class");        
+        throw new IllegalArgumentException("Type parameter not a class or "
+                + "parameterized type whose raw type is a class");
     }
-    
+
     /**
      * Gets underlying {@code Type} instance derived from the
      * type.
-     * 
+     *
      * @return the type.
      */
     public final Type getType() {
@@ -122,7 +120,7 @@ public class GenericType<T> {
     /**
      * Gets underlying raw class instance derived from the
      * type.
-     * 
+     *
      * @return the class.
      */
     @SuppressWarnings("unchecked")
@@ -136,7 +134,7 @@ public class GenericType<T> {
      * @param c the component class of the array
      * @return the array class.
      */
-    private static Class getArrayClass(Class c) {
+    private static Class getArrayClass(final Class c) {
         try {
             Object o = Array.newInstance(c, 0);
             return o.getClass();

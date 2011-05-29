@@ -48,7 +48,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class CookieTest {
-    
+
     @Before
     public void setUp() throws Exception {
         RuntimeDelegate.setInstance(new RuntimeDelegateStub());

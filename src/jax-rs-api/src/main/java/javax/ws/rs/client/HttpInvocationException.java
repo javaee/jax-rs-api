@@ -40,25 +40,25 @@
 package javax.ws.rs.client;
 
 /**
- * A runtime exception thrown when the status code of the returned HTTP response 
- * indicates a response that is not expected.
+ * A runtime exception thrown during the HTTP request invocation processing,
+ * that signals a failure to process the HTTP request or response. The exception
+ * message or nested {@link Throwable} cause SHOULD contain additional information
+ * about the reason of the processing failure. The exception is also thrown when
+ * the status code of the returned HTTP response indicates a response that is not
+ * expected.
  * <p />
- * This exception is typically thrown by {@link HttpMethodInvoker} methods. It is 
- * also thrown by any of the {@code get(...)} methods of the typed response 
- * {@link java.util.concurrent.Future} returned from {@link AsyncHttpMethodInvoker} 
- * methods. Additionally, the exception is also thrown by 
- * {@link ClientResponse} {@code getEntity(...)} methods in case the returned response
- * is HTTP 204 (No Content).
- * 
- * @author Paul Sandoz
+ * This exception is typically thrown by the {@link ClientRequest} HTTP invocation
+ * methods. Additionally, the exception is also thrown by {@link ClientResponse}
+ * {@code getEntity(...)} methods in case the returned response is
+ * HTTP 204 (No Content).
+ *
  * @author Marek Potociar
  * @since 2.0
  */
-public class InvocationException extends RuntimeException {
+public class HttpInvocationException extends RuntimeException {
 
     private static final long serialVersionUID = -8551966770517714263L;
-
-    transient private final ClientResponse r;
+    private transient final ClientResponse response;
 
     /**
      * Construct a uniform interface exception.
@@ -66,27 +66,27 @@ public class InvocationException extends RuntimeException {
      * The client response entity will be buffered by calling
      * {@link ClientResponse#bufferEntity() }.
      *
-     * @param r the client response. The message of the exception is set to
+     * @param response the client response. The message of the exception is set to
      *        r.toString();
      */
-    public InvocationException(ClientResponse r) {
-        this(r, true);
+    public HttpInvocationException(final ClientResponse response) {
+        this(response, true);
     }
 
     /**
      * Construct a uniform interface exception.
      *
-     * @param r the client response. The message of the exception is set to
+     * @param response the client response. The message of the exception is set to
      *        r.toString();
      * @param bufferResponseEntity if true buffer the client response entity by calling
      *                             {@link ClientResponse#bufferEntity() }.
      */
-    public InvocationException(ClientResponse r, boolean bufferResponseEntity) {
-        super(r.toString());
+    public HttpInvocationException(final ClientResponse response, final boolean bufferResponseEntity) {
+        super(response.toString());
         if (bufferResponseEntity) {
-            r.bufferEntity();
+            response.bufferEntity();
         }
-        this.r = r;
+        this.response = response;
     }
 
     /**
@@ -96,36 +96,38 @@ public class InvocationException extends RuntimeException {
      * {@link ClientResponse#bufferEntity() }.
      *
      * @param message the message of the exception.
-     * @param r the client response.
+     * @param response the client response.
      *
      */
-    public InvocationException(String message, ClientResponse r) {
-        this(message, r, true);
+    public HttpInvocationException(final String message, final ClientResponse response) {
+        this(message, response, true);
     }
 
     /**
      * Construct a uniform interface exception.
      *
      * @param message the message of the exception.
-     * @param r the client response.
+     * @param response the client response.
      * @param bufferResponseEntity if true buffer the client response entity by calling
      *                             {@link ClientResponse#bufferEntity() }.
      *
      */
-    public InvocationException(String message, ClientResponse r, boolean bufferResponseEntity) {
+    public HttpInvocationException(final String message,
+            final ClientResponse response,
+            final boolean bufferResponseEntity) {
         super(message);
         if (bufferResponseEntity) {
-            r.bufferEntity();
+            response.bufferEntity();
         }
-        this.r = r;
+        this.response = response;
     }
 
     /**
      * Get the client response associated with the exception.
-
+    
      * @return the client response.
      */
     public ClientResponse getResponse() {
-        return r;
+        return response;
     }
 }

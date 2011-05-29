@@ -57,30 +57,31 @@
  */
 package javax.ws.rs.core;
 
-import javax.ws.rs.ext.MessageBodyWriter;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import javax.ws.rs.ext.MessageBodyWriter;
+
 /**
  * Represents a response entity of a generic type {@code T}.
- * 
+ *
  * <p>Normally type erasure removes generic type information such that a
  * {@link Response} instance that contains, e.g., an entity of type
  * {@code List<String>} appears to contain a raw {@code List<?>} at runtime.
  * When the generic type is required to select a suitable
  * {@link MessageBodyWriter}, this class may be used to wrap the entity and
  * capture its generic type.</p>
- * 
+ *
  * <p>There are two ways to create an instance:</p>
  * <ol>
- * <li>Create a (typically anonymous) subclass of this 
- * class which enables retrieval of the type information at runtime despite 
+ * <li>Create a (typically anonymous) subclass of this
+ * class which enables retrieval of the type information at runtime despite
  * type erasure. For example, the following code shows how to create a
  * {@link Response} containing an entity of type {@code List<String>} whose
  * generic type will be available at runtime for selection of a suitable
  * {@link MessageBodyWriter}:
- * 
+ *
  * <pre>List&lt;String&gt; list = new ArrayList&lt;String&gt;();
  *GenericEntity&lt;List&lt;String&gt;&gt; entity = new GenericEntity&lt;List&lt;String&gt;&gt;(list) {};
  *Response response = Response.ok(entity).build();</pre>
@@ -96,7 +97,7 @@ import java.lang.reflect.Type;
  *    method.invoke(...), method.getGenericReturnType());
  *Response response = Response.ok(entity).build();</pre></li>
  * <p>The above obtains the generic type from the return type of the method,
- * the raw type is the class of entity.</p> 
+ * the raw type is the class of entity.</p>
  * </ol>
  *
  * @param <T> response entity instance type
@@ -119,7 +120,7 @@ public class GenericEntity<T> {
      * @param entity the entity instance, must not be null
      * @throws IllegalArgumentException if entity is null
      */
-    protected GenericEntity(T entity) {
+    protected GenericEntity(final T entity) throws IllegalArgumentException {
         if (entity == null) {
             throw new IllegalArgumentException("The entity must not be null");
         }
@@ -129,8 +130,8 @@ public class GenericEntity<T> {
     }
 
     /**
-     * Create a new instance of GenericEntity, supplying the generic type
-     * information. The entity must be assignable to a variable of the
+     * Create a new instance of GenericEntity, supplying the generic type information.
+     * The entity must be assignable to a variable of the
      * supplied generic type, e.g. if {@code entity} is an instance of
      * {@code ArrayList<String>} then {@code genericType} could
      * be the same or a superclass of {@code ArrayList} with the same generic
@@ -141,7 +142,7 @@ public class GenericEntity<T> {
      * a variable of the supplied generic type or if entity or genericType
      * is null.
      */
-    public GenericEntity(T entity, Type genericType) {
+    public GenericEntity(final T entity, final Type genericType) throws IllegalArgumentException {
         if (entity == null || genericType == null) {
             throw new IllegalArgumentException("Arguments must not be null");
         }
@@ -151,7 +152,7 @@ public class GenericEntity<T> {
         this.type = genericType;
     }
 
-    private void checkTypeCompatibility(Class<?> c, Type t) {
+    private void checkTypeCompatibility(final Class<?> c, final Type t) {
         if (t instanceof Class) {
             Class<?> ct = (Class<?>) t;
             if (ct.isAssignableFrom(c)) {
@@ -177,7 +178,7 @@ public class GenericEntity<T> {
      * @param subclass class to return the super class's type for.
      * @return super class's type.
      */
-    private static Type getSuperclassTypeParameter(Class<?> subclass) {
+    private static Type getSuperclassTypeParameter(final Class<?> subclass) {
         Type superclass = subclass.getGenericSuperclass();
         if (!(superclass instanceof ParameterizedType)) {
             throw new RuntimeException("Missing type parameter.");
@@ -190,7 +191,8 @@ public class GenericEntity<T> {
      * Gets the raw type of the enclosed entity. Note that this is the raw type of
      * the instance, not the raw type of the type parameter. I.e. in the example
      * in the introduction, the raw type is {@code ArrayList} not {@code List}.
-     * @return the raw type
+     *
+     * @return the raw type.
      */
     public final Class<?> getRawType() {
         return rawType;
@@ -201,6 +203,7 @@ public class GenericEntity<T> {
      * type parameter, not the enclosed instance. I.e. in the example
      * in the introduction, the type is {@code List<String>} not
      * {@code ArrayList<String>}.
+     *
      * @return the type
      */
     public final Type getType() {
@@ -208,8 +211,9 @@ public class GenericEntity<T> {
     }
 
     /**
-     * Get the enclosed entity
-     * @return the enclosed entity
+     * Get the enclosed entity.
+     *
+     * @return the enclosed entity.
      */
     public final T getEntity() {
         return entity;

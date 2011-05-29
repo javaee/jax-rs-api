@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -48,13 +48,13 @@ import java.util.Map.Entry;
 
 /**
  * An implementation of {@link MultivaluedMap} on top of a {@link HashMap}.
- * 
+ *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
- * 
+ *
  * @author Paul Sandoz
  * @author Marek Potociar
- * 
+ *
  * @since 2.0
  */
 public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements MultivaluedMap<K, V> {
@@ -62,10 +62,10 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
     static final long serialVersionUID = -6052320403766368902L;
 
     /**
-     * Constructs an empty multivalued hash map with initial capacity and load 
+     * Constructs an empty multivalued hash map with initial capacity and load
      * factor set to {@link HashMap} defaults.
-     * 
-     * @see HashMap#HashMap() 
+     *
+     * @see HashMap#HashMap()
      */
     public MultivaluedHashMap() {
     }
@@ -76,7 +76,7 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
      *
      * @param  initialCapacity the initial capacity.
      * @throws IllegalArgumentException if the initial capacity is negative.
-     * 
+     *
      * @see HashMap#HashMap(int)
      */
     public MultivaluedHashMap(int initialCapacity) {
@@ -91,19 +91,19 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
      * @param  loadFactor      the load factor
      * @throws IllegalArgumentException if the initial capacity is negative
      *         or the load factor is nonpositive
-     * 
+     *
      * @see HashMap#HashMap(int, float)
      */
     public MultivaluedHashMap(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
     }
-    
+
     /**
      * Constructs a new multivalued hash map with the same mappings as the
-     * specified {@link MultivaluedMap }. The {@link List} instances holding 
+     * specified {@link MultivaluedMap }. The {@link List} instances holding
      * the values of each key are created anew instead of being reused.
      *
-     * @param  map the multivalued map whose mappings are to be placed in this 
+     * @param  map the multivalued map whose mappings are to be placed in this
      *     multivalued map.
      * @throws NullPointerException if the specified map is {@code null}
      */
@@ -112,9 +112,9 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
     }
 
     /**
-     * This private method is used by the copy constructor to avoid exposing 
+     * This private method is used by the copy constructor to avoid exposing
      * additional generic parameters through the public API documentation.
-     * 
+     *
      * @param <T> any subclass of K
      * @param <U> any subclass of V
      * @param map the map
@@ -125,12 +125,12 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
         }
     }
 
-    
+
     /**
      * Constructs a new multivalued hash map with the same mappings as the
      * specified single-valued {@link Map }.
-     * 
-     * @param  map the single-valued map whose mappings are to be placed in this 
+     *
+     * @param  map the single-valued map whose mappings are to be placed in this
      *     multivalued map.
      * @throws NullPointerException if the specified map is {@code null}
      */
@@ -141,19 +141,19 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
     }
 
     /**
-     * Set the value for the key to be a one item list consisting of the supplied 
+     * Set the value for the key to be a one item list consisting of the supplied
      * value. Any existing values will be replaced.
      * <p />
      * NOTE: This implementation ignores {@code null} values; A supplied value
-     * of {@code null} is ignored and not added to the purged value list. 
-     * As a result of such operation, empty value list would  be registered for 
-     * the supplied key. Overriding implementations may modify this behavior by 
+     * of {@code null} is ignored and not added to the purged value list.
+     * As a result of such operation, empty value list would  be registered for
+     * the supplied key. Overriding implementations may modify this behavior by
      * redefining the {@link #addNull(java.util.List)} method.
-     * 
+     *
      * @param key the key
-     * @param value the single value of the key. If the value is {@code null} it 
+     * @param value the single value of the key. If the value is {@code null} it
      *     will be ignored.
-     */    
+     */
     @Override
     public final void putSingle(K key, V value) {
         List<V> values = getValues(key);
@@ -172,8 +172,8 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
      * Default implementation is a no-op, i.e. the {@code null} values are ignored.
      * Overriding implementations may modify this behavior by providing their
      * own definitions of this method.
-     * 
-     * @param values value list where the {@code null} value addition is being 
+     *
+     * @param values value list where the {@code null} value addition is being
      *     requested.
      */
     protected void addNull(List<V> values) {
@@ -187,8 +187,8 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
      * Default implementation is a no-op, i.e. the {@code null} values are ignored.
      * Overriding implementations may modify this behavior by providing their
      * own definitions of this method.
-     * 
-     * @param values value list where the {@code null} value addition is being 
+     *
+     * @param values value list where the {@code null} value addition is being
      *     requested.
      */
     protected void addFirstNull(List<V> values) {
@@ -200,11 +200,11 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
      * Add a value to the current list of values for the supplied key.
      * <p />
      * NOTE: This implementation ignores {@code null} values; A supplied value
-     * of {@code null} is ignored and not added to the purged value list. Overriding 
-     * implementations may modify this behavior by redefining the 
+     * of {@code null} is ignored and not added to the purged value list. Overriding
+     * implementations may modify this behavior by redefining the
      * {@link #addNull(java.util.List)} method.
-     * 
-     * @param key the key 
+     *
+     * @param key the key
      * @param value the value to be added.
      */
     public final void add(K key, V value) {
@@ -228,15 +228,15 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
     }
 
     /**
-     * Add a value to the first position in the current list of values for the 
+     * Add a value to the first position in the current list of values for the
      * supplied key.
      * <p />
      * NOTE: This implementation ignores {@code null} values; A supplied value
-     * of {@code null} is ignored and not added to the purged value list. Overriding 
-     * implementations may modify this behavior by redefining the 
+     * of {@code null} is ignored and not added to the purged value list. Overriding
+     * implementations may modify this behavior by redefining the
      * {@link #addFirstNull(java.util.List)} method.
-     * 
-     * @param key the key 
+     *
+     * @param key the key
      * @param value the value to be added.
      */
     public final void addFirst(K key, V value) {
@@ -250,15 +250,15 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
     }
 
     /**
-     * Return a non-null list of values for a given key. The returned list may be 
+     * Return a non-null list of values for a given key. The returned list may be
      * empty.
      * <p />
-     * If there is no entry for the key in the map, a new empty {@link List} 
-     * instance is created, registered within the map to hold the values of 
+     * If there is no entry for the key in the map, a new empty {@link List}
+     * instance is created, registered within the map to hold the values of
      * the key and returned from the method.
-     * 
+     *
      * @param key the key
-     * @return value list registered with the key. The method is guaranteed to never 
+     * @return value list registered with the key. The method is guaranteed to never
      *     return {@code null}.
      */
     protected final List<V> getValues(K key) {
