@@ -41,26 +41,22 @@ package javax.ws.rs.client;
 
 import java.net.URI;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.Future;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
 
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.RuntimeDelegate;
-import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
+import javax.ws.rs.core.UriBuilder;
 
 /**
  * A mutable client (out-bound) HTTP request.
  * <p>
- * Instances may be created by using one of the Client HTTP method-specific
+ * Instances may be created by using one of the Client HTTP prepareMethod-specific
  * {@code ClientRequest} factory methods.
  * For example,
  * <blockquote><pre>
  * Client client = Client.create("http://jaxrs.example.com/jaxrsApplication/customers");
  *
- * ClientRequest postRequest = client.post();
+ * ClientRequest postRequest = client.preparePost();
  * postRequest.entity(new Customer("Marek")).type("application/xml");
  *
  * ClientResponse response = postRequest.invoke();
@@ -68,16 +64,36 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
  *
  * {@link Client} and {@code ClientRequest} API support the fluent invocation
  * builder DSL. The example above can be therefore shortened into the following
- * chain of method invocations:
+ * chain of prepareMethod invocations:
  * <blockquote><pre>
  * ClientResponse response = Client.create("http://jaxrs.example.com/jaxrsApplication/customers")
- *     .post().entity(new Customer("Marek")).type("application/xml").invoke();
+ *     .preparePost().entity(new Customer("Marek")).type("application/xml").invoke();
  * </pre></blockquote>
  *
+ * @param <T> TODO
  * @author Marek Potociar
  * @since 2.0
  */
-public abstract class ClientRequest {
+public interface ClientRequest<T extends ClientRequest> extends Cloneable {
+    
+    public static interface Builder<T extends ClientRequest> {
+
+        T prepareGet();
+
+        T preparePut();
+
+        T preparePost();
+
+        T prepareDelete();
+
+        T prepareHead();
+
+        T prepareOptions();
+        
+        T prepareTrace();
+
+        T prepareMethod(String name);
+    }
 
     // Getters
     /**
@@ -86,110 +102,88 @@ public abstract class ClientRequest {
      *
      * @return the URI of the request.
      */
-    public abstract URI getURI();
+    URI getURI();
 
     /**
-     * Get the HTTP method of the request.
+     * Get the HTTP prepareMethod of the request.
      *
-     * @return the HTTP method.
+     * @return the HTTP prepareMethod.
      */
-    public abstract String getMethod();
+    String getMethod();
 
     /**
      * Get the entity of the request.
      *
      * @return the entity of the request.
      */
-    public abstract Object getEntity();
+    Object getEntity();
 
     /**
      * Get the HTTP headers of the request.
      *
      * @return the HTTP headers of the request.
      */
-    public abstract MultivaluedMap<String, Object> getHeaders();
+    MultivaluedMap<String, Object> getHeaders();
+
+    // URI builder methods
+    T pathParam(String name, Object value) throws IllegalArgumentException;
+
+    T pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+
+    T formParam(String name, Object value) throws IllegalArgumentException;
+
+    T formParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+
+    T queryParam(String name, Object value) throws IllegalArgumentException;
+
+    T queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+    
+    T redirect(String uri);
+    
+    T redirect(URI uri);
+    
+    T redirect(UriBuilder uri);
+       
+    // Request modifiers    
+    /**
+     * Add acceptable media types.
+     *
+     * @param types an array of the acceptable media types
+     * @return the builder.
+     */
+    T accept(MediaType... types);
 
     /**
-     * Get the mutable property bag.
+     * Add acceptable media types.
      *
-     * @return the property bag.
+     * @param types an array of the acceptable media types
+     * @return the builder.
      */
-    public abstract Map<String, Object> getProperties();
+    T accept(String... types);
 
     /**
-     * Determine if a feature is enabled.
+     * Add acceptable languages.
      *
-     * @param featureName the name of the feature.
-     * @return {@code true} if the feature value is present in the property bag
-     *     and is an instance of {@link java.lang.Boolean} and that value is {@code true},
-     *     otherwise {@code false}.
+     * @param locales an array of the acceptable languages
+     * @return the builder.
      */
-    public boolean isEnabled(final String featureName) {
-        return getPropertyAsFeature(featureName, false);
-    }
+    T acceptLanguage(Locale... locales);
 
     /**
-     * Get a feature that is boolean property of the property bag.
+     * Add acceptable languages.
      *
-     * @param name the name of the feature.
-     * @param defaultValue the default boolean value if the property is absent.
-     * @return true if the feature value is present and is an instance of
-     *         {@link java.lang.Boolean} and that value is true, otherwise the
-     *         <code>defaultValue</code>.
+     * @param locales an array of the acceptable languages
+     * @return the builder.
      */
-    private boolean getPropertyAsFeature(final String name, final boolean defaultValue) {
-        Boolean v = (Boolean) getProperties().get(name);
-        return (v != null) ? v : defaultValue;
-    }
-
-    // Path builder methods
-    public abstract ClientRequest formParam(String name, Object value) throws IllegalArgumentException;
-
-    public abstract ClientRequest formParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
-
-    public abstract ClientRequest queryParam(String name, Object value) throws IllegalArgumentException;
-
-    public abstract ClientRequest queryParams(MultivaluedMap<String, Object> parameters)
-            throws IllegalArgumentException;
-
-    public abstract ClientRequest pathParam(String name, Object value) throws IllegalArgumentException;
-
-    public abstract ClientRequest pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
-
-    // Request builder methods
-    /**
-     * TODO javadoc.
-     *
-     * @param name property name.
-     * @param value property value.
-     * @return the updated request.
-     */
-    public abstract ClientRequest property(String name, Object value);
+    T acceptLanguage(String... locales);
 
     /**
-     * TODO javadoc.
+     * Add a cookie to be set.
      *
-     * @param name feature name.
-     * @return the updated request.
+     * @param cookie to be set.
+     * @return the builder
      */
-    public abstract ClientRequest enableFeature(String name);
-
-    /**
-     * TODO javadoc.
-     *
-     * @param name feature name.
-     * @return the updated request.
-     */
-    public abstract ClientRequest disableFeature(String name);
-
-    /**
-     * Sets properties (replaces everything previously set).
-     *
-     * @param properties set of properties for the client request. The content of
-     *     the map will replace any existing properties set on the client request.
-     * @return the updated request
-     */
-    public abstract ClientRequest properties(Map<String, Object> properties);
+    T cookie(Cookie cookie);
 
     /**
      * Set the request entity.
@@ -202,63 +196,7 @@ public abstract class ClientRequest {
      * @param entity the request entity
      * @return the builder.
      */
-    public abstract ClientRequest entity(Object entity);
-
-    /**
-     * Set the media type.
-     *
-     * @param type the media type
-     * @return the builder.
-     */
-    public abstract ClientRequest type(MediaType type);
-
-    /**
-     * Set the media type.
-     *
-     * @param type the media type
-     * @return the builder.
-     */
-    public abstract ClientRequest type(String type);
-
-    /**
-     * Add acceptable media types.
-     *
-     * @param types an array of the acceptable media types
-     * @return the builder.
-     */
-    public abstract ClientRequest accept(MediaType... types);
-
-    /**
-     * Add acceptable media types.
-     *
-     * @param types an array of the acceptable media types
-     * @return the builder.
-     */
-    public abstract ClientRequest accept(String... types);
-
-    /**
-     * Add acceptable languages.
-     *
-     * @param locales an array of the acceptable languages
-     * @return the builder.
-     */
-    public abstract ClientRequest acceptLanguage(Locale... locales);
-
-    /**
-     * Add acceptable languages.
-     *
-     * @param locales an array of the acceptable languages
-     * @return the builder.
-     */
-    public abstract ClientRequest acceptLanguage(String... locales);
-
-    /**
-     * Add a cookie to be set.
-     *
-     * @param cookie to be set.
-     * @return the builder
-     */
-    public abstract ClientRequest cookie(Cookie cookie);
+    T entity(Object entity);
 
     /**
      * Add an HTTP header and value.
@@ -267,41 +205,44 @@ public abstract class ClientRequest {
      * @param value the HTTP header value.
      * @return the builder.
      */
-    public abstract ClientRequest header(String name, Object value);
+    T header(String name, Object value);
+//    
+//    private static final RuntimeDelegate RUNTIME_DELEGATE = RuntimeDelegate.getInstance();
+//
+//    /**
+//     * Convert a header value, represented as a general object, to the
+//     * string value.
+//     * <p>
+//     * This prepareMethod defers to {@link RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
+//     * to obtain a {@link HeaderDelegate} to convert the value to a string. If
+//     * a {@link HeaderDelegate} is not found then the {@link Object#toString() toString()}
+//     * prepareMethod is utilized.
+//     *
+//     * @param headerValue the header value as an object.
+//     * @return the string value
+//     */
+//    @SuppressWarnings("unchecked")
+//    protected static String convertHeaderValueToString(final Object headerValue) {
+//        HeaderDelegate hp = RUNTIME_DELEGATE.createHeaderDelegate(headerValue.getClass());
+//
+//        return (hp != null) ? hp.toString(headerValue) : headerValue.toString();
+//    }
+
+    T method(String httpMethod);
     
-    private static final RuntimeDelegate RUNTIME_DELEGATE = RuntimeDelegate.getInstance();
+    /**
+     * Set the media type.
+     *
+     * @param type the media type
+     * @return the builder.
+     */
+    T type(MediaType type);
 
     /**
-     * Convert a header value, represented as a general object, to the
-     * string value.
-     * <p>
-     * This method defers to {@link RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
-     * to obtain a {@link HeaderDelegate} to convert the value to a string. If
-     * a {@link HeaderDelegate} is not found then the {@link Object#toString() toString()}
-     * method is utilized.
+     * Set the media type.
      *
-     * @param headerValue the header value as an object.
-     * @return the string value
+     * @param type the media type
+     * @return the builder.
      */
-    @SuppressWarnings("unchecked")
-    protected static String getHeaderValue(final Object headerValue) {
-        HeaderDelegate hp = RUNTIME_DELEGATE.createHeaderDelegate(headerValue.getClass());
-
-        return (hp != null) ? hp.toString(headerValue) : headerValue.toString();
-    }
-
-    // Invocation methods
-    public abstract ClientResponse invoke() throws HttpInvocationException;
-
-    public abstract <T> T invoke(Class<T> responseType) throws HttpInvocationException;
-
-    public abstract <T> T invoke(GenericType<T> responseType) throws HttpInvocationException;
-
-    public abstract Future<ClientResponse> start();
-
-    public abstract <T> Future<T> start(Class<T> responseType);
-
-    public abstract <T> Future<T> start(GenericType<T> responseType);
-
-    public abstract <T> Future<T> start(InvocationCallback<T> callback);
+    T type(String type);
 }

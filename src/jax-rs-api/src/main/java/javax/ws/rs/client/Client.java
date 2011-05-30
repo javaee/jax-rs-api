@@ -41,12 +41,14 @@ package javax.ws.rs.client;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ws.rs.core.GenericType;
 
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.ext.ClientFactory;
 import javax.ws.rs.ext.Providers;
 
 /**
@@ -57,58 +59,44 @@ import javax.ws.rs.ext.Providers;
  */
 public abstract class Client {
 
-    /**
-     * TODO javadoc.
-     */
-    public static interface Builder {
-        public Builder using(ClientConfiguration config);
+    public static interface Builder<T extends Client, C extends ClientConfiguration> {
 
-        public Client create();
+        T create();
+
+        T create(C config);
     }
-
+    
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
-    //
-    private final AtomicBoolean closed = new AtomicBoolean(false);
-    private final URI uri = null;
 
     // Factory
-    /**
-     * Create client for specified resource URI using default configuration.
-     * TODO fix javadoc
-     *
-     * @param uri resource URI
-     * @return a default client.
-     */
-    public static Client.Builder of(final String uri) {
+    public static <B extends Builder<?, ?>> B providedBy(Class<? extends ClientFactory<B>> factoryClass) {
+        return getFactory(factoryClass).createClientBuilder();
+    }
+    
+    private static <C extends ClientFactory<?>> C getFactory(Class<C> factoryClass) {
+        try {
+            return factoryClass.newInstance(); // TODO instance caching(?), injecting, setup, etc.
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Unable to instantiate client builder factory.", ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Unable to instantiate client builder factory.", ex);
+        }
+        
+        return null;
+    }
+    
+    public static Client create() {
         // todo implement
         return null;
     }
 
-    public static Client.Builder of(final URI uri) {
+    public static Client create(ClientConfiguration configuration) {
         // todo implement
         return null;
     }
 
-    public static Client.Builder of(final UriBuilder uri) {
-        // todo implement
-        return null;
-    }
-
-    public static Client create(final String uri) {
-        // todo implement
-        return null;
-    }
-
-    public static Client create(final URI uri) {
-        // todo implement
-        return null;
-    }
-
-    public static Client create(final UriBuilder uriBuilder) {
-        // todo implement
-        return null;
-    }
-
+    private final AtomicBoolean closed = new AtomicBoolean(false);    
+    
     /**
      * Protected constructor used by concrete implementations of the {@link Client}
      * class.
@@ -116,10 +104,9 @@ public abstract class Client {
      * Use one of the static {@code Client.create(...)} factory methods to obtain
      * a new JAX-RS client instance.
      *
-     * @param uriBuilder TODO
      * @param configuration holder for the client configuration
      */
-    protected Client(final UriBuilder uriBuilder, final ClientConfiguration configuration) {
+    protected Client(final ClientConfiguration configuration) {
         // todo implement
     }
 
@@ -166,25 +153,6 @@ public abstract class Client {
 
     // Getters
     /**
-     * Get the URI identifying the resource.
-     *
-     * @return the URI.
-     */
-    public final URI getURI() {
-        return uri;
-    }
-
-    /**
-     * Get the URI builder initialized with the {@link URI} identifying the
-     * resource.
-     *
-     * @return the URI builder.
-     */
-    public final UriBuilder getUriBuilder() {
-        return UriBuilder.fromUri(uri);
-    }
-
-    /**
      * Get the mutable property bag.
      *
      * @return the property bag.
@@ -198,30 +166,32 @@ public abstract class Client {
      */
     public abstract Providers getProviders();
 
-    // Sub-resource client buidler methods
-
-    public abstract Client path(String path) throws IllegalArgumentException;
-
-    public abstract Client queryParam(String name, Object value) throws IllegalArgumentException;
-
-    public abstract Client queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
-
-    public abstract Client pathParam(String name, Object value) throws IllegalArgumentException;
-
-    public abstract Client pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
-
     // Request builder methods
-    public abstract ClientRequest get();
+    public abstract ClientRequest.Builder<HttpInvocation> request(String uri) throws IllegalArgumentException, NullPointerException;
 
-    public abstract ClientRequest put();
+    public abstract ClientRequest.Builder<HttpInvocation> request(URI uri) throws NullPointerException;
 
-    public abstract ClientRequest post();
+    public abstract ClientRequest.Builder<HttpInvocation> request(UriBuilder uriBuilder) throws NullPointerException;
 
-    public abstract ClientRequest delete();
+    // Request builder methods    
+    public abstract ResourceUri resourceUri(String uri) throws IllegalArgumentException, NullPointerException;
 
-    public abstract ClientRequest head();
+    public abstract ResourceUri resourceUri(URI uri) throws NullPointerException;
 
-    public abstract ClientRequest options();
+    public abstract ResourceUri resourceUri(UriBuilder uriBuilder) throws NullPointerException;
 
-    public abstract ClientRequest method(String name);
+    // Invocation methods
+    public abstract ClientResponse invoke(ClientRequest request) throws HttpInvocationException;
+
+    public abstract <T> T invoke(ClientRequest request, Class<T> responseType) throws HttpInvocationException;
+
+    public abstract <T> T invoke(ClientRequest request, GenericType<T> responseType) throws HttpInvocationException;
+
+    public abstract Future<ClientResponse> start(ClientRequest request);
+
+    public abstract <T> Future<T> start(ClientRequest<?> request, Class<T> responseType);
+
+    public abstract <T> Future<T> start(ClientRequest<?> request, GenericType<T> responseType);
+
+    public abstract <T> Future<T> start(ClientRequest<?> request, InvocationCallback<T> callback);
 }

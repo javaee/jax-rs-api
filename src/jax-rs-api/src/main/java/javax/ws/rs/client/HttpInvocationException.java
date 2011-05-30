@@ -55,7 +55,7 @@ package javax.ws.rs.client;
  * @author Marek Potociar
  * @since 2.0
  */
-public class HttpInvocationException extends RuntimeException {
+public class HttpInvocationException extends ClientException {
 
     private static final long serialVersionUID = -8551966770517714263L;
     private transient final ClientResponse response;
