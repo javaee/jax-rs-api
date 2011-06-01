@@ -42,6 +42,7 @@ package jaxrs.examples.client.encoding;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientConfiguration;
 import javax.ws.rs.client.DefaultClientConfiguration;
+import javax.ws.rs.client.ResourceUri;
 
 /**
  * @author Bill Burke
@@ -57,12 +58,12 @@ public class GzipExample {
         ClientConfiguration config = new DefaultClientConfiguration();
         config.getClasses().add(GzipDecoder.class);
         config.getClasses().add(GzipEncoder.class);
-        Client client = Client.of("http://example.com/foo/bar.txt").using(config).create();
+        ResourceUri resourceUri = Client.create(config).resourceUri("http://example.com/foo/bar.txt");
 
         // getting a gzip encoded body
-        String text = client.get().invoke(String.class);
+        String text = resourceUri.prepareGet().invoke(String.class);
 
         // send a gzip encoded body
-        client.post().header("Content-Encoding", "gzip").invoke();
+        resourceUri.preparePost().header("Content-Encoding", "gzip").invoke();
     }
 }

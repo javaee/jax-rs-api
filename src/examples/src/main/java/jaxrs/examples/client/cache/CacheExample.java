@@ -43,6 +43,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientConfiguration;
 import javax.ws.rs.client.DefaultClientConfiguration;
 import java.util.HashMap;
+import javax.ws.rs.client.HttpInvocation;
 
 /**
  * @author Bill Burke
@@ -64,10 +65,10 @@ public class CacheExample {
         config.getSingletons().add(finder);
         config.getSingletons().add(cacher);
 
-        Client client = Client.of("http://example.com/foo/bar.txt").using(config).create();
+        HttpInvocation request = Client.create(config).request("http://example.com/foo/bar.txt").prepareGet();
 
-        String text = client.get().invoke(String.class);
-        String second = client.get().invoke(String.class);
+        String text = request.invoke(String.class);
+        String second = request.invoke(String.class);
         
         System.out.println(text);
         System.out.println(second);
