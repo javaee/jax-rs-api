@@ -110,10 +110,10 @@ public interface ClientResponse {
      *
      * @return a response entity instance as a generic Java object.
      *
-     * @throws HttpInvocationException if there is an error processing the response
+     * @throws InvocationException if there is an error processing the response
      *     or if the response status is 204 (No Content).
      */
-    Object getEntity() throws HttpInvocationException;
+    Object getEntity() throws InvocationException;
 
     /**
      * Get the entity of the response.
@@ -125,10 +125,10 @@ public interface ClientResponse {
      * @param entityType the type of the entity.
      * @return a response entity instance of the specified type.
      *
-     * @throws HttpInvocationException if there is an error processing the response
+     * @throws InvocationException if there is an error processing the response
      *     or if the response status is 204 (No Content).
      */
-    <T> T getEntity(Class<T> entityType) throws HttpInvocationException;
+    <T> T getEntity(Class<T> entityType) throws InvocationException;
 
     /**
      * Get the entity of the response represented by a generic type.
@@ -140,10 +140,10 @@ public interface ClientResponse {
      * @param entityType the generic type of the entity.
      * @return a response entity instance of the specified generic type.
      *
-     * @throws HttpInvocationException if there is an error processing the response
+     * @throws InvocationException if there is an error processing the response
      *     or if the response status is 204 (No Content).
      */
-    <T> T getEntity(GenericType<T> entityType) throws HttpInvocationException;
+    <T> T getEntity(GenericType<T> entityType) throws InvocationException;
 
     /**
      * Get the response input stream.
@@ -232,17 +232,17 @@ public interface ClientResponse {
      * All the bytes of the original entity input stream will be read and stored
      * in memory. The original entity input stream will then be closed.
      *
-     * @throws HttpInvocationException if there is an error processing the response.
+     * @throws InvocationException if there is an error processing the response.
      */
-    void bufferEntity() throws HttpInvocationException;
+    void bufferEntity() throws InvocationException;
 
     /**
      * Close the response and all resources associated with the response.
      * As part of the operation, if open, the entity input stream is closed.
      *
-     * @throws HttpInvocationException if there is an error closing the response.
+     * @throws InvocationException if there is an error closing the response.
      */
-    void close() throws HttpInvocationException;
+    void close() throws InvocationException;
 
     /**
      * Set the input stream of the response.

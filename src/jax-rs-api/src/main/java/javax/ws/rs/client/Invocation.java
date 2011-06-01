@@ -49,7 +49,7 @@ import javax.ws.rs.core.GenericType;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface HttpInvocation extends ClientRequest<HttpInvocation> {
+public interface Invocation extends ClientRequest<Invocation> {
 
     /**
      * Get the mutable property bag.
@@ -83,7 +83,7 @@ public interface HttpInvocation extends ClientRequest<HttpInvocation> {
      * @param value property value.
      * @return the updated request.
      */
-    HttpInvocation property(String name, Object value);
+    Invocation property(String name, Object value);
 
     /**
      * TODO javadoc.
@@ -91,7 +91,7 @@ public interface HttpInvocation extends ClientRequest<HttpInvocation> {
      * @param name feature name.
      * @return the updated request.
      */
-    HttpInvocation enableFeature(String name);
+    Invocation enableFeature(String name);
 
     /**
      * TODO javadoc.
@@ -99,7 +99,7 @@ public interface HttpInvocation extends ClientRequest<HttpInvocation> {
      * @param name feature name.
      * @return the updated request.
      */
-    HttpInvocation disableFeature(String name);
+    Invocation disableFeature(String name);
 
     /**
      * Sets properties (replaces everything previously set).
@@ -108,18 +108,18 @@ public interface HttpInvocation extends ClientRequest<HttpInvocation> {
      *     the map will replace any existing properties set on the client request.
      * @return the updated request
      */
-    HttpInvocation properties(Map<String, Object> properties);    
+    Invocation properties(Map<String, Object> properties);    
     
     // Invocation methods
     // TODO: document that the request instance needs to be cloned so that the 
     // data used in the invocation processing chain are decoupled from the original
     // request data that were used to initiate the invocation to prevent accidental
     // issues caused by mutable nature of the request
-    ClientResponse invoke() throws HttpInvocationException;
+    ClientResponse invoke() throws InvocationException;
 
-    <T> T invoke(Class<T> responseType) throws HttpInvocationException;
+    <T> T invoke(Class<T> responseType) throws InvocationException;
 
-    <T> T invoke(GenericType<T> responseType) throws HttpInvocationException;
+    <T> T invoke(GenericType<T> responseType) throws InvocationException;
 
     Future<ClientResponse> start();
 

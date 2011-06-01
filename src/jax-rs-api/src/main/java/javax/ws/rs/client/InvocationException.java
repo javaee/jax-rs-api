@@ -55,7 +55,7 @@ package javax.ws.rs.client;
  * @author Marek Potociar
  * @since 2.0
  */
-public class HttpInvocationException extends ClientException {
+public class InvocationException extends ClientException {
 
     private static final long serialVersionUID = -8551966770517714263L;
     private transient final ClientResponse response;
@@ -69,7 +69,7 @@ public class HttpInvocationException extends ClientException {
      * @param response the client response. The message of the exception is set to
      *        r.toString();
      */
-    public HttpInvocationException(final ClientResponse response) {
+    public InvocationException(final ClientResponse response) {
         this(response, true);
     }
 
@@ -81,7 +81,7 @@ public class HttpInvocationException extends ClientException {
      * @param bufferResponseEntity if true buffer the client response entity by calling
      *                             {@link ClientResponse#bufferEntity() }.
      */
-    public HttpInvocationException(final ClientResponse response, final boolean bufferResponseEntity) {
+    public InvocationException(final ClientResponse response, final boolean bufferResponseEntity) {
         super(response.toString());
         if (bufferResponseEntity) {
             response.bufferEntity();
@@ -99,7 +99,7 @@ public class HttpInvocationException extends ClientException {
      * @param response the client response.
      *
      */
-    public HttpInvocationException(final String message, final ClientResponse response) {
+    public InvocationException(final String message, final ClientResponse response) {
         this(message, response, true);
     }
 
@@ -112,7 +112,7 @@ public class HttpInvocationException extends ClientException {
      *                             {@link ClientResponse#bufferEntity() }.
      *
      */
-    public HttpInvocationException(final String message,
+    public InvocationException(final String message,
             final ClientResponse response,
             final boolean bufferResponseEntity) {
         super(message);

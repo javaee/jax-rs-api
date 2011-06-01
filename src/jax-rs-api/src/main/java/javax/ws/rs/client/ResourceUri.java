@@ -51,7 +51,7 @@ import javax.ws.rs.ext.Providers;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface ResourceUri extends ClientRequest.Builder<HttpInvocation> {
+public interface ResourceUri extends ClientRequest.Builder<Invocation> {
 
     // Getters
     /**

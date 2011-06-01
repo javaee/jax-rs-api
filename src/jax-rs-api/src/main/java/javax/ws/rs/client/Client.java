@@ -167,11 +167,11 @@ public abstract class Client {
     public abstract Providers getProviders();
 
     // Request builder methods
-    public abstract ClientRequest.Builder<HttpInvocation> request(String uri) throws IllegalArgumentException, NullPointerException;
+    public abstract ClientRequest.Builder<Invocation> request(String uri) throws IllegalArgumentException, NullPointerException;
 
-    public abstract ClientRequest.Builder<HttpInvocation> request(URI uri) throws NullPointerException;
+    public abstract ClientRequest.Builder<Invocation> request(URI uri) throws NullPointerException;
 
-    public abstract ClientRequest.Builder<HttpInvocation> request(UriBuilder uriBuilder) throws NullPointerException;
+    public abstract ClientRequest.Builder<Invocation> request(UriBuilder uriBuilder) throws NullPointerException;
 
     // Request builder methods    
     public abstract ResourceUri resourceUri(String uri) throws IllegalArgumentException, NullPointerException;
@@ -181,11 +181,11 @@ public abstract class Client {
     public abstract ResourceUri resourceUri(UriBuilder uriBuilder) throws NullPointerException;
 
     // Invocation methods
-    public abstract ClientResponse invoke(ClientRequest request) throws HttpInvocationException;
+    public abstract ClientResponse invoke(ClientRequest request) throws InvocationException;
 
-    public abstract <T> T invoke(ClientRequest request, Class<T> responseType) throws HttpInvocationException;
+    public abstract <T> T invoke(ClientRequest request, Class<T> responseType) throws InvocationException;
 
-    public abstract <T> T invoke(ClientRequest request, GenericType<T> responseType) throws HttpInvocationException;
+    public abstract <T> T invoke(ClientRequest request, GenericType<T> responseType) throws InvocationException;
 
     public abstract Future<ClientResponse> start(ClientRequest request);
 
