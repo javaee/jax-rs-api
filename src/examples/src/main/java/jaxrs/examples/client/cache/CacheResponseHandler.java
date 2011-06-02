@@ -39,22 +39,23 @@
  */
 package jaxrs.examples.client.cache;
 
-import javax.ws.rs.client.ClientRequest;
 import javax.ws.rs.client.ClientResponse;
-import javax.ws.rs.ext.interceptor.ResponseContext;
-import javax.ws.rs.ext.interceptor.ResponseHandler;
+import javax.ws.rs.ext.FilterContext;
+import javax.ws.rs.ext.FilterContext.FilterAction;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
+import javax.ws.rs.ext.ResponseFilter;
 
 /**
  * @author Bill Burke
  * @author Marek Potociar
+ * @author Santiago Pericas-Geertsen
  */
-public class CacheResponseHandler implements ResponseHandler<ClientRequest, ClientResponse> {
+public class CacheResponseHandler implements ResponseFilter {
 
     private Map<String, CacheEntry> cache;
 
@@ -62,19 +63,17 @@ public class CacheResponseHandler implements ResponseHandler<ClientRequest, Clie
         this.cache = cache;
     }
 
-    public void handle(ResponseContext<ClientRequest, ClientResponse> context) {
-        if (!context.getRequest().getMethod().equalsIgnoreCase("GET")) {
-            context.proceed();
-            return;
+    @Override
+    public FilterAction postFilter(FilterContext ctx) throws IOException {
+        if (ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
+            URI uri = ctx.getRequest().getURI();
+            ClientResponse response = ctx.getResponse();
+            byte[] body = readFromStream(1024, response.getEntityInputStream());
+            CacheEntry entry = new CacheEntry(response.getHeaders(), body);
+            cache.put(uri.toString(), entry);
+            response.setEntityInputStream(new ByteArrayInputStream(body));
         }
-
-        URI uri = context.getRequest().getURI();
-        ClientResponse response = context.getResponse();
-        byte[] body = readFromStream(1024, response.getEntityInputStream());
-        CacheEntry entry = new CacheEntry(response.getHeaders(), body);
-        cache.put(uri.toString(), entry);
-
-        response.setEntityInputStream(new ByteArrayInputStream(body));
+        return FilterAction.NEXT;
     }
 
     public static byte[] readFromStream(int bufferSize, InputStream entityStream) {

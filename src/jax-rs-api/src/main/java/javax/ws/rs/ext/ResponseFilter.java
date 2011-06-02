@@ -40,6 +40,7 @@
 package javax.ws.rs.ext;
 
 import java.io.IOException;
+import javax.ws.rs.ext.FilterContext.FilterAction;
 
 /**
  * 
@@ -48,5 +49,5 @@ import java.io.IOException;
  */
 public interface ResponseFilter {
 
-    void postFilter(FilterContext ctx) throws IOException;
+    FilterAction postFilter(FilterContext ctx) throws IOException;
 }

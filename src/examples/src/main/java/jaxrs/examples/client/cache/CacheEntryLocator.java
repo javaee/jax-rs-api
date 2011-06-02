@@ -39,19 +39,21 @@
  */
 package jaxrs.examples.client.cache;
 
-import javax.ws.rs.client.ClientRequest;
+import java.io.IOException;
 import javax.ws.rs.client.ClientResponse;
-import javax.ws.rs.ext.interceptor.RequestContext;
-import javax.ws.rs.ext.interceptor.RequestHandler;
+import javax.ws.rs.ext.FilterContext;
+import javax.ws.rs.ext.FilterContext.FilterAction;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.util.Map;
+import javax.ws.rs.ext.RequestFilter;
 
 /**
  * @author Bill Burke
  * @author Marek Potociar
+ * @author Santiago Pericas-Geertsen
  */
-public class CacheEntryLocator implements RequestHandler<ClientRequest, ClientResponse> {
+public class CacheEntryLocator implements RequestFilter {
 
     private Map<String, CacheEntry> cache;
 
@@ -59,21 +61,21 @@ public class CacheEntryLocator implements RequestHandler<ClientRequest, ClientRe
         this.cache = cache;
     }
 
-    public ClientResponse handle(RequestContext<ClientRequest, ClientResponse> context) {
-        if (!context.getRequest().getMethod().equalsIgnoreCase("GET")) {
-            return context.proceed();
+    @Override
+    public FilterAction preFilter(FilterContext ctx) throws IOException {
+        if (ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
+            URI uri = ctx.getRequest().getURI();
+            CacheEntry entry = cache.get(uri.toString());
+            
+            if (entry != null) {
+                ClientResponse response = ctx.createResponse();
+                response.getHeaders().putAll(entry.getHeaders());
+                response.setEntityInputStream(new ByteArrayInputStream(entry.getBody()));
+                response.setStatusCode(200);
+                ctx.setResponse(response);      // Set response and stop
+                return FilterAction.STOP;
+            }
         }
-        URI uri = context.getRequest().getURI();
-        CacheEntry entry = cache.get(uri.toString());
-
-        if (entry == null) {
-            return context.proceed();
-        }
-
-        ClientResponse response = context.createResponse();
-        response.getHeaders().putAll(entry.getHeaders());
-        response.setEntityInputStream(new ByteArrayInputStream(entry.getBody()));
-        response.setStatusCode(200);
-        return response;
+        return FilterAction.NEXT;
     }
 }

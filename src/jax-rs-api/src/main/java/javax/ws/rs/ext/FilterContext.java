@@ -49,7 +49,7 @@ import javax.ws.rs.client.ClientResponse;
  */
 public interface FilterContext extends BaseContext {
 
-    void next();
+    public enum FilterAction { STOP, NEXT };
 
     ClientRequest getRequest();
 

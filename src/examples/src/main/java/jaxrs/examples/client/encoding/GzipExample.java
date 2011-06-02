@@ -43,6 +43,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientConfiguration;
 import javax.ws.rs.client.DefaultClientConfiguration;
 import javax.ws.rs.client.ResourceUri;
+import jaxrs.examples.interceptor.compression.GzipInterceptor;
 
 /**
  * @author Bill Burke
@@ -56,8 +57,7 @@ public class GzipExample {
 
     public void gzipExample() {
         ClientConfiguration config = new DefaultClientConfiguration();
-        config.getClasses().add(GzipDecoder.class);
-        config.getClasses().add(GzipEncoder.class);
+        config.getClasses().add(GzipInterceptor.class);
         ResourceUri resourceUri = Client.create(config).resourceUri("http://example.com/foo/bar.txt");
 
         // getting a gzip encoded body

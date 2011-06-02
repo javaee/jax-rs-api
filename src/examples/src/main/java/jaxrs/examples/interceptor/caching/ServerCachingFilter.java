@@ -48,6 +48,7 @@ import javax.ws.rs.client.ClientResponse;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.RequestFilter;
+import javax.ws.rs.ext.FilterContext.FilterAction;
 
 /**
  * 
@@ -59,13 +60,13 @@ priority = BindingPriority.USER)
 public class ServerCachingFilter implements RequestFilter {
 
     @Override
-    public void preFilter(FilterContext ctx) throws IOException {
+    public FilterAction preFilter(FilterContext ctx) throws IOException {
         ClientResponse res = getCachedResponse(ctx);
         if (res != null) {
             ctx.setResponse(res);
-            return;     // break filter chain
+            return FilterAction.STOP;     // break filter chain
         }
-        ctx.next();
+        return FilterAction.NEXT;
     }
 
     private ClientResponse getCachedResponse(FilterContext ctx) {
