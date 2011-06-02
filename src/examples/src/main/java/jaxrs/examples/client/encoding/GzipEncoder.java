@@ -42,7 +42,7 @@ package jaxrs.examples.client.encoding;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.interceptor.WriterContext;
-import javax.ws.rs.ext.interceptor.WriterInterceptor;
+import javax.ws.rs.ext.WriterInterceptor;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;

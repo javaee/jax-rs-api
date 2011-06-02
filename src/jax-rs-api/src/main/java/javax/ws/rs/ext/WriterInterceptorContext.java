@@ -37,26 +37,42 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext.interceptor;
+package javax.ws.rs.ext;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.util.Map;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Type;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  */
-public interface BaseContext {
+public interface WriterInterceptorContext<T> extends BaseContext {
 
-    Map<String, Object> getProperties();
+    void proceed() throws IOException;
 
-    Annotation[] getAnnotations();
+    T getEntity();
 
-    void setAnnotations(Annotation[] annotations);
+    void setEntity(T entity);
 
-    AccessibleObject getAppliedTarget();
+    Class getType();
 
-    Class<?> getAppliedClass();
+    void setType(Class type);
+
+    Type getGenericType();
+
+    void setGenericType(Type genericType);
+
+    MediaType getMediaType();
+
+    void setMediaType(MediaType mediaType);
+
+    MultivaluedMap<String, Object> getHeaders();
+
+    OutputStream getOutputStream();
+
+    public void setOutputStream(OutputStream os);
 }

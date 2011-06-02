@@ -37,25 +37,16 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext.interceptor;
+package javax.ws.rs.ext;
 
-import javax.ws.rs.client.ClientRequest;
-import javax.ws.rs.client.ClientResponse;
+import java.io.IOException;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  */
-public interface FilterContext extends BaseContext {
+public interface ResponseFilter {
 
-    void next();
-
-    ClientRequest getRequest();
-
-    ClientResponse getResponse();
-
-    void setResponse(ClientResponse res);
-
-    ClientResponse createResponse();
+    void postFilter(FilterContext ctx) throws IOException;
 }

@@ -37,16 +37,16 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext.interceptor;
+package javax.ws.rs.ext;
 
-import java.io.IOException;
+import java.lang.reflect.Method;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  */
-public interface ResponseFilter {
+public interface DynamicBinding {
 
-    void postFilter(FilterContext ctx) throws IOException;
+    public boolean isBound(Class<?> type, Method method);
 }

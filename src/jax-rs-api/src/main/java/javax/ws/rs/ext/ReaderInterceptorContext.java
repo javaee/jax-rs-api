@@ -37,16 +37,38 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext.interceptor;
+package javax.ws.rs.ext;
 
-import java.lang.reflect.Method;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  */
-public interface DynamicBinding {
+public interface ReaderInterceptorContext<T> extends BaseContext {
 
-    public boolean isBound(Class<?> type, Method method);
+    T proceed() throws IOException;
+
+    Class getType();
+
+    void setType(Class type);
+
+    Type getGenericType();
+
+    void setGenericType(Type genericType);
+
+    MediaType getMediaType();
+
+    void setMediaType(MediaType mediaType);
+
+    MultivaluedMap<String, String> getHeaders();
+
+    InputStream getInputStream();
+
+    void setInputStream(InputStream is);
 }

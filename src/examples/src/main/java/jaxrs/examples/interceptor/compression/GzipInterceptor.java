@@ -46,10 +46,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.interceptor.ReaderInterceptor;
-import javax.ws.rs.ext.interceptor.ReaderInterceptorContext;
-import javax.ws.rs.ext.interceptor.WriterInterceptor;
-import javax.ws.rs.ext.interceptor.WriterInterceptorContext;
+import javax.ws.rs.ext.ReaderInterceptor;
+import javax.ws.rs.ext.ReaderInterceptorContext;
+import javax.ws.rs.ext.WriterInterceptor;
+import javax.ws.rs.ext.WriterInterceptorContext;
 
 /**
  * 

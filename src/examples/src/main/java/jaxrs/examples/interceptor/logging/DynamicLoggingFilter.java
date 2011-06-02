@@ -42,7 +42,7 @@ package jaxrs.examples.interceptor.logging;
 import java.lang.reflect.Method;
 import javax.ws.rs.GET;
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.interceptor.DynamicBinding;
+import javax.ws.rs.ext.DynamicBinding;
 
 /**
  * 

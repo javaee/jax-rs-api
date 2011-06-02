@@ -46,8 +46,8 @@ import javax.ws.rs.GlobalBinding;
 import javax.ws.rs.GlobalBinding.BindingDomain;
 import javax.ws.rs.client.ClientResponse;
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.interceptor.FilterContext;
-import javax.ws.rs.ext.interceptor.RequestFilter;
+import javax.ws.rs.ext.FilterContext;
+import javax.ws.rs.ext.RequestFilter;
 
 /**
  * 
