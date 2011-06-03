@@ -39,15 +39,16 @@
  */
 package jaxrs.examples.client.cache;
 
-import javax.ws.rs.client.ClientResponse;
-import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.FilterContext.FilterAction;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
+
+import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.ext.FilterContext;
+import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.ResponseFilter;
 
 /**
@@ -67,7 +68,7 @@ public class CacheResponseHandler implements ResponseFilter {
     public FilterAction postFilter(FilterContext ctx) throws IOException {
         if (ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
             URI uri = ctx.getRequest().getURI();
-            ClientResponse response = ctx.getResponse();
+            HttpResponse response = ctx.getResponse();
             byte[] body = readFromStream(1024, response.getEntityInputStream());
             CacheEntry entry = new CacheEntry(response.getHeaders(), body);
             cache.put(uri.toString(), entry);

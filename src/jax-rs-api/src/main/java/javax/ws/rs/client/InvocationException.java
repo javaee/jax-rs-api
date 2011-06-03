@@ -39,6 +39,8 @@
  */
 package javax.ws.rs.client;
 
+import javax.ws.rs.core.HttpResponse;
+
 /**
  * A runtime exception thrown during the HTTP request invocation processing,
  * that signals a failure to process the HTTP request or response. The exception
@@ -47,9 +49,9 @@ package javax.ws.rs.client;
  * the status code of the returned HTTP response indicates a response that is not
  * expected.
  * <p />
- * This exception is typically thrown by the {@link ClientRequest} HTTP invocation
- * methods. Additionally, the exception is also thrown by {@link ClientResponse}
- * {@code getEntity(...)} methods in case the returned response is
+ * This exception is typically thrown by the HTTP invocation methods on an {@link Invocation}
+ * or a {@link Client} instance. Additionally, the exception is also thrown by
+ * {@link HttpResponse} {@code getEntity(...)} methods in case the returned response is
  * HTTP 204 (No Content).
  *
  * @author Marek Potociar
@@ -58,18 +60,18 @@ package javax.ws.rs.client;
 public class InvocationException extends ClientException {
 
     private static final long serialVersionUID = -8551966770517714263L;
-    private transient final ClientResponse response;
+    private transient final HttpResponse response;
 
     /**
      * Construct a uniform interface exception.
      * <p>
      * The client response entity will be buffered by calling
-     * {@link ClientResponse#bufferEntity() }.
+     * {@link HttpResponse#bufferEntity() }.
      *
      * @param response the client response. The message of the exception is set to
      *        r.toString();
      */
-    public InvocationException(final ClientResponse response) {
+    public InvocationException(final HttpResponse response) {
         this(response, true);
     }
 
@@ -79,9 +81,9 @@ public class InvocationException extends ClientException {
      * @param response the client response. The message of the exception is set to
      *        r.toString();
      * @param bufferResponseEntity if true buffer the client response entity by calling
-     *                             {@link ClientResponse#bufferEntity() }.
+     *                             {@link HttpResponse#bufferEntity() }.
      */
-    public InvocationException(final ClientResponse response, final boolean bufferResponseEntity) {
+    public InvocationException(final HttpResponse response, final boolean bufferResponseEntity) {
         super(response.toString());
         if (bufferResponseEntity) {
             response.bufferEntity();
@@ -93,13 +95,13 @@ public class InvocationException extends ClientException {
      * Construct a uniform interface exception.
      * <p>
      * The client response entity will be buffered by calling
-     * {@link ClientResponse#bufferEntity() }.
+     * {@link HttpResponse#bufferEntity() }.
      *
      * @param message the message of the exception.
      * @param response the client response.
      *
      */
-    public InvocationException(final String message, final ClientResponse response) {
+    public InvocationException(final String message, final HttpResponse response) {
         this(message, response, true);
     }
 
@@ -109,11 +111,11 @@ public class InvocationException extends ClientException {
      * @param message the message of the exception.
      * @param response the client response.
      * @param bufferResponseEntity if true buffer the client response entity by calling
-     *                             {@link ClientResponse#bufferEntity() }.
+     *                             {@link HttpResponse#bufferEntity() }.
      *
      */
     public InvocationException(final String message,
-            final ClientResponse response,
+            final HttpResponse response,
             final boolean bufferResponseEntity) {
         super(message);
         if (bufferResponseEntity) {
@@ -127,7 +129,7 @@ public class InvocationException extends ClientException {
     
      * @return the client response.
      */
-    public ClientResponse getResponse() {
+    public HttpResponse getResponse() {
         return response;
     }
 }

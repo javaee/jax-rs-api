@@ -37,20 +37,13 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientConfiguration;
+package javax.ws.rs.core;
 
 /**
- * TODO javadoc.
  *
- * @param <B> 
- * @author Marek Potociar
- * @since 2.0
+ * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public interface ClientFactory<B extends Client.Builder<? extends Client, ? extends ClientConfiguration>> {
-       
-    B createClientBuilder();
+public class Form extends MultivaluedHashMap<String, String> {
+    private static final long serialVersionUID = 1L;
     
 }

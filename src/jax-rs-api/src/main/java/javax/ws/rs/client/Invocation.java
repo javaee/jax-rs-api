@@ -43,13 +43,16 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpRequest;
+import javax.ws.rs.core.HttpResponse;
 
 /**
+ * TODO javadoc.
  *
  * @author Marek Potociar
  * @since 2.0
  */
-public interface Invocation extends ClientRequest<Invocation> {
+public interface Invocation extends HttpRequest<Invocation> {
 
     /**
      * Get the mutable property bag.
@@ -115,13 +118,13 @@ public interface Invocation extends ClientRequest<Invocation> {
     // data used in the invocation processing chain are decoupled from the original
     // request data that were used to initiate the invocation to prevent accidental
     // issues caused by mutable nature of the request
-    ClientResponse invoke() throws InvocationException;
+    HttpResponse invoke() throws InvocationException;
 
     <T> T invoke(Class<T> responseType) throws InvocationException;
 
     <T> T invoke(GenericType<T> responseType) throws InvocationException;
 
-    Future<ClientResponse> start();
+    Future<HttpResponse> start();
 
     <T> Future<T> start(Class<T> responseType);
 

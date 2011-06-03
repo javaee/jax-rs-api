@@ -56,22 +56,49 @@ import java.util.Map;
 public interface HttpHeaders {
 
     /**
-     * Get the values of a HTTP request header. The returned List is read-only.
-     * This is a shortcut for <code>getRequestHeaders().get(name)</code>.
-     * @param name the header name, case insensitive
+     * This method is made obsolete. When called, this method provides the same
+     * functionality as the {@link #getHeader(java.lang.String)} method. Please use the 
+     * {@link #getHeader(java.lang.String)} method directly instead.
+     *
+     * @param name the header name, case insensitive.
      * @return a read-only list of header values.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @throws java.lang.IllegalStateException if called outside of the message
+     *     processing scope.
      */
     public List<String> getRequestHeader(String name);
 
     /**
-     * Get the values of HTTP request headers. The returned Map is case-insensitive
-     * wrt keys and is read-only.
+     * This method is made obsolete. When called, this method provides the same
+     * functionality as the {@link #getHeaders()} method. Please use the 
+     * {@link #getHeaders()} method directly instead.
+     *
      * @return a read-only map of header names and values.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @throws java.lang.IllegalStateException if called outside of the message
+     *     processing scope.
      */
     public MultivaluedMap<String, String> getRequestHeaders();
-
+    
+    /**
+     * Get the values of a single HTTP message header. The returned List is read-only.
+     * This is a convenience shortcut for {@code getHeaders().get(name)}.
+     *
+     * @param name the header name, case insensitive.
+     * @return a read-only list of header values.
+     * @throws java.lang.IllegalStateException if called outside of the message
+     *     processing scope.
+     */
+    public List<String> getHeader(String name);
+    
+    /**
+     * Get the values of HTTP message headers. The returned Map is case-insensitive
+     * wrt. keys and is read-only.
+     *
+     * @return a read-only map of header names and values.
+     * @throws java.lang.IllegalStateException if called outside of the message
+     *     processing scope.
+     */
+    MultivaluedMap<String, Object> getHeaders();
+    
     /**
      * Get a list of media types that are acceptable for the response.
      * @return a read-only list of requested response media types sorted according

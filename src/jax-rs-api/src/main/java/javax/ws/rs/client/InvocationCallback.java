@@ -44,7 +44,8 @@ import java.util.concurrent.Future;
 import javax.ws.rs.core.GenericType;
 
 /**
- * Callback that you can register that will execute onComplete() when a client response is ready for processing.
+ * Callback that you can register to receive the {code onComplete} event when 
+ * a HTTP invocation processing is finished.
  *
  * @param <Response> response type
  *

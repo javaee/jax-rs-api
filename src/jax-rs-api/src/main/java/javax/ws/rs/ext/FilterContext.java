@@ -39,8 +39,8 @@
  */
 package javax.ws.rs.ext;
 
-import javax.ws.rs.client.ClientRequest;
-import javax.ws.rs.client.ClientResponse;
+import javax.ws.rs.core.HttpRequest;
+import javax.ws.rs.core.HttpResponse;
 
 /**
  * 
@@ -51,11 +51,11 @@ public interface FilterContext extends BaseContext {
 
     public enum FilterAction { STOP, NEXT };
 
-    ClientRequest getRequest();
+    HttpRequest getRequest();
 
-    ClientResponse getResponse();
+    HttpResponse getResponse();
 
-    void setResponse(ClientResponse res);
+    void setResponse(HttpResponse res);
 
-    ClientResponse createResponse();
+    HttpResponse createResponse();
 }

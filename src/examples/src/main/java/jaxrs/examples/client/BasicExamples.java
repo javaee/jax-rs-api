@@ -41,18 +41,20 @@ package jaxrs.examples.client;
 
 import java.util.List;
 import java.util.concurrent.Future;
+
+import javax.ws.rs.client.AbstractInvocationCallback;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientConfiguration;
-import javax.ws.rs.client.ClientRequest;
-import javax.ws.rs.client.ClientResponse;
-import javax.ws.rs.client.AbstractInvocationCallback;
 import javax.ws.rs.client.DefaultClientConfiguration;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.ResourceUri;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpRequest;
+import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ClientFactory;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -149,13 +151,13 @@ public class BasicExamples {
         final Client client = Client.create();
         
         // Create client request, customize it and invoke using client
-        ClientRequest<?> request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").prepareGet();
+        HttpRequest<?> request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").prepareGet();
         request.accept(MediaType.APPLICATION_XML).header("Foo", "Bar");
-        ClientResponse responseA = client.invoke(request);        
+        HttpResponse responseA = client.invoke(request);        
         assert responseA.getStatusCode() == 200;
         
         // Direct invocation leveraging the Invocation interface
-        ClientResponse responseB = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").prepareGet() // Invocation (extends ClientRequest)
+        HttpResponse responseB = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").prepareGet() // Invocation (extends HttpRequest)
                 .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();
         assert responseB.getStatusCode() == 200;
     }
@@ -165,20 +167,20 @@ public class BasicExamples {
         final ResourceUri customersUri = client.resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");
         
         // Create resourceUri request, customize it and invoke using client
-        ClientRequest<?> request = customersUri.prepareGet();
+        HttpRequest<?> request = customersUri.prepareGet();
         request.accept(MediaType.APPLICATION_XML).header("Foo", "Bar");
-        ClientResponse responseA = client.invoke(request);        
+        HttpResponse responseA = client.invoke(request);        
         assert responseA.getStatusCode() == 200;
         
         // Direct invocation leveraging the Invocation interface
-        ClientResponse responseB = customersUri.prepareGet() // Invocation (extends ClientRequest)
+        HttpResponse responseB = customersUri.prepareGet() // Invocation (extends HttpRequest)
                 .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();
         assert responseB.getStatusCode() == 200;
     }
 
     public void defaultResponse() {
         Customer customer;
-        ClientResponse response;
+        HttpResponse response;
 
         final ResourceUri customersUri = Client.create().resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");
 
@@ -212,31 +214,31 @@ public class BasicExamples {
         ResourceUri customer = customersUri.path("{id}");
 
         // Create a customer
-        ClientResponse response = customersUri.preparePost()
+        HttpResponse response = customersUri.preparePost()
                 .entity(new Customer("Bill")).type("application/xml").invoke();
         assert response.getStatusCode() == 201;
 
         Customer favorite;
         // view a customer
-        favorite = customer.prepareGet() // Invocation (extends ClientRequest)
+        favorite = customer.prepareGet() // Invocation (extends HttpRequest)
                 .pathParam("id", 123).invoke(Customer.class);
         assert favorite != null;
 
         // view a customer (alternative)
         favorite = customer.pathParam("id", 123) // ResourceUri ("http://jaxrs.examples.org/jaxrsApplication/customers/123/")
-                .prepareGet() // Invocation (extends ClientRequest)
+                .prepareGet() // Invocation (extends HttpRequest)
                 .invoke(Customer.class);
         assert favorite != null;
     }
 
     public void asyncResponse() throws Exception {
-        Future<ClientResponse> future = Client.create()
+        Future<HttpResponse> future = Client.create()
                 .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .prepareGet()
                 .pathParam("id", 123)
                 .start();
 
-        ClientResponse response = future.get();
+        HttpResponse response = future.get();
         Customer customer = response.getEntity(Customer.class);
         assert customer != null;
     }
@@ -265,10 +267,10 @@ public class BasicExamples {
         });
 
         // invoke another request in background
-        Future<?> handle = request.pathParam("id", 456).start(new AbstractInvocationCallback<ClientResponse>() {
+        Future<?> handle = request.pathParam("id", 456).start(new AbstractInvocationCallback<HttpResponse>() {
 
             @Override
-            public void onComplete(Future<ClientResponse> future) {
+            public void onComplete(Future<HttpResponse> future) {
                 // do something
             }
         });
@@ -281,7 +283,7 @@ public class BasicExamples {
 
         // invoke a request in background
         Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // ResourceUri
-                .prepareGet() // Invocation (extends ClientRequest)
+                .prepareGet() // Invocation (extends HttpRequest)
                 .start(new AbstractInvocationCallback<Customer>() {
 
             @Override
@@ -293,19 +295,19 @@ public class BasicExamples {
 
         // invoke another request in background
         anyCustomerUri.pathParam("id", 456) // ResourceUri
-                .prepareGet() // Invocation (extends ClientRequest)
-                .start(new AbstractInvocationCallback<ClientResponse>() {
+                .prepareGet() // Invocation (extends HttpRequest)
+                .start(new AbstractInvocationCallback<HttpResponse>() {
 
             @Override
-            public void onComplete(Future<ClientResponse> future) {
+            public void onComplete(Future<HttpResponse> future) {
                 // do something
             }
         });
         
         // invoke one more request using client
-        ClientRequest<?> request = anyCustomerUri.pathParam("id", 789).prepareGet();
+        HttpRequest<?> request = anyCustomerUri.pathParam("id", 789).prepareGet();
         request.cookie(new Cookie("fooName", "XYZ"));
-        Future<ClientResponse> response = client.start(request);
+        Future<HttpResponse> response = client.start(request);
         assert response.get() != null;
     }
 }

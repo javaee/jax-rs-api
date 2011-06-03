@@ -42,16 +42,18 @@ package javax.ws.rs.client;
 import java.net.URI;
 import java.util.Map;
 
+import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.Providers;
 
 /**
+ * TODO javadoc.
  *
  * @author Marek Potociar
  * @since 2.0
  */
-public interface ResourceUri extends ClientRequest.Builder<Invocation> {
+public interface ResourceUri extends HttpRequest.Builder<Invocation> {
 
     // Getters
     /**

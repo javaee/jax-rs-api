@@ -47,11 +47,11 @@ import javax.ws.rs.core.GenericType;
  * {@link InvocationCallback#getType() } and {@link InvocationCallback#getGenericType() }.
  * <p>
  * Instances of this class may be passed to appropriate HTTP invocation methods on
- * {@link ClientRequest}.
+ * {@link Invocation}.
  * For example,
  * <blockquote><pre>
- * Client client = Client.create("http://jaxrs.example.com/jaxrsApplication/someResourceUri");
- * ClientRequest getRequest = client.get();
+ * ResourceUri resource = Client.create().resourceUri("http://jaxrs.example.com/jaxrsApplication/someResourceUri");
+ * Invocation getRequest = resource.prepareGet();
  * Future&lt;String&gt; f = getRequest.start(new AbstractInvocationCallback&lt;String&gt;(String.class) {
  *     public void onComplete(Future&lt;String&gt; f) throws InterruptedException {
  *         try {

@@ -45,8 +45,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ws.rs.core.GenericType;
 
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpRequest;
+import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.ClientFactory;
 import javax.ws.rs.ext.Providers;
@@ -167,11 +169,11 @@ public abstract class Client {
     public abstract Providers getProviders();
 
     // Request builder methods
-    public abstract ClientRequest.Builder<Invocation> request(String uri) throws IllegalArgumentException, NullPointerException;
+    public abstract HttpRequest.Builder<Invocation> request(String uri) throws IllegalArgumentException, NullPointerException;
 
-    public abstract ClientRequest.Builder<Invocation> request(URI uri) throws NullPointerException;
+    public abstract HttpRequest.Builder<Invocation> request(URI uri) throws NullPointerException;
 
-    public abstract ClientRequest.Builder<Invocation> request(UriBuilder uriBuilder) throws NullPointerException;
+    public abstract HttpRequest.Builder<Invocation> request(UriBuilder uriBuilder) throws NullPointerException;
 
     // Request builder methods    
     public abstract ResourceUri resourceUri(String uri) throws IllegalArgumentException, NullPointerException;
@@ -181,17 +183,17 @@ public abstract class Client {
     public abstract ResourceUri resourceUri(UriBuilder uriBuilder) throws NullPointerException;
 
     // Invocation methods
-    public abstract ClientResponse invoke(ClientRequest request) throws InvocationException;
+    public abstract HttpResponse invoke(HttpRequest request) throws InvocationException;
 
-    public abstract <T> T invoke(ClientRequest request, Class<T> responseType) throws InvocationException;
+    public abstract <T> T invoke(HttpRequest request, Class<T> responseType) throws InvocationException;
 
-    public abstract <T> T invoke(ClientRequest request, GenericType<T> responseType) throws InvocationException;
+    public abstract <T> T invoke(HttpRequest request, GenericType<T> responseType) throws InvocationException;
 
-    public abstract Future<ClientResponse> start(ClientRequest request);
+    public abstract Future<HttpResponse> start(HttpRequest request);
 
-    public abstract <T> Future<T> start(ClientRequest<?> request, Class<T> responseType);
+    public abstract <T> Future<T> start(HttpRequest<?> request, Class<T> responseType);
 
-    public abstract <T> Future<T> start(ClientRequest<?> request, GenericType<T> responseType);
+    public abstract <T> Future<T> start(HttpRequest<?> request, GenericType<T> responseType);
 
-    public abstract <T> Future<T> start(ClientRequest<?> request, InvocationCallback<T> callback);
+    public abstract <T> Future<T> start(HttpRequest<?> request, InvocationCallback<T> callback);
 }

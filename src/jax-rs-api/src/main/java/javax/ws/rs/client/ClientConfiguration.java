@@ -55,9 +55,7 @@ import java.util.Set;
  * ClientConfiguration configuration = new DefaultClientConfiguration();
  * // ...customize configuration instance
  *
- * Client client = Client.of("http://jaxrs.example.com/jaxrsApplication/someResourceUri")
- *                       .using(configuration)
- *                       .create();
+ * Client client = Client.create(configuration);
  * </pre></blockquote>
  *
  * @author Marek Potociar

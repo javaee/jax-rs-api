@@ -39,13 +39,14 @@
  */
 package jaxrs.examples.client.cache;
 
-import java.io.IOException;
-import javax.ws.rs.client.ClientResponse;
-import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.FilterContext.FilterAction;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+
+import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.ext.FilterContext;
+import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.RequestFilter;
 
 /**
@@ -68,7 +69,7 @@ public class CacheEntryLocator implements RequestFilter {
             CacheEntry entry = cache.get(uri.toString());
             
             if (entry != null) {
-                ClientResponse response = ctx.createResponse();
+                HttpResponse response = ctx.createResponse();
                 response.getHeaders().putAll(entry.getHeaders());
                 response.setEntityInputStream(new ByteArrayInputStream(entry.getBody()));
                 response.setStatusCode(200);

@@ -40,13 +40,14 @@
 package jaxrs.examples.interceptor.logging;
 
 import java.io.IOException;
-import javax.ws.rs.client.ClientRequest;
-import javax.ws.rs.client.ClientResponse;
-import javax.ws.rs.ext.Provider;
+
+import javax.ws.rs.core.HttpRequest;
+import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.ext.FilterContext;
+import javax.ws.rs.ext.FilterContext.FilterAction;
+import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.RequestFilter;
 import javax.ws.rs.ext.ResponseFilter;
-import javax.ws.rs.ext.FilterContext.FilterAction;
 
 /**
  * 
@@ -68,11 +69,11 @@ public class LoggingFilter implements RequestFilter, ResponseFilter {
         return FilterAction.NEXT;
     }
 
-    private void logRequest(ClientRequest req) {
+    private void logRequest(HttpRequest req) {
         return;     // TODO
     }
 
-    private void logResponse(ClientResponse res) {
+    private void logResponse(HttpResponse res) {
         return;     // TODO
     }
 }

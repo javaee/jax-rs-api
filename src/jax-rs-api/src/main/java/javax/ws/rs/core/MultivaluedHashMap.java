@@ -59,7 +59,7 @@ import java.util.Map.Entry;
  */
 public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements MultivaluedMap<K, V> {
 
-    static final long serialVersionUID = -6052320403766368902L;
+    private static final long serialVersionUID = -6052320403766368902L;
 
     /**
      * Constructs an empty multivalued hash map with initial capacity and load

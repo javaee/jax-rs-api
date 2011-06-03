@@ -38,19 +38,16 @@
  * holder.
  */
 
-package javax.ws.rs.client;
+package javax.ws.rs.core;
 
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
 
@@ -62,7 +59,7 @@ import javax.ws.rs.core.Response.StatusType;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface ClientResponse {
+public interface HttpResponse {
     /**
      * Get the map of response properties.
      * <p>
@@ -94,7 +91,7 @@ public interface ClientResponse {
      * mapping between the integer value and the
      * {@link javax.ws.rs.core.Response.Status response status enumeration} value.
      */
-    Status getResponseStatus();
+    Status getStatus();
 
     /**
      * Get the set of cookies.
@@ -160,11 +157,37 @@ public interface ClientResponse {
     EntityTag getEntityTag();
 
     /**
-     * Get the HTTP headers of the response.
+     * Get the values of a single HTTP message header. The returned List is read-only.
+     * This is a convenience shortcut for {@code getHeaders().get(name)}.
      *
-     * @return the HTTP headers of the response.
+     * @param name the header name, case insensitive.
+     * @return a read-only list of header values.
+     * @throws java.lang.IllegalStateException if called outside of the message
+     *     processing scope.
      */
-    MultivaluedMap<String, String> getHeaders();
+    public List<String> getHeader(String name);
+    
+    /**
+     * Get the values of HTTP message headers. The returned Map is case-insensitive
+     * wrt. keys and is read-only.
+     *
+     * @return a read-only map of header names and values.
+     * @throws java.lang.IllegalStateException if called outside of the message
+     *     processing scope.
+     */
+    MultivaluedMap<String, Object> getHeaders();
+
+    /**
+     * Get a HTTP header value.
+     *
+     * @param name the HTTP header.
+     * @return the HTTP header value. If the HTTP header is not present then
+     * {@code null} is returned. If the HTTP header is present but has no value
+     * then the empty string is returned. If the HTTP header is present more than
+     * once then the values of joined together and separated by a ',' character.
+     */
+    String getHeaderValue(String name);
+    
 
     // TODO add support for link headers
 
@@ -264,4 +287,6 @@ public interface ClientResponse {
      * @param status the response status code to be set.
      */
     void setStatusCode(int status);
+    
+    // TODO: add proper setEntity method
 }
