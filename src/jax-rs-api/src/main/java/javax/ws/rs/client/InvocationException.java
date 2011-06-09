@@ -132,4 +132,9 @@ public class InvocationException extends ClientException {
     public HttpResponse getResponse() {
         return response;
     }
+
+    @Override
+    public String toString() {
+        return "InvocationException{" + "response=" + response + '}';
+    }
 }
