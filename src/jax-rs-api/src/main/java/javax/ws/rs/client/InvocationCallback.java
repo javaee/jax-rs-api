@@ -41,7 +41,6 @@ package javax.ws.rs.client;
 
 import java.util.concurrent.Future;
 
-import javax.ws.rs.core.GenericType;
 
 /**
  * Callback that you can register to receive the {code onComplete} event when 
@@ -55,25 +54,6 @@ import javax.ws.rs.core.GenericType;
  * @since 2.0
  */
 public interface InvocationCallback<Response> {
-
-    /**
-     * Get the class of the instance to receive for
-     * {@link #onComplete(java.util.concurrent.Future) }.
-     *
-     * @return the class of the response.
-     */
-    Class<Response> getType();
-
-    /**
-     * Get the generic type declaring the Java type of the instance to
-     * receive for {@link #onComplete(java.util.concurrent.Future) }.
-     *
-     * @return the generic type of the response. If null then the method
-     *         {@link #getType() } must not return null. Otherwise, if not null,
-     *         the type information declared by the generic type takes
-     *         precedence over the value returned by {@link #getType() }.
-     */
-    GenericType<Response> getGenericType();
 
     /**
      * TODO javadoc.

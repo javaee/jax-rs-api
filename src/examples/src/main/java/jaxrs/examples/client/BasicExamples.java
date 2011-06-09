@@ -42,11 +42,11 @@ package jaxrs.examples.client;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import javax.ws.rs.client.AbstractInvocationCallback;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientConfiguration;
 import javax.ws.rs.client.DefaultClientConfiguration;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.ResourceUri;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
@@ -257,8 +257,8 @@ public class BasicExamples {
         Invocation request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").prepareGet();
         request.pathParam("id", 123);
 
-        // invoke a request in background        
-        client.start(request, new AbstractInvocationCallback<Customer>() {
+        // invoke a request in background
+        client.start(request, new InvocationCallback<Customer>() {
 
             @Override
             public void onComplete(Future<Customer> future) {
@@ -267,7 +267,7 @@ public class BasicExamples {
         });
 
         // invoke another request in background
-        Future<?> handle = request.pathParam("id", 456).start(new AbstractInvocationCallback<HttpResponse>() {
+        Future<?> handle = request.pathParam("id", 456).start(new InvocationCallback<HttpResponse>() {
 
             @Override
             public void onComplete(Future<HttpResponse> future) {
@@ -284,7 +284,7 @@ public class BasicExamples {
         // invoke a request in background
         Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // ResourceUri
                 .prepareGet() // Invocation (extends HttpRequest)
-                .start(new AbstractInvocationCallback<Customer>() {
+                .start(new InvocationCallback<Customer>() {
 
             @Override
             public void onComplete(Future<Customer> future) {
@@ -296,7 +296,7 @@ public class BasicExamples {
         // invoke another request in background
         anyCustomerUri.pathParam("id", 456) // ResourceUri
                 .prepareGet() // Invocation (extends HttpRequest)
-                .start(new AbstractInvocationCallback<HttpResponse>() {
+                .start(new InvocationCallback<HttpResponse>() {
 
             @Override
             public void onComplete(Future<HttpResponse> future) {
