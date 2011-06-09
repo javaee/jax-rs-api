@@ -56,6 +56,12 @@ import javax.ws.rs.WebApplicationException;
  */
 public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneable {
 
+    /**
+     * TODO javadoc.
+     *
+     * @param <T> HTTP request type specialization.
+     * @since 2.0
+     */
     public static interface Builder<T extends HttpRequest> {
 
         T prepareGet();
@@ -72,6 +78,19 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
 
         T prepareTrace();
 
+        /**
+         * Configures a HTTP request with an arbitrary HTTP method name.
+         * <p />
+         * The method name parameter can be any arbitrary, non-empty string, containing
+         * but NOT limited to the command verbs of HTTP, WebDAV and other protocols.
+         * An implementation MUST NOT expect the method to be part of any particular set
+         * of methods. Any provided method name MUST be forwarded to the resource without
+         * any limitations.
+         *
+         * @param name HTTP method name to be used for the request.
+         * @return configured HTTP request or its more specialized version.
+         * @see javax.ws.rs.client.Invocation
+         */
         T prepareMethod(String name);
     }
 
@@ -359,7 +378,13 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
 
     /**
      * Modify the HTTP method of the request.
-     * 
+     * <p />
+     * The method name parameter can be any arbitrary, non-empty string, containing
+     * but NOT limited to the command verbs of HTTP, WebDAV and other protocols.
+     * An implementation MUST NOT expect the method to be part of any particular set
+     * of methods. Any provided method name MUST be forwarded to the resource without
+     * any limitations.
+     *
      * @param httpMethod new method to be set on the request.
      * @return updated request instance.
      */
