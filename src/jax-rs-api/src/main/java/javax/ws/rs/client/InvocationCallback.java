@@ -47,7 +47,9 @@ import javax.ws.rs.core.GenericType;
  * Callback that you can register to receive the {code onComplete} event when 
  * a HTTP invocation processing is finished.
  *
- * @param <Response> response type
+ * @param <Response> response type. It can be either a general-purpose
+ *     {@link javax.ws.rs.core.HttpResponse} or the anticipated response entity
+ *     type.
  *
  * @author Marek Potociar
  * @since 2.0
