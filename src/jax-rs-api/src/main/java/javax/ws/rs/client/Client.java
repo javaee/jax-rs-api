@@ -67,14 +67,13 @@ public abstract class Client {
 
         T create(C config);
     }
-    
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
 
     // Factory
     public static <B extends Builder<?, ?>> B providedBy(Class<? extends ClientFactory<B>> factoryClass) {
         return getFactory(factoryClass).createClientBuilder();
     }
-    
+
     private static <C extends ClientFactory<?>> C getFactory(Class<C> factoryClass) {
         try {
             return factoryClass.newInstance(); // TODO instance caching(?), injecting, setup, etc.
@@ -83,10 +82,10 @@ public abstract class Client {
         } catch (IllegalAccessException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Unable to instantiate client builder factory.", ex);
         }
-        
+
         return null;
     }
-    
+
     public static Client create() {
         // todo implement
         return null;
@@ -96,9 +95,8 @@ public abstract class Client {
         // todo implement
         return null;
     }
+    private final AtomicBoolean closed = new AtomicBoolean(false);
 
-    private final AtomicBoolean closed = new AtomicBoolean(false);    
-    
     /**
      * Protected constructor used by concrete implementations of the {@link Client}
      * class.
@@ -155,18 +153,86 @@ public abstract class Client {
 
     // Getters
     /**
-     * Get the mutable property bag.
+     * Get the {@link Providers} utilized by the client.
+     *
+     * @return the {@link Providers} utilized by the client.
+     */
+    public abstract Providers getProviders();
+
+    /**
+     * Get the immutable client property bag.
+     * <p />
+     * When creating new {@link ResourceUri} instances or {@link Invocation}s using
+     * a {@link Client} instance, the properties and features set on the {@code Client}
+     * instance are inherited by the child instances being created. Similarly,
+     * when creating new {@code Invocations} or derived {@code ResourceUri}s using
+     * a {@code ResourceUri} instance, the parent {@code ResourceUri} instance
+     * properties and features are inherited by the child instances being created.
+     * The set of inherited features and properties on the child instance reflects the
+     * state of the parent set of features and properties at the time of the child
+     * instance creation. Once the child instance is created its properties and features
+     * are detached from the parent configuration. This means that any subsequent
+     * changes in the parent configuration MUST NOT affect the configuration of
+     * previously created child instances.
+     * <p />
+     * Once the child instance is created, it's configuration can be further customized
+     * using the provided set of instance configuration mutator methods. A change
+     * made in the configuration of a child instance MUST NOT affect the configuration
+     * of its parent.
      *
      * @return the property bag.
      */
     public abstract Map<String, Object> getProperties();
 
     /**
-     * Get the {@link Providers} utilized by the client.
+     * Determine if a feature is enabled for the client instance.
      *
-     * @return the {@link Providers} utilized by the client.
+     * @param featureName the name of the feature.
+     * @return {@code true} if the feature value is present in the property bag
+     *     and is an instance of {@link java.lang.Boolean} and that value is
+     *     {@code true}, otherwise {@code false}.
+     * @see #getProperties()
      */
-    public abstract Providers getProviders();
+    public abstract boolean isEnabled(final String featureName);
+
+    /**
+     * Set the configuration property for the client instance.
+     *
+     * @param name property name.
+     * @param value property value.
+     * @return the updated client instance.
+     * @see #getProperties()
+     */
+    public abstract Client property(String name, Object value);
+
+    /**
+     * Enable a feature for the client instance.
+     *
+     * @param featureName feature name.
+     * @return the updated client instance.
+     * @see #getProperties()
+     */
+    public abstract Client enable(String featureName);
+
+    /**
+     * Disable a feature for the client instance.
+     *
+     * @param featureName feature name.
+     * @return the updated client instance.
+     * @see #getProperties()
+     */
+    public abstract Client disable(String featureName);
+
+    /**
+     * Set new properties for the client instance (replaces everything
+     * previously set).
+     *
+     * @param properties set of properties for the client. The content of
+     *     the map will replace any existing properties set on the client.
+     * @return the updated client instance.
+     * @see #getProperties()
+     */
+    public abstract Client properties(Map<String, Object> properties);
 
     // Request builder methods
     public abstract HttpRequest.Builder<Invocation> request(String uri) throws IllegalArgumentException, NullPointerException;

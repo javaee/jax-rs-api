@@ -55,64 +55,80 @@ import javax.ws.rs.core.HttpResponse;
 public interface Invocation extends HttpRequest<Invocation> {
 
     /**
-     * Get the mutable property bag.
+     * Get the immutable invocation property bag.
+     * <p />
+     * When creating new {@link ResourceUri} instances or {@link Invocation}s using
+     * a {@link Client} instance, the properties and features set on the {@code Client}
+     * instance are inherited by the child instances being created. Similarly,
+     * when creating new {@code Invocations} or derived {@code ResourceUri}s using
+     * a {@code ResourceUri} instance, the parent {@code ResourceUri} instance
+     * properties and features are inherited by the child instances being created.
+     * The set of inherited features and properties on the child instance reflects the
+     * state of the parent set of features and properties at the time of the child
+     * instance creation. Once the child instance is created its properties and features
+     * are detached from the parent configuration. This means that any subsequent
+     * changes in the parent configuration MUST NOT affect the configuration of
+     * previously created child instances.
+     * <p />
+     * Once the child instance is created, it's configuration can be further customized
+     * using the provided set of instance configuration mutator methods. A change
+     * made in the configuration of a child instance MUST NOT affect the configuration
+     * of its parent.
      *
      * @return the property bag.
      */
     Map<String, Object> getProperties();
-    
+
     /**
-     * Determine if a feature is enabled.
+     * Determine if a feature is enabled for the particular invocation.
      *
      * @param featureName the name of the feature.
      * @return {@code true} if the feature value is present in the property bag
-     *     and is an instance of {@link java.lang.Boolean} and that value is {@code true},
-     *     otherwise {@code false}.
+     *     and is an instance of {@link java.lang.Boolean} and that value is
+     *     {@code true}, otherwise {@code false}.
+     * @see #getProperties()
      */
     boolean isEnabled(final String featureName);
-//    {
-//        return getPropertyAsFeature(featureName, false);
-//    }
-//
-//    private boolean getPropertyAsFeature(final String name, final boolean defaultValue) {
-//        Boolean v = (Boolean) getProperties().get(name);
-//        return (v != null) ? v : defaultValue;
-//    }
 
     /**
-     * TODO javadoc.
+     * Set the configuration property for the particular invocation.
      *
      * @param name property name.
      * @param value property value.
-     * @return the updated request.
+     * @return the updated invocation.
+     * @see #getProperties()
      */
     Invocation property(String name, Object value);
 
     /**
-     * TODO javadoc.
+     * Enable a feature for the particular invocation.
      *
-     * @param name feature name.
-     * @return the updated request.
+     * @param featureName feature name.
+     * @return the updated invocation.
+     * @see #getProperties()
      */
-    Invocation enableFeature(String name);
+    Invocation enable(String featureName);
 
     /**
-     * TODO javadoc.
+     * Disable a feature for the particular invocation.
      *
-     * @param name feature name.
-     * @return the updated request.
+     * @param featureName feature name.
+     * @return the updated invocation.
+     * @see #getProperties()
      */
-    Invocation disableFeature(String name);
+    Invocation disable(String featureName);
 
     /**
-     * Sets properties (replaces everything previously set).
+     * Set new properties for the particular invocation (replaces everything
+     * previously set).
      *
-     * @param properties set of properties for the client request. The content of
-     *     the map will replace any existing properties set on the client request.
-     * @return the updated request
+     * @param properties set of properties for the invocation. The content of
+     *     the map will replace any existing properties set on the invocation.
+     * @return the updated invocation.
+     * @see #getProperties()
      */
-    Invocation properties(Map<String, Object> properties);    
-    
+    Invocation properties(Map<String, Object> properties);
+
     // Invocation methods
     // TODO: document that the request instance needs to be cloned so that the 
     // data used in the invocation processing chain are decoupled from the original
@@ -130,5 +146,5 @@ public interface Invocation extends HttpRequest<Invocation> {
 
     <T> Future<T> start(GenericType<T> responseType);
 
-    <T> Future<T> start(InvocationCallback<T> callback);    
+    <T> Future<T> start(InvocationCallback<T> callback);
 }
