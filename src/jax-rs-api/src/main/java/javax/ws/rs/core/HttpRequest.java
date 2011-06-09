@@ -303,6 +303,8 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
 
     T formParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
+    T matrixParam(String name, Object... values) throws IllegalArgumentException;
+
     T queryParam(String name, Object value) throws IllegalArgumentException;
 
     T queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;

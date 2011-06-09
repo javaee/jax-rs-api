@@ -91,6 +91,8 @@ public interface ResourceUri extends HttpRequest.Builder<Invocation> {
     ResourceUri pathParam(String name, Object value) throws IllegalArgumentException;
 
     ResourceUri pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+
+    ResourceUri matrixParam(String name, Object... values) throws IllegalArgumentException;
     
     ResourceUri queryParam(String name, Object value) throws IllegalArgumentException;
 
