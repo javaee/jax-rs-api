@@ -50,7 +50,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  */
-public interface ReaderInterceptorContext<T> extends BaseContext {
+public interface ReadFromHandlerContext<T> extends BaseContext {
 
     T proceed() throws IOException;
 

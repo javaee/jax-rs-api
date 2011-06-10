@@ -46,7 +46,7 @@ import java.io.IOException;
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  */
-public interface ReaderInterceptor<T> {
+public interface ReadFromHandler<T> {
 
-    T read(ReaderInterceptorContext<T> context) throws IOException;
+    T readFrom(ReadFromHandlerContext<T> context) throws IOException;
 }

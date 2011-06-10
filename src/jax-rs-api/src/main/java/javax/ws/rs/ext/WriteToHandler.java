@@ -40,39 +40,13 @@
 package javax.ws.rs.ext;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.lang.reflect.Type;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  */
-public interface WriterInterceptorContext<T> extends BaseContext {
+public interface WriteToHandler<T> {
 
-    void proceed() throws IOException;
-
-    T getEntity();
-
-    void setEntity(T entity);
-
-    Class getType();
-
-    void setType(Class type);
-
-    Type getGenericType();
-
-    void setGenericType(Type genericType);
-
-    MediaType getMediaType();
-
-    void setMediaType(MediaType mediaType);
-
-    MultivaluedMap<String, Object> getHeaders();
-
-    OutputStream getOutputStream();
-
-    public void setOutputStream(OutputStream os);
+    void writeTo(WriteToHandlerContext<T> context) throws IOException;
 }
