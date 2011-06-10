@@ -37,39 +37,65 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.interceptor.caching;
+package jaxrs.examples.filter.compression;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
-import javax.ws.rs.BindingPriority;
-import javax.ws.rs.GlobalBinding;
-import javax.ws.rs.GlobalBinding.BindingDomain;
-import javax.ws.rs.core.HttpResponse;
-import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.RequestFilter;
+import javax.ws.rs.ext.ReadFromHandler;
+import javax.ws.rs.ext.ReadFromHandlerContext;
+import javax.ws.rs.ext.WriteToHandler;
+import javax.ws.rs.ext.WriteToHandlerContext;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  */
 @Provider
-@GlobalBinding(domain = BindingDomain.SERVER,
-priority = BindingPriority.USER)
-public class ServerCachingFilter implements RequestFilter {
+@Gzipped
+public class GzipHandler implements ReadFromHandler, WriteToHandler {
 
     @Override
-    public FilterAction preFilter(FilterContext ctx) throws IOException {
-        HttpResponse res = getCachedResponse(ctx);
-        if (res != null) {
-            ctx.setResponse(res);
-            return FilterAction.STOP;     // break filter chain
+    public Object readFrom(ReadFromHandlerContext ctx) throws IOException {
+        if (!gzipEncoded(ctx)) {
+            return ctx.proceed();
+        } else {
+            InputStream old = ctx.getInputStream();
+            ctx.setInputStream(new GZIPInputStream(old));
+            try {
+                return ctx.proceed();
+            } finally {
+                ctx.setInputStream(old);
+            }
         }
-        return FilterAction.NEXT;
     }
 
-    private HttpResponse getCachedResponse(FilterContext ctx) {
-        return null;    // TODO
+    @Override
+    public void writeTo(WriteToHandlerContext ctx) throws IOException {
+        if (!acceptsGzip(ctx)) {
+            ctx.proceed();
+        } else {
+            OutputStream old = ctx.getOutputStream();
+            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(old);
+            ctx.setOutputStream(gzipOutputStream);
+            try {
+                ctx.proceed();
+            } finally {
+                gzipOutputStream.finish();
+                ctx.setOutputStream(old);
+            }
+        }
+    }
+
+    private boolean acceptsGzip(WriteToHandlerContext ctx) {
+        return true;        // TODO
+    }
+
+    private boolean gzipEncoded(ReadFromHandlerContext ctx) {
+        return true;        // TODO
     }
 }

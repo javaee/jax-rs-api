@@ -37,12 +37,17 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.interceptor.logging;
+package jaxrs.examples.filter.logging;
 
-import java.lang.reflect.Method;
-import javax.ws.rs.GET;
+import java.io.IOException;
+
+import javax.ws.rs.core.HttpRequest;
+import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.ext.FilterContext;
+import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.DynamicBinding;
+import javax.ws.rs.ext.RequestFilter;
+import javax.ws.rs.ext.ResponseFilter;
 
 /**
  * 
@@ -50,10 +55,25 @@ import javax.ws.rs.ext.DynamicBinding;
  */
 @Provider
 @Logged
-public class DynamicLoggingFilter extends LoggingFilter implements DynamicBinding {
+public class LoggingFilter implements RequestFilter, ResponseFilter {
 
     @Override
-    public boolean isBound(Class<?> type, Method method) {
-        return method.isAnnotationPresent(GET.class);
+    public FilterAction preFilter(FilterContext ctx) throws IOException {
+        logRequest(ctx.getRequest());
+        return FilterAction.NEXT;
+    }
+
+    @Override
+    public FilterAction postFilter(FilterContext ctx) throws IOException {
+        logResponse(ctx.getResponse());
+        return FilterAction.NEXT;
+    }
+
+    private void logRequest(HttpRequest req) {
+        return;     // TODO
+    }
+
+    private void logResponse(HttpResponse res) {
+        return;     // TODO
     }
 }

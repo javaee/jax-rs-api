@@ -37,65 +37,21 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.interceptor.compression;
+package jaxrs.examples.filter.compression;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.ReaderInterceptor;
-import javax.ws.rs.ext.ReaderInterceptorContext;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
+import javax.ws.rs.NameBinding;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  */
-@Provider
-@Gzipped
-public class GzipInterceptor implements ReaderInterceptor, WriterInterceptor {
-
-    @Override
-    public Object read(ReaderInterceptorContext ctx) throws IOException {
-        if (!gzipEncoded(ctx)) {
-            return ctx.proceed();
-        } else {
-            InputStream old = ctx.getInputStream();
-            ctx.setInputStream(new GZIPInputStream(old));
-            try {
-                return ctx.proceed();
-            } finally {
-                ctx.setInputStream(old);
-            }
-        }
-    }
-
-    @Override
-    public void write(WriterInterceptorContext ctx) throws IOException {
-        if (!acceptsGzip(ctx)) {
-            ctx.proceed();
-        } else {
-            OutputStream old = ctx.getOutputStream();
-            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(old);
-            ctx.setOutputStream(gzipOutputStream);
-            try {
-                ctx.proceed();
-            } finally {
-                gzipOutputStream.finish();
-                ctx.setOutputStream(old);
-            }
-        }
-    }
-
-    private boolean acceptsGzip(WriterInterceptorContext ctx) {
-        return true;        // TODO
-    }
-
-    private boolean gzipEncoded(ReaderInterceptorContext ctx) {
-        return true;        // TODO
-    }
+@NameBinding
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(value = RetentionPolicy.RUNTIME)
+public @interface Gzipped {
 }

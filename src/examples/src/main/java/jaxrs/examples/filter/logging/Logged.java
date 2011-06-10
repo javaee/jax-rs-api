@@ -37,25 +37,20 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.interceptor.compression;
+package jaxrs.examples.filter.logging;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.ws.rs.NameBinding;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  */
-@Path("/")
-public class MyResourceClass {
-
-    @Gzipped
-    @GET
-    @Produces("text/plain")
-    @Path("{name}")
-    public String hello(@PathParam("name") String name) {
-        return "Hello " + name;
-    }
+@NameBinding
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(value = RetentionPolicy.RUNTIME)
+public @interface Logged {
 }

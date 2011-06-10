@@ -37,43 +37,39 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.interceptor.logging;
+package jaxrs.examples.filter.caching;
 
 import java.io.IOException;
 
-import javax.ws.rs.core.HttpRequest;
+import javax.ws.rs.BindingPriority;
+import javax.ws.rs.GlobalBinding;
+import javax.ws.rs.GlobalBinding.BindingDomain;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.RequestFilter;
-import javax.ws.rs.ext.ResponseFilter;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  */
 @Provider
-@Logged
-public class LoggingFilter implements RequestFilter, ResponseFilter {
+@GlobalBinding(domain = BindingDomain.SERVER,
+priority = BindingPriority.USER)
+public class ServerCachingFilter implements RequestFilter {
 
     @Override
     public FilterAction preFilter(FilterContext ctx) throws IOException {
-        logRequest(ctx.getRequest());
+        HttpResponse res = getCachedResponse(ctx);
+        if (res != null) {
+            ctx.setResponse(res);
+            return FilterAction.STOP;     // break filter chain
+        }
         return FilterAction.NEXT;
     }
 
-    @Override
-    public FilterAction postFilter(FilterContext ctx) throws IOException {
-        logResponse(ctx.getResponse());
-        return FilterAction.NEXT;
-    }
-
-    private void logRequest(HttpRequest req) {
-        return;     // TODO
-    }
-
-    private void logResponse(HttpResponse res) {
-        return;     // TODO
+    private HttpResponse getCachedResponse(FilterContext ctx) {
+        return null;    // TODO
     }
 }

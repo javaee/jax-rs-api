@@ -67,11 +67,11 @@ public class CacheResponseHandler implements ResponseFilter {
     @Override
     public FilterAction postFilter(FilterContext ctx) throws IOException {
         if (ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
-            URI uri = ctx.getRequest().getURI();
+            URI uri = ctx.getRequest().getAbsolutePath();   // TODO: getURI()?
             HttpResponse response = ctx.getResponse();
             byte[] body = readFromStream(1024, response.getEntityInputStream());
-            CacheEntry entry = new CacheEntry(response.getHeaders(), body);
-            cache.put(uri.toString(), entry);
+            // TODO: CacheEntry entry = new CacheEntry(response.getHeaders(), body);
+            // TODO: cache.put(uri.toString(), entry);
             response.setEntityInputStream(new ByteArrayInputStream(body));
         }
         return FilterAction.NEXT;

@@ -37,20 +37,23 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.interceptor.logging;
+package jaxrs.examples.filter.logging;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import javax.ws.rs.NameBinding;
+import java.lang.reflect.Method;
+import javax.ws.rs.GET;
+import javax.ws.rs.ext.Provider;
+import javax.ws.rs.ext.DynamicBinding;
 
 /**
  * 
  * @author Santiago Pericas-Geertsen
  */
-@NameBinding
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(value = RetentionPolicy.RUNTIME)
-public @interface Logged {
+@Provider
+@Logged
+public class DynamicLoggingFilter extends LoggingFilter implements DynamicBinding {
+
+    @Override
+    public boolean isBound(Class<?> type, Method method) {
+        return method.isAnnotationPresent(GET.class);
+    }
 }

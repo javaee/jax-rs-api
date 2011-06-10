@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.interceptor.logging;
+package jaxrs.examples.filter.logging;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
