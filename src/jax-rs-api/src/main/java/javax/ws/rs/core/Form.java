@@ -40,10 +40,12 @@
 package javax.ws.rs.core;
 
 /**
+ * Represents the the HTML form data request entity encoded using the
+ * {@code "application/x-www-form-urlencoded"} content type.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
+ * @since 2.0
  */
 public class Form extends MultivaluedHashMap<String, String> {
-    private static final long serialVersionUID = 1L;
-    
+    private static final long serialVersionUID = 9081959911712065219L;
 }

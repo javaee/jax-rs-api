@@ -266,18 +266,6 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      <T> T getEntity(Class<T> type, Type genericType, Annotation[] annotations) throws WebApplicationException;
 
     /**
-     * Get the form parameters of the request entity.
-     * <p>
-     * This method will ensure that the request entity is buffered such that it
-     * may be consumed by the application.
-     *
-     * @return the form parameters, if there is a request entity and the
-     * content type is {@code "application/x-www-form-urlencoded"}, otherwise an
-     * instance containing no parameters will be returned.
-     */
-    Form getFormParameters();
-
-    /**
      * Get the request method, e.g. GET, POST, etc.
      *
      * @return the request method.

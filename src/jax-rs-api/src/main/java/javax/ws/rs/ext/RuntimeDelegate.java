@@ -254,14 +254,4 @@ public abstract class RuntimeDelegate {
          */
         public String toString(T value) throws IllegalArgumentException;
     }
-
-    /**
-     * Obtain a new instance of a default {@link ClientConfiguration}
-     * implementation.
-     *
-     * @return new instance of the default client configuration implementation.
-     *
-     * @since 2.0
-     */
-    public abstract ClientConfiguration createClientConfiguration();
 }
