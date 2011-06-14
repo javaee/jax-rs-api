@@ -40,7 +40,7 @@
 package javax.ws.rs.ext;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -56,7 +56,7 @@ public interface BaseContext {
 
     void setAnnotations(Annotation[] annotations);
 
-    AccessibleObject getAppliedTarget();
+    Method getResourceMethod();
 
-    Class<?> getAppliedClass();
+    Class<?> getResourceClass();
 }
