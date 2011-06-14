@@ -54,9 +54,9 @@ public interface ReadFromHandlerContext<T> extends BaseContext {
 
     T proceed() throws IOException;
 
-    Class getType();
+    Class<?> getType();
 
-    void setType(Class type);
+    void setType(Class<?> type);
 
     Type getGenericType();
 

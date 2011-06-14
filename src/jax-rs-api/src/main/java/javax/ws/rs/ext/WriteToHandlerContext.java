@@ -58,9 +58,9 @@ public interface WriteToHandlerContext<T> extends BaseContext {
 
     void setEntity(T entity);
 
-    Class getType();
+    Class<?> getType();
 
-    void setType(Class type);
+    void setType(Class<?> type);
 
     Type getGenericType();
 
