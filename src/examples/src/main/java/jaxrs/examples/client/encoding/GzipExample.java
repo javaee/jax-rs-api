@@ -41,8 +41,10 @@ package jaxrs.examples.client.encoding;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientConfiguration;
+import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.DefaultClientConfiguration;
 import javax.ws.rs.client.ResourceUri;
+
 import jaxrs.examples.filter.compression.GzipHandler;
 
 /**
@@ -57,13 +59,13 @@ public class GzipExample {
 
     public void gzipExample() {
         ClientConfiguration config = new DefaultClientConfiguration();
-        config.getClasses().add(GzipHandler.class);
-        ResourceUri resourceUri = Client.create(config).resourceUri("http://example.com/foo/bar.txt");
+        config.register(GzipHandler.class);
+        ResourceUri resourceUri = ClientFactory.newClient(config).resourceUri("http://example.com/foo/bar.txt");
 
         // getting a gzip encoded body
-        String text = resourceUri.prepareGet().invoke(String.class);
+        String text = resourceUri.get().invoke(String.class);
 
         // send a gzip encoded body
-        resourceUri.preparePost().header("Content-Encoding", "gzip").invoke();
+        resourceUri.post().header("Content-Encoding", "gzip").invoke();
     }
 }

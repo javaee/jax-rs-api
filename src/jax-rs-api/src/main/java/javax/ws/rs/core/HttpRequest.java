@@ -64,19 +64,19 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      */
     public static interface Builder<T extends HttpRequest> {
 
-        T prepareGet();
+        T get();
 
-        T preparePut();
+        T put();
 
-        T preparePost();
+        T post();
 
-        T prepareDelete();
+        T delete();
 
-        T prepareHead();
+        T head();
 
-        T prepareOptions();
+        T options();
 
-        T prepareTrace();
+        T trace();
 
         /**
          * Configures a HTTP request with an arbitrary HTTP method name.
@@ -91,7 +91,7 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
          * @return configured HTTP request or its more specialized version.
          * @see javax.ws.rs.client.Invocation
          */
-        T prepareMethod(String name);
+        T method(String name);
     }
 
     // Getters

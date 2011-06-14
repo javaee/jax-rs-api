@@ -39,10 +39,12 @@
  */
 package jaxrs.examples.client.cache;
 
+import java.util.HashMap;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientConfiguration;
+import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.DefaultClientConfiguration;
-import java.util.HashMap;
 import javax.ws.rs.client.Invocation;
 
 /**
@@ -59,13 +61,10 @@ public class CacheExample {
         ClientConfiguration config = new DefaultClientConfiguration();
         HashMap<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
 
-        CacheEntryLocator finder = new CacheEntryLocator(cache);
-        CacheResponseHandler cacher = new CacheResponseHandler(cache);
+        config.register(new CacheEntryLocator(cache));
+        config.register(new CacheResponseHandler(cache));
 
-        config.getSingletons().add(finder);
-        config.getSingletons().add(cacher);
-
-        Invocation request = Client.create(config).request("http://example.com/foo/bar.txt").prepareGet();
+        Invocation request = ClientFactory.newClient(config).request("http://example.com/foo/bar.txt").get();
 
         String text = request.invoke(String.class);
         String second = request.invoke(String.class);

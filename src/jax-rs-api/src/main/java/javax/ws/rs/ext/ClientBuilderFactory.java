@@ -40,7 +40,6 @@
 package javax.ws.rs.ext;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientConfiguration;
 
 /**
  * TODO javadoc.
@@ -49,8 +48,8 @@ import javax.ws.rs.client.ClientConfiguration;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface ClientFactory<B extends Client.Builder<? extends Client, ? extends ClientConfiguration>> {
+public interface ClientBuilderFactory<B extends Client.Builder> {
        
-    B createClientBuilder();
+    B newBuilder();
     
 }

@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package javax.ws.rs.ext;
 
 import java.io.IOException;
@@ -124,5 +123,4 @@ public interface MessageBodyReader<T> {
             Annotation[] annotations, MediaType mediaType,
             MultivaluedMap<String, String> httpHeaders,
             InputStream entityStream) throws IOException, WebApplicationException;
-
 }

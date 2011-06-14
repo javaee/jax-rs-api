@@ -41,6 +41,7 @@ package javax.ws.rs.client;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -55,15 +56,26 @@ import java.util.Set;
  */
 public class DefaultClientConfiguration implements ClientConfiguration {
 
-    private final Set<Class<?>> providerClasses = new LinkedHashSet<Class<?>>();
-    private final Set<Object> singletonProviders = new LinkedHashSet<Object>();
-    private final Map<String, Boolean> features = new HashMap<String, Boolean>();
-    private final Map<String, Object> properties = new HashMap<String, Object>();
+    private final Set<Class<?>> providerClasses;
+    private final Set<Object> singletonProviders;
+    private final Set<String> features;
+    private final Set<String> immutableFeaturesView;
+    private final Map<String, Object> properties;
+    private final Map<String, Object> immutablePropertiesView;
 
     /**
      * TODO javadoc.
      */
-    public DefaultClientConfiguration() { }
+    public DefaultClientConfiguration() {
+        this.providerClasses = new LinkedHashSet<Class<?>>();
+        this.singletonProviders = new LinkedHashSet<Object>();
+
+        this.features = new HashSet<String>();
+        this.immutableFeaturesView = Collections.unmodifiableSet(features);
+
+        this.properties = new HashMap<String, Object>();
+        this.immutablePropertiesView = Collections.unmodifiableMap(properties);
+    }
 
     /**
      * TODO javadoc.
@@ -71,6 +83,8 @@ public class DefaultClientConfiguration implements ClientConfiguration {
      * @param providerClasses TODO.
      */
     public DefaultClientConfiguration(final Class<?>... providerClasses) {
+        this();
+
         Collections.addAll(this.providerClasses, providerClasses);
     }
 
@@ -80,33 +94,45 @@ public class DefaultClientConfiguration implements ClientConfiguration {
      * @param providerClasses TODO.
      */
     public DefaultClientConfiguration(final Set<Class<?>> providerClasses) {
+        this();
+
         this.providerClasses.addAll(providerClasses);
     }
 
+    public DefaultClientConfiguration(ClientConfiguration original) {
+        this.providerClasses = new LinkedHashSet<Class<?>>(original.getProviderClasses());
+        this.singletonProviders = new LinkedHashSet<Object>(original.getProviderSingletons());
+
+        this.features = new HashSet<String>(original.getFeatures());
+        this.immutableFeaturesView = Collections.unmodifiableSet(features);
+
+        this.properties = new HashMap<String, Object>(original.getProperties());
+        this.immutablePropertiesView = Collections.unmodifiableMap(properties);
+    }    
+
     @Override
-    public Set<Class<?>> getClasses() {
+    public Set<Class<?>> getProviderClasses() {
         return providerClasses;
     }
 
     @Override
-    public Set<Object> getSingletons() {
+    public Set<Object> getProviderSingletons() {
         return singletonProviders;
     }
 
     @Override
-    public Map<String, Boolean> getFeatures() {
-        return features;
+    public Set<String> getFeatures() {
+        return immutableFeaturesView;
     }
 
     @Override
-    public boolean getFeature(final String featureName) {
-        final Boolean v = features.get(featureName);
-        return (v != null) ? v : false;
+    public boolean isEnabled(final String featureName) {
+        return features.contains(featureName);
     }
 
     @Override
     public Map<String, Object> getProperties() {
-        return properties;
+        return immutablePropertiesView;
     }
 
     @Override
@@ -115,8 +141,39 @@ public class DefaultClientConfiguration implements ClientConfiguration {
     }
 
     @Override
-    public boolean getPropertyAsFeature(final String name) {
-        Boolean v = (Boolean) getProperties().get(name);
-        return (v != null) ? v : false;
+    public DefaultClientConfiguration property(String name, Object value) {
+        properties.put(name, value);
+        return this;
+    }
+
+    @Override
+    public DefaultClientConfiguration enable(String featureName) {
+        features.add(featureName);
+        return this;
+    }
+
+    @Override
+    public DefaultClientConfiguration disable(String featureName) {
+        features.remove(featureName);
+        return this;
+    }
+
+    @Override
+    public DefaultClientConfiguration properties(Map<String, Object> newProperties) {
+        properties.clear();
+        properties.putAll(newProperties);
+        return this;
+    }
+
+    @Override
+    public DefaultClientConfiguration register(Class<?> providerClass) {
+        providerClasses.add(providerClass);
+        return this;
+    }
+
+    @Override
+    public DefaultClientConfiguration register(Object singletonProvider) {
+        singletonProviders.add(singletonProvider);        
+        return this;
     }
 }

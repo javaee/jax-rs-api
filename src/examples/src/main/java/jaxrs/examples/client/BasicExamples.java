@@ -44,6 +44,7 @@ import java.util.concurrent.Future;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientConfiguration;
+import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.DefaultClientConfiguration;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
@@ -53,7 +54,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ClientFactory;
+import javax.ws.rs.ext.ClientBuilderFactory;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -63,14 +64,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 public class BasicExamples {
 
-    public static abstract class MyClient extends Client {
+    public static abstract class MyClient implements Client {
 
-        public MyClient(ClientConfiguration configuration) {
-            super(configuration);
-        }
+        public MyClient(ClientConfiguration configuration) { }
     }
 
-    public static class MyClientBuilder implements Client.Builder<MyClient, MyClientConfiguration> {
+    public static class MyClientBuilder implements Client.Builder<MyClientConfiguration> {
 
         @Override
         public MyClient create() {
@@ -88,10 +87,10 @@ public class BasicExamples {
         public void enableCaching() { /* not implemented */ }
     }
 
-    public static class MyClientBuilderFactory implements ClientFactory<MyClientBuilder> {
+    public static class MyClientBuilderFactory implements ClientBuilderFactory<MyClientBuilder> {
 
         @Override
-        public MyClientBuilder createClientBuilder() {
+        public MyClientBuilder newBuilder() {
             return new MyClientBuilder();
         }
     }
@@ -111,34 +110,34 @@ public class BasicExamples {
     }
 
     public void clientBootstrapping() {
-        // Default client instantiation using default configuration
-        Client defaultClient = Client.create();
+        // Default newClient instantiation using default configuration
+        Client defaultClient = ClientFactory.newClient();
         assert defaultClient != null;
 
-        // Default client instantiation using custom configuration
+        // Default newClient instantiation using custom configuration
         ClientConfiguration cfg = new DefaultClientConfiguration();
-        cfg.getFeatures().put("CUSTOM_FEATURE", true);
+        cfg.enable("CUSTOM_FEATURE");
 
-        Client defaultConfiguredClient = Client.create(cfg);
+        Client defaultConfiguredClient = ClientFactory.newClient(cfg);
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
         
-        // Custom client instantiation using default configuration
-        MyClient myClient = Client.providedBy(MyClientBuilderFactory.class).create();
+        // Custom newClient instantiation using default configuration
+        MyClient myClient = ClientFactory.newClientBy(MyClientBuilderFactory.class).create();
         assert myClient != null;
 
-        // Custom client instantiation using custom configuration
+        // Custom newClient instantiation using custom configuration
         MyClientConfiguration myCfg = new MyClientConfiguration();
         myCfg.enableCaching();
 
-        MyClient myConfiguredClient = Client.providedBy(MyClientBuilderFactory.class).create(myCfg);
+        MyClient myConfiguredClient = ClientFactory.newClientBy(MyClientBuilderFactory.class).create(myCfg);
         assert myConfiguredClient != null;
     }
     
     public void creatingResourceAndSubResourceUris() {
         // ResourceUri( http://jaxrs.examples.org/jaxrsApplication/customers/ )
-        ResourceUri customersUri = Client.create().resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");        
+        ResourceUri customersUri = ClientFactory.newClient().resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");        
         // ResourceUri( http://jaxrs.examples.org/jaxrsApplication/customers/{id}/ )
         ResourceUri anyCustomerUri = customersUri.path("{id}");
         // ResourceUri( http://jaxrs.examples.org/jaxrsApplication/customers/123/ )
@@ -148,32 +147,32 @@ public class BasicExamples {
     }
     
     public void creatingClientRequestsAndInvocations() {
-        final Client client = Client.create();
+        final Client client = ClientFactory.newClient();
         
-        // Create client request, customize it and invoke using client
-        HttpRequest<?> request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").prepareGet();
+        // Create newClient request, customize it and invoke using newClient
+        HttpRequest<?> request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").get();
         request.accept(MediaType.APPLICATION_XML).header("Foo", "Bar");
         HttpResponse responseA = client.invoke(request);        
         assert responseA.getStatusCode() == 200;
         
         // Direct invocation leveraging the Invocation interface
-        HttpResponse responseB = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").prepareGet() // Invocation (extends HttpRequest)
+        HttpResponse responseB = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").get() // Invocation (extends HttpRequest)
                 .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();
         assert responseB.getStatusCode() == 200;
     }
 
     public void creatingResourceUriRequestsAndInvocations() {
-        final Client client = Client.create();
+        final Client client = ClientFactory.newClient();
         final ResourceUri customersUri = client.resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");
         
-        // Create resourceUri request, customize it and invoke using client
-        HttpRequest<?> request = customersUri.prepareGet();
+        // Create resourceUri request, customize it and invoke using newClient
+        HttpRequest<?> request = customersUri.get();
         request.accept(MediaType.APPLICATION_XML).header("Foo", "Bar");
         HttpResponse responseA = client.invoke(request);        
         assert responseA.getStatusCode() == 200;
         
         // Direct invocation leveraging the Invocation interface
-        HttpResponse responseB = customersUri.prepareGet() // Invocation (extends HttpRequest)
+        HttpResponse responseB = customersUri.get() // Invocation (extends HttpRequest)
                 .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();
         assert responseB.getStatusCode() == 200;
     }
@@ -182,61 +181,61 @@ public class BasicExamples {
         Customer customer;
         HttpResponse response;
 
-        final ResourceUri customersUri = Client.create().resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");
+        final ResourceUri customersUri = ClientFactory.newClient().resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");
 
-        response = customersUri.path("{id}").prepareGet().pathParam("id", 123).invoke();
+        response = customersUri.path("{id}").get().pathParam("id", 123).invoke();
         customer = response.getEntity(Customer.class);
         assert customer != null;
 
-        response = customersUri.preparePost().entity(new Customer("Marek")).type("application/xml").invoke();
+        response = customersUri.post().entity(new Customer("Marek")).type("application/xml").invoke();
         assert response.getStatusCode() == 201;
     }
 
     public void typedResponse() {
-        Customer customer = Client.create()
+        Customer customer = ClientFactory.newClient()
                 .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .prepareGet()
+                .get()
                 .pathParam("id", 123)
                 .invoke(Customer.class);
         assert customer != null;
     }
 
     public void typedGenericResponse() {
-        List<Customer> customers = Client.create()
+        List<Customer> customers = ClientFactory.newClient()
                 .request("http://jaxrs.examples.org/jaxrsApplication/customers")
-                .prepareGet()
+                .get()
                 .invoke(new GenericType<List<Customer>>() { });
         assert customers != null;
     }
 
     public void responseUsingSubResourceClient() {
-        ResourceUri customersUri = Client.create().resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");
+        ResourceUri customersUri = ClientFactory.newClient().resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers");
         ResourceUri customer = customersUri.path("{id}");
 
         // Create a customer
-        HttpResponse response = customersUri.preparePost()
+        HttpResponse response = customersUri.post()
                 .entity(new Customer("Bill")).type("application/xml").invoke();
         assert response.getStatusCode() == 201;
 
         Customer favorite;
         // view a customer
-        favorite = customer.prepareGet() // Invocation (extends HttpRequest)
+        favorite = customer.get() // Invocation (extends HttpRequest)
                 .pathParam("id", 123).invoke(Customer.class);
         assert favorite != null;
 
         // view a customer (alternative)
         favorite = customer.pathParam("id", 123) // ResourceUri ("http://jaxrs.examples.org/jaxrsApplication/customers/123/")
-                .prepareGet() // Invocation (extends HttpRequest)
+                .get() // Invocation (extends HttpRequest)
                 .invoke(Customer.class);
         assert favorite != null;
     }
 
     public void asyncResponse() throws Exception {
-        Future<HttpResponse> future = Client.create()
+        Future<HttpResponse> future = ClientFactory.newClient()
                 .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .prepareGet()
+                .get()
                 .pathParam("id", 123)
-                .start();
+                .queue();
 
         HttpResponse response = future.get();
         Customer customer = response.getEntity(Customer.class);
@@ -244,21 +243,21 @@ public class BasicExamples {
     }
 
     public void typedAsyncResponse() throws Exception {
-        Future<Customer> customer = Client.create()
+        Future<Customer> customer = ClientFactory.newClient()
                 .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .prepareGet()
+                .get()
                 .pathParam("id", 123)
-                .start(Customer.class);
+                .queue(Customer.class);
         assert customer.get() != null;
     }
 
     public void asyncCallback() {
-        final Client client = Client.create();
-        Invocation request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").prepareGet();
+        final Client client = ClientFactory.newClient();
+        Invocation request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").get();
         request.pathParam("id", 123);
 
         // invoke a request in background
-        client.start(request, new InvocationCallback<Customer>() {
+        client.queue(request, new InvocationCallback<Customer>() {
 
             @Override
             public void onComplete(Future<Customer> future) {
@@ -267,7 +266,7 @@ public class BasicExamples {
         });
 
         // invoke another request in background
-        Future<?> handle = request.pathParam("id", 456).start(new InvocationCallback<HttpResponse>() {
+        Future<?> handle = request.pathParam("id", 456).queue(new InvocationCallback<HttpResponse>() {
 
             @Override
             public void onComplete(Future<HttpResponse> future) {
@@ -278,13 +277,13 @@ public class BasicExamples {
     }
 
     public void asyncCallbackUsingSubResourceClient() throws Exception {
-        final Client client = Client.create();
+        final Client client = ClientFactory.newClient();
         ResourceUri anyCustomerUri = client.resourceUri("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
 
         // invoke a request in background
         Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // ResourceUri
-                .prepareGet() // Invocation (extends HttpRequest)
-                .start(new InvocationCallback<Customer>() {
+                .get() // Invocation (extends HttpRequest)
+                .queue(new InvocationCallback<Customer>() {
 
             @Override
             public void onComplete(Future<Customer> future) {
@@ -295,8 +294,8 @@ public class BasicExamples {
 
         // invoke another request in background
         anyCustomerUri.pathParam("id", 456) // ResourceUri
-                .prepareGet() // Invocation (extends HttpRequest)
-                .start(new InvocationCallback<HttpResponse>() {
+                .get() // Invocation (extends HttpRequest)
+                .queue(new InvocationCallback<HttpResponse>() {
 
             @Override
             public void onComplete(Future<HttpResponse> future) {
@@ -304,10 +303,10 @@ public class BasicExamples {
             }
         });
         
-        // invoke one more request using client
-        HttpRequest<?> request = anyCustomerUri.pathParam("id", 789).prepareGet();
+        // invoke one more request using newClient
+        HttpRequest<?> request = anyCustomerUri.pathParam("id", 789).get();
         request.cookie(new Cookie("fooName", "XYZ"));
-        Future<HttpResponse> response = client.start(request);
+        Future<HttpResponse> response = client.queue(request);
         assert response.get() != null;
-    }
+    }        
 }

@@ -39,9 +39,6 @@
  */
 package javax.ws.rs.client;
 
-import java.util.Map;
-import java.util.Set;
-
 /**
  * JAX-RS client configuration contract.
  * <p />
@@ -61,89 +58,6 @@ import java.util.Set;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface ClientConfiguration {
+public interface ClientConfiguration extends Configurable<ClientConfiguration> {
 
-    /**
-     * Get the mutable set of provider classes to be instantiated in the scope
-     * of the Client.
-     * <p>
-     * A provider class is a Java class with a {@link javax.ws.rs.ext.Provider}
-     * annotation declared on the class that implements a specific service
-     * interface.
-     *
-     * @return the mutable set of provider classes. After initialization of
-     * the client modification of this value will have no effect.
-     * The returned value shall never be {@code null}.
-     */
-    Set<Class<?>> getClasses();
-
-    /**
-     * Get the singleton provider instances to be utilized by the client.
-     * <p>
-     * When the client is initialized the set of provider instances
-     * will be combined and take precedence over the instantiated provider
-     * classes.
-     *
-     * @return the mutable set of provider instances. After initialization of
-     *     the client modification of this value will have no effect.
-     *     The returned value shall never be {@code null}.
-     * @see #getClasses()
-     */
-    Set<Object> getSingletons();
-
-    /**
-     * Get the value of a feature represented by a boolean property in the
-     * property bag.
-     *
-     * @param featureName the name of the feature.
-     * @return true if the feature value is present and is an instance of
-     *     {@link java.lang.Boolean} and that value is {@code true}, otherwise
-     *     {@code false}.
-     * @see #getFeatures()
-     */
-    boolean getPropertyAsFeature(String featureName);
-
-    /**
-     * Get the map of features associated with the client.
-     * <p />
-     * Features are properties defined by their {@code String} name and their
-     * value that is always of {@code Boolean} type. A feature value of {@code true}
-     * means that the feature is enabled, value of {@code false} means that
-     * the feature is disabled. The meaning of a feature is implementation specific.
-     *
-     * @return the feature map. The returned value shall never be {@code null}.
-     */
-    Map<String, Boolean> getFeatures();
-
-    /**
-     * Get the value of a feature.
-     *
-     * @param featureName the feature name.
-     * @return {@code true} if the feature is present and set to {@code true},
-     *     otherwise {@code false} (if the feature is present and set to
-     *     {@code false} or the feature is not present at all).
-     * @see #getFeatures()
-     */
-    boolean getFeature(String featureName);
-
-    /**
-     * Get the map of properties associated with the client.
-     *<p />
-     * Properties are defined by their {@code String} name and their
-     * value that can be of any Java type. The meaning of a property is
-     * implementation specific.
-     *
-     * @return the properties. The returned value shall never be {@code null}.
-     */
-    Map<String, Object> getProperties();
-
-    /**
-     * Get the value of a property.
-     *
-     * @param propertyName the property name.
-     * @return the property, or {@code null} if there is no property present for
-     *     the given property name.
-     * @see #getProperties()
-     */
-    Object getProperty(String propertyName);
 }

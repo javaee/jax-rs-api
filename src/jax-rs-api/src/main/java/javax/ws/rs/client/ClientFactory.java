@@ -39,36 +39,49 @@
  */
 package javax.ws.rs.client;
 
-import java.util.concurrent.Future;
-
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.HttpRequest;
-import javax.ws.rs.core.HttpResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ws.rs.client.Client.Builder;
+import javax.ws.rs.ext.ClientBuilderFactory;
 
 /**
- * TODO javadoc.
  *
  * @author Marek Potociar
  * @since 2.0
  */
-public interface Invocation extends HttpRequest<Invocation>, Configurable<Invocation> {
+public class ClientFactory {
 
-    // Invocation methods
-    // TODO: document that the request instance needs to be cloned so that the 
-    // data used in the invocation processing chain are decoupled from the original
-    // request data that were used to initiate the invocation to prevent accidental
-    // issues caused by mutable nature of the request
-    HttpResponse invoke() throws InvocationException;
+    private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
 
-    <T> T invoke(Class<T> responseType) throws InvocationException;
+    // Factory
+    public static <B extends Builder> B newClientBy(Class<? extends ClientBuilderFactory<B>> builderFactoryClass) {
+        return getFactory(builderFactoryClass).newBuilder();
+    }
 
-    <T> T invoke(GenericType<T> responseType) throws InvocationException;
+    private static <C extends ClientBuilderFactory<?>> C getFactory(Class<C> builderFactoryClass) {
+        try {
+            return builderFactoryClass.newInstance(); // TODO instance caching(?), injecting, setup, etc.
+        } catch (InstantiationException ex) {
+            LOGGER.log(Level.SEVERE, "Unable to instantiate client builder factory.", ex);
+        } catch (IllegalAccessException ex) {
+            LOGGER.log(Level.SEVERE, "Unable to instantiate client builder factory.", ex);
+        }
 
-    Future<HttpResponse> queue();
+        return null;
+    }
+    
+    // todo make generic
+    private static ClientBuilderFactory<? extends Builder<ClientConfiguration>> getDefaultFactory() {
+        // todo implement
+        return null;
+    }
 
-    <T> Future<T> queue(Class<T> responseType);
+    public static Client newClient() {
+        return getDefaultFactory().newBuilder().create();
+    }
 
-    <T> Future<T> queue(GenericType<T> responseType);
-
-    <T> Future<T> queue(InvocationCallback<T> callback);
+    public static Client newClient(ClientConfiguration configuration) {
+        // TODO fix the unchecked warning
+        return getDefaultFactory().newBuilder().create(configuration);
+    }
 }
