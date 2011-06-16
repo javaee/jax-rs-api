@@ -41,38 +41,56 @@ package javax.ws.rs.ext;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
+ * Context class used by {@link javax.ws.rs.ext.WriteToHandler} 
+ * intercepting calls to {@link javax.ws.rs.ext.MessageBodyWriter#writeTo}. 
+ * The getters and setters in this context class correspond to the 
+ * parameters of the intercepted method.
+ * 
+ * @param <T> Java type supported by corresponding message body provider
  * 
  * @author Santiago Pericas-Geertsen
+ * @author Bill Burke
  * @since 2.0
  */
-public interface WriteToHandlerContext<T> extends BaseContext {
+public interface WriteToHandlerContext<T> extends MessageBodyHandlerContext<T> {
 
+    /**
+     * Proceed to the next handler in the chain. Handlers MUST explicitly 
+     * call this method to continue the execution chain; the call to this 
+     * method in the last handler of the chain will invoke 
+     * {@link javax.ws.rs.ext.MessageBodyWriter#writeTo}.
+     * 
+     * @throws IOException 
+     */
     void proceed() throws IOException;
 
+    /**
+     * Get object to be written as HTTP entity
+     * 
+     * @return Object to be written as HTTP entity
+     */    
     T getEntity();
 
+    /**
+     * Update object to be written as HTTP entity
+     * 
+     * @param entity New object to be written 
+     */    
     void setEntity(T entity);
 
-    Class<?> getType();
-
-    void setType(Class<?> type);
-
-    Type getGenericType();
-
-    void setGenericType(Type genericType);
-
-    MediaType getMediaType();
-
-    void setMediaType(MediaType mediaType);
-
-    MultivaluedMap<String, Object> getHeaders();
-
+    /**
+     * Get the output stream for the object to be written
+     * 
+     * @return Output stream for the object to be written
+     */
     OutputStream getOutputStream();
 
+    /**
+     * Update the output stream for the object to be written
+     * 
+     * @param os New output stream for the object to be written
+     */
     public void setOutputStream(OutputStream os);
 }

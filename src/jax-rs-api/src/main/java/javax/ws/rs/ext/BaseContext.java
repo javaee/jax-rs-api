@@ -39,24 +39,49 @@
  */
 package javax.ws.rs.ext;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
+import javax.ws.rs.client.Configurable;
+import javax.ws.rs.client.Invocation;
 
 /**
+ * Base context shared by handlers and filters.
  * 
  * @author Santiago Pericas-Geertsen
+ * @author Bill Burke
  * @since 2.0
  */
 public interface BaseContext {
 
+    /**
+     * Get a mutable map of properties that can be used for 
+     * communication between handlers and between filters. As part of 
+     * the client API, this property map is initialized by calling 
+     * {@link javax.ws.rs.client.Invocation#getProperties()}. Otherwise,
+     * it is initialized to the empty map.
+     *
+     * @return A mutable property map
+     * @see Configurable
+     * @see Invocation
+     */
     Map<String, Object> getProperties();
 
-    Annotation[] getAnnotations();
-
-    void setAnnotations(Annotation[] annotations);
-
+    /**
+     * Get the resource method that is the target of a request. As
+     * part of the client API, this method returns null.
+     * 
+     * @return Resource method or null
+     * @see #getResourceClass()
+     */
     Method getResourceMethod();
 
+    /**
+     * Get the resource class that is the target of a request. As
+     * part of the client API, this method returns null.
+     * 
+     * @return Resource class or null
+     * @see #getResourceMethod() 
+     */
     Class<?> getResourceClass();
+
 }

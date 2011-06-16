@@ -43,19 +43,56 @@ import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
 
 /**
+ * Context class used by instances of {@link javax.ws.rs.ext.RequestFilter}
+ * and {@link javax.ws.rs.ext.ResponseFilter}. 
  * 
  * @author Santiago Pericas-Geertsen
+ * @author Bill Burke
  * @since 2.0
  */
 public interface FilterContext extends BaseContext {
 
+    /**
+     * Enumeration to control how the filter chain is processed.
+     * A filter can return {@link #NEXT} to continue the filter chain 
+     * or {@link #STOP} to abort it.
+     */
     public enum FilterAction { STOP, NEXT };
 
+    /**
+     * Get instance of HTTP request object. 
+     * 
+     * @return Request object being filtered
+     */
     HttpRequest getRequest();
 
+    /**
+     * Get instance of HTTP response object. May return null in a
+     * {@link javax.ws.rs.ext.RequestFilter} unless set via
+     * {@link #setResponse(javax.ws.rs.core.HttpResponse)}.
+     * 
+     * @return Response object being filtered
+     */
     HttpResponse getResponse();
 
+    /**
+     * Set an HTTP response object in the context. A caching filter
+     * could set a response by calling this method and returning
+     * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to
+     * stop the filter chain.
+     * 
+     * @param res Response object to be set
+     */
     void setResponse(HttpResponse res);
 
+    /**
+     * Create a fresh HTTP response object. A caching filter
+     * could call this method to get an HTTP response object and
+     * initialize it from a cache. This method does not update
+     * the state of the context object.
+     * 
+     * @return Newly created HTTP response object
+     * @see #setResponse(javax.ws.rs.core.HttpResponse) 
+     */
     HttpResponse createResponse();
 }

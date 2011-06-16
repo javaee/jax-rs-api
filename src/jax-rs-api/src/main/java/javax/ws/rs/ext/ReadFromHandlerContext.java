@@ -41,34 +41,45 @@ package javax.ws.rs.ext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
+ * Context class used by {@link javax.ws.rs.ext.ReadFromHandler} 
+ * intercepting calls to {@link javax.ws.rs.ext.MessageBodyReader#readFrom}. 
+ * The getters and setters in this context class correspond to the 
+ * parameters of the intercepted method.
+ * 
+ * @param <T> Java type supported by corresponding message body provider
  * 
  * @author Santiago Pericas-Geertsen
+ * @author Bill Burke
  * @since 2.0
  */
-public interface ReadFromHandlerContext<T> extends BaseContext {
+public interface ReadFromHandlerContext<T> extends MessageBodyHandlerContext<T> {
 
+    /**
+     * Proceed to the next handler in the chain. Return the result of the 
+     * next handler invoked. Handlers MUST explicitly call this method
+     * to continue the execution chain; the call to this method in the 
+     * last handler of the chain will invoke
+     * {@link javax.ws.rs.ext.MessageBodyReader#readFrom}.
+     * 
+     * @return Result of next handler invoked
+     * @throws IOException 
+     */
     T proceed() throws IOException;
 
-    Class<?> getType();
-
-    void setType(Class<?> type);
-
-    Type getGenericType();
-
-    void setGenericType(Type genericType);
-
-    MediaType getMediaType();
-
-    void setMediaType(MediaType mediaType);
-
-    MultivaluedMap<String, String> getHeaders();
-
+    /**
+     * Get the input stream of the object to be read
+     * 
+     * @return Input stream of the object to be read
+     */
     InputStream getInputStream();
 
+    /**
+     * Update the input stream of the object to be read.
+     * For example, by wrapping it with another input stream
+     * 
+     * @param is New input stream 
+     */
     void setInputStream(InputStream is);
 }

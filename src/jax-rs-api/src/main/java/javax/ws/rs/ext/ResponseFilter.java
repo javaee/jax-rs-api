@@ -43,11 +43,36 @@ import java.io.IOException;
 import javax.ws.rs.ext.FilterContext.FilterAction;
 
 /**
+ * <p>Interface implemented by filters invoked at the <emph>Post</emph> 
+ * extension point. Filters implementing this interface MUST be 
+ * annotated by {@link javax.ws.rs.ext.Provider}.</p>
+ * 
+ * <p>As part of the client API, these filters are 
+ * executed after the HTTP invocation and before all handlers 
+ * implementing {@link javax.ws.rs.ext.ReadFromHandler} are invoked.
+ * As part of the server API, these filters are executed
+ * after the resource method is called and before all handlers
+ * implementing {@link javax.ws.rs.ext.WriteToHandler} are invoked.</p>
  * 
  * @author Santiago Pericas-Geertsen
+ * @author Bill Burke
  * @since 2.0
  */
 public interface ResponseFilter {
 
-    FilterAction postFilter(FilterContext ctx) throws IOException;
+    /**
+     * Filter method called at the <emph>Post</emph> extension point.
+     * I.e., after the HTTP invocation in the client API and after the
+     * resource method invocation in the server API. This method
+     * can return {@link javax.ws.rs.ext.FilterContext.FilterAction#NEXT}
+     * to continue the execution of the filter chain, or 
+     * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to 
+     * abort the execution of the filter chain. Filters can override
+     * a response by calling {@link javax.ws.rs.ext.FilterContext#setResponse}.
+     *
+     * @param context Invocation context
+     * @return Filter action to continue or stop filter chain
+     * @throws IOException 
+     */
+    FilterAction postFilter(FilterContext context) throws IOException;
 }

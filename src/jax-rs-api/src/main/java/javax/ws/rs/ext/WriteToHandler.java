@@ -42,11 +42,27 @@ package javax.ws.rs.ext;
 import java.io.IOException;
 
 /**
+ * Interface implemented by handlers that intercept calls to
+ * {@link javax.ws.rs.ext.MessageBodyWriter#writeTo}. 
+ * 
+ * @param <T> Java type supported by corresponding message body provider
  * 
  * @author Santiago Pericas-Geertsen
+ * @author Bill Burke
  * @since 2.0
  */
 public interface WriteToHandler<T> {
-
+    
+   /**
+     * Handler method wrapping calls to 
+     * {@link javax.ws.rs.ext.MessageBodyWriter#writeTo}. The parameters
+     * to the wrapped method called are available from <code>context</code>.
+     * Implementations of this method SHOULD explicitly call 
+     * {@link javax.ws.rs.ext.WriteToHandlerContext#proceed()} to invoke
+     * the next handler in the chain, and ultimately the wrapped method.
+     *
+     * @param context Invocation context
+     * @throws IOException 
+     */
     void writeTo(WriteToHandlerContext<T> context) throws IOException;
 }
