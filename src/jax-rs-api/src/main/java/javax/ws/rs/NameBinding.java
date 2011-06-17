@@ -45,6 +45,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Meta-annotation that can be used to create a filter or handler
+ * annotation for static binding. Static binding via annotations
+ * is only supported as part of the Server API. In static binding,
+ * an annotation is defined using this meta-annotation and it is
+ * then used to decorate both the filter or handler class and 
+ * the resource method that it applies to. 
+ * 
+ * <p>See <a href="http://jcp.org/en/jsr/detail?id=339">JAX-RS 2.0: The 
+ * Java API for RESTful Web Services</a> specification for examples 
+ * on how to use this meta-annotation for static binding of filters
+ * and handlers.</p>
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0
@@ -53,5 +64,11 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface NameBinding {
 
+    /**
+     * Priority defined for a filter or handler. Default is
+     * {@link javax.ws.rs.BindingPriority#USER}.
+     * 
+     * @return filter or handler priority
+     */
     int priority() default BindingPriority.USER;
 }

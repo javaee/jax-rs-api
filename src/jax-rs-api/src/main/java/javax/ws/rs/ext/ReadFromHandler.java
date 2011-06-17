@@ -61,8 +61,8 @@ public interface ReadFromHandler<T> {
      * {@link javax.ws.rs.ext.ReadFromHandlerContext#proceed()} to invoke
      * the next handler in the chain, and ultimately the wrapped method.
      *
-     * @param context Invocation context
-     * @return Result of next handler invoked or the wrapped method if
+     * @param context invocation context
+     * @return result of next handler invoked or the wrapped method if
      *         last handler in chain
      * @throws IOException 
      */

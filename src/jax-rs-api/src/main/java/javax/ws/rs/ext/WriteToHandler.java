@@ -61,7 +61,7 @@ public interface WriteToHandler<T> {
      * {@link javax.ws.rs.ext.WriteToHandlerContext#proceed()} to invoke
      * the next handler in the chain, and ultimately the wrapped method.
      *
-     * @param context Invocation context
+     * @param context invocation context
      * @throws IOException 
      */
     void writeTo(WriteToHandlerContext<T> context) throws IOException;

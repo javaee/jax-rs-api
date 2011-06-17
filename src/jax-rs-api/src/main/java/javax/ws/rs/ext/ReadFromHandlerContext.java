@@ -63,7 +63,7 @@ public interface ReadFromHandlerContext<T> extends MessageBodyHandlerContext<T> 
      * last handler of the chain will invoke
      * {@link javax.ws.rs.ext.MessageBodyReader#readFrom}.
      * 
-     * @return Result of next handler invoked
+     * @return result of next handler invoked
      * @throws IOException 
      */
     T proceed() throws IOException;
@@ -71,7 +71,7 @@ public interface ReadFromHandlerContext<T> extends MessageBodyHandlerContext<T> 
     /**
      * Get the input stream of the object to be read
      * 
-     * @return Input stream of the object to be read
+     * @return input stream of the object to be read
      */
     InputStream getInputStream();
 
@@ -79,7 +79,7 @@ public interface ReadFromHandlerContext<T> extends MessageBodyHandlerContext<T> 
      * Update the input stream of the object to be read.
      * For example, by wrapping it with another input stream
      * 
-     * @param is New input stream 
+     * @param is new input stream 
      */
     void setInputStream(InputStream is);
 }

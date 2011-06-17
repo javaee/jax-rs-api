@@ -42,11 +42,29 @@ package javax.ws.rs.ext;
 import java.lang.reflect.Method;
 
 /**
+ * A handler or filter that implements this interface supports
+ * dynamic binding. Dynamic binding is supported only as part of
+ * the server API. Regardless of whether a handler or filter
+ * is annotated by {@link javax.ws.rs.GlobalBinding} or by
+ * an annotation derived from {@link javax.ws.rs.NameBinding},
+ * this interface will be used to determine if the handler
+ * or filter applies to a particular resource class and method.
  * 
  * @author Santiago Pericas-Geertsen
+ * @author Bill Burke
  * @since 2.0
+ * @see javax.ws.rs.GlobalBinding
+ * @see javax.ws.rs.NameBinding
  */
 public interface DynamicBinding {
 
+    /**
+     * Determine if this handler or filter applies to a particular 
+     * resource class and method.
+     * 
+     * @param type resource class
+     * @param method resource method
+     * @return true if it applies, false otherwise
+     */
     public boolean isBound(Class<?> type, Method method);
 }

@@ -62,7 +62,7 @@ public interface FilterContext extends BaseContext {
     /**
      * Get instance of HTTP request object. 
      * 
-     * @return Request object being filtered
+     * @return request object being filtered
      */
     HttpRequest getRequest();
 
@@ -71,7 +71,7 @@ public interface FilterContext extends BaseContext {
      * {@link javax.ws.rs.ext.RequestFilter} unless set via
      * {@link #setResponse(javax.ws.rs.core.HttpResponse)}.
      * 
-     * @return Response object being filtered
+     * @return response object being filtered
      */
     HttpResponse getResponse();
 
@@ -81,7 +81,7 @@ public interface FilterContext extends BaseContext {
      * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to
      * stop the filter chain.
      * 
-     * @param res Response object to be set
+     * @param res response object to be set
      */
     void setResponse(HttpResponse res);
 
@@ -91,7 +91,7 @@ public interface FilterContext extends BaseContext {
      * initialize it from a cache. This method does not update
      * the state of the context object.
      * 
-     * @return Newly created HTTP response object
+     * @return newly created HTTP response object
      * @see #setResponse(javax.ws.rs.core.HttpResponse) 
      */
     HttpResponse createResponse();

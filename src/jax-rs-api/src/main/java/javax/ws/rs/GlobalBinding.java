@@ -45,20 +45,47 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation used to indicate that a filter or handler has global
+ * binding (scope). Any filter or handler decorated with this 
+ * annotation will apply to all HTTP invocations in the Client
+ * API and all resource classes and methods in the Server API,
+ * based on the array returned by 
+ * {@link javax.ws.rs.GlobalBinding#domain()}.
+ * 
+ * <p>This annotation would typically be used to decorate filters or
+ * handlers that implement the {@link javax.ws.rs.ext.DynamicBinding}
+ * interface to further control the applicability of a handler 
+ * or filter. JAX-RS implementations MAY use package scanning to
+ * automatically discover and install global filters or handlers.</p>
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0
+ * @see javax.ws.rs.ext.DynamicBinding
  */
 @Target(ElementType.TYPE)
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface GlobalBinding {
 
+    /**
+     * Enumeration of binding domains.
+     */
     public enum BindingDomain {
-
         CLIENT, SERVER
     }
 
+    /**
+     * Binding domains defined for a filter or handler. Default
+     * is both client and server.
+     * 
+     * @return array of binding domains
+     */
     BindingDomain[] domain() default {BindingDomain.CLIENT, BindingDomain.SERVER};
 
+    /**
+     * Priority defined for a filter or handler. Default is
+     * {@link javax.ws.rs.BindingPriority#USER}.
+     * 
+     * @return filter or handler priority
+     */
     int priority() default BindingPriority.USER;
 }

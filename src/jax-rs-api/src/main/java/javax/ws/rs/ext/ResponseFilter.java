@@ -70,8 +70,8 @@ public interface ResponseFilter {
      * abort the execution of the filter chain. Filters can override
      * a response by calling {@link javax.ws.rs.ext.FilterContext#setResponse}.
      *
-     * @param context Invocation context
-     * @return Filter action to continue or stop filter chain
+     * @param context invocation context
+     * @return filter action to continue or stop filter chain
      * @throws IOException 
      */
     FilterAction postFilter(FilterContext context) throws IOException;

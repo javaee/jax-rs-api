@@ -60,7 +60,7 @@ public interface BaseContext {
      * {@link javax.ws.rs.client.Invocation#getProperties()}. Otherwise,
      * it is initialized to the empty map.
      *
-     * @return A mutable property map
+     * @return a mutable property map
      * @see Configurable
      * @see Invocation
      */
@@ -70,7 +70,7 @@ public interface BaseContext {
      * Get the resource method that is the target of a request. As
      * part of the client API, this method returns null.
      * 
-     * @return Resource method or null
+     * @return resource method or null
      * @see #getResourceClass()
      */
     Method getResourceMethod();
@@ -79,7 +79,7 @@ public interface BaseContext {
      * Get the resource class that is the target of a request. As
      * part of the client API, this method returns null.
      * 
-     * @return Resource class or null
+     * @return resource class or null
      * @see #getResourceMethod() 
      */
     Class<?> getResourceClass();

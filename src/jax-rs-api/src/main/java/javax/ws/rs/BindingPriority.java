@@ -40,6 +40,14 @@
 package javax.ws.rs;
 
 /**
+ * When multiple filters (or multiple handlers) are configured for
+ * a resource class and method (or an HTTP invocation as part of
+ * the client API) the order in which they are applied is 
+ * determined by their binding priority. Binding priorities are
+ * represented by integer numbers; the lower the value the higher
+ * the priority. This class defines a few built-in priority classes.
+ * By default all filters and handlers are defined in the 
+ * {@link #USER} class.
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0

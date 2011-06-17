@@ -69,28 +69,28 @@ public interface WriteToHandlerContext<T> extends MessageBodyHandlerContext<T> {
     /**
      * Get object to be written as HTTP entity
      * 
-     * @return Object to be written as HTTP entity
+     * @return object to be written as HTTP entity
      */    
     T getEntity();
 
     /**
      * Update object to be written as HTTP entity
      * 
-     * @param entity New object to be written 
+     * @param entity new object to be written 
      */    
     void setEntity(T entity);
 
     /**
      * Get the output stream for the object to be written
      * 
-     * @return Output stream for the object to be written
+     * @return output stream for the object to be written
      */
     OutputStream getOutputStream();
 
     /**
      * Update the output stream for the object to be written
      * 
-     * @param os New output stream for the object to be written
+     * @param os new output stream for the object to be written
      */
     public void setOutputStream(OutputStream os);
 }
