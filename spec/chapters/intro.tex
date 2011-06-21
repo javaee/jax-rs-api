@@ -16,26 +16,25 @@ This is an editors draft; this specification is not yet complete. A list of open
 %This is a JCP final specification. A list of open issues can be found at:
 
 \begin{quote}
-https://jsr311.dev.java.net/servlets/ProjectIssues
+http://java.net/jira/browse/JAX\_RS\_SPEC
 \end{quote}
 
 The corresponding Javadocs can be found online at:
 
 \begin{quote}
-%https://jsr311.dev.java.net/nonav/javadoc/index.html
-https://jsr311.dev.java.net/nonav/releases/1.1/index.html
+http://java.net/projects/jax-rs-spec/sources
 \end{quote}
 
 The reference implementation can be obtained from:
 
 \begin{quote}
-https://jersey.dev.java.net/
+http://jersey.java.net/
 \end{quote}
 
 The expert group seeks feedback from the community on any aspect of this specification, please send comments to:
 
 \begin{quote}
-users@jsr311.dev.java.net
+users@jax-rs-spec.java.net
 \end{quote}
 
 \section{Goals}
@@ -118,36 +117,52 @@ This is a note.
 This specification is being developed as part of JSR 311 under the Java Community Process. This specification is the result of the collaborative work of the members of the JSR 311 Expert Group. The following are the present and former expert group members:
 
 Jan Algermissen (Individual Member) \\
-Heiko Braun (Red Hat Middleware LLC) \\
+Florent Benoit \\
+Adam Bien \\
 Bill Burke (Red Hat Middleware LLC) \\
-Larry Cable (BEA Systems) \\
+Clint Combs \\
 Bill De Hora (Individual Member) \\ 
-Roy Fielding (Day Software, Inc.) \\
-Harpreet Geekee (Nortel) \\
-Nickolas Grabovas (Individual Member) \\
-Mark Hansen (Individual Member) \\
-John Harby (Individual Member) \\
-Hao He (Individual Member) \\
-Ryan Heaton (Individual Member) \\
-David Hensley (Individual Member) \\
-Stephan Koops (Individual Member) \\
-Changshin Lee (NCsoft Corporation) \\
-Francois Leygues (Alcatel-Lucent) \\
-Jerome Louvel (Individual Member) \\
-Hamid Ben Malek (Fujitsu Limited) \\
-Ryan J. McDonough (Individual Member) \\
-Felix Meschberger (Day Software, Inc.) \\
-David Orchard (BEA Systems) \\
-Dhanji R. Prasanna (Individual Member) \\
+Markus Karg (Individual Member) \\
+Jeff Genender \\
+Jerome Louvel \\
+Tony Ng (Ebay) \\
+Reza Rahman \\
 Julian Reschke (Individual Member) \\
-Jan Schulz-Hofen (Individual Member) \\
-Joel Smith (IBM) \\
-Stefan Tilkov (innoQ Deutschland GmbH)
+Guilherme Silveira \\
+Dionysios Synodinos \\
+Stefan Tilkov
+
+%% 1.1 Expert Group Members not in 2.0
+%Larry Cable (BEA Systems) \\
+%Heiko Braun (Red Hat Middleware LLC) \\
+%Roy Fielding (Day Software, Inc.) \\
+%Harpreet Geekee (Nortel) \\
+%Nickolas Grabovas (Individual Member) \\
+%Mark Hansen (Individual Member) \\
+%John Harby (Individual Member) \\
+%Hao He (Individual Member) \\
+%Ryan Heaton (Individual Member) \\
+%David Hensley (Individual Member) \\
+%Stephan Koops (Individual Member) \\
+%Changshin Lee (NCsoft Corporation) \\
+%Francois Leygues (Alcatel-Lucent) \\
+%Jerome Louvel (Individual Member) \\
+%Hamid Ben Malek (Fujitsu Limited) \\
+%Ryan J. McDonough (Individual Member) \\
+%Felix Meschberger (Day Software, Inc.) \\
+%David Orchard (BEA Systems) \\
+%Dhanji R. Prasanna (Individual Member) \\
+%Julian Reschke (Individual Member) \\
+%Jan Schulz-Hofen (Individual Member) \\
+%Joel Smith (IBM) \\
+%Stefan Tilkov (innoQ Deutschland GmbH)
 
 \section{Acknowledgements}
 
-During the course of the JSR we received many excellent suggestions on the JSR and Jersey (RI) mailing lists, thanks in particular to James Manger (Telstra) and Reto Bachmann-Gm\"{u}r (Trialox) for their contributions. 
+%During the course of the JSR we received many excellent suggestions on the JSR and Jersey (RI) mailing lists, thanks in particular to James Manger 
+%(Telstra) and Reto Bachmann-Gm\"{u}r (Trialox) for their contributions. 
 
-The \code{GenericEntity} class was inspired by the Google Guice \code{Type\-Literal} class. Our thanks to Bob Lee and Google for donating this class to \jaxrs.
+%The \code{GenericEntity} class was inspired by the Google Guice \code{Type\-Literal} class. Our thanks to Bob Lee and Google for donating this class to \jaxrs.
 
-The following individuals (all Sun Microsystems) have also made invaluable technical contributions: Roberto Chinnici, Dianne Jiao (TCK), Ron Monzillo, Rajiv Mordani, Eduardo Pelegri-Llopart, Jakub Podlesak (RI) and Bill Shannon.
+%The following individuals (all Sun Microsystems) have also made invaluable technical contributions: Roberto Chinnici, Dianne Jiao (TCK), Ron 
+%Monzillo, Rajiv Mordani, Eduardo Pelegri-Llopart, Jakub Podlesak (RI) and Bill Shannon.

@@ -4,6 +4,170 @@
 \section{Introduction}
 \label{introduction}
 
-\section{Another Section}
+This chapter introduces the reader to the Client API. This API can be used to access Web resources. Unless otherwise stated, types presented in this chapter live in the \code{javax.ws.rs.client} package.
 
-\subsection{A Subsection}
+\section{Request and Responses}
+
+The \jaxrs\ 1.X types \code{javax.ws.rs.core.Request} and \code{javax.ws.rs.core.Response} have been designed specifically for the Server API. These classes do not provide the necessary support to satisfy all the use cases covered by the Client API. Two new interfaces,  \code{javax.ws.rs.core.HttpRequest}  and \code{javax.ws.rs.core.HttpResponse}, are hereby introduced to accommodate the new set of requirements. As indicated by their location in the core package, their scope is \emph{not} limited to the Client API. 
+
+\section{Bootstrapping a Client Instance}
+
+An instance of \Client\ is required to access a Web resource using the Client API. Instances of \Client\ can be obtained using \ClientFactory\ and, optionally, an instance of \ClientConfiguration. For example,
+
+\begin{listing}{1}
+// Default client using default configuration
+Client client = ClientFactory.newClient();
+
+// Default client using custom configuration
+ClientConfiguration cfg = new DefaultClientConfiguration();
+cfg.enable("CUSTOM_FEATURE");
+Client confClient = ClientFactory.newClient(cfg);
+\end{listing}
+
+The example above demonstrates the creation of \Client\ instances using the default \ClientBuilderFactory. Further customization is possible by providing a different implementation of \ClientBuilderFactory\ and, optionally, a different implementation of \ClientConfiguration\ that is specific to that factory. In the following example, a custom configuration is used to create a custom client that supports caching:
+
+\begin{listing}{1}
+// Custom client using custom configuration
+MyClientConfiguration myCfg = new MyClientConfiguration();
+myCfg.enableCaching();
+MyClient customConfClient = 
+    ClientFactory.newClientBy(MyClientBuilderFactory.class).create(myCfg);
+\end{listing}
+
+Note the call to the method \code{enableCaching()} which is part of the extended configuration defined by \code{MyClientConfiguration}, and supported by \code{MyClientBuilderFactory}.
+
+\section{Resource Access}
+\label{resource_access}
+
+The Client API provides a few different ways in which to access a Web resource. First, a resource can be accessed using the fluent method chaining approach whereby methods are called to configure a request using the builder pattern. The following example gets a \code{text/plain} representation of the resource identified by the \code{http://example.org/hello} URI:
+
+\begin{listing}{1}
+Client client = ClientFactory.newClient();
+HttpResponse res = client.resourceUri("http://example.org/hello")
+    .get().accept("text/plain").invoke();
+\end{listing}
+
+Method chaining is not limited to the example shown above. A request can be further configured by specifying additional headers, cookies, query parameters, etc. For example:
+
+\begin{listing}{1}
+Client client = ClientFactory.newClient();
+HttpResponse res = client.resourceUri("http://example.org/hello")
+    .get().accept("text/plain").header("MyHeader", "...")
+    .queryParam("MyParam","...").invoke();
+\end{listing}
+
+See the Javadoc for the classes in the \code{javax.ws.rs.client} package for more information.
+
+\section{ResourceUri, Invocation and HttpRequest}
+
+A \ResourceUri\ is a builder for instances of type \Invocation. An \Invocation\ is an \emph{invocable} version of a \HttpRequest. The following example shows the relationships between these types:
+
+\begin{listing}{1}
+// Get a ResourceUri from a URI
+ResourceUri uri = client.resourceUri("http://example.org/");
+// Get an Invocation by specifying an HTTP method
+Invocation inv = uri.get();
+// Upcast to HttpRequest
+HttpRequest req = inv;
+\end{listing}
+
+The minimum requirement to obtain an instance of \Invocation\ is to provide a URI and an HTTP method. Instances of \Invocation\ and \HttpRequest\ can be further configured as shown in Section \ref{resource_access}. Even thought instances of \HttpRequest\ are not directly invocable, they can be used to access Web resources when passed as parameters to the \code{Client.invoke()} (synchronous) and \code{Client.queue()} (asynchronous) method families.
+
+Instances of \HttpRequest\ can also be created directly from \Client\ without the need to create an \Invocation\ first by calling \code{request()} instead of \code{resourceUri()}:
+
+\begin{listing}{1}
+// Get an HttpRequest from client
+HttpRequest req = client.request("http://example.org/").get();
+HttpResponse res = client.invoke(req);
+\end{listing}
+
+\subsection{Building URIs}
+
+The benefits of using a \ResourceUri\ become apparent when building complex URIs, for example by extending base URIs with additional path segments or using URI templates. The following example highlights these features:
+
+\begin{listing}{1}
+ResourceUri base = client.resourceUri("http://example.org/");
+ResourceUri hello = base.path("hello").path("{whom}");   
+HttpResponse res = hello.pathParam("whom", "world").get().invoke();
+\end{listing}
+
+Note the use of the URI template parameter \code{\{whom\}}. The example above gets a representation for the resource identified by the http://example.org/hello/world URI.
+
+\section{HTTP Methods}
+
+The Client API provides built-in support for configuring the following HTTP methods in a request: GET, PUT, POST, DELETE, HEAD, OPTIONS and TRACE. Additional verbs can be specified using a generic method that takes a string. For example, a WebDAV client could configure a request as follows:
+
+\begin{listing}{1}
+ResourceUri file = client.resourceUri("http://examples.org/index.html");
+HttpRequest copyRequest = file.method("COPY") 
+    .header("Destination", "http://examples.org/backup/index.html")
+    .header("Overwrite", "T");
+\end{listing}
+
+\section{Typed Entities}
+
+The response to an invocation is not limited to be of type \HttpResponse. It is possible to request a specific entity response type when calling \code{Invocation.invoke()} (or \code{Client.invoke()}) as follows:
+
+\begin{listing}{1}
+Customer c = client.resourceUri("http://examples.org/customers/123").get()
+    .accept("application/xml").invoke(Customer.class);
+HttpResponse res = client.resourceUri("http://examples.org/gold-customers/")
+    .post().type("application/xml").entity(c).invoke();
+\end{listing}
+
+In the example above, just like in the Server API, \jaxrs\ implementations are REQUIRED to use registered providers (implementing \code{MessageBodyReader} and \code{MessageBodyWrite}) to map a representation of type \code{"application/xml"} to an instance of \code{Customer} and vice versa. See Section \ref{entity_providers} for more information on entity providers.
+
+\section{Asynchronous Requests}
+
+All the examples shown thus far execute synchronous invocations: the calling thread is suspended until the response is returned from the server. There are numerous use cases for which this form of processing is insufficient. The Client API supports asynchronous invocations via the \code{Client.queue()} and \code{Invocation.queue()} method families. In either case, the calling thread is free to continue its normal execution while the server is processing the request. 
+
+Two processing models are supported: using a \code{Future} and using an \code{InvocationCallback}. In the former, a request is queued and an instance of \code{Future<T>} (for some fixed \code{T}) is returned; in the latter, an instance of \code{InvocationCallback<S>} (for some fixed \code{S}) is registered as a callback object.
+
+\begin{listing}{1}
+Invocation copyRequest = ...;
+
+// (1) Get a Future object for this request
+Future<HttpResponse> futureRes = copyRequest.queue();
+// ... do something ...
+if (futureRes.isDone()) {
+    HttpResponse res = futureRes.get();
+    // ...
+} else {
+    futureRes.cancel(true);        // taking too long!
+}
+
+// (2) Register an InvocationCallback
+copyRequest.queue(new InvocationCallback<HttpResponse>() {
+    @Override
+    public void onComplete(Future<HttpResponse> futureRes) { 
+        HttpResponse res = futureRes.get();
+        // ... do something ... 
+    }
+});
+\end{listing}
+
+Note that request cancellation is supported in the first processing model whilst not in the second. Typed entities are supported just like in the synchronous case, i.e.~by specifying the type of the expected entity as a parameter:
+
+\begin{listing}{1}
+Future<Customer> fc = client.resourceUri("http://examples.org/customers/123")
+    .get().accept("application/xml").queue(Customer.class);
+// ... do something ...
+Customer c = fc.get();
+\end{listing}
+
+
+\section{Large Responses}
+
+\section{Configurable Components}
+
+
+
+
+
+
+
+
+
+
+
+
