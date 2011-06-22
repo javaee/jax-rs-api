@@ -63,12 +63,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface NameBinding {
-
-    /**
-     * Priority defined for a filter or handler. Default is
-     * {@link javax.ws.rs.BindingPriority#USER}.
-     * 
-     * @return filter or handler priority
-     */
-    int priority() default BindingPriority.USER;
 }

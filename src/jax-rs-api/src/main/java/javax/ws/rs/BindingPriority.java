@@ -39,6 +39,11 @@
  */
 package javax.ws.rs;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * When multiple filters (or multiple handlers) are configured for
  * a resource class and method (or an HTTP invocation as part of
@@ -52,11 +57,21 @@ package javax.ws.rs;
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  */
-public class BindingPriority {
+@Target(ElementType.TYPE)
+@Retention(value = RetentionPolicy.RUNTIME)
+public @interface BindingPriority {
 
     public static final int SECURITY = 100;
     public static final int HEADER_DECORATOR = 200;
     public static final int DECODER = 300;
     public static final int ENCODER = 400;
     public static final int USER = 500;
+
+    /**
+     * Priority defined for a filter or handler. Default is
+     * {@link javax.ws.rs.BindingPriority#USER}.
+     * 
+     * @return filter or handler priority
+     */
+    int value() default USER;
 }
