@@ -111,11 +111,11 @@ The response to an invocation is not limited to be of type \HttpResponse. It is 
 \begin{listing}{1}
 Customer c = client.resourceUri("http://examples.org/customers/123").get()
     .accept("application/xml").invoke(Customer.class);
-HttpResponse res = client.resourceUri("http://examples.org/gold-customers/")
-    .post().type("application/xml").entity(c).invoke();
+String newId = client.resourceUri("http://examples.org/gold-customers/")
+    .post().type("application/xml").entity(c).invoke(String.class);
 \end{listing}
 
-In the example above, just like in the Server API, \jaxrs\ implementations are REQUIRED to use registered providers (implementing \code{MessageBodyReader} and \code{MessageBodyWrite}) to map a representation of type \code{"application/xml"} to an instance of \code{Customer} and vice versa. See Section \ref{entity_providers} for more information on entity providers.
+In the example above, just like in the Server API, \jaxrs\ implementations are REQUIRED to use registered providers (implementing \code{MessageBodyReader} and \code{MessageBodyWrite}) to map a representation of type \code{"application/xml"} to an instance of \code{Customer} and vice versa. See Section \ref{standard_entity_providers} for a list of entity providers that MUST be supported by all \jaxrs\ implementations.
 
 \section{Asynchronous Requests}
 
@@ -155,13 +155,21 @@ Future<Customer> fc = client.resourceUri("http://examples.org/customers/123")
 Customer c = fc.get();
 \end{listing}
 
+\section{Configurable Types}
+
+The Client API types \Client, \ClientConfiguration, \ResourceUri\ and \Invocation\ all implement the \Configurable\ interface. This interface supports configuration of:
+
+\begin{description}
+\item [Features] Identified by unique strings; can be enabled or disabled in order to configure a \jaxrs\ implementation.
+\item [Properties] Name-value pairs for additional configuration of features or other components of a \jaxrs\ implementation.
+\item [Providers] Classes or singleton instances of classes annotated by @Provider. A provider can be a message body reader, a filter, a context provider, etc. See Chapter \ref{providers} for more information.
+\end{description}
+
+A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \ResourceUri\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \ResourceUri\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations MUST not be visible to each other.
 
 \section{Large Responses}
 
-\section{Configurable Components}
-
-
-
+\emph{TODO}
 
 
 
