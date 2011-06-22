@@ -4,6 +4,7 @@
 The \jaxrs\ runtime is extended using application-supplied provider classes. A provider is annotated with \Provider\ and implements one or more interfaces defined by \jaxrs.
 
 \section{Lifecycle and Environment}
+\label{lifecycle_and_environment}
 
 By default a single instance of each provider class is instantiated for each \jaxrs\ application. First the constructor (see section \ref{provider_class_constructor}) is called, then any requested dependencies are injected (see chapter \ref{context}), then the appropriate provider methods may be called multiple times (simultaneously), and finally the object is made available for garbage collection. Section \ref{providercontext} describes how a provider obtains access to other providers via dependency injection.
 

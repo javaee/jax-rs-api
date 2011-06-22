@@ -34,7 +34,7 @@ MyClient customConfClient =
     ClientFactory.newClientBy(MyClientBuilderFactory.class).create(myCfg);
 \end{listing}
 
-Note the call to the method \code{enableCaching()} which is part of the extended configuration defined by \code{MyClientConfiguration}, and supported by \code{MyClientBuilderFactory}.
+Note the call to the method \code{enableCaching} which is part of the extended configuration defined by \code{MyClientConfiguration}, and supported by \code{MyClientBuilderFactory}.
 
 \section{Resource Access}
 \label{resource_access}
@@ -71,9 +71,9 @@ Invocation inv = uri.get();
 HttpRequest req = inv;
 \end{listing}
 
-The minimum requirement to obtain an instance of \Invocation\ is to provide a URI and an HTTP method. Instances of \Invocation\ and \HttpRequest\ can be further configured as shown in Section \ref{resource_access}. Even thought instances of \HttpRequest\ are not directly invocable, they can be used to access Web resources when passed as parameters to the \code{Client.invoke()} (synchronous) and \code{Client.queue()} (asynchronous) method families.
+The minimum requirement to obtain an instance of \Invocation\ is to provide a URI and an HTTP method. Instances of \Invocation\ and \HttpRequest\ can be further configured as shown in Section \ref{resource_access}. Even thought instances of \HttpRequest\ are not directly invocable, they can be used to access Web resources when passed as parameters to the \code{Client.invoke} (synchronous) and \code{Client.queue} (asynchronous) method families.
 
-Instances of \HttpRequest\ can also be created directly from \Client\ without the need to create an \Invocation\ first by calling \code{request()} instead of \code{resourceUri()}:
+Instances of \HttpRequest\ can also be created directly from \Client\ without the need to create an \Invocation\ first by calling \code{request} instead of \code{resourceUri}:
 
 \begin{listing}{1}
 // Get an HttpRequest from client
@@ -106,7 +106,7 @@ HttpRequest copyRequest = file.method("COPY")
 
 \section{Typed Entities}
 
-The response to an invocation is not limited to be of type \HttpResponse. It is possible to request a specific entity response type when calling \code{Invocation.invoke()} (or \code{Client.invoke()}) as follows:
+The response to an invocation is not limited to be of type \HttpResponse. It is possible to request a specific entity response type when calling \code{Invocation.invoke} (or \code{Client.invoke}) as follows:
 
 \begin{listing}{1}
 Customer c = client.resourceUri("http://examples.org/customers/123").get()
@@ -119,7 +119,7 @@ In the example above, just like in the Server API, \jaxrs\ implementations are R
 
 \section{Asynchronous Requests}
 
-All the examples shown thus far execute synchronous invocations: the calling thread is suspended until the response is returned from the server. There are numerous use cases for which this form of processing is insufficient. The Client API supports asynchronous invocations via the \code{Client.queue()} and \code{Invocation.queue()} method families. In either case, the calling thread is free to continue its normal execution while the server is processing the request. 
+All the examples shown thus far execute synchronous invocations: the calling thread is suspended until the response is returned from the server. There are numerous use cases for which this form of processing is insufficient. The Client API supports asynchronous invocations via the \code{Client.queue} and \code{Invocation.queue} method families. In either case, the calling thread is free to continue its normal execution while the server is processing the request. 
 
 Two processing models are supported: using a \code{Future} and using an \code{InvocationCallback}. In the former, a request is queued and an instance of \code{Future<T>} (for some fixed \code{T}) is returned; in the latter, an instance of \code{InvocationCallback<S>} (for some fixed \code{S}) is registered as a callback object.
 
@@ -156,6 +156,7 @@ Customer c = fc.get();
 \end{listing}
 
 \section{Configurable Types}
+\label{configurable_types}
 
 The Client API types \Client, \ClientConfiguration, \ResourceUri\ and \Invocation\ all implement the \Configurable\ interface. This interface supports configuration of:
 
