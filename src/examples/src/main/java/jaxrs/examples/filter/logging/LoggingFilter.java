@@ -40,6 +40,7 @@
 package jaxrs.examples.filter.logging;
 
 import java.io.IOException;
+import javax.ws.rs.BindingPriority;
 
 import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
@@ -55,6 +56,7 @@ import javax.ws.rs.ext.ResponseFilter;
  */
 @Provider
 @Logged
+@BindingPriority(BindingPriority.USER)
 public class LoggingFilter implements RequestFilter, ResponseFilter {
 
     @Override

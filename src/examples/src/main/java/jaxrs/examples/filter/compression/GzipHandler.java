@@ -44,6 +44,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import javax.ws.rs.BindingPriority;
 
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.ReadFromHandler;
@@ -57,6 +58,7 @@ import javax.ws.rs.ext.WriteToHandlerContext;
  */
 @Provider
 @Gzipped
+@BindingPriority(BindingPriority.DECODER)
 public class GzipHandler implements ReadFromHandler, WriteToHandler {
 
     @Override

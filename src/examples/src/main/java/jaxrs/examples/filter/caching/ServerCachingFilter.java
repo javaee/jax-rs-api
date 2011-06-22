@@ -43,7 +43,6 @@ import java.io.IOException;
 
 import javax.ws.rs.BindingPriority;
 import javax.ws.rs.GlobalBinding;
-import javax.ws.rs.GlobalBinding.BindingDomain;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.FilterContext.FilterAction;
@@ -55,8 +54,8 @@ import javax.ws.rs.ext.RequestFilter;
  * @author Santiago Pericas-Geertsen
  */
 @Provider
-@GlobalBinding(domain = BindingDomain.SERVER,
-priority = BindingPriority.USER)
+@GlobalBinding
+@BindingPriority(BindingPriority.USER)
 public class ServerCachingFilter implements RequestFilter {
 
     @Override
