@@ -1,0 +1,75 @@
+\chapter{Filter and Handler Extension Points}
+\label{extension_points}
+
+The locations of the extension points Pre, Post, ReadFrom and WriteTo are easier to explain using some pseudo-code. The methods \code{clientSideRequestProcessor} and \code{serverSideRequestProcessor} represent the Client API and Server API frameworks, respectively. The ReadFrom extension point is \emph{not} present in \code{clientSideRequestProcessor}: this extension point would be executed in response to the user application code requesting the entity response object. 
+
+Note how the response object is obtained from the \code{FilterContext} upon completion of the Pre and Post filter chains, and how the HTTP invocation (Client API) or the resource method invocation (Server API) is bypassed if a response has been set in that context object. 
+
+\begin{listing}{1}
+public HttpResponse clientSideRequestProcessor(HttpRequest req) {
+    HttpResponse res = null;
+
+    // Invoke Pre filters
+    FilterContext fc = newFilterContext(req, res);
+    for (RequestFilter f : getRequestFilters()) {
+        FilterAction action = f.preFilter(fc);
+        if (action == FilterAction.STOP) break;
+    }
+    res = fc.getResponse();
+
+    if (res == null) {
+        // Execute WriteTo handler chain
+        WriteToHandlerContext whc = newWriteToHandlerContext(req);
+        getFirstWriterToHandler(req).writeTo(whc);
+
+        // Actual HTTP request invocation
+        res = executeHttpRequest(req);
+    }
+
+    // Invoke Post filters
+    fc = newFilterContext(req, res);
+    for (ResponseFilter f : getResponseFilters()) {
+        FilterAction action = f.preFilter(fc);
+        if (action == FilterAction.STOP) break;
+    }
+    res = fc.getResponse();       
+    return res;
+}
+\end{listing}
+
+\begin{listing}{1}
+public HttpResponse serverSideRequestProcessor(HttpRequest req, Method m) {
+    HttpResponse res = null;
+
+    // Invoke Pre filters
+    FilterContext fc = newFilterContext(req, res, m);
+    for (RequestFilter f : getRequestFilters()) {
+        FilterAction action = f.preFilter(fc);
+        if (action == FilterAction.STOP) break;
+    }
+    res = fc.getResponse();
+
+    if (res == null) {
+        // Execute Read handler chain
+        ReadFromHandlerContext rfc = newReadFromHandlerContext(req, m);
+        getFirstReadFromHandler(req).read(rfc);
+
+        // Actual resource method invocation
+        res = executeMethodInvocation(req, m);
+    }
+
+    // Invoke Post filters
+    fc = newFilterContext(req, res);
+    for (ResponseFilter f : getResponseFilters()) {
+        FilterAction action = f.preFilter(fc);
+        if (action == FilterAction.STOP) break;
+    }
+    res = fc.getResponse();       
+
+    // Execute Write handler chain
+    WriteToHandlerContext whc = newWriteToHandlerContext(req, res, m);
+    getFirstWriteToHandler(m).write(whc);
+
+    return res;
+}
+\end{listing}
