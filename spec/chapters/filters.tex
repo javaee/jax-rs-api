@@ -1,11 +1,11 @@
 \chapter{Filters and Handlers}
 \label{filters_and_handlers}
 
-Filters and handlers can be registered for execution at well-defined extension points in a \jaxrs\ implementation. They are used to extend an implementation to provide capabilities such as logging, security, entity compression, etc. 
+Filters and handlers can be registered for execution at well-defined extension points in a \jaxrs\ implementation. They are used to extend an implementation in order to provide capabilities such as logging, security, entity compression, etc. 
 
 \section{Introduction}
 \label{introduction}
-Handlers wrap around a method invocation at a specific extension point. Filters execute some code at an extension point but without wrapping a method invocation. There are two extension points for filters: Pre and Post. There are two extension points for handlers: ReadFrom and WriteTo.  For each of these extension points, there is a corresponding interface:
+Handlers wrap around a method invocation at a specific extension point. Filters execute code at an extension point but without wrapping a method invocation. There are two extension points for filters: Pre and Post. There are two extension points for handlers: ReadFrom and WriteTo.  For each of these extension points, there is a corresponding interface:
 
 \begin{listing}{1}
 public interface RequestFilter {
@@ -25,18 +25,23 @@ public interface WriteToHandler<T> {
 }
 \end{listing}
 
-A filter class is a class that implements \RequestFilter\ or \ResponseFilter\ (or both) and is annotated by @Provider. A handler class is a class that implements \ReadFromHandler\ or \WriteToHandler\ (or both) and is annotated by @Provider. 
+A filter class is a class that implements \RequestFilter\ or \ResponseFilter\ (or both) and is annotated by \Provider. A handler class is a class that implements \ReadFromHandler\ or \WriteToHandler\ (or both) and is annotated by \Provider. 
 
-As part of the Client API, filters implementing \RequestFilter\ MUST be executed \emph{before} the HTTP invocation and \emph{before} all handlers implementing \WriteToHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the HTTP invocation and \emph{before} all handlers implementing \ReadFromHandler. As part of the Server API, filters implementing \RequestFilter\ MUST be executed \emph{before} the resource method is called and \emph{before} all handlers implementing \ReadFromHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the HTTP invocation and \emph{before} all handlers implementing \WriteToHandler. 
+In the Client API, filters implementing \RequestFilter\ MUST be executed \emph{before} the HTTP invocation and \emph{before} all handlers implementing \WriteToHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the HTTP invocation and \emph{before} all handlers implementing \ReadFromHandler. 
+In the Server API, filters implementing \RequestFilter\ MUST be executed \emph{before} the resource method is called and \emph{before} all handlers implementing \ReadFromHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the HTTP invocation and \emph{before} all handlers implementing \WriteToHandler. 
 
-A handler implementing \ReadFromHandler\ MUST wrap around calls to \code{MessageBodyReader.readFrom}. A handler implementing \WriteToHandler\ MUST wrap around calls to \code{MessageBodyWrite.writeTo}. Thus, \jaxrs\ implementations are REQUIRED to call registered handlers when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
+\begin{ednote}
+If filters can read or write entities, the rules above would be violated. For example, a server request filter could call \code{ctx.getRequest().getEntity(Customer.class)} forcing the ReadFrom handlers to be called. 
+\end{ednote}
+
+A handler implementing \ReadFromHandler\ wraps around calls to \code{MessageBodyReader.readFrom}. A handler implementing \WriteToHandler\ wraps around calls to \code{MessageBodyWrite.writeTo}. \jaxrs\ implementations are REQUIRED to call registered handlers when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
 
 \section{Filters}
 \label{filters}
 
 As stated above, a filter implements interface \RequestFilter\ or \ResponseFilter\ or both. Multiple filters are grouped in \emph{filter chains}. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
-A call to a filter's \code{preFilter} or \code{postFilter} methods returns a \code{FilterAction} which is an enum of two values: \code{STOP} and \code{NEXT}. If a filter returns \code{NEXT}, implementations are REQUIRED to proceed with the rest of the filter chain; if a filter returns \code{STOP}, implementations are REQUIRED to abort execution of the filter chain. 
+A call to a filter's \code{preFilter} or \code{postFilter} methods returns a \code{FilterAction} which is an enumeration of two values: \code{STOP} and \code{NEXT}. If a filter returns \code{NEXT}, implementations are REQUIRED to proceed with the rest of the filter chain; if a filter returns \code{STOP}, implementations are REQUIRED to abort execution of the filter chain. 
 
 The following example shows an implementation of a logging filter: each method simply logs the message and returns \code{NEXT} to continue with the remainder of the filter chain.
 
@@ -59,7 +64,7 @@ public class LoggingFilter implements RequestFilter, ResponseFilter {
 }
 \end{listing}
 
-A \FilterContext\ provides access to the request, the response (if available) as well as the ability to create and set new responses (a feature that is particularly useful in caching filters).
+A \FilterContext\ provides access to the request, the response (if available) as well as the ability to create and set new responses. Once the execution of a filter chain is completed, either by reaching the end of the chain or due to a filter returning \code{STOP}, \jaxrs\ implementations MUST get the response returned by \code{FilterContext.getResponse}. If this method returns null, normal execution is resumed; otherwise, the response returned is used and the HTTP invocation (Client API) or the resource method invocation (Server API) is omitted.  See Appendix \ref{extension_points} for more information.
 
 \section{Handlers}
 
@@ -112,11 +117,11 @@ Binding is the process by which a handler or filter is associated with a resourc
 
 \subsection{Static Binding}
 
-A handler or filter can be associated with a resource class or method by declaring a new \emph{binding} annotation \`{a} la CDI~\cite{jsr299}. These annotations are declared using the \jaxrs\ meta-annotation @NameBinding and are used to decorate both the filter (or handler) and the resource method (or class). For example, the \code{LoggingFilter} defined in Section ~\ref{filters} can be bound to \code{MyResourceClass.hello} as follows:
+A handler or filter can be associated with a resource class or method by declaring a new \emph{binding} annotation \`{a} la CDI~\cite{jsr299}. These annotations are declared using the \jaxrs\ meta-annotation \NameBinding and are used to decorate both the filter (or handler) and the resource method (or class). For example, the \code{LoggingFilter} defined in Section ~\ref{filters} can be bound to \code{MyResourceClass.hello} as follows:
 
 \begin{listing}{1}
-@Logged
 @Provider
+@Logged
 public class LoggingFilter implements RequestFilter, ResponseFilter {
     ...
 }
@@ -135,7 +140,7 @@ public class MyResourceClass {
 }
 \end{listing}
 
-According to the semantics of \code{LoggingFilter}, the request will be logged before the decorated method is called and the response will be logged after it returns. The declaration of the @Logged annotation is shown next.
+According to the semantics of \code{LoggingFilter}, the request will be logged before the decorated method is called and the response will be logged after it returns. The declaration of the \code{@Logged} annotation is shown next.
 
 \begin{listing}{1}
 @NameBinding
@@ -148,11 +153,11 @@ Binding annotations that decorate resource classes apply to all the resource met
 
 \subsection{Global Binding}
 
-Occasionally, it is useful to declare a handler or filter as being bound to all the resource classes in an application. This can be accomplished by using the @GlobalBinding annotation directly on the handler or filter class without the need to declare a new binding annotation. For example, the \code{LoggingFilter} defined in Section \ref{filters} can be defined as follows:
+Occasionally, it is useful to declare a handler or filter as being bound to all the resource classes in an application. This can be accomplished by using the \GlobalBinding annotation directly on the handler or filter class without the need to declare a new binding annotation. For example, the \code{LoggingFilter} defined in Section \ref{filters} can be defined as follows:
 
 \begin{listing}{1}
-@GlobalBinding
 @Provider
+@GlobalBinding
 public class LoggingFilter implements RequestFilter, ResponseFilter {
     ...
 }
@@ -162,7 +167,7 @@ If this filter is registered as part of an application, requests and responses w
 
 \subsection{Dynamic Binding}
 
-A handler or filter that implements the \DynamicBinding\ interface is bound to a resource method at runtime. Binding is determined based on the value returned by the \code{isBound} method, regardless of whether the handler or filter is decorated with @GlobalBinding or a binding annotation derived from @NameBinding. That is, if annotated with @GlobalBinding, the \code{isBound} method will be called for every resource method in the application; if annotated with a binding annotation derived from @NameBinding, it will be called for every resource method for which it was bound via the annotations.
+A handler or filter that implements the \DynamicBinding\ interface is bound to a resource method at runtime. Binding is determined based on the value returned by the \code{isBound} method, regardless of whether the handler or filter is decorated with \GlobalBinding\ or a binding annotation derived from \NameBinding. That is, if annotated with \GlobalBinding, the \code{isBound} method will be called for every resource method in the application; if annotated with a binding annotation derived from \NameBinding, it will be called for every resource method for which it was bound via that annotation.
 
 \subsection{Binding in Client API}
 \label{binding_in_client_api}
@@ -172,10 +177,21 @@ Binding in the Client API is accomplished via API calls instead of annotations. 
 \section{Priorities}
 \label{priorities}
 
-The order in which handlers or filters are executed as part of their corresponding chains is controlled using the @BindingPriority annotation.
-Priorities are represented by integer numbers: the \emph{lower} the number, the \emph{higher} the priority. The default priority for all handlers and filters---when an instance of @BindindPriority is absent or is present but without any value specified---is \code{BindingPriority.USER}. The \code{BindingPriority} class defines additional built-in priorities for security, header decorators, decoders and encoders. See Javadoc for more information.
+The order in which handlers or filters are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
+Priorities are represented by integer numbers: the \emph{lower} the number, the \emph{higher} the priority. The default priority for all handlers and filters---when an instance of \BindingPriority\ is absent or is present but without any value specified---is \code{BindingPriority.USER}. 
 
-Note that even though, as explained in Section \ref{binding_in_client_api}, annotations are not used for binding in the Client API, they are still used to define priorities. Therefore, if a priority other than the default is required, the @BindingPriority annotation must be used for a filter or handler registered using the Client API. \jaxrs\ implementations are REQUIRED to sort filters and handlers based on \code{BindingPriority.value()}, using \code{BindingPriority.USER} as the default if the annotation is absent.
+The \code{BindingPriority} class defines additional built-in priorities for security, header decorators, decoders and encoders. For example, the priority of authentication filter can be set as follows:
+
+\begin{listing}{1}
+@Provider
+@Authenticated
+@BindingPriority(BindingPriority.SECURITY)
+public class AuthenticationFilter implements RequestFilter {
+    ...
+}
+\end{listing}
+
+Note that even though, as explained in Section \ref{binding_in_client_api}, annotations are not used for binding in the Client API, they are still used to define priorities. Therefore, if a priority other than the default is required, the \BindingPriority\ annotation must be used for a filter or handler registered using the Client API. \jaxrs\ implementations are REQUIRED to sort filters and handlers based on \code{BindingPriority.value()}, using \code{BindingPriority.USER} as the default if the annotation is absent. The order in which filters or handlers that belong to the same priority class are executed is \emph{undefined}.
 
 
 

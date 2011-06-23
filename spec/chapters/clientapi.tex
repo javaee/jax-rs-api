@@ -146,6 +146,10 @@ copyRequest.queue(new InvocationCallback<HttpResponse>() {
 });
 \end{listing}
 
+\begin{ednote}
+What is the rationale of using a Future in \code{InvocationCallback.onComplete}?
+\end{ednote}
+
 Note that request cancellation is supported in the first processing model whilst not in the second. Typed entities are supported just like in the synchronous case, i.e.~by specifying the type of the expected entity as a parameter:
 
 \begin{listing}{1}
@@ -163,7 +167,7 @@ The Client API types \Client, \ClientConfiguration, \ResourceUri\ and \Invocatio
 \begin{description}
 \item [Features] Identified by unique strings; can be enabled or disabled in order to configure a \jaxrs\ implementation.
 \item [Properties] Name-value pairs for additional configuration of features or other components of a \jaxrs\ implementation.
-\item [Providers] Classes or singleton instances of classes annotated by @Provider. A provider can be a message body reader, a filter, a context provider, etc. See Chapter \ref{providers} for more information.
+\item [Providers] Classes or singleton instances of classes annotated by \Provider. A provider can be a message body reader, a filter, a context provider, etc. See Chapter \ref{providers} for more information.
 \end{description}
 
 A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \ResourceUri\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \ResourceUri\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations MUST not be visible to each other.
