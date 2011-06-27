@@ -46,12 +46,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- * TODO javadoc.
+ * A link to a resource identified by the resource URI.
  *
  * @author Marek Potociar
  * @since 2.0
  */
-public interface ResourceUri extends HttpRequest.Builder<Invocation>, Configurable<ResourceUri> {
+public interface Link extends HttpRequest.Builder<Invocation>, Configurable<Link> {
 
     // Getters
     /**
@@ -70,16 +70,16 @@ public interface ResourceUri extends HttpRequest.Builder<Invocation>, Configurab
     UriBuilder getUriBuilder();
 
     // Sub-resource URI buidler methods
-    ResourceUri path(String path) throws IllegalArgumentException;
+    Link path(String path) throws IllegalArgumentException;
 
-    ResourceUri pathParam(String name, Object value) throws IllegalArgumentException;
+    Link pathParam(String name, Object value) throws IllegalArgumentException;
 
-    ResourceUri pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+    Link pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
-    ResourceUri matrixParam(String name, Object... values) throws IllegalArgumentException;
+    Link matrixParam(String name, Object... values) throws IllegalArgumentException;
 
-    ResourceUri queryParam(String name, Object value) throws IllegalArgumentException;
+    Link queryParam(String name, Object value) throws IllegalArgumentException;
 
-    ResourceUri queryParams(MultivaluedMap<String, Object> parameters)
+    Link queryParams(MultivaluedMap<String, Object> parameters)
             throws IllegalArgumentException;
 }

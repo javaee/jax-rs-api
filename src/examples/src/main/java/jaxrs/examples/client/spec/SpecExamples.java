@@ -46,7 +46,7 @@ import javax.ws.rs.client.ClientConfiguration;
 import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.DefaultClientConfiguration;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.ResourceUri;
+import javax.ws.rs.client.Link;
 import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.ext.ClientBuilderFactory;
@@ -132,17 +132,17 @@ public class SpecExamples {
     
     public void fluentMethodChaining() {
         Client client = ClientFactory.newClient();
-        HttpResponse res = client.resourceUri("http://example.org/hello")
+        HttpResponse res = client.link("http://example.org/hello")
                 .get().accept("text/plain").invoke();
         
-        HttpResponse res2 = client.resourceUri("http://example.org/hello")
+        HttpResponse res2 = client.link("http://example.org/hello")
                 .get().accept("text/plain").header("MyHeader", "...")
                 .queryParam("MyParam","...").invoke();
     }
     
     public void typeRelationships() {
         Client client = ClientFactory.newClient();
-        ResourceUri uri = client.resourceUri("");
+        Link uri = client.link("");
         Invocation inv = uri.put();
         HttpRequest req = inv;
         HttpRequest req2 = client.request("").get();
@@ -150,22 +150,22 @@ public class SpecExamples {
     
     public void benefitsOfResourceUri() {
         Client client = ClientFactory.newClient();
-        ResourceUri base = client.resourceUri("http://example.org/");
-        ResourceUri hello = base.path("hello").path("{whom}");   
+        Link base = client.link("http://example.org/");
+        Link hello = base.path("hello").path("{whom}");   
         HttpResponse res = hello.pathParam("whom", "world").get().invoke();
     }
     
     public void gettingAndPostingCustomers() {
         Client client = ClientFactory.newClient();
-        Customer c = client.resourceUri("http://examples.org/customers/123").
+        Customer c = client.link("http://examples.org/customers/123").
                 get().accept("application/xml").invoke(Customer.class);
-        HttpResponse res = client.resourceUri("http://examples.org/premium-customers/")
+        HttpResponse res = client.link("http://examples.org/premium-customers/")
                 .post().type("application/xml").entity(c).invoke();     
     }
     
     public void asyncSamples() throws Exception {
         Client client = ClientFactory.newClient();
-        Future<Customer> fc = client.resourceUri("http://examples.org/customers/123").
+        Future<Customer> fc = client.link("http://examples.org/customers/123").
                 get().accept("application/xml").queue(Customer.class);
         Customer c = fc.get();   
     }

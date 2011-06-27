@@ -72,12 +72,12 @@ public interface Client extends Configurable<Client> {
 
     HttpRequest.Builder<Invocation> request(UriBuilder uriBuilder) throws NullPointerException;
 
-    // Resource builder methods    
-    ResourceUri resourceUri(String uri) throws IllegalArgumentException, NullPointerException;
+    // Resource link builder methods    
+    Link link(String uri) throws IllegalArgumentException, NullPointerException;
 
-    ResourceUri resourceUri(URI uri) throws NullPointerException;
+    Link link(URI uri) throws NullPointerException;
 
-    ResourceUri resourceUri(UriBuilder uriBuilder) throws NullPointerException;
+    Link link(UriBuilder uriBuilder) throws NullPointerException;
 
     // Invocation methods
     HttpResponse invoke(HttpRequest request) throws InvocationException;
