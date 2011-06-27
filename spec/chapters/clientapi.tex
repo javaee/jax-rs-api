@@ -43,7 +43,7 @@ The Client API provides a few different ways in which to access a Web resource. 
 
 \begin{listing}{1}
 Client client = ClientFactory.newClient();
-HttpResponse res = client.resourceUri("http://example.org/hello")
+HttpResponse res = client.link("http://example.org/hello")
     .get().accept("text/plain").invoke();
 \end{listing}
 
@@ -51,20 +51,20 @@ Method chaining is not limited to the example shown above. A request can be furt
 
 \begin{listing}{1}
 Client client = ClientFactory.newClient();
-HttpResponse res = client.resourceUri("http://example.org/hello")
+HttpResponse res = client.link("http://example.org/hello")
     .get().accept("text/plain").header("MyHeader", "...")
     .queryParam("MyParam","...").invoke();
 \end{listing}
 
 See the Javadoc for the classes in the \code{javax.ws.rs.client} package for more information.
 
-\section{ResourceUri, Invocation and HttpRequest}
+\section{Link, Invocation and HttpRequest}
 
-A \ResourceUri\ is a builder for instances of type \Invocation. An \Invocation\ is an \emph{invocable} version of a \HttpRequest. The following example shows the relationships between these types:
+A \Link\ is a builder for instances of type \Invocation. An \Invocation\ is an \emph{invocable} version of a \HttpRequest. The following example shows the relationships between these types:
 
 \begin{listing}{1}
-// Get a ResourceUri from a URI
-ResourceUri uri = client.resourceUri("http://example.org/");
+// Get a Link from a URI
+Link uri = client.link("http://example.org/");
 // Get an Invocation by specifying an HTTP method
 Invocation inv = uri.get();
 // Upcast to HttpRequest
@@ -73,7 +73,7 @@ HttpRequest req = inv;
 
 The minimum requirement to obtain an instance of \Invocation\ is to provide a URI and an HTTP method. Instances of \Invocation\ and \HttpRequest\ can be further configured as shown in Section \ref{resource_access}. Even thought instances of \HttpRequest\ are not directly invocable, they can be used to access Web resources when passed as parameters to the \code{Client.invoke} (synchronous) and \code{Client.queue} (asynchronous) method families.
 
-Instances of \HttpRequest\ can also be created directly from \Client\ without the need to create an \Invocation\ first by calling \code{request} instead of \code{resourceUri}:
+Instances of \HttpRequest\ can also be created directly from \Client\ without the need to create an \Invocation\ first by calling \code{request} instead of \code{link}:
 
 \begin{listing}{1}
 // Get an HttpRequest from client
@@ -83,11 +83,11 @@ HttpResponse res = client.invoke(req);
 
 \subsection{Building URIs}
 
-The benefits of using a \ResourceUri\ become apparent when building complex URIs, for example by extending base URIs with additional path segments or using URI templates. The following example highlights these features:
+The benefits of using a \Link\ become apparent when building complex URIs, for example by extending base URIs with additional path segments or using URI templates. The following example highlights these features:
 
 \begin{listing}{1}
-ResourceUri base = client.resourceUri("http://example.org/");
-ResourceUri hello = base.path("hello").path("{whom}");   
+Link base = client.link("http://example.org/");
+Link hello = base.path("hello").path("{whom}");   
 HttpResponse res = hello.pathParam("whom", "world").get().invoke();
 \end{listing}
 
@@ -98,7 +98,7 @@ Note the use of the URI template parameter \code{\{whom\}}. The example above ge
 The Client API provides built-in support for configuring the following HTTP methods in a request: GET, PUT, POST, DELETE, HEAD, OPTIONS and TRACE. Additional verbs can be specified using a generic method that takes a string. For example, a WebDAV client could configure a request as follows:
 
 \begin{listing}{1}
-ResourceUri file = client.resourceUri("http://examples.org/index.html");
+Link file = client.link("http://examples.org/index.html");
 HttpRequest copyRequest = file.method("COPY") 
     .header("Destination", "http://examples.org/backup/index.html")
     .header("Overwrite", "T");
@@ -109,9 +109,9 @@ HttpRequest copyRequest = file.method("COPY")
 The response to an invocation is not limited to be of type \HttpResponse. It is possible to request a specific entity response type when calling \code{Invocation.invoke} (or \code{Client.invoke}) as follows:
 
 \begin{listing}{1}
-Customer c = client.resourceUri("http://examples.org/customers/123").get()
+Customer c = client.link("http://examples.org/customers/123").get()
     .accept("application/xml").invoke(Customer.class);
-String newId = client.resourceUri("http://examples.org/gold-customers/")
+String newId = client.link("http://examples.org/gold-customers/")
     .post().type("application/xml").entity(c).invoke(String.class);
 \end{listing}
 
@@ -153,7 +153,7 @@ What is the rationale of using a Future in \code{InvocationCallback.onComplete}?
 Note that request cancellation is supported in the first processing model whilst not in the second. Typed entities are supported just like in the synchronous case, i.e.~by specifying the type of the expected entity as a parameter:
 
 \begin{listing}{1}
-Future<Customer> fc = client.resourceUri("http://examples.org/customers/123")
+Future<Customer> fc = client.link("http://examples.org/customers/123")
     .get().accept("application/xml").queue(Customer.class);
 // ... do something ...
 Customer c = fc.get();
@@ -162,7 +162,7 @@ Customer c = fc.get();
 \section{Configurable Types}
 \label{configurable_types}
 
-The Client API types \Client, \ClientConfiguration, \ResourceUri\ and \Invocation\ all implement the \Configurable\ interface. This interface supports configuration of:
+The Client API types \Client, \ClientConfiguration, \Link\ and \Invocation\ all implement the \Configurable\ interface. This interface supports configuration of:
 
 \begin{description}
 \item [Features] Identified by unique strings; can be enabled or disabled in order to configure a \jaxrs\ implementation.
@@ -170,7 +170,7 @@ The Client API types \Client, \ClientConfiguration, \ResourceUri\ and \Invocatio
 \item [Providers] Classes or singleton instances of classes annotated by \Provider. A provider can be a message body reader, a filter, a context provider, etc. See Chapter \ref{providers} for more information.
 \end{description}
 
-A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \ResourceUri\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \ResourceUri\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations MUST not be visible to each other.
+A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Link\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Link\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations MUST not be visible to each other.
 
 \section{Large Responses}
 
