@@ -121,7 +121,7 @@ In the example above, just like in the Server API, \jaxrs\ implementations are R
 
 All the examples shown thus far execute synchronous invocations: the calling thread is suspended until the response is returned from the server. There are numerous use cases for which this form of processing is insufficient. The Client API supports asynchronous invocations via the \code{Client.queue} and \code{Invocation.queue} method families. In either case, the calling thread is free to continue its normal execution while the server is processing the request. 
 
-Two processing models are supported: using a \code{Future} and using an \code{InvocationCallback}. In the former, a request is queued and an instance of \code{Future<T>} (for some fixed \code{T}) is returned; in the latter, an instance of \code{InvocationCallback<S>} (for some fixed \code{S}) is registered as a callback object.
+Two procesing models are supported. In the first, a request is queued and an instance of \code{Future<T>} (for some fixed \code{T}) is returned; in the second, an instance of \code{InvocationCallback<S>} (for some fixed \code{S}) is registered as a callback object and an instance of \code{Future<S>} is returned as a result of the queue operation.
 
 \begin{listing}{1}
 Invocation copyRequest = ...;
@@ -136,8 +136,8 @@ if (futureRes.isDone()) {
     futureRes.cancel(true);        // taking too long!
 }
 
-// (2) Register an InvocationCallback
-copyRequest.queue(new InvocationCallback<HttpResponse>() {
+// (2) Get a Future and register an InvocationCallback
+futureRes = copyRequest.queue(new InvocationCallback<HttpResponse>() {
     @Override
     public void onComplete(Future<HttpResponse> futureRes) { 
         HttpResponse res = futureRes.get();
@@ -146,11 +146,9 @@ copyRequest.queue(new InvocationCallback<HttpResponse>() {
 });
 \end{listing}
 
-\begin{ednote}
-What is the rationale of using a Future in \code{InvocationCallback.onComplete}?
-\end{ednote}
+In either processing model, the asynchronous invocation can be controlled by using the \code{Future} object returned as part of the queueing process. Namely, its status can be checked and it can be cancelled. In the second processing model, the method \code{InvocationCallback.onComplete} is called when the asynchronous operation terminates. An asynchronous operation terminates upon receiving a response, detecting an error or as a result of calling \code{cancel} on the \code{Future} returned at queueing time. Hence, the use of \code{Future} in the parameter of \code{InvocationCallback.onComplete}.
 
-Note that request cancellation is supported in the first processing model whilst not in the second. Typed entities are supported just like in the synchronous case, i.e.~by specifying the type of the expected entity as a parameter:
+Typed entities are supported just like in the synchronous case, i.e.~by specifying the type of the expected entity as a parameter:
 
 \begin{listing}{1}
 Future<Customer> fc = client.link("http://examples.org/customers/123")
@@ -171,10 +169,6 @@ The Client API types \Client, \ClientConfiguration, \Link\ and \Invocation\ all 
 \end{description}
 
 A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Link\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Link\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations MUST not be visible to each other.
-
-\section{Large Responses}
-
-\emph{TODO}
 
 
 
