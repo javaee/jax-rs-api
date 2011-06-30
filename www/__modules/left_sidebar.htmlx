@@ -45,13 +45,23 @@ page even if you are in sub.html. This is useful for grouping a large number of 
 under a single navigation item.
 -->
     <li>
+      <a href="http://java.net/projects/jax-rs-spec/">About project</a>
+    </li>
+    <li>
+      <a href="http://java.net/projects/jax-rs-spec/pages/Home">Wiki</a>
+    </li>
+    <li>
       <a href="http://java.net/projects/jax-rs-spec/lists">Mailing lists</a>
+    </li>
     <li>
         <a href="http://java.net/projects/jax-rs-spec/roles">Membership</a>
+    </li>
     <li>
-	<a href="http://java.net/projects/jax-rs-spec/sources/git/show" match="http://java.net/projects/jax-rs-spec/sources/git/show/.*">Git repository</a>
+        <a href="http://java.net/projects/jax-rs-spec/sources/git/show" match="http://java.net/projects/jax-rs-spec/sources/git/show/.*">Git repository</a>
+    </li>
     <li>
         <a href="http://java.net/jira/browse/JAX_RS_SPEC/">Issue tracker</a>
+    </li>
 </ul>
 
 <script>
