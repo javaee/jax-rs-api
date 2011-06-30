@@ -71,7 +71,7 @@ Invocation inv = uri.get();
 HttpRequest req = inv;
 \end{listing}
 
-The minimum requirement to obtain an instance of \Invocation\ is to provide a URI and an HTTP method. Instances of \Invocation\ and \HttpRequest\ can be further configured as shown in Section \ref{resource_access}. Even thought instances of \HttpRequest\ are not directly invocable, they can be used to access Web resources when passed as parameters to the \code{Client.invoke} (synchronous) and \code{Client.queue} (asynchronous) method families.
+The minimum requirement to obtain an instance of \Invocation\ is to provide a URI and an HTTP method. Even thought instances of \HttpRequest\ are not directly invocable, they can be used to access Web resources when passed as parameters to the \code{Client.invoke} (synchronous) and \code{Client.queue} (asynchronous) method families.
 
 Instances of \HttpRequest\ can also be created directly from \Client\ without the need to create an \Invocation\ first by calling \code{request} instead of \code{link}:
 
