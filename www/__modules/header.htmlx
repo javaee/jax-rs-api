@@ -15,6 +15,7 @@
 			  <a id="" href="http://glassfish.java.net/">GlassFish</a>
 			  <a id="" href="http://glassfish-samples.java.net/">Samples</a>
 			  <a id="" href="http://grizzly.java.net/">Grizzly</a>
+			  <a id="" href="http://jax-rs-spec.java.net/">JAX-RS</a>
 			  <a id="" href="http://jersey.java.net/">Jersey</a>
 			  <a id="" href="http://mq.java.net/">OpenMQ</a>
 			  <a id="" href="http://sailfin.java.net/">SailFin</a>
@@ -30,6 +31,7 @@
 			  <a id="" href="http://javaserverfaces.java.net/">JSF</a>
 			  <a id="" href="http://jsftemplating.java.net/">JSFTemplating</a>
 			  <a id="" href="http://woodstock.java.net/">Woodstock</a>
+			  <a id="" href="http://jax-rs-spec.java.net/">JAX-RS</a>
 			  <a id="" href="http://jersey.java.net/">Jersey</a>
 			  <a id="" href="http://phobos.java.net/">Phobos</a>
 			  <a id="" href="http://wadl.java.net/">WADL</a>
@@ -37,6 +39,7 @@
 			</div>
 			<a id="" class="qmparent" href="http://metro.java.net/">WS/XML</a>
 			<div style="z-index: 21;" id="">
+			  <a id="" href="http://jax-rs-spec.java.net/">JAX-RS</a>
 			  <a id="" href="http://jersey.java.net/">Jersey</a>
 			  <a id="" href="http://metro.java.net/">Metro</a>
 			  <a id="" href="http://jax-ws.java.net/">JAX-WS</a>

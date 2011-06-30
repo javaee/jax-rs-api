@@ -1,16 +1,49 @@
-    <script>
-        var info = {
-	title: "JAX-RS Specification",
-        }
-    </script>
+<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <script>document.getElementById("main").parentNode.style.display="none";</script>
+  <style type="text/css">
+@import url(http://www.google.com/cse/api/overlay.css);
+  </style>
+  <title></title>
+</head>
+<body> -->
+<!-- hide the contents while the theme engine kicks in and does the work --><!--
+This is where your menu starts. id='menubar' is mandatory.
+Notice that there's no closing tag for this <dd>, and there's extra </dd> at the
+top of the file. This is how it should be, due to the place where this gets injected.
+-->
+<script>
+var info = {
+title: "JAX-RS Specification",
+}
+</script>
 
-	  <div id="navcol">
-	    <dl id="projecttools" class="navgroup" style="text-align: left;">
-	      <dt id="current-zone" class="depth0">
-		<a href="http://glassfish.java.net/">GlassFish Community</a>
-	      </dt>
-	      <dd class="depth0 parent parent" id="menubar">
-<ul id="main-menubar">
+<div id="navcol">
+<dl id="projecttools" class="navgroup" style="text-align: left;">
+ <dt id="current-zone" class="depth0">
+	<!--a href="http://glassfish.java.net/">GlassFish Community</a-->
+    <a href="http://jax-rs-spec.java.net/">JAX-RS</a>
+ </dt>
+ <dd class="depth0 parent parent" id="menubar">
+<!--
+DD contains single UL which generates the whole menu. UL/LI can have a nested structure
+to create submenus.
+-->
+<!--    <ul>  -->
+<!-- menubar for the main site -->
+      <ul id="main-menubar">
+<!--
+This HTML is injected in all the pages within your project, so all the hyperlinks
+must be either absolute or start with '/'.
+The current page in the navigation bar is shown highlighted to let users know where
+he/she is. This is primarily done by the exact match between "window.location.href"
+and the link target, but the A tag can also have the optional "match" attribute,
+whose value is regular expression that indicates what pages the link should highlight.
+For example, the following match attribute says "overview" should be the current
+page even if you are in sub.html. This is useful for grouping a large number of pages
+under a single navigation item.
+-->
     <li>
       <a href="http://java.net/projects/jax-rs-spec/lists">Mailing lists</a>
     <li>
@@ -18,7 +51,7 @@
     <li>
 	<a href="http://java.net/projects/jax-rs-spec/sources/git/show" match="http://java.net/projects/jax-rs-spec/sources/git/show/.*">Git repository</a>
     <li>
-        <a href="http://java.net/jira/browse/JAX_RS_SPEC/">IssueTracker</a>
+        <a href="http://java.net/jira/browse/JAX_RS_SPEC/">Issue tracker</a>
 </ul>
 
 <script>
