@@ -77,11 +77,11 @@ public class ClientFactory {
     }
 
     public static Client newClient() {
-        return getDefaultFactory().newBuilder().create();
+        return getDefaultFactory().newBuilder().build();
     }
 
     public static Client newClient(ClientConfiguration configuration) {
         // TODO fix the unchecked warning
-        return getDefaultFactory().newBuilder().create(configuration);
+        return getDefaultFactory().newBuilder().build(configuration);
     }
 }

@@ -58,9 +58,9 @@ public interface Client extends Configurable<Client> {
 
     interface Builder<C extends ClientConfiguration> {
 
-        Client create();
+        Client build();
 
-        Client create(C config);
+        Client build(C config);
     }
     
     void close();
