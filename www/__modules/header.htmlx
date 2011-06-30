@@ -1,0 +1,185 @@
+    <div class="topline">
+      <div class="topbar">
+        <div style="display: block;" id="banner">
+	  <div id="regions-box">
+	    <div id="regions" align="right">
+	      <table cellpadding="0" cellspacing="0">
+		<tbody>
+		  <tr>
+		    <td style="width: 100%;">
+		      <div style="z-index: 11;" id="qm0" class="qmmc">
+			<a id="regions-leadin">&nbsp;</a>
+			<a id="" class="qmparent" href="http://blogs.sun.com/theaquarium/">Aquarium</a>
+			<a id="current-region" class="qmparent" href="http://glassfish.java.net/">Core</a>
+		        <div style="z-index: 21;" id="">
+			  <a id="" href="http://glassfish.java.net/">GlassFish</a>
+			  <a id="" href="http://glassfish-samples.java.net/">Samples</a>
+			  <a id="" href="http://grizzly.java.net/">Grizzly</a>
+			  <a id="" href="http://jersey.java.net/">Jersey</a>
+			  <a id="" href="http://mq.java.net/">OpenMQ</a>
+			  <a id="" href="http://sailfin.java.net/">SailFin</a>
+			  <a id="" href="http://shoal.java.net/">Shoal</a>
+			  <a id="" href="http://hk2.java.net/">HK2</a>
+			  <a id="" href="http://wikis.sun.com/display/GlassFish/GlassFishWiki">Wiki</a>
+			</div>
+			<a id="" class="qmparent" href="http://glassfish.java.net/javaee5/webtier/webtierhome.html">Webtier</a>
+			<div style="z-index: 21;" id="">
+			  <a id="" href="http://jsp.java.net/">JSP</a>
+			  <a id="" href="http://uel.java.net/">EL</a>
+			  <a id="" href="http://jstl.java.net/">JSTL</a>
+			  <a id="" href="http://javaserverfaces.java.net/">JSF</a>
+			  <a id="" href="http://jsftemplating.java.net/">JSFTemplating</a>
+			  <a id="" href="http://woodstock.java.net/">Woodstock</a>
+			  <a id="" href="http://jersey.java.net/">Jersey</a>
+			  <a id="" href="http://phobos.java.net/">Phobos</a>
+			  <a id="" href="http://wadl.java.net/">WADL</a>
+			  <a id="" href="http://lrwpinjava.java.net/">LRWPinJava</a>
+			</div>
+			<a id="" class="qmparent" href="http://metro.java.net/">WS/XML</a>
+			<div style="z-index: 21;" id="">
+			  <a id="" href="http://jersey.java.net/">Jersey</a>
+			  <a id="" href="http://metro.java.net/">Metro</a>
+			  <a id="" href="http://jax-ws.java.net/">JAX-WS</a>
+			  <a id="" href="http://wsit.java.net/">WSIT</a>
+			  <a id="" href="http://jaxb.java.net/">JAXB</a>
+			  <a id="" href="http://jaxp.java.net/">JAXP</a>
+			  <a id="" href="http://wiseman.java.net/">Wiseman</a>
+			</div>
+			<a id="" class="qmparent" href="http://glassfish.java.net/">Tools</a>
+			<div style="z-index: 21;" id="">
+			  <a id="" href="http://hudson.java.net/">Hudson</a>
+			  <a id="" href="http://japex.java.net/">Japex</a>
+			  <a id="" href="http://openinstaller.java.net/">openInstaller</a>
+			  <a id="" href="http://glassfishplugins.java.net/">IDE Plugins</a>
+			  <a id="" href="http://wsmonitor.java.net/">WSMonitor</a>
+			  <a id="" href="http://license-tool.java.net/">License Tool</a>
+			</div>
+			<span class="qmclear">&nbsp;</span>
+                      </div>
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </div>
+	  </div>
+	  <table cellpadding="0" cellspacing="0" width="100%" border="0">
+	    <tbody>
+	      <tr>
+		<td>
+		  <div>
+		    <a href="http://www.java.net"><img src="http://glassfish-theming.java.net/branding/images/header_jnet_new.jpg" alt="The Source for Java Technology Collaboration" height="60" width="500"></a>
+		  </div>
+		</td>
+	  	<td class="right" style="vertical-align: middle;">
+		  <div id="domainlinks">
+		    <div id="loginbox">
+		      <div>
+			    <a href="https://java.net/people/login">Login</a>
+			    |
+			    <a href="https://java.net/people/new">Register</a>
+                            |
+                            <a id="joinbutton1" href="http://java.net/projects/grizzly/watch">Join</a>
+                            |
+                            <a href="http://java.net/projects/help/pages/Home">Help</a>
+		      </div>
+		    </div>
+            <div id="loggedin">
+              <div>
+                <a id="username" href="http://java.net/mypage"></a>
+                |
+                <a href="http://java.net/people/logout">Log out</a>
+                            |
+                            <a id="joinbutton2" href="http://java.net/projects/grizzly/watch">Join</a>
+                            |
+                            <a href="http://java.net/projects/help/pages/Home">Help</a>
+              </div>
+            </div>
+		  </div>
+		</td>
+	      </tr>
+	    </tbody>
+	  </table>
+	  <div style="margin-top: 1em;"></div>
+	  <div align="left" id="logo-box">
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <script>
+
+if(window.location.href.indexOf("http://glassfish.java.net/ja/")==0) {
+  document.getElementById("main-menubar").style.display = "none";
+  document.getElementById("ja-menubar").style.display = "";
+}
+
+// prepare the Join link
+//
+if (window.location.href.indexOf("://java.net/projects/") > 3) {
+    var vbkpatt1=/projects\/[^/]+/di;
+    try {
+        document.getElementById("joinbutton1").setAttribute("href", "/"+
+            window.location.href.match(vbkpatt1)+"/watch");
+    } catch (err) {
+        // ignore it
+    }
+    try {
+        document.getElementById("joinbutton2").setAttribute("href", "/"+
+            window.location.href.match(vbkpatt1)+"/watch");
+    } catch (err) {
+        // ignore it
+    }
+} else {
+    var vbkpatt2 = window.location.href.match(/\/\/[^.]+/);
+    try {
+        document.getElementById("joinbutton1").setAttribute("href","http://java.net/projects" +
+            vbkpatt2.toString().match(/\/[^/]+/i) + "/watch");
+    } catch (err) {
+        // ignore it
+    }
+    try {
+        document.getElementById("joinbutton2").setAttribute("href","http://java.net/projects" +
+            vbkpatt2.toString().match(/\/[^/]+/i) + "/watch");
+    } catch (err) {
+        // ignore it
+    }
+}
+    </script>
+
+<!-- create the location bar short-cut -->
+<script>
+try {
+addLoadEvent(function() {
+	var html = [];
+
+	function addIcon(href,image,text) {
+		html.push("<div align=center style='float:right; margin:0.5em;'><a href='");
+		html.push(href);
+		html.push("'><img border=0 alt='");
+		html.push(text);
+		html.push("' src='/image/");
+		html.push(image);
+		html.push("'/></a><br><a href='");
+		html.push(href);
+		html.push("'>");
+		html.push(text);
+		html.push("</a></div>");
+	}
+
+	// added in the reverse order
+	//addIcon("/public/devindex.html","srcbrowse.gif","Get Involved");
+	//addIcon("/public/users.html","communities.gif","Get Started");
+	//addIcon("/public/downloadsindex.html","download.gif","Download");
+
+	var div = document.createElement("div");
+	div.innerHTML = html.join('');
+	div.style.float = "right";
+	div.style.marginTop = "1em";
+
+	var logobox = document.getElementById("logo-box");
+	logobox.parentNode.insertBefore(div,logobox);
+});
+} catch (err) {
+// ignore this mess, too
+}
+</script>

@@ -1,0 +1,48 @@
+    <script>
+        var info = {
+	title: "JAX-RS Specification",
+        }
+    </script>
+
+	  <div id="navcol">
+	    <dl id="projecttools" class="navgroup" style="text-align: left;">
+	      <dt id="current-zone" class="depth0">
+		<a href="http://glassfish.java.net/">GlassFish Community</a>
+	      </dt>
+	      <dd class="depth0 parent parent" id="menubar">
+<ul id="main-menubar">
+    <li>
+      <a href="http://java.net/projects/jax-rs-spec/lists">Mailing lists</a>
+    <li>
+        <a href="http://java.net/projects/jax-rs-spec/roles">Membership</a>
+    <li>
+	<a href="http://java.net/projects/jax-rs-spec/sources/git/show" match="http://java.net/projects/jax-rs-spec/sources/git/show/.*">Git repository</a>
+    <li>
+        <a href="http://java.net/jira/browse/JAX_RS_SPEC/">IssueTracker</a>
+</ul>
+
+<script>
+var info = {
+	title: "JAX-RS Specification",
+}
+</script>
+<script src="http://glassfish-theming.java.net/zone-webtier.js"></script>
+<script src="http://glassfish-theming.java.net/theme.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3160303-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- **************** -->
+

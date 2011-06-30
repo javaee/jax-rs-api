@@ -1,0 +1,24 @@
+  <link rel="STYLESHEET" type="text/css" href="http://glassfish-theming.java.net/branding/css/tigris.css">
+  <link rel="STYLESHEET" type="text/css" href="http://glassfish-theming.java.net/branding/css/inst.css">
+  <link rel="STYLESHEET" type="text/css" href="http://glassfish-theming.java.net/css/common.css">
+  <link rel="STYLESHEET" type="text/css" href="http://glassfish-theming.java.net/css/custom.css">
+  <link rel="STYLESHEET" type="text/css" href="http://glassfish-theming.java.net/theme.css">
+  <style>
+
+/* button sprite changes start hers. */
+button.formButton, .formButtonEnding {
+	background: url('http://glassfish-theming.java.net/images/buttonSprites.png') no-repeat;
+}
+button.formButton {
+    background-position: 0px -64px;
+    cursor: pointer;
+}
+.formButtonEnding {
+    background-position: 0px -85px;
+	cursor:pointer;
+}
+
+</style>
+
+<script src="http://glassfish-theming.java.net/js/jquery.cookies.2.2.0.min.js" type="text/javascript"></script>
+<script src="http://glassfish-theming.java.net/js/jnlogin.js" type="text/javascript"></script>
