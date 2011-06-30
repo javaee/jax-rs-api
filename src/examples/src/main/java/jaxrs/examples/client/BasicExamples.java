@@ -72,12 +72,12 @@ public class BasicExamples {
     public static class MyClientBuilder implements Client.Builder<MyClientConfiguration> {
 
         @Override
-        public MyClient create() {
+        public MyClient build() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public MyClient create(MyClientConfiguration config) {
+        public MyClient build(MyClientConfiguration config) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
@@ -124,14 +124,14 @@ public class BasicExamples {
         ///////////////////////////////////////////////////////////
         
         // Custom newClient instantiation using default configuration
-        MyClient myClient = ClientFactory.newClientBy(MyClientBuilderFactory.class).create();
+        MyClient myClient = ClientFactory.newClientBy(MyClientBuilderFactory.class).build();
         assert myClient != null;
 
         // Custom newClient instantiation using custom configuration
         MyClientConfiguration myCfg = new MyClientConfiguration();
         myCfg.enableCaching();
 
-        MyClient myConfiguredClient = ClientFactory.newClientBy(MyClientBuilderFactory.class).create(myCfg);
+        MyClient myConfiguredClient = ClientFactory.newClientBy(MyClientBuilderFactory.class).build(myCfg);
         assert myConfiguredClient != null;
     }
     

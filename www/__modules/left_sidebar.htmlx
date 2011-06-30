@@ -1,0 +1,91 @@
+<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <script>document.getElementById("main").parentNode.style.display="none";</script>
+  <style type="text/css">
+@import url(http://www.google.com/cse/api/overlay.css);
+  </style>
+  <title></title>
+</head>
+<body> -->
+<!-- hide the contents while the theme engine kicks in and does the work --><!--
+This is where your menu starts. id='menubar' is mandatory.
+Notice that there's no closing tag for this <dd>, and there's extra </dd> at the
+top of the file. This is how it should be, due to the place where this gets injected.
+-->
+<script>
+var info = {
+title: "JAX-RS Specification",
+}
+</script>
+
+<div id="navcol">
+<dl id="projecttools" class="navgroup" style="text-align: left;">
+ <dt id="current-zone" class="depth0">
+	<!--a href="http://glassfish.java.net/">GlassFish Community</a-->
+    <a href="http://jax-rs-spec.java.net/">JAX-RS</a>
+ </dt>
+ <dd class="depth0 parent parent" id="menubar">
+<!--
+DD contains single UL which generates the whole menu. UL/LI can have a nested structure
+to create submenus.
+-->
+<!--    <ul>  -->
+<!-- menubar for the main site -->
+      <ul id="main-menubar">
+<!--
+This HTML is injected in all the pages within your project, so all the hyperlinks
+must be either absolute or start with '/'.
+The current page in the navigation bar is shown highlighted to let users know where
+he/she is. This is primarily done by the exact match between "window.location.href"
+and the link target, but the A tag can also have the optional "match" attribute,
+whose value is regular expression that indicates what pages the link should highlight.
+For example, the following match attribute says "overview" should be the current
+page even if you are in sub.html. This is useful for grouping a large number of pages
+under a single navigation item.
+-->
+    <li>
+      <a href="http://java.net/projects/jax-rs-spec/">About project</a>
+    </li>
+    <li>
+      <a href="http://java.net/projects/jax-rs-spec/pages/Home">Wiki</a>
+    </li>
+    <li>
+      <a href="http://java.net/projects/jax-rs-spec/lists">Mailing lists</a>
+    </li>
+    <li>
+        <a href="http://java.net/projects/jax-rs-spec/roles">Membership</a>
+    </li>
+    <li>
+        <a href="http://java.net/projects/jax-rs-spec/sources/git/show" match="http://java.net/projects/jax-rs-spec/sources/git/show/.*">Git repository</a>
+    </li>
+    <li>
+        <a href="http://java.net/jira/browse/JAX_RS_SPEC/">Issue tracker</a>
+    </li>
+</ul>
+
+<script>
+var info = {
+	title: "JAX-RS Specification",
+}
+</script>
+<script src="http://glassfish-theming.java.net/zone-webtier.js"></script>
+<script src="http://glassfish-theming.java.net/theme.js"></script>
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-3160303-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<!-- **************** -->
+
