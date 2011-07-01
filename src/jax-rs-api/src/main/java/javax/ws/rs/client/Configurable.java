@@ -45,11 +45,11 @@ import java.util.Set;
 /**
  * Configurable instance contract.
  * <p />
- * When creating new {@link ResourceUri} instances or {@link Invocation}s using
+ * When creating new {@link Link} instances or {@link Invocation}s using
  * a {@link Client} instance, the properties and features set on the {@code Client}
  * instance are inherited by the child instances being created. Similarly,
- * when creating new {@code Invocations} or derived {@code ResourceUri}s using
- * a {@code ResourceUri} instance, the parent {@code ResourceUri} instance
+ * when creating new {@code Invocations} or derived {@code Link}s using
+ * a {@code Link} instance, the parent {@code Link} instance
  * properties and features are inherited by the child instances being created.
  * The set of inherited features and properties on the child instance reflects the
  * state of the parent set of features and properties at the time of the child

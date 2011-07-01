@@ -109,9 +109,9 @@ public interface HttpResponse {
      * 
      * @return an unmodifiable list of externally attached entity annotations.
      * 
-     * @see #attach(java.lang.annotation.Annotation[])
+     * @see #annotateEntity(java.lang.annotation.Annotation[])
      */
-    List<Annotation> getAttachedAnnotations();
+    List<Annotation> getEntityAnnotations();
 
     /**
      * Get the entity of the response as a generic {@link Object} instance.
@@ -307,7 +307,7 @@ public interface HttpResponse {
      * @param annotations annotations to be externally attached to the entity.
      * @return updated response instance.
      */
-    HttpResponse attach(Annotation... annotations);
+    HttpResponse annotateEntity(Annotation... annotations);
     
     
     // TODO: add proper setEntity method

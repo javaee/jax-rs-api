@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.client;
 
+import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import javax.ws.rs.core.HttpRequest;
@@ -73,12 +74,16 @@ public interface Link extends HttpRequest.Builder<Invocation>, Configurable<Link
     Link path(String path) throws IllegalArgumentException;
 
     Link pathParam(String name, Object value) throws IllegalArgumentException;
+    
+    Link pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
     Link pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
     Link matrixParam(String name, Object... values) throws IllegalArgumentException;
 
     Link queryParam(String name, Object value) throws IllegalArgumentException;
+    
+    Link queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
     Link queryParams(MultivaluedMap<String, Object> parameters)
             throws IllegalArgumentException;

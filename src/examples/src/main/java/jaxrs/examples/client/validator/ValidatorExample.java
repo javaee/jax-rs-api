@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.Link;
 import javax.ws.rs.core.HttpResponse;
 
 import javax.enterprise.util.AnnotationLiteral;
@@ -14,6 +15,7 @@ import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
+import javax.ws.rs.core.Response;
 
 public class ValidatorExample {
 
@@ -67,10 +69,25 @@ public class ValidatorExample {
     public void annotationBasedRequestResponseValidation() {
         Client c = ClientFactory.newClient();
 
-        HttpResponse response = c.link("http://example.com/foo/").post().entity("marek.potociar@oracle.com").attach(new EmailImpl()).invoke();
+        HttpResponse response = c.link("http://example.com/foo/").post().entity("marek.potociar@oracle.com", new EmailImpl()).invoke();
 
-        String userId = response.attach(new NotNull(), new Pattern("[0-9]+")).getEntity(String.class);
+        String userId = response.annotateEntity(new NotNull(), new Pattern("[0-9]+")).getEntity(String.class);
         System.out.println("User id = " + userId);
+    }
+
+    public void annotationBasedRequestParameterValidation() {
+        Client c = ClientFactory.newClient();
+
+        final Link rootResource = c.link("http://example.com/foo");
+        String userId = rootResource.get().queryParam("email", "marek.potociar@oracle.com", new EmailImpl()).invoke(String.class);
+
+        // Path param validation using resource link:
+        HttpResponse r1 = rootResource.path("{userId}").pathParam("userId", userId, new Pattern("[0-9]+")).get().invoke();
+        assert r1.getStatus() == Response.Status.OK;
+        
+        // Path param validation using invocation:
+        HttpResponse r2 = rootResource.path("{userId}").get().pathParam("userId", userId, new Pattern("[0-9]+")).invoke();
+        assert r2.getStatus() == Response.Status.OK;
     }
 
     public void example2() {

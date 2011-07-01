@@ -200,7 +200,7 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
      * Add a value to the current list of values for the supplied key.
      * <p />
      * NOTE: This implementation ignores {@code null} values; A supplied value
-     * of {@code null} is ignored and not added to the purged value list. Overriding
+     * of {@code null} is ignored and not added to the value list. Overriding
      * implementations may modify this behavior by redefining the
      * {@link #addNull(java.util.List)} method.
      *
@@ -216,7 +216,69 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
             addNull(values);
         }
     }
+    
+    /**
+     * Add multiple values to the current list of values for the supplied key. If 
+     * the supplied array of new values is empty, method returns immediately. 
+     * Method throws a {@code NullPointerException} if the supplied array of values 
+     * is {@code null}.
+     * <p />
+     * NOTE: This implementation ignores {@code null} values; Any of the supplied values
+     * of {@code null} is ignored and not added to the value list. Overriding
+     * implementations may modify this behavior by redefining the
+     * {@link #addNull(java.util.List)} method.
+     *
+     * @param key the key.
+     * @param newValues the values to be added.
+     * @throws NullPointerException if the supplied array of new values is {@code null}.
+     */
+    public final void addAll(K key, V... newValues) {
+        if (newValues == null || newValues.length == 0) {
+            return;
+        }
+        
+        List<V> values = getValues(key);
 
+        for (V value : newValues) {
+            if (value != null) {
+                values.add(value);
+            } else {
+                addNull(values);
+            }            
+        }        
+    }
+
+    /**
+     * Add all the values from the supplied value list to the current list of 
+     * values for the supplied key. If the supplied value list is empty, method 
+     * returns immediately. Method throws a {@code NullPointerException} if the 
+     * supplied array of values is {@code null}.
+     * <p />
+     * NOTE: This implementation ignores {@code null} values; Any {@code null} value
+     * in the supplied value list is ignored and not added to the value list. Overriding
+     * implementations may modify this behavior by redefining the
+     * {@link #addNull(java.util.List)} method.
+     *
+     * @param key the key.
+     * @param valueList the list of values to be added.
+     * @throws NullPointerException if the supplied value list is {@code null}.
+     */
+    public final void addAll(K key, List<V> valueList) {
+        if (valueList == null || valueList.isEmpty()) {
+            return;
+        }
+        
+        List<V> values = getValues(key);
+
+        for (V value : valueList) {
+            if (value != null) {
+                values.add(value);
+            } else {
+                addNull(values);
+            }            
+        }        
+    }
+    
     @Override
     public final V getFirst(K key) {
         List<V> values = get(key);
@@ -257,7 +319,7 @@ public class MultivaluedHashMap<K, V> extends HashMap<K, List<V>> implements Mul
      * instance is created, registered within the map to hold the values of
      * the key and returned from the method.
      *
-     * @param key the key
+     * @param key the key.
      * @return value list registered with the key. The method is guaranteed to never
      *     return {@code null}.
      */

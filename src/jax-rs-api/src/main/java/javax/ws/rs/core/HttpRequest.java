@@ -194,6 +194,19 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
     List<PathSegment> getPathSegments(boolean decode);
 
     /**
+     * Return a non-null list of annotations attached to a given path parameter.
+     * If there are no annotations attached to the given parameter or if the
+     * parameter does not exist, the returned list will be empty.
+     *
+     * @param parameterName the path parameter name.
+     * @return annotations attached to the parameter. If the parameter 
+     *     does not exist or if there are no annotations attached to the parameter,
+     *     an empty annotation list is returned. The method is guaranteed to never
+     *     return {@code null}.
+     */    
+    List<Annotation> getPathParameterAnnotations(String parameterName);
+
+    /**
      * Get the URI query parameters of the current request. All sequences of
      * escaped octets in parameter names and values are decoded,
      * equivalent to {@code getQueryParameters(true)}.
@@ -201,6 +214,19 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * @return an unmodifiable map of query parameter names and values.
      */
     MultivaluedMap<String, String> getQueryParameters();
+    
+    /**
+     * Return a non-null list of annotations attached to a given query parameter.
+     * If there are no annotations attached to the given parameter or if the
+     * parameter does not exist, the returned list will be empty.
+     *
+     * @param parameterName the query parameter name.
+     * @return annotations attached to the parameter. If the parameter 
+     *     does not exist or if there are no annotations attached to the parameter,
+     *     an empty annotation list is returned. The method is guaranteed to never
+     *     return {@code null}.
+     */    
+    List<Annotation> getQueryParameterAnnotations(String parameterName);
 
     /**
      * Get the URI query parameters of the current request.
@@ -237,9 +263,9 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * 
      * @return an unmodifiable list of externally attached entity annotations.
      * 
-     * @see #attach(java.lang.annotation.Annotation[])
+     * @see #entity(java.lang.Object, java.lang.annotation.Annotation[])
      */
-    List<Annotation> getAttachedAnnotations();
+    List<Annotation> getEntityAnnotations();
 
     /**
      * Get the request entity, returns {@code null} if the request does not
@@ -298,15 +324,15 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
     // URI builder methods
     T pathParam(String name, Object value) throws IllegalArgumentException;
 
+    T pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
+
     T pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
-
-    T formParam(String name, Object value) throws IllegalArgumentException;
-
-    T formParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
     T matrixParam(String name, Object... values) throws IllegalArgumentException;
 
     T queryParam(String name, Object value) throws IllegalArgumentException;
+
+    T queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
     T queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
@@ -367,27 +393,45 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * <p />
      * A specific entity media type can be set using one of the {@code type(...)}
      * methods. If required (e.g. for validation purposes), external annotations 
-     * can be {@link #attach(java.lang.annotation.Annotation[]) attached} to the 
-     * entity too.
+     * can be {@link #entity(java.lang.Object, java.lang.annotation.Annotation[]) attached}
+     * to the entity too.
      *
      * @param entity the request entity.
      * @return updated request instance.
      *
      * @see #type(javax.ws.rs.core.MediaType)
      * @see #type(java.lang.String) 
-     * @see #attach(java.lang.annotation.Annotation[])
+     * @see #entity(java.lang.Object, java.lang.annotation.Annotation[])
      */
     T entity(Object entity);
 
     /**
-     * Attach external annotations to the message entity.
-     * 
-     * @param annotations annotations to be externally attached to the entity.
+     * Set the request entity with external annotations attached.
+     * <p />
+     * Any Java type instance for a request entity, that is supported by the client
+     * configuration of the client, can be passed. If generic information is
+     * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
+     * be used.
+     * <p />
+     *
+     * @param entity the request entity.
+     * @param annotations the request entity annotations
      * @return updated request instance.
-     * 
-     * @see #entity(java.lang.Object)
+     *
+     * @see #type(javax.ws.rs.core.MediaType)
+     * @see #type(java.lang.String) 
      */
-    T attach(Annotation... annotations);
+    T entity(Object entity, Annotation... annotations);
+
+//    /**
+//     * Attach external annotations to the message entity.
+//     * 
+//     * @param annotations annotations to be externally attached to the entity.
+//     * @return updated request instance.
+//     * 
+//     * @see #entity(java.lang.Object)
+//     */
+//    T attach(Annotation... annotations);
 
     /**
      * Add an HTTP header and value.
