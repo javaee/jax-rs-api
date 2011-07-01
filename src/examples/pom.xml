@@ -252,11 +252,36 @@
 
     <repositories>
         <repository>
-            <id>java.net.m2</id>
+            <id>glassfish.java.net</id>
+            <url>http://download.java.net/maven/glassfish</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>public.maven.java.net</id>
+            <url>https://maven.java.net/content/groups/public/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>releases.maven.java.net</id>
+            <url>https://maven.java.net/content/repositories/releases/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>staging.maven.java.net</id>
+            <url>https://maven.java.net/content/groups/staging/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>snapshots.maven.java.net</id>
+            <url>https://maven.java.net/content/repositories/snapshots/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>m2.java.net</id>
             <url>http://download.java.net/maven/2</url>
             <layout>default</layout>
         </repository>
-    </repositories>
+    </repositories>   
   	
     <dependencies>
         <dependency>
@@ -265,6 +290,31 @@
             <version>2.0-SNAPSHOT</version>
         </dependency>
         
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+        </dependency>
+        <dependency>
+            <artifactId>cdi-api</artifactId>
+            <groupId>javax.enterprise</groupId>
+            <type>jar</type>
+            <version>1.0-SP1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jboss-interceptor-api</artifactId>
+                    <groupId>org.jboss.interceptor</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jsr250-api</artifactId>
+                    <groupId>javax.annotation</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>javax.inject</artifactId>
+                    <groupId>javax.inject</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>bean-validator</artifactId>

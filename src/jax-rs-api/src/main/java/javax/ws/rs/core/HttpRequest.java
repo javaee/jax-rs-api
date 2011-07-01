@@ -233,13 +233,13 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * Get the externally attached entity annotations.
      * <p />
      * This method returns the annotations that have been externally attached 
-     * to the request entity using one of the {@code entity(...)} methods.
+     * to the message entity using one of the {@code entity(...)} methods.
      * 
-     * @return externally attached entity annotations.
+     * @return an unmodifiable list of externally attached entity annotations.
      * 
      * @see #attach(java.lang.annotation.Annotation[])
      */
-    List<Annotation> getAttachedEntityAnnotations();
+    List<Annotation> getAttachedAnnotations();
 
     /**
      * Get the request entity, returns {@code null} if the request does not
@@ -380,7 +380,7 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
     T entity(Object entity);
 
     /**
-     * Attach external annotations to the request entity.
+     * Attach external annotations to the message entity.
      * 
      * @param annotations annotations to be externally attached to the entity.
      * @return updated request instance.
