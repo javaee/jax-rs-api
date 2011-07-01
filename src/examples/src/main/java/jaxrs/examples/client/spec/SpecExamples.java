@@ -49,6 +49,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.Link;
 import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ClientBuilderFactory;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -160,7 +161,7 @@ public class SpecExamples {
         Customer c = client.link("http://examples.org/customers/123").
                 get().accept("application/xml").invoke(Customer.class);
         HttpResponse res = client.link("http://examples.org/premium-customers/")
-                .post().entity(c, "application/xml").invoke();     
+                .post().entity(c).type("application/xml").invoke();     
     }
     
     public void asyncSamples() throws Exception {
