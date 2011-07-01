@@ -253,6 +253,8 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * Get the request entity, returns {@code null} if the request does not
      * contain an entity body.
      * 
+     * TODO do we need to pass annotations here? Do we need this method?
+     * 
      * @param <T> entity type.
      * @param type the type of entity.
      * @param genericType type the generic type of entity, it is the responsibility
@@ -272,15 +274,14 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * @see javax.ws.rs.HttpMethod
      */
     String getMethod();
-    
+
     @Override
     @Deprecated
     public List<String> getRequestHeader(String name);
-    
+
     @Override
     @Deprecated
     public MultivaluedMap<String, String> getRequestHeaders();
-            
 
     // URI builder methods
     T pathParam(String name, Object value) throws IllegalArgumentException;
@@ -345,17 +346,47 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
     T cookie(Cookie cookie);
 
     /**
-     * Set the request entity.
+     * Set the request entity using a default media type.
+     * <p>
+     * Any Java type instance for a request entity, that is supported by the client
+     * configuration of the client, can be passed. If generic information is
+     * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
+     * be used.
+     * 
+     * TODO document media type defaulting.
+     *
+     * @param entity the request entity.
+     * @return updated request instance.
+     */
+    T entity(Object entity);
+
+    /**
+     * Set the request entity and its media type.
      * <p>
      * Any Java type instance for a request entity, that is supported by the client
      * configuration of the client, can be passed. If generic information is
      * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
      * be used.
      *
-     * @param entity the request entity
+     * @param entity the request entity.
+     * @param type the entity media type.
      * @return updated request instance.
      */
-    T entity(Object entity);
+    T entity(Object entity, MediaType type);
+
+    /**
+     * Set the request entity and its media type.
+     * <p>
+     * Any Java type instance for a request entity, that is supported by the client
+     * configuration of the client, can be passed. If generic information is
+     * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
+     * be used.
+     *
+     * @param entity the request entity.
+     * @param type the entity media type.
+     * @return updated request instance.
+     */
+    T entity(Object entity, String type);
 
     /**
      * Add an HTTP header and value.
@@ -379,20 +410,4 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * @return updated request instance.
      */
     T method(String httpMethod);
-
-    /**
-     * Set the media type.
-     *
-     * @param type the media type
-     * @return updated request instance.
-     */
-    T type(MediaType type);
-
-    /**
-     * Set the media type.
-     *
-     * @param type the media type
-     * @return updated request instance.
-     */
-    T type(String type);
 }

@@ -187,7 +187,7 @@ public class BasicExamples {
         customer = response.getEntity(Customer.class);
         assert customer != null;
 
-        response = customersUri.post().entity(new Customer("Marek")).type("application/xml").invoke();
+        response = customersUri.post().entity(new Customer("Marek"), "application/xml").invoke();
         assert response.getStatusCode() == 201;
     }
 
@@ -214,7 +214,7 @@ public class BasicExamples {
 
         // Create a customer
         HttpResponse response = customersUri.post()
-                .entity(new Customer("Bill")).type("application/xml").invoke();
+                .entity(new Customer("Bill"), "application/xml").invoke();
         assert response.getStatusCode() == 201;
 
         Customer favorite;

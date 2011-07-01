@@ -160,7 +160,7 @@ public class SpecExamples {
         Customer c = client.link("http://examples.org/customers/123").
                 get().accept("application/xml").invoke(Customer.class);
         HttpResponse res = client.link("http://examples.org/premium-customers/")
-                .post().type("application/xml").entity(c).invoke();     
+                .post().entity(c, "application/xml").invoke();     
     }
     
     public void asyncSamples() throws Exception {
