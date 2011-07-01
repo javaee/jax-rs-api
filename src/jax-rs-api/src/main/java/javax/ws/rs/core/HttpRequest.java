@@ -230,6 +230,18 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
     MultivaluedMap<String, String> getCookieNameValueMap();
 
     /**
+     * Get the externally attached entity annotations.
+     * <p />
+     * This method returns the annotations that have been externally attached 
+     * to the request entity using one of the {@code entity(...)} methods.
+     * 
+     * @return externally attached entity annotations.
+     * 
+     * @see #attach(java.lang.annotation.Annotation[])
+     */
+    List<Annotation> getAttachedEntityAnnotations();
+
+    /**
      * Get the request entity, returns {@code null} if the request does not
      * contain an entity body.
      * 
@@ -346,47 +358,36 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
     T cookie(Cookie cookie);
 
     /**
-     * Set the request entity using a default media type.
-     * <p>
+     * Set the request entity.
+     * <p />
      * Any Java type instance for a request entity, that is supported by the client
      * configuration of the client, can be passed. If generic information is
      * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
      * be used.
-     * 
-     * TODO document media type defaulting.
+     * <p />
+     * A specific entity media type can be set using one of the {@code type(...)}
+     * methods. If required (e.g. for validation purposes), external annotations 
+     * can be {@link #attach(java.lang.annotation.Annotation[]) attached} to the 
+     * entity too.
      *
      * @param entity the request entity.
      * @return updated request instance.
+     *
+     * @see #type(javax.ws.rs.core.MediaType)
+     * @see #type(java.lang.String) 
+     * @see #attach(java.lang.annotation.Annotation[])
      */
     T entity(Object entity);
 
     /**
-     * Set the request entity and its media type.
-     * <p>
-     * Any Java type instance for a request entity, that is supported by the client
-     * configuration of the client, can be passed. If generic information is
-     * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
-     * be used.
-     *
-     * @param entity the request entity.
-     * @param type the entity media type.
+     * Attach external annotations to the request entity.
+     * 
+     * @param annotations annotations to be externally attached to the entity.
      * @return updated request instance.
+     * 
+     * @see #entity(java.lang.Object)
      */
-    T entity(Object entity, MediaType type);
-
-    /**
-     * Set the request entity and its media type.
-     * <p>
-     * Any Java type instance for a request entity, that is supported by the client
-     * configuration of the client, can be passed. If generic information is
-     * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
-     * be used.
-     *
-     * @param entity the request entity.
-     * @param type the entity media type.
-     * @return updated request instance.
-     */
-    T entity(Object entity, String type);
+    T attach(Annotation... annotations);
 
     /**
      * Add an HTTP header and value.
@@ -410,4 +411,22 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * @return updated request instance.
      */
     T method(String httpMethod);
+
+    /**
+     * Set the request entity media type.
+     *
+     * @param type the media type.
+     * @return updated request instance.
+     *
+     * @see #entity(java.lang.Object)
+     */
+    T type(MediaType type);
+
+    /**
+     * Set the request entity media type.
+     *
+     * @param type the media type.
+     * @return updated request instance.
+     */
+    T type(String type);
 }
