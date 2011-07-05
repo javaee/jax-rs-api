@@ -7,8 +7,6 @@ Validation is the process of verifying that some data obeys one or more pre-defi
 
 \section{Validation Support in Server API}
 
-\subsection{Validation of Resource Class Instances}
-
 The Server API provides support for extracting request values and mapping them into Java fields, properties and parameters using annotations such as \code{@HeaderParam}, \code{@QueryParam}, etc. It also supports binding of request entity bodies into Java objects via non-annotated parameters (i.e., parameters not annotated with any JAX-RS annotations). See Chapter \ref{resources} for additional information.
 
 In JAX-RS 1.X, any additional validation of these values would need to be performed programmatically. JAX-RS 2.0 introduces support for declarative validation based on the Bean Validation specification (JSR ???). For example, consider the following resource class augmented with validation annotations:
