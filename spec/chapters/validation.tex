@@ -193,8 +193,8 @@ class MyResourceClass implements MyInterface {
 
 In the example above, the constraint annotations \code{@CheckUser1} and \code{@Pattern} will be inherited by the \code{getUser} method in \code{MyResourceClass}. If the \code{getUser} method in \code{MyResourceClass} is decorated with any annotations, constraint or otherwise, all of the annotations in the interface \code{MyInterface} will be ignored. Naturally, since fields in super-classes that are visible in subclasses cannot be overridden, all their annotations (including their constraint annotations) are inherited.
 
-\section{Validation Points and Errors}
-\label{validation_points_and_errors}
+\section{Validation Phases and Error Reporting}
+\label{validation_phases_and_error_reporting}
 
 Constraint annotations are allowed in the same locations as the following annotations: \MatrixParam, \QueryParam, \PathParam, \CookieParam, \HeaderParam\ and \Context. Namely, in public constructor parameters, method parameters, fields and bean properties. In addition, they can also decorate resource classes, entity parameters and resource methods. Constraint annotations on bean properties are only allowed on setter parameters and are checked exactly once when the resource class is instantiated.
 
