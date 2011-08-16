@@ -3,11 +3,11 @@
  * 
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
  * 
- * The contents of this file are subject to the terms of either the GNU
+ * The contents at this file are subject to the terms at either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
- * obtain a copy of the License at
+ * obtain a copy at the License at
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
@@ -17,21 +17,21 @@
  * 
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
- * exception as provided by Oracle in the GPL Version 2 section of the License
+ * exception as provided by Oracle in the GPL Version 2 section at the License
  * file that accompanied this code.
  * 
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyright [year] [name of copyright owner]"
+ * "Portions Copyright [year] [name at copyright owner]"
  * 
  * Contributor(s):
- * If you wish your version of this file to be governed by only the CDDL or
+ * If you wish your version at this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
  * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * Version 2] license."  If you don't indicate a single choice at license, a
+ * recipient has the option to distribute your version at this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice at license to
  * its licensees as provided above.  However, if you add GPL Version 2 code
  * and therefore, elected the GPL Version 2 license, then the option applies
  * only if the new code is made subject to such option by the copyright
@@ -51,7 +51,6 @@ import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.Link;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ClientBuilderFactory;
@@ -137,7 +136,7 @@ public class BasicExamples {
     
     public void creatingResourceAndSubResourceUris() {
         // Link( http://jaxrs.examples.org/jaxrsApplication/customers/ )
-        Link customersUri = ClientFactory.newClient().link("http://jaxrs.examples.org/jaxrsApplication/customers");        
+        Link customersUri = ClientFactory.newClient().at("http://jaxrs.examples.org/jaxrsApplication/customers");        
         // Link( http://jaxrs.examples.org/jaxrsApplication/customers/{id}/ )
         Link anyCustomerUri = customersUri.path("{id}");
         // Link( http://jaxrs.examples.org/jaxrsApplication/customers/123/ )
@@ -149,39 +148,25 @@ public class BasicExamples {
     public void creatingClientRequestsAndInvocations() {
         final Client client = ClientFactory.newClient();
         
-        // Create newClient request, customize it and invoke using newClient
-        HttpRequest<?> request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").get();
-        request.accept(MediaType.APPLICATION_XML).header("Foo", "Bar");
-        HttpResponse responseA = client.invoke(request);        
-        assert responseA.getStatusCode() == 200;
-        
-        // Direct invocation leveraging the Invocation interface
-        HttpResponse responseB = client.request("http://jaxrs.examples.org/jaxrsApplication/customers").get() // Invocation (extends HttpRequest)
-                .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();
-        assert responseB.getStatusCode() == 200;
+        HttpResponse response = client.at("http://jaxrs.examples.org/jaxrsApplication/customers").get()
+                .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();        
+        assert response.getStatusCode() == 200;        
     }
 
     public void creatingResourceUriRequestsAndInvocations() {
         final Client client = ClientFactory.newClient();
-        final Link customersUri = client.link("http://jaxrs.examples.org/jaxrsApplication/customers");
+        final Link customersUri = client.at("http://jaxrs.examples.org/jaxrsApplication/customers");
         
-        // Create link request, customize it and invoke using newClient
-        HttpRequest<?> request = customersUri.get();
-        request.accept(MediaType.APPLICATION_XML).header("Foo", "Bar");
-        HttpResponse responseA = client.invoke(request);        
-        assert responseA.getStatusCode() == 200;
-        
-        // Direct invocation leveraging the Invocation interface
-        HttpResponse responseB = customersUri.get() // Invocation (extends HttpRequest)
-                .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();
-        assert responseB.getStatusCode() == 200;
+        // Create at request, customize it and invoke using newClient
+        HttpResponse response = customersUri.get().accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();        
+        assert response.getStatusCode() == 200;
     }
 
     public void defaultResponse() {
         Customer customer;
         HttpResponse response;
 
-        final Link customersUri = ClientFactory.newClient().link("http://jaxrs.examples.org/jaxrsApplication/customers");
+        final Link customersUri = ClientFactory.newClient().at("http://jaxrs.examples.org/jaxrsApplication/customers");
 
         response = customersUri.path("{id}").get().pathParam("id", 123).invoke();
         customer = response.getEntity(Customer.class);
@@ -193,7 +178,7 @@ public class BasicExamples {
 
     public void typedResponse() {
         Customer customer = ClientFactory.newClient()
-                .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
+                .at("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .get()
                 .pathParam("id", 123)
                 .invoke(Customer.class);
@@ -202,14 +187,14 @@ public class BasicExamples {
 
     public void typedGenericResponse() {
         List<Customer> customers = ClientFactory.newClient()
-                .request("http://jaxrs.examples.org/jaxrsApplication/customers")
+                .at("http://jaxrs.examples.org/jaxrsApplication/customers")
                 .get()
                 .invoke(new GenericType<List<Customer>>() { });
         assert customers != null;
     }
 
     public void responseUsingSubResourceClient() {
-        Link customersUri = ClientFactory.newClient().link("http://jaxrs.examples.org/jaxrsApplication/customers");
+        Link customersUri = ClientFactory.newClient().at("http://jaxrs.examples.org/jaxrsApplication/customers");
         Link customer = customersUri.path("{id}");
 
         // Create a customer
@@ -232,7 +217,7 @@ public class BasicExamples {
 
     public void asyncResponse() throws Exception {
         Future<HttpResponse> future = ClientFactory.newClient()
-                .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
+                .at("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .get()
                 .pathParam("id", 123)
                 .submit();
@@ -244,7 +229,7 @@ public class BasicExamples {
 
     public void typedAsyncResponse() throws Exception {
         Future<Customer> customer = ClientFactory.newClient()
-                .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
+                .at("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .get()
                 .pathParam("id", 123)
                 .submit(Customer.class);
@@ -253,11 +238,8 @@ public class BasicExamples {
 
     public void asyncCallback() {
         final Client client = ClientFactory.newClient();
-        Invocation request = client.request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").get();
-        request.pathParam("id", 123);
-
-        // invoke a request in background
-        client.queue(request, new InvocationCallback<Customer>() {
+        Invocation request = client.at("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").get();
+        request.pathParam("id", 123).submit(new InvocationCallback<Customer>() {
 
             @Override
             public void onComplete(Future<Customer> future) {
@@ -278,7 +260,7 @@ public class BasicExamples {
 
     public void asyncCallbackUsingSubResourceClient() throws Exception {
         final Client client = ClientFactory.newClient();
-        Link anyCustomerUri = client.link("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
+        Link anyCustomerUri = client.at("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
 
         // invoke a request in background
         Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // Link
@@ -304,9 +286,8 @@ public class BasicExamples {
         });
         
         // invoke one more request using newClient
-        HttpRequest<?> request = anyCustomerUri.pathParam("id", 789).get();
-        request.cookie(new Cookie("fooName", "XYZ"));
-        Future<HttpResponse> response = client.queue(request);
+        Future<HttpResponse> response = anyCustomerUri.pathParam("id", 789).get()
+                .cookie(new Cookie("fooName", "XYZ")).submit();
         assert response.get() != null;
     }        
 }
