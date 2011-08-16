@@ -41,7 +41,6 @@
 package javax.ws.rs.core;
 
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +52,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
 
 /**
- * Defines a client side runtime contract for HTTP response.
+ * Defines a runtime contract for HTTP response.
  *
  * TODO consider merging with core.Response
  *
@@ -100,18 +99,6 @@ public interface HttpResponse {
      * @return the cookies.
      */
     Set<NewCookie> getCookies();
-
-    /**
-     * Get the externally attached entity annotations.
-     * <p />
-     * This method returns the annotations that have been externally attached 
-     * to the message entity using one of the {@code entity(...)} methods.
-     * 
-     * @return an unmodifiable list of externally attached entity annotations.
-     * 
-     * @see #annotateEntity(java.lang.annotation.Annotation[])
-     */
-    List<Annotation> getEntityAnnotations();
 
     /**
      * Get the entity of the response as a generic {@link Object} instance.
@@ -300,15 +287,6 @@ public interface HttpResponse {
      * @param status the response status code to be set.
      */
     void setStatusCode(int status);
-    
-    /**
-     * Attach external annotations to the message entity.
-     * 
-     * @param annotations annotations to be externally attached to the entity.
-     * @return updated response instance.
-     */
-    HttpResponse annotateEntity(Annotation... annotations);
-    
-    
+        
     // TODO: add proper setEntity method
 }
