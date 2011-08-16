@@ -52,7 +52,7 @@ import javax.ws.rs.core.UriBuilder;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface Link extends HttpRequest.Builder<Invocation>, Configurable<Link> {
+public interface Target extends HttpRequest.Builder<Invocation>, Configurable<Target> {
 
     // Getters
     /**
@@ -71,20 +71,22 @@ public interface Link extends HttpRequest.Builder<Invocation>, Configurable<Link
     UriBuilder getUriBuilder();
 
     // Sub-resource URI buidler methods
-    Link path(String path) throws IllegalArgumentException;
+    Target path(String path) throws IllegalArgumentException;
 
-    Link pathParam(String name, Object value) throws IllegalArgumentException;
+    Target pathParam(String name, Object value) throws IllegalArgumentException;
     
-    Link pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
+    Target pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
-    Link pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+    Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
-    Link matrixParam(String name, Object... values) throws IllegalArgumentException;
+    Target matrixParam(String name, Object... values) throws IllegalArgumentException;
 
-    Link queryParam(String name, Object value) throws IllegalArgumentException;
+    Target queryParam(String name, Object value) throws IllegalArgumentException;
     
-    Link queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
+    Target queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
-    Link queryParams(MultivaluedMap<String, Object> parameters)
+    Target queryParams(MultivaluedMap<String, Object> parameters)
             throws IllegalArgumentException;
+    
+    Invocation request();
 }

@@ -44,7 +44,8 @@ import java.net.URI;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- * TODO javadoc.
+ * Client is the main entry point to the fluent API used to build and execute client 
+ * requests in order to consume responses returned. 
  *
  * @author Marek Potociar
  * @see Configurable
@@ -62,9 +63,9 @@ public interface Client extends Configurable<Client> {
     void close();
     
     // Resource at builder methods    
-    Link at(String uri) throws IllegalArgumentException, NullPointerException;
+    Target at(String uri) throws IllegalArgumentException, NullPointerException;
 
-    Link at(URI uri) throws NullPointerException;
+    Target at(URI uri) throws NullPointerException;
 
-    Link at(UriBuilder uriBuilder) throws NullPointerException;
+    Target at(UriBuilder uriBuilder) throws NullPointerException;
 }

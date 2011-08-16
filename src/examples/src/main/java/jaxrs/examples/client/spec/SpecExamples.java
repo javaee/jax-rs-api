@@ -46,7 +46,7 @@ import javax.ws.rs.client.ClientConfiguration;
 import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.DefaultClientConfiguration;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.Link;
+import javax.ws.rs.client.Target;
 import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
@@ -143,7 +143,7 @@ public class SpecExamples {
     
     public void typeRelationships() {
         Client client = ClientFactory.newClient();
-        Link uri = client.at("");
+        Target uri = client.at("");
         Invocation inv = uri.put();
         HttpRequest req = inv;
         HttpRequest req2 = client.at("").get();
@@ -151,8 +151,8 @@ public class SpecExamples {
     
     public void benefitsOfResourceUri() {
         Client client = ClientFactory.newClient();
-        Link base = client.at("http://example.org/");
-        Link hello = base.path("hello").path("{whom}");   
+        Target base = client.at("http://example.org/");
+        Target hello = base.path("hello").path("{whom}");   
         HttpResponse res = hello.pathParam("whom", "world").get().invoke();
     }
     

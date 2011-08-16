@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.client.Link;
+import javax.ws.rs.client.Target;
 import javax.ws.rs.core.HttpResponse;
 
 import javax.enterprise.util.AnnotationLiteral;
@@ -78,7 +78,7 @@ public class ValidatorExample {
     public void annotationBasedRequestParameterValidation() {
         Client c = ClientFactory.newClient();
 
-        final Link rootResource = c.at("http://example.com/foo");
+        final Target rootResource = c.at("http://example.com/foo");
         String userId = rootResource.get().queryParam("email", "marek.potociar@oracle.com", new EmailImpl()).invoke(String.class);
 
         // Path param validation using resource at:
