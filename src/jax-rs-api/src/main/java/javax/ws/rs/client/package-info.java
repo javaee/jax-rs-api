@@ -38,9 +38,9 @@
  * holder.
  */
 /**
- * JAX-RS core client API.
+ * JAX-RS client API.
  * <p />
- * The JAX-RS core client API is a Java based API for interoperating with RESTful
+ * The JAX-RS client API is a Java based API for interoperating with RESTful
  * web services. It's goal is to enable developers to concisely and efficiently
  * implement reusable client-side solutions that leverage existing and well
  * established client-side HTTP implementations.
@@ -59,5 +59,18 @@
  *
  * The JAX-RS Client API supports a pluggable architecture by defining multiple
  * extension points.
+ * 
+ * 
+ * 
+ * TODO:
+ * - what are the main API concepts?
+ *   Client - the main entry point
+ *   Target - covers request URI construction and modification
+ *   Invocation - command pattern; generic request invocation interface
+ *   RequestBuilder? - request building & fluent invocation
+ * 
+ * - what use cases should break the fluency of the API?
+ *   Request method change
+ *   Request URI change
  */
 package javax.ws.rs.client;

@@ -45,15 +45,15 @@ import java.util.Set;
 /**
  * Configurable instance contract.
  * <p />
- * When creating new {@link Link} instances or {@link Invocation}s using
- * a {@link Client} instance, the properties and features set on the {@code Client}
+ * When creating new {@link Target} instances or {@link Invocation Invocations} using
+ * a {@link Client} instance, the setProperties and features set on the {@code Client}
  * instance are inherited by the child instances being created. Similarly,
- * when creating new {@code Invocations} or derived {@code Link}s using
- * a {@code Link} instance, the parent {@code Link} instance
- * properties and features are inherited by the child instances being created.
- * The set of inherited features and properties on the child instance reflects the
- * state of the parent set of features and properties at the time of the child
- * instance creation. Once the child instance is created its properties and features
+ * when creating new {@code Invocations} or derived {@code Targets} using
+ * a {@code Target} instance, the parent {@code Target} instance
+ * setProperties and features are inherited by the child instances being created.
+ * The set of inherited features and setProperties on the child instance reflects the
+ * state of the parent set of features and setProperties at the time of the child
+ * instance creation. Once the child instance is created its setProperties and features
  * are detached from the parent configuration. This means that any subsequent
  * changes in the parent configuration MUST NOT affect the configuration of
  * previously created child instances.
@@ -72,44 +72,41 @@ public interface Configurable<T extends Configurable> {
 
     // Getters      
     /**
-     * Get the immutable property bag for the configurable instance.
+     * Get the immutable setProperty bag for the configurable instance.
      * <p />
      *
-     * @return the property bag of the configurable instance.
+     * @return the setProperty bag of the configurable instance.
      * @see Configurable
      */
     Map<String, Object> getProperties();
 
     /**
-     * Get the property value for the specified property name.
+     * Get the setProperty value for the specified setProperty name.
      *
-     * @param name property name.
-     * @return the property value for the specified property name or {@code null}
-     *     if the property with such name is not configured.
+     * @param name setProperty name.
+     * @return the setProperty value for the specified setProperty name or {@code null}
+     *     if the setProperty with such name is not configured.
      * @see Configurable
      */
     Object getProperty(String name);
 
     /**
-     * Get the immutable set of features enabled on the configurable instance.
+     * Get the immutable set of feature classes of enabled features on the
+     * configurable instance.
      * <p />
-     * Features are properties defined by their {@code String} name. The meaning
-     * of a feature is implementation specific.
      *
      * @return the enabled feature set. The returned value shall never be {@code null}.
      */
-    Set<String> getFeatures();
+    Set<Class<? extends Feature>> getFeatures();
 
     /**
      * Determine if a feature is enabled for the configurable instance.
      *
-     * @param featureName the name of the feature.
-     * @return {@code true} if the feature value is present in the property bag
-     *     and is an instance of {@link java.lang.Boolean} and that value is
-     *     {@code true}, otherwise {@code false}.
+     * @param feature the feature class.
+     * @return {@code true} if the feature is enabled, otherwise {@code false}.
      * @see Configurable
      */
-    boolean isEnabled(final String featureName);
+    boolean isEnabled(Class<? extends Feature> feature);
     
     /**
      * Get the immutable set of provider classes to be instantiated in the scope
@@ -141,6 +138,16 @@ public interface Configurable<T extends Configurable> {
 
     // Mutators
     /**
+     * Configure the instance using external configuration. Current configuration
+     * of the instance is replaced.
+     *
+     * @param configuration configuration to be used to configure the instance.
+     *
+     * @return the updated configurable instance.
+     */
+    T configure(Configurable<?> configuration);
+    
+    /**
      * Register a provider class to be instantiated and used in the scope of the
      * configured instance.
      * <p/>
@@ -156,8 +163,8 @@ public interface Configurable<T extends Configurable> {
     T register(Class<?> providerClass);
 
     /**
-     * Register a provider ("singleton") instance to be used in the scope of the
-     * configured instance.
+     * Register one or more provider ("singleton") instances to be used in the
+     * scope of the configured instance.
      * <p/>
      * As opposed to the providers registered by the 
      * {@link #register(java.lang.Class) provider classes}, provider instances
@@ -165,50 +172,50 @@ public interface Configurable<T extends Configurable> {
      * as singletons &ndash; a single provider instance is used to serve all the
      * interactions.
      *
-     * @param provider provider instance to be used in the scope of the configured
-     *     instance.
+     * @param providers one or more provider instances to be used in the scope of
+     *     the configured instance.
      * @return the updated configurable instance.
      * @see #getProviderSingletons()
      */
-    T register(Object provider);    
+    T register(Object... providers);    
 
     /**
-     * Set the configuration property for the configurable instance.
+     * Enable a feature for the configurable instance using a feature class.
      *
-     * @param name property name.
-     * @param value property value.
+     * @param feature class of the feature to be enabled.
      * @return the updated configurable instance.
      * @see Configurable
      */
-    T property(String name, Object value);
+    T enable(Class<? extends Feature> feature);
 
     /**
-     * Enable a feature for the instance.
+     * Disable a feature for the configurable instance using a feature class.
      *
-     * @param featureName feature name.
+     * @param feature class of the feature to be disabled.
      * @return the updated configurable instance.
      * @see Configurable
      */
-    T enable(String featureName);
+    T disable(Class<? extends Feature> feature);
 
     /**
-     * Disable a feature for the configurable instance.
-     *
-     * @param featureName feature name.
-     * @return the updated configurable instance.
-     * @see Configurable
-     */
-    T disable(String featureName);
-
-    /**
-     * Set new properties for the configurable instance (replaces everything
+     * Set new setProperties for the configurable instance (replaces everything
      * previously set).
      *
      * @param properties set of properties for the configurable instance.
-     *     The content of the map will replace any existing properties set
+     *     The content of the map will replace any existing setProperties set
      *     on the configurable instance.
      * @return the updated configurable instance.
      * @see Configurable
      */
-    T properties(Map<String, Object> properties);
+    T setProperties(Map<String, Object> properties);
+
+    /**
+     * Set the configuration setProperty for the configurable instance.
+     *
+     * @param name setProperty name.
+     * @param value setProperty value.
+     * @return the updated configurable instance.
+     * @see Configurable
+     */
+    T setProperty(String name, Object value);   
 }

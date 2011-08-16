@@ -58,7 +58,7 @@ public class ClientFactory {
         return getFactory(builderFactoryClass).newBuilder();
     }
 
-    private static <C extends ClientBuilderFactory<?>> C getFactory(Class<C> builderFactoryClass) {
+    private static <FACTORY extends ClientBuilderFactory<?>> FACTORY getFactory(Class<FACTORY> builderFactoryClass) {
         try {
             return builderFactoryClass.newInstance(); // TODO instance caching(?), injecting, setup, etc.
         } catch (InstantiationException ex) {
@@ -71,7 +71,7 @@ public class ClientFactory {
     }
     
     // todo make generic
-    private static ClientBuilderFactory<? extends Builder<ClientConfiguration>> getDefaultFactory() {
+    private static ClientBuilderFactory<? extends Builder<Client>> getDefaultFactory() {
         // todo implement
         return null;
     }
@@ -80,7 +80,7 @@ public class ClientFactory {
         return getDefaultFactory().newBuilder().build();
     }
 
-    public static Client newClient(ClientConfiguration configuration) {
+    public static Client newClient(Configurable<?> configuration) {
         // TODO fix the unchecked warning
         return getDefaultFactory().newBuilder().build(configuration);
     }

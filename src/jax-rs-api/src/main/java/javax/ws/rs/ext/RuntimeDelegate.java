@@ -42,7 +42,6 @@ package javax.ws.rs.ext;
 import java.lang.reflect.ReflectPermission;
 import java.net.URL;
 
-import javax.ws.rs.client.ClientConfiguration;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
