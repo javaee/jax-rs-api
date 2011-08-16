@@ -78,19 +78,4 @@ public interface Client extends Configurable<Client> {
     Link link(URI uri) throws NullPointerException;
 
     Link link(UriBuilder uriBuilder) throws NullPointerException;
-
-    // Invocation methods
-    HttpResponse invoke(HttpRequest request) throws InvocationException;
-
-    <T> T invoke(HttpRequest request, Class<T> responseType) throws InvocationException;
-
-    <T> T invoke(HttpRequest request, GenericType<T> responseType) throws InvocationException;
-
-    Future<HttpResponse> queue(HttpRequest request);
-
-    <T> Future<T> queue(HttpRequest<?> request, Class<T> responseType);
-
-    <T> Future<T> queue(HttpRequest<?> request, GenericType<T> responseType);
-
-    <T> Future<T> queue(HttpRequest<?> request, InvocationCallback<T> callback);
 }
