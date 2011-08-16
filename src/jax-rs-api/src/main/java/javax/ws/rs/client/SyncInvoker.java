@@ -39,55 +39,71 @@
  */
 package javax.ws.rs.client;
 
-import java.lang.annotation.Annotation;
-import java.net.URI;
-
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpResponse;
 
 /**
- * A resource target identified by the resource URI.
+ * TODO javadoc.
  *
  * @author Marek Potociar
  * @since 2.0
  */
-public interface Target extends Configurable<Target> {
+public interface SyncInvoker {
+    // GET
 
-    // Getters
-    /**
-     * Get the URI identifying the resource.
-     *
-     * @return the resource URI.
-     */
-    URI getURI();
+    HttpResponse get() throws InvocationException;
 
-    /**
-     * Get the URI builder initialized with the {@link URI} identifying the
-     * resource.
-     *
-     * @return the initialized URI builder.
-     */
-    UriBuilder getUriBuilder();
+     <T> T get(Class<T> responseType) throws InvocationException;
 
-    // Sub-resource URI buidler methods
-    Target path(String path) throws IllegalArgumentException;
+     <T> T get(GenericType<T> responseType) throws InvocationException;
 
-    Target pathParam(String name, Object value) throws IllegalArgumentException;
-    
-    Target pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
+    // PUT
+    HttpResponse put() throws InvocationException;
 
-    Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+     <T> T put(Class<T> responseType) throws InvocationException;
 
-    Target matrixParam(String name, Object... values) throws IllegalArgumentException;
+     <T> T put(GenericType<T> responseType) throws InvocationException;
 
-    Target queryParam(String name, Object value) throws IllegalArgumentException;
-    
-    Target queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
+    // POST
+    HttpResponse post() throws InvocationException;
 
-    Target queryParams(MultivaluedMap<String, Object> parameters)
-            throws IllegalArgumentException;
-    
-    Invocation.Builder request();
-    
-    Invocation.Builder request(Invocation.Builder original);
+     <T> T post(Class<T> responseType) throws InvocationException;
+
+     <T> T post(GenericType<T> responseType) throws InvocationException;
+
+    // DELETE
+    HttpResponse delete() throws InvocationException;
+
+     <T> T delete(Class<T> responseType) throws InvocationException;
+
+     <T> T delete(GenericType<T> responseType) throws InvocationException;
+
+    // HEAD
+    HttpResponse head() throws InvocationException;
+
+     <T> T head(Class<T> responseType) throws InvocationException;
+
+     <T> T head(GenericType<T> responseType) throws InvocationException;
+
+    // OPTIONS
+    HttpResponse options() throws InvocationException;
+
+     <T> T options(Class<T> responseType) throws InvocationException;
+
+     <T> T options(GenericType<T> responseType) throws InvocationException;
+
+    // TRACE
+    HttpResponse trace() throws InvocationException;
+
+     <T> T trace(Class<T> responseType) throws InvocationException;
+
+     <T> T trace(GenericType<T> responseType) throws InvocationException;
+
+    // ARBITRARY METHOD
+    // TODO: Uncomment
+    // HttpResponse method(String name) throws InvocationException;
+
+     <T> T method(String name, Class<T> responseType) throws InvocationException;
+
+     <T> T method(String name, GenericType<T> responseType) throws InvocationException;
 }

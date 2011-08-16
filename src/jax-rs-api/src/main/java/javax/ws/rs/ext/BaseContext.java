@@ -41,8 +41,6 @@ package javax.ws.rs.ext;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import javax.ws.rs.client.Configurable;
-import javax.ws.rs.client.Invocation;
 
 /**
  * Base context shared by handlers and filters.
@@ -57,12 +55,12 @@ public interface BaseContext {
      * Get a mutable map of properties that can be used for 
      * communication between handlers and between filters. As part of 
      * the client API, this property map is initialized by calling 
-     * {@link javax.ws.rs.client.Invocation#getProperties()}. Otherwise,
-     * it is initialized to the empty map.
+     * {@link javax.ws.rs.client.Invocation.Builder#getProperties() Invocation.Builder.getProperties}.
+     * Otherwise, it is initialized to the empty map.
      *
      * @return a mutable property map
-     * @see Configurable
-     * @see Invocation
+     * @see javax.ws.rs.client.Configurable
+     * @see javax.ws.rs.client.Invocation.Builder Invocation.Builder
      */
     Map<String, Object> getProperties();
 

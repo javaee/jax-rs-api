@@ -54,44 +54,6 @@ import javax.ws.rs.WebApplicationException;
  */
 public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneable {
 
-    /**
-     * TODO javadoc.
-     *
-     * @param <T> HTTP request type specialization.
-     * @since 2.0
-     */
-    public static interface Builder<T extends HttpRequest> {
-
-        T get();
-
-        T put();
-
-        T post();
-
-        T delete();
-
-        T head();
-
-        T options();
-
-        T trace();
-
-        /**
-         * Configures a HTTP request with an arbitrary HTTP method name.
-         * <p />
-         * The method name parameter can be any arbitrary, non-empty string, containing
-         * but NOT limited to the command verbs of HTTP, WebDAV and other protocols.
-         * An implementation MUST NOT expect the method to be part of any particular set
-         * of methods. Any provided method name MUST be forwarded to the resource without
-         * any limitations.
-         *
-         * @param name HTTP method name to be used for the request.
-         * @return configured HTTP request or its more specialized version.
-         * @see javax.ws.rs.client.Invocation
-         */
-        T method(String name);
-    }
-
     // Getters
     /**
      * Get the base URI of the application. URIs of root resource classes
@@ -322,6 +284,47 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
     T cookie(Cookie cookie);
 
     /**
+     * Add an HTTP header and value.
+     *
+     * @param name the HTTP header name.
+     * @param value the HTTP header value.
+     * @return updated request instance.
+     */
+    T header(String name, Object value);
+
+    /**
+     * Set the request entity media type.
+     *
+     * @param type the media type.
+     * @return updated request instance.
+     *
+     * @see #entity(java.lang.Object)
+     */
+    T type(MediaType type);
+
+    /**
+     * Set the request entity media type.
+     *
+     * @param type the media type.
+     * @return updated request instance.
+     */
+    T type(String type);
+
+    /**
+     * Modify the HTTP method of the request.
+     * <p />
+     * The method name parameter can be any arbitrary, non-empty string, containing
+     * but NOT limited to the command verbs of HTTP, WebDAV and other protocols.
+     * An implementation MUST NOT expect the method to be part of any particular set
+     * of methods. Any provided method name MUST be forwarded to the resource without
+     * any limitations.
+     *
+     * @param httpMethod new method to be set on the request.
+     * @return updated request instance.
+     */
+    T method(String httpMethod);
+
+    /**
      * Set the request entity.
      * <p />
      * Any Java type instance for a request entity, that is supported by the client
@@ -342,45 +345,4 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * @see #entity(java.lang.Object, java.lang.annotation.Annotation[])
      */
     T entity(Object entity);
-
-    /**
-     * Add an HTTP header and value.
-     *
-     * @param name the HTTP header name.
-     * @param value the HTTP header value.
-     * @return updated request instance.
-     */
-    T header(String name, Object value);
-
-    /**
-     * Modify the HTTP method of the request.
-     * <p />
-     * The method name parameter can be any arbitrary, non-empty string, containing
-     * but NOT limited to the command verbs of HTTP, WebDAV and other protocols.
-     * An implementation MUST NOT expect the method to be part of any particular set
-     * of methods. Any provided method name MUST be forwarded to the resource without
-     * any limitations.
-     *
-     * @param httpMethod new method to be set on the request.
-     * @return updated request instance.
-     */
-    T method(String httpMethod);
-
-    /**
-     * Set the request entity media type.
-     *
-     * @param type the media type.
-     * @return updated request instance.
-     *
-     * @see #entity(java.lang.Object)
-     */
-    T type(MediaType type);
-
-    /**
-     * Set the request entity media type.
-     *
-     * @param type the media type.
-     * @return updated request instance.
-     */
-    T type(String type);
 }

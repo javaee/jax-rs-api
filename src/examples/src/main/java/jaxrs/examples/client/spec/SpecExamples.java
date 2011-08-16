@@ -40,11 +40,13 @@
 package jaxrs.examples.client.spec;
 
 import java.util.concurrent.Future;
+import javax.ws.rs.client.AsyncInvoker;
 import jaxrs.examples.client.custom.ThrottledClient;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
@@ -94,40 +96,53 @@ public class SpecExamples {
     public void fluentMethodChaining() {
         Client client = ClientFactory.newClient();
         HttpResponse res = client.target("http://example.org/hello")
-                .get().accept("text/plain").invoke();
+                .request().accept("text/plain").get();
         
         HttpResponse res2 = client.target("http://example.org/hello")
-                .get().accept("text/plain").header("MyHeader", "...")
-                .queryParam("MyParam","...").invoke();
+                .request().accept("text/plain").header("MyHeader", "...")
+                .queryParam("MyParam","...").get();
     }
     
     public void typeRelationships() {
         Client client = ClientFactory.newClient();
         Target uri = client.target("");
-        Invocation inv = uri.put();
-        HttpRequest req = inv;
-        HttpRequest req2 = client.target("").get();
+        Invocation.Builder builder = uri.request();
+        
+        
+        SyncInvoker syncInvoker = builder;
+        AsyncInvoker asyncInvoker = builder.async();
+        Invocation inv = builder.buildGet();
+        
+        HttpResponse r1 = builder.get();
+        HttpResponse r2 = syncInvoker.get();
+        HttpResponse r3= inv.invoke();
+        
+        Future<HttpResponse> fr1 = asyncInvoker.get();
+        Future<HttpResponse> fr2 = inv.submit();
+        
+        // TODO: invalidate the assignemnt bellow
+        HttpRequest req = builder;
     }
     
     public void benefitsOfResourceUri() {
         Client client = ClientFactory.newClient();
         Target base = client.target("http://example.org/");
         Target hello = base.path("hello").path("{whom}");   
-        HttpResponse res = hello.pathParam("whom", "world").get().invoke();
+        HttpResponse res = hello.pathParam("whom", "world").request().get();
     }
     
     public void gettingAndPostingCustomers() {
         Client client = ClientFactory.newClient();
         Customer c = client.target("http://examples.org/customers/123").
-                get().accept("application/xml").invoke(Customer.class);
+                request().accept("application/xml").get(Customer.class);
         HttpResponse res = client.target("http://examples.org/premium-customers/")
-                .post().entity(c).type("application/xml").invoke();     
+                .request().entity(c).type("application/xml").post();     
     }
     
     public void asyncSamples() throws Exception {
         Client client = ClientFactory.newClient();
         Future<Customer> fc = client.target("http://examples.org/customers/123").
-                get().accept("application/xml").submit(Customer.class);
+                request().accept("application/xml").async().get(Customer.class);
         Customer c = fc.get();   
     }
     

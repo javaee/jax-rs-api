@@ -51,12 +51,12 @@ import jaxrs.examples.filter.compression.GzipHandler;
 public class GzipExample {
 
     public void gzipExample() {
-        Target resourceUri = ClientFactory.newClient().register(GzipHandler.class).target("http://example.com/foo/bar.txt");
+        Target target = ClientFactory.newClient().register(GzipHandler.class).target("http://example.com/foo/bar.txt");
 
         // getting a gzip encoded body
-        String text = resourceUri.get().invoke(String.class);
+        String text = target.request().get(String.class);
 
         // send a gzip encoded body
-        resourceUri.post().header("Content-Encoding", "gzip").invoke();
+        target.request().header("Content-Encoding", "gzip").post();
     }
 }

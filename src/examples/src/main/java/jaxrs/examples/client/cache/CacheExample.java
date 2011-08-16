@@ -55,10 +55,10 @@ public class CacheExample {
         HashMap<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
         Client client = ClientFactory.newClient()
                 .register(new CacheEntryLocator(cache), new CacheResponseHandler(cache));
-        Invocation request = client.target("http://example.com/foo/bar.txt").get();
+        Invocation.Builder request = client.target("http://example.com/foo/bar.txt").request();
 
-        String text = request.invoke(String.class);
-        String second = request.invoke(String.class);
+        String text = request.get(String.class);
+        String second = request.get(String.class);
         
         System.out.println(text);
         System.out.println(second);

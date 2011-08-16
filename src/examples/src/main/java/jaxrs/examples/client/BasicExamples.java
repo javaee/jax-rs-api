@@ -110,8 +110,8 @@ public class BasicExamples {
     public void creatingClientRequestsAndInvocations() {
         final Client client = ClientFactory.newClient();
         
-        HttpResponse response = client.target("http://jaxrs.examples.org/jaxrsApplication/customers").get()
-                .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();        
+        HttpResponse response = client.target("http://jaxrs.examples.org/jaxrsApplication/customers").request()
+                .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").get();        
         assert response.getStatusCode() == 200;        
     }
 
@@ -120,7 +120,7 @@ public class BasicExamples {
         final Target customersUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers");
         
         // Create target request, customize it and invoke using newClient
-        HttpResponse response = customersUri.get().accept(MediaType.APPLICATION_XML).header("Foo", "Bar").invoke();        
+        HttpResponse response = customersUri.request().accept(MediaType.APPLICATION_XML).header("Foo", "Bar").get();        
         assert response.getStatusCode() == 200;
     }
 
@@ -130,28 +130,28 @@ public class BasicExamples {
 
         final Target customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
-        response = customersUri.path("{id}").get().pathParam("id", 123).invoke();
+        response = customersUri.path("{id}").request().pathParam("id", 123).get();
         customer = response.getEntity(Customer.class);
         assert customer != null;
 
-        response = customersUri.post().entity(new Customer("Marek")).type("application/xml").invoke();
+        response = customersUri.request().entity(new Customer("Marek")).type("application/xml").post();
         assert response.getStatusCode() == 201;
     }
 
     public void typedResponse() {
         Customer customer = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .get()
+                .request()
                 .pathParam("id", 123)
-                .invoke(Customer.class);
+                .get(Customer.class);
         assert customer != null;
     }
 
     public void typedGenericResponse() {
         List<Customer> customers = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers")
-                .get()
-                .invoke(new GenericType<List<Customer>>() { });
+                .request()
+                .get(new GenericType<List<Customer>>() { });
         assert customers != null;
     }
 
@@ -160,29 +160,29 @@ public class BasicExamples {
         Target customer = customersUri.path("{id}");
 
         // Create a customer
-        HttpResponse response = customersUri.post()
-                .entity(new Customer("Bill")).type("application/xml").invoke();
+        HttpResponse response = customersUri.request()
+                .entity(new Customer("Bill")).type("application/xml").post();
         assert response.getStatusCode() == 201;
 
         Customer favorite;
         // view a customer
-        favorite = customer.get() // Invocation (extends HttpRequest)
-                .pathParam("id", 123).invoke(Customer.class);
+        favorite = customer.request() // InvocationBuilder (extends HttpRequest)
+                .pathParam("id", 123).get(Customer.class);
         assert favorite != null;
 
         // view a customer (alternative)
         favorite = customer.pathParam("id", 123) // Target ("http://jaxrs.examples.org/jaxrsApplication/customers/123/")
-                .get() // Invocation (extends HttpRequest)
-                .invoke(Customer.class);
+                .request() // InvocationBuilder (extends HttpRequest)
+                .get(Customer.class);
         assert favorite != null;
     }
 
     public void asyncResponse() throws Exception {
         Future<HttpResponse> future = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .get()
+                .request()
                 .pathParam("id", 123)
-                .submit();
+                .async().get();
 
         HttpResponse response = future.get();
         Customer customer = response.getEntity(Customer.class);
@@ -192,16 +192,16 @@ public class BasicExamples {
     public void typedAsyncResponse() throws Exception {
         Future<Customer> customer = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .get()
+                .request()
                 .pathParam("id", 123)
-                .submit(Customer.class);
+                .async().get(Customer.class);
         assert customer.get() != null;
     }
 
     public void asyncCallback() {
         final Client client = ClientFactory.newClient();
-        Invocation request = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").get();
-        request.pathParam("id", 123).submit(new InvocationCallback<Customer>() {
+        Invocation.Builder request = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").request();
+        request.pathParam("id", 123).async().get(new InvocationCallback<Customer>() {
 
             @Override
             public void onComplete(Future<Customer> future) {
@@ -210,7 +210,7 @@ public class BasicExamples {
         });
 
         // invoke another request in background
-        Future<?> handle = request.pathParam("id", 456).submit(new InvocationCallback<HttpResponse>() {
+        Future<?> handle = request.pathParam("id", 456).async().get(new InvocationCallback<HttpResponse>() {
 
             @Override
             public void onComplete(Future<HttpResponse> future) {
@@ -226,8 +226,8 @@ public class BasicExamples {
 
         // invoke a request in background
         Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // Target
-                .get() // Invocation (extends HttpRequest)
-                .submit(new InvocationCallback<Customer>() {
+                .request() // InvocationBuilder (extends HttpRequest)
+                .async().get(new InvocationCallback<Customer>() {
 
             @Override
             public void onComplete(Future<Customer> future) {
@@ -238,8 +238,8 @@ public class BasicExamples {
 
         // invoke another request in background
         anyCustomerUri.pathParam("id", 456) // Target
-                .get() // Invocation (extends HttpRequest)
-                .submit(new InvocationCallback<HttpResponse>() {
+                .request() // InvocationBuilder (extends HttpRequest)
+                .async().get(new InvocationCallback<HttpResponse>() {
 
             @Override
             public void onComplete(Future<HttpResponse> future) {
@@ -248,8 +248,8 @@ public class BasicExamples {
         });
         
         // invoke one more request using newClient
-        Future<HttpResponse> response = anyCustomerUri.pathParam("id", 789).get()
-                .cookie(new Cookie("fooName", "XYZ")).submit();
+        Future<HttpResponse> response = anyCustomerUri.pathParam("id", 789).request()
+                .cookie(new Cookie("fooName", "XYZ")).async().get();
         assert response.get() != null;
     }        
     

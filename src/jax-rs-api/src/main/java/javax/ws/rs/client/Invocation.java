@@ -40,35 +40,47 @@
 package javax.ws.rs.client;
 
 import java.util.concurrent.Future;
-
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
 
 /**
- * TODO javadoc.
  *
  * @author Marek Potociar
- * @since 2.0
  */
-public interface Invocation extends HttpRequest<Invocation>, Configurable<Invocation> {
+public interface Invocation extends Configurable<Invocation> {
 
-    // Invocation methods
-    // TODO: document that the request instance needs to be cloned so that the 
-    // data used in the invocation processing chain are decoupled from the original
-    // request data that were used to initiate the invocation to prevent accidental
-    // issues caused by mutable nature of the request
+    public static interface Builder extends HttpRequest<Builder>, Configurable<Builder>, SyncInvoker {
+
+        // InvocationBuilder methods
+        // TODO: document that the request instance needs to be cloned so that the 
+        // data used in the invocation processing chain are decoupled from the original
+        // request data that were used to initiate the invocation to prevent accidental
+        // issues caused by mutable nature of the request
+        public Invocation build(String method);
+
+        public Invocation buildGet();
+
+        public Invocation buildDelete();
+
+        public Invocation buildPost();
+
+        public Invocation buildPut();
+
+        public AsyncInvoker async();
+    }
+
     HttpResponse invoke() throws InvocationException;
 
-    <T> T invoke(Class<T> responseType) throws InvocationException;
+     <T> T invoke(Class<T> responseType) throws InvocationException;
 
-    <T> T invoke(GenericType<T> responseType) throws InvocationException;
+     <T> T invoke(GenericType<T> responseType) throws InvocationException;
 
     Future<HttpResponse> submit();
 
-    <T> Future<T> submit(Class<T> responseType);
+     <T> Future<T> submit(Class<T> responseType);
 
-    <T> Future<T> submit(GenericType<T> responseType);
+     <T> Future<T> submit(GenericType<T> responseType);
 
-    <T> Future<T> submit(InvocationCallback<T> callback);
+     <T> Future<T> submit(InvocationCallback<T> callback);
 }
