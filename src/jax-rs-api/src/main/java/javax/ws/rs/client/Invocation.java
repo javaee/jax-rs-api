@@ -64,11 +64,11 @@ public interface Invocation extends HttpRequest<Invocation>, Configurable<Invoca
 
     <T> T invoke(GenericType<T> responseType) throws InvocationException;
 
-    Future<HttpResponse> queue();
+    Future<HttpResponse> submit();
 
-    <T> Future<T> queue(Class<T> responseType);
+    <T> Future<T> submit(Class<T> responseType);
 
-    <T> Future<T> queue(GenericType<T> responseType);
+    <T> Future<T> submit(GenericType<T> responseType);
 
-    <T> Future<T> queue(InvocationCallback<T> callback);
+    <T> Future<T> submit(InvocationCallback<T> callback);
 }

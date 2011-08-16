@@ -235,7 +235,7 @@ public class BasicExamples {
                 .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .get()
                 .pathParam("id", 123)
-                .queue();
+                .submit();
 
         HttpResponse response = future.get();
         Customer customer = response.getEntity(Customer.class);
@@ -247,7 +247,7 @@ public class BasicExamples {
                 .request("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .get()
                 .pathParam("id", 123)
-                .queue(Customer.class);
+                .submit(Customer.class);
         assert customer.get() != null;
     }
 
@@ -266,7 +266,7 @@ public class BasicExamples {
         });
 
         // invoke another request in background
-        Future<?> handle = request.pathParam("id", 456).queue(new InvocationCallback<HttpResponse>() {
+        Future<?> handle = request.pathParam("id", 456).submit(new InvocationCallback<HttpResponse>() {
 
             @Override
             public void onComplete(Future<HttpResponse> future) {
@@ -283,7 +283,7 @@ public class BasicExamples {
         // invoke a request in background
         Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // Link
                 .get() // Invocation (extends HttpRequest)
-                .queue(new InvocationCallback<Customer>() {
+                .submit(new InvocationCallback<Customer>() {
 
             @Override
             public void onComplete(Future<Customer> future) {
@@ -295,7 +295,7 @@ public class BasicExamples {
         // invoke another request in background
         anyCustomerUri.pathParam("id", 456) // Link
                 .get() // Invocation (extends HttpRequest)
-                .queue(new InvocationCallback<HttpResponse>() {
+                .submit(new InvocationCallback<HttpResponse>() {
 
             @Override
             public void onComplete(Future<HttpResponse> future) {

@@ -167,7 +167,7 @@ public class SpecExamples {
     public void asyncSamples() throws Exception {
         Client client = ClientFactory.newClient();
         Future<Customer> fc = client.link("http://examples.org/customers/123").
-                get().accept("application/xml").queue(Customer.class);
+                get().accept("application/xml").submit(Customer.class);
         Customer c = fc.get();   
     }
     
