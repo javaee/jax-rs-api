@@ -87,10 +87,10 @@ public class ThrottledClient implements Client {
             return this;
         }
     }
-    private final BlockingQueue<HttpRequest<?>> requestQueue;
+    private final BlockingQueue<HttpRequest> requestQueue;
 
     private ThrottledClient(int queueCapacity) {
-        this.requestQueue = new ArrayBlockingQueue<HttpRequest<?>>(queueCapacity);
+        this.requestQueue = new ArrayBlockingQueue<HttpRequest>(queueCapacity);
     }
 
     private ThrottledClient(Configurable<?> configuration, int queueCapacity) {

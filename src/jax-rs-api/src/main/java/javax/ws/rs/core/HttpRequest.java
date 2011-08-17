@@ -41,20 +41,17 @@ package javax.ws.rs.core;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Locale;
 
-import javax.ws.rs.WebApplicationException;
 
 /**
  * Defines a runtime contract for a HTTP request.
  *
- * @param <T> 
  * @author Marek Potociar
  * @since 2.0
  */
-public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneable {
+public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<HttpRequest>, Cloneable {
 
-    // Getters
+    // Getters    
     /**
      * Get the base URI of the application. URIs of root resource classes
      * are all relative to this base URI.
@@ -172,42 +169,42 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
     MultivaluedMap<String, String> getQueryParameters(boolean decode);
 
     /**
-     * Get a HTTP header value.
-     *
-     * @param name the HTTP header.
-     * @return the HTTP header value. If the HTTP header is not present then
-     * {@code null} is returned. If the HTTP header is present but has no value
-     * then the empty string is returned. If the HTTP header is present more than
-     * once then the values of joined together and separated by a ',' character.
-     */
-    String getHeaderValue(String name);
-
-    /**
-     * Get the cookie name value map.
-     *
-     * @return the cookie name value map.
-     */
-    MultivaluedMap<String, String> getCookieNameValueMap();
-
-    /**
-     * Get the request entity, returns {@code null} if the request does not
+     * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
      * 
-     * @return the request entity or {@code null}.
+     * @return the message entity or {@code null}.
      */
     Object getEntity();
 
     /**
-     * Get the request entity, returns {@code null} if the request does not
+     * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
      * 
      * @param <T> entity type.
      * @param type the type of entity.
-     * @return the request entity or {@code null}.
-     * @throws WebApplicationException if the content of the request
+     * @return the message entity or {@code null}.
+     * @throws MessageProcessingException if the content of the message
      *     cannot be mapped to an entity of the requested type.
      */
-     <T> T getEntity(Class<T> type) throws WebApplicationException;
+     <T> T getEntity(Class<T> type) throws MessageProcessingException;
+    /**
+     * Get the message entity, returns {@code null} if the message does not
+     * contain an entity body.
+     * 
+     * @param <T> entity type.
+     * @param entityType the generic type of the entity.
+     * @return the message entity or {@code null}.
+     * @throws MessageProcessingException if the content of the message
+     *     cannot be mapped to an entity of the requested type.
+     */
+    <T> T getEntity(GenericType<T> entityType) throws MessageProcessingException;
+    
+    /**
+     * Check if there is an entity available in the request.
+     *
+     * @return {@code true} if there is an entity present in the request.
+     */
+    boolean hasEntity();     
 
     /**
      * Get the request method, e.g. GET, POST, etc.
@@ -217,98 +214,24 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      */
     String getMethod();
 
-    @Override
-    @Deprecated
-    public List<String> getRequestHeader(String name);
-
-    @Override
-    @Deprecated
-    public MultivaluedMap<String, String> getRequestHeaders();
-
     // URI builder methods
-    T pathParam(String name, Object value) throws IllegalArgumentException;
+    HttpRequest pathParam(String name, Object value) throws IllegalArgumentException;
 
-    T pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+    HttpRequest pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
-    T matrixParam(String name, Object... values) throws IllegalArgumentException;
+    HttpRequest matrixParam(String name, Object... values) throws IllegalArgumentException;
 
-    T queryParam(String name, Object value) throws IllegalArgumentException;
+    HttpRequest queryParam(String name, Object value) throws IllegalArgumentException;
 
-    T queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+    HttpRequest queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
-    T redirect(String uri);
+    HttpRequest redirect(String uri);
 
-    T redirect(URI uri);
+    HttpRequest redirect(URI uri);
 
-    T redirect(UriBuilder uri);
+    HttpRequest redirect(UriBuilder uri);
 
     // Message modifiers    
-    /**
-     * Add acceptable media types.
-     *
-     * @param types an array of the acceptable media types
-     * @return updated request instance.
-     */
-    T accept(MediaType... types);
-
-    /**
-     * Add acceptable media types.
-     *
-     * @param types an array of the acceptable media types
-     * @return updated request instance.
-     */
-    T accept(String... types);
-
-    /**
-     * Add acceptable languages.
-     *
-     * @param locales an array of the acceptable languages
-     * @return updated request instance.
-     */
-    T acceptLanguage(Locale... locales);
-
-    /**
-     * Add acceptable languages.
-     *
-     * @param locales an array of the acceptable languages
-     * @return updated request instance.
-     */
-    T acceptLanguage(String... locales);
-
-    /**
-     * Add a cookie to be set.
-     *
-     * @param cookie to be set.
-     * @return updated request instance.
-     */
-    T cookie(Cookie cookie);
-
-    /**
-     * Add an HTTP header and value.
-     *
-     * @param name the HTTP header name.
-     * @param value the HTTP header value.
-     * @return updated request instance.
-     */
-    T header(String name, Object value);
-
-    /**
-     * Set the request entity media type.
-     *
-     * @param type the media type.
-     * @return updated request instance.
-     *
-     * @see #entity(java.lang.Object)
-     */
-    T type(MediaType type);
-
-    /**
-     * Set the request entity media type.
-     *
-     * @param type the media type.
-     * @return updated request instance.
-     */
-    T type(String type);
 
     /**
      * Modify the HTTP method of the request.
@@ -322,7 +245,7 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * @param httpMethod new method to be set on the request.
      * @return updated request instance.
      */
-    T method(String httpMethod);
+    HttpRequest method(String httpMethod);
 
     /**
      * Set the request entity.
@@ -344,5 +267,5 @@ public interface HttpRequest<T extends HttpRequest> extends HttpHeaders, Cloneab
      * @see #type(java.lang.String) 
      * @see #entity(java.lang.Object, java.lang.annotation.Annotation[])
      */
-    T entity(Object entity);
+    HttpRequest entity(Object entity);
 }

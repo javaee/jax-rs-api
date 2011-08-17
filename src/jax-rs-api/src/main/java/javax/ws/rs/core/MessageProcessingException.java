@@ -37,52 +37,27 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.client;
-
-import java.util.concurrent.Future;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.HttpResponse;
-import javax.ws.rs.core.RequestHeaders;
+package javax.ws.rs.core;
 
 /**
- *
+ * TODO javadoc.
+ * 
  * @author Marek Potociar
+ * @since 2.0
  */
-public interface Invocation extends Configurable<Invocation> {
-
-    public static interface Builder extends RequestHeaders.Builder<Builder>, Configurable<Builder>, SyncInvoker {
-
-        // InvocationBuilder methods
-        // TODO: document that the request instance needs to be cloned so that the 
-        // data used in the invocation processing chain are decoupled from the original
-        // request data that were used to initiate the invocation to prevent accidental
-        // issues caused by mutable nature of the request
-        public Invocation build(String method);
-        
-        public Invocation build(String method, Object entity);
-
-        public Invocation buildGet();
-
-        public Invocation buildDelete();
-
-        public Invocation buildPost(Object entity);
-
-        public Invocation buildPut(Object entity);
-
-        public AsyncInvoker async();
+public class MessageProcessingException extends RuntimeException {
+    private static final long serialVersionUID = 1867031673462562629L;
+    
+    public MessageProcessingException(Throwable cause) {
+        super(cause);
     }
 
-    HttpResponse invoke() throws InvocationException;
+    public MessageProcessingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-     <T> T invoke(Class<T> responseType) throws InvocationException;
-
-     <T> T invoke(GenericType<T> responseType) throws InvocationException;
-
-    Future<HttpResponse> submit();
-
-     <T> Future<T> submit(Class<T> responseType);
-
-     <T> Future<T> submit(GenericType<T> responseType);
-
-     <T> Future<T> submit(InvocationCallback<T> callback);
+    public MessageProcessingException(String message) {
+        super(message);
+    }
+    
 }

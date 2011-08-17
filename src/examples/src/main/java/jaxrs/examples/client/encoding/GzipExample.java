@@ -57,6 +57,6 @@ public class GzipExample {
         String text = target.request().get(String.class);
 
         // send a gzip encoded body
-        target.request().header("Content-Encoding", "gzip").post();
+        target.request().header("Content-Encoding", "gzip").post(text);
     }
 }

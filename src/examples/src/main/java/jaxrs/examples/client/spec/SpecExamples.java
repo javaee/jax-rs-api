@@ -48,7 +48,6 @@ import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.client.Target;
-import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.HttpResponse;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -99,15 +98,17 @@ public class SpecExamples {
                 .request().accept("text/plain").get();
         
         HttpResponse res2 = client.target("http://example.org/hello")
-                .request().accept("text/plain").header("MyHeader", "...")
-                .queryParam("MyParam","...").get();
+                .queryParam("MyParam","...")
+                .request()
+                .accept("text/plain")
+                .header("MyHeader", "...")
+                .get();
     }
     
     public void typeRelationships() {
         Client client = ClientFactory.newClient();
         Target uri = client.target("");
         Invocation.Builder builder = uri.request();
-        
         
         SyncInvoker syncInvoker = builder;
         AsyncInvoker asyncInvoker = builder.async();
@@ -118,10 +119,7 @@ public class SpecExamples {
         HttpResponse r3= inv.invoke();
         
         Future<HttpResponse> fr1 = asyncInvoker.get();
-        Future<HttpResponse> fr2 = inv.submit();
-        
-        // TODO: invalidate the assignemnt bellow
-        HttpRequest req = builder;
+        Future<HttpResponse> fr2 = inv.submit();        
     }
     
     public void benefitsOfResourceUri() {
@@ -136,7 +134,7 @@ public class SpecExamples {
         Customer c = client.target("http://examples.org/customers/123").
                 request().accept("application/xml").get(Customer.class);
         HttpResponse res = client.target("http://examples.org/premium-customers/")
-                .request().entity(c).type("application/xml").post();     
+                .request().type("application/xml").post(c);     
     }
     
     public void asyncSamples() throws Exception {

@@ -58,18 +58,18 @@ public interface SyncInvoker {
      <T> T get(GenericType<T> responseType) throws InvocationException;
 
     // PUT
-    HttpResponse put() throws InvocationException;
+    HttpResponse put(Object entity) throws InvocationException;
 
-     <T> T put(Class<T> responseType) throws InvocationException;
+     <T> T put(Object entity, Class<T> responseType) throws InvocationException;
 
-     <T> T put(GenericType<T> responseType) throws InvocationException;
+     <T> T put(Object entity, GenericType<T> responseType) throws InvocationException;
 
     // POST
-    HttpResponse post() throws InvocationException;
+    HttpResponse post(Object entity) throws InvocationException;
 
-     <T> T post(Class<T> responseType) throws InvocationException;
+     <T> T post(Object entity, Class<T> responseType) throws InvocationException;
 
-     <T> T post(GenericType<T> responseType) throws InvocationException;
+     <T> T post(Object entity, GenericType<T> responseType) throws InvocationException;
 
     // DELETE
     HttpResponse delete() throws InvocationException;
@@ -93,17 +93,22 @@ public interface SyncInvoker {
      <T> T options(GenericType<T> responseType) throws InvocationException;
 
     // TRACE
-    HttpResponse trace() throws InvocationException;
+    HttpResponse trace(Object entity) throws InvocationException;
 
-     <T> T trace(Class<T> responseType) throws InvocationException;
+     <T> T trace(Object entity, Class<T> responseType) throws InvocationException;
 
-     <T> T trace(GenericType<T> responseType) throws InvocationException;
+     <T> T trace(Object entity, GenericType<T> responseType) throws InvocationException;
 
     // ARBITRARY METHOD
-    // TODO: Uncomment
-    // HttpResponse method(String name) throws InvocationException;
+    HttpResponse method(String name) throws InvocationException;
 
      <T> T method(String name, Class<T> responseType) throws InvocationException;
 
      <T> T method(String name, GenericType<T> responseType) throws InvocationException;
+
+    HttpResponse method(String name, Object entity) throws InvocationException;
+
+     <T> T method(String name, Object entity, Class<T> responseType) throws InvocationException;
+
+     <T> T method(String name, Object entity, GenericType<T> responseType) throws InvocationException;
 }
