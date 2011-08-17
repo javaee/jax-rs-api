@@ -279,7 +279,9 @@ An implementation MUST NOT invoke a method whose effective value of \Produces\ d
 \section{Annotation Inheritance}
 \label{annotationinheritance}
 
-\jaxrs\ annotations MAY be used on the methods and method parameters of a super-class or an implemented interface. Such annotations are inherited by a corresponding sub-class or implementation class method provided that method and its parameters do not have any \jaxrs\ annotations of its own. Annotations on a super-class take precedence over those on an implemented interface. If a subclass or implementation method has any \jaxrs\ annotations then {\em all} of the annotations on the super class or interface method are ignored. E.g.:
+\jaxrs\ annotations MAY be used on the methods and method parameters of a super-class or an implemented interface. Such annotations are inherited by a corresponding sub-class or implementation class method provided that method and its parameters do not have any \jaxrs\ annotations of its own. Annotations on a super-class take precedence over those on an implemented interface. The precende over conflicting annotations defined in multiple implemented interfaces is \emph{undefined}.
+
+If a subclass or implementation method has any \jaxrs\ annotations then {\em all} of the annotations on the super class or interface method are ignored. E.g.:
 
 \begin{listing}{1}
 public interface ReadOnlyAtomFeed {
@@ -304,6 +306,8 @@ public class ActivityLog implements ReadOnlyAtomFeed {
 \end{listing}
 
 In the above, the \code{@GET} annotation on \code{ReadOnlyAtomFeed.getFeed} is not inherited by \code{Activity-Log\-.get\-Feed} and it would require its own request method designator since it redefines the \Produces\ annotation.
+
+For consistency with other Java EE specifications, it is recommended to always repeat annotations instead of relying on annotation inheritance. 
 
 \section{Matching Requests to Resource Methods}
 \label{mapping_requests_to_java_methods}
