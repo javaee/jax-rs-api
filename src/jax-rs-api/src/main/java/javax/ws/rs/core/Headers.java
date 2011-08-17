@@ -216,17 +216,6 @@ public interface Headers {
     Date getDate();
     
     /**
-     * Get the values of a single HTTP message header. The returned List is read-only.
-     * This is a convenience shortcut for {@code getHeaders().get(name)}.
-     *
-     * @param name the header name, case insensitive.
-     * @return a read-only list of header values.
-     * @throws java.lang.IllegalStateException if called outside of the message
-     *     processing scope.
-     */
-    List<Object> getHeader(String name);
-
-    /**
      * Get a HTTP header as a single string value.
      * <p/>
      * Each single header value is converted to String using a
@@ -241,19 +230,30 @@ public interface Headers {
      *     value then the empty string is returned. If the HTTP header is present
      *     more than once then the values of joined together and separated by a ','
      *     character.
-     * @since 2.0
      */
-    String getHeaderAsString(String name);
+    String getHeader(String name);
 
     /**
-     * Get the values of HTTP message headers. The returned Map is case-insensitive
-     * wrt. keys and is read-only.
+     * Get the map of HTTP message headers names to their respective values.
+     * The returned map is case-insensitive wrt. keys and is read-only.
      *
      * @return a read-only map of header names and values.
      * @throws java.lang.IllegalStateException if called outside of the message
      *     processing scope.
      */
-    MultivaluedMap<String, Object> getHeaders();
+    MultivaluedMap<String, Object> getHeaderMap();
+    
+    /**
+     * Get the values of a single HTTP message header. The returned List is read-only.
+     * This is a convenience shortcut for {@code getHeaderMap().get(name)}.
+     *
+     * @param name the header name, case insensitive.
+     * @return a read-only list of header values.
+     * @throws java.lang.IllegalStateException if called outside of the message
+     *     processing scope.
+     * @see #getHeaderMap()
+     */
+    List<Object> getHeaderValues(String name);
     
     /**
      * Get the language of the entity

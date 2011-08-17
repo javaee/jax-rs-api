@@ -187,6 +187,7 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      *     cannot be mapped to an entity of the requested type.
      */
      <T> T getEntity(Class<T> type) throws MessageProcessingException;
+     
     /**
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.

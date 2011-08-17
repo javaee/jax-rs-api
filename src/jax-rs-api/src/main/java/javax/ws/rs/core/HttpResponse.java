@@ -120,15 +120,15 @@ public interface HttpResponse extends ResponseHeaders, ResponseHeaders.Builder<H
      */
     boolean hasEntity();
 
-//    /**
-//     * Buffer the entity.
-//     * <p>
-//     * All the bytes of the original entity input stream will be read and stored
-//     * in memory. The original entity input stream will then be closed.
-//     *
-//     * @throws MessageProcessingException if there is an error processing the response.
-//     */
-//    void bufferEntity() throws MessageProcessingException;
+    /**
+     * Buffer the entity.
+     * <p>
+     * All the bytes of the original entity input stream will be read and stored
+     * in memory. The original entity input stream will then be closed.
+     *
+     * @throws MessageProcessingException if there is an error processing the response.
+     */
+    void bufferEntity() throws MessageProcessingException;
 
     /**
      * Close the response and all resources associated with the response.

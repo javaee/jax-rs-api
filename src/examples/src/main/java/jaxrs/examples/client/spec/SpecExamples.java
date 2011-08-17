@@ -126,7 +126,8 @@ public class SpecExamples {
         Client client = ClientFactory.newClient();
         Target base = client.target("http://example.org/");
         Target hello = base.path("hello").path("{whom}");   
-        HttpResponse res = hello.pathParam("whom", "world").request().get();
+        final Target whomToGreet = hello.pathParam("whom", "world");
+        HttpResponse res = whomToGreet.request().get();
     }
     
     public void gettingAndPostingCustomers() {
