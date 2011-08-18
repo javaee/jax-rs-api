@@ -55,6 +55,7 @@ import javax.ws.rs.core.AsyncContext;
 import javax.ws.rs.core.Context;
 
 import static java.util.concurrent.TimeUnit.*;
+
 /**
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
@@ -62,7 +63,20 @@ import static java.util.concurrent.TimeUnit.*;
 @Path("/async/longRunning")
 @Produces("text/plain")
 public class LongRunningAsyncOperationResource {
-    @Context private AsyncContext ctx;
+
+    @Context
+    private AsyncContext ctx;
+
+    @GET
+    @Path("basicSyncExample")
+    public String basicSyncExample() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
+        }
+        return "Hello async world!";
+    }
     
     @GET
     @Suspend(timeOut = 15, timeUnit = SECONDS)
@@ -78,19 +92,19 @@ public class LongRunningAsyncOperationResource {
                     Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
                 }
                 ctx.resume("Hello async world!");
-            }            
+            }
         });
-        
+
         // default suspend;
     }
-    
+
     @GET
     @Path("suspendViaContext")
     public String suspendViaContextExample(@QueryParam("query") final String query) {
         if (!isComplex(query)) {
             return "Simple result for " + query; // process simple queries synchronously
         }
-        
+
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -101,13 +115,13 @@ public class LongRunningAsyncOperationResource {
                     Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
                 }
                 ctx.resume("Complex result for " + query);
-            }            
+            }
         });
-        
+
         ctx.suspend(); // programmatic suspend
         return null; // return value ignored for suspended requests
     }
-    
+
     private boolean isComplex(String query) {
         return new Random().nextBoolean();
     }
@@ -126,7 +140,7 @@ public class LongRunningAsyncOperationResource {
                     Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
                 }
                 ctx.resume("Hello async world!");
-            }            
+            }
         });
         ctx.suspend(); // time-out values propagated from the @Suspend annotation; the call is redundant
     }
@@ -145,14 +159,14 @@ public class LongRunningAsyncOperationResource {
                     Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
                 }
                 ctx.resume("Hello async world!");
-            }            
+            }
         });
-        if (timeOut != null && timeUnit != null) {            
+        if (timeOut != null && timeUnit != null) {
             ctx.suspend(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overriden
         } else {
             // suspend using annotation values
         }
-   }
+    }
 
     @GET
     @Path("suspendHandleUsage")
@@ -167,18 +181,19 @@ public class LongRunningAsyncOperationResource {
                     Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
                 }
                 ctx.resume("Hello async world!");
-            }            
+            }
         });
-        
+
         final Future<?> handle = ctx.suspend(); // retrieving a handle to monitor the suspended request state
-        
+
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
             public void run() {
-                while (!handle.isDone()) {}
+                while (!handle.isDone()) {
+                }
                 Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.INFO, "Context resumed with a response!");
-            }            
+            }
         });
     }
 }
