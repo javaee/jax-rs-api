@@ -85,7 +85,7 @@ public class BasicExamples {
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
-        
+
         // Custom newClient instantiation using default configuration
         ThrottledClient myClient = ClientFactory.newClientBy(ThrottledClient.Builder.Factory.class).build();
         assert myClient != null;
@@ -94,32 +94,31 @@ public class BasicExamples {
         assert myConfiguredClient != null;
 
     }
-    
+
     public void creatingResourceAndSubResourceUris() {
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/ )
-        Target customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");        
+        Target customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/{id}/ )
         Target anyCustomerUri = customersUri.path("{id}");
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/123/ )
         Target customer123 = anyCustomerUri.pathParam("id", 123);
-        
+
         assert customer123 != null;
     }
-    
+
     public void creatingClientRequestsAndInvocations() {
         final Client client = ClientFactory.newClient();
-        
-        HttpResponse response = client.target("http://jaxrs.examples.org/jaxrsApplication/customers")
-                .accept(MediaType.APPLICATION_XML).header("Foo", "Bar").get();        
-        assert response.getStatusCode() == 200;        
+
+        HttpResponse response = client.target("http://jaxrs.examples.org/jaxrsApplication/customers").accept(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
+        assert response.getStatusCode() == 200;
     }
 
     public void creatingResourceUriRequestsAndInvocations() {
         final Client client = ClientFactory.newClient();
         final Target customersUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers");
-        
+
         // Create target request, customize it and invoke using newClient
-        HttpResponse response = customersUri.accept(MediaType.APPLICATION_XML).header("Foo", "Bar").get();        
+        HttpResponse response = customersUri.accept(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
         assert response.getStatusCode() == 200;
     }
 
@@ -138,17 +137,13 @@ public class BasicExamples {
     }
 
     public void typedResponse() {
-        Customer customer = ClientFactory.newClient()
-                .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .pathParam("id", 123)
-                .get(Customer.class);
+        Customer customer = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).get(Customer.class);
         assert customer != null;
     }
 
     public void typedGenericResponse() {
-        List<Customer> customers = ClientFactory.newClient()
-                .target("http://jaxrs.examples.org/jaxrsApplication/customers")
-                .get(new GenericType<List<Customer>>() { });
+        List<Customer> customers = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers").get(new GenericType<List<Customer>>() {
+        });
         assert customers != null;
     }
 
@@ -172,10 +167,7 @@ public class BasicExamples {
     }
 
     public void asyncResponse() throws Exception {
-        Future<HttpResponse> future = ClientFactory.newClient()
-                .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .pathParam("id", 123)
-                .async().get();
+        Future<HttpResponse> future = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).async().get();
 
         HttpResponse response = future.get();
         Customer customer = response.getEntity(Customer.class);
@@ -183,10 +175,7 @@ public class BasicExamples {
     }
 
     public void typedAsyncResponse() throws Exception {
-        Future<Customer> customer = ClientFactory.newClient()
-                .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .pathParam("id", 123)
-                .async().get(Customer.class);
+        Future<Customer> customer = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).async().get(Customer.class);
         assert customer.get() != null;
     }
 
@@ -236,19 +225,27 @@ public class BasicExamples {
                 // do something
             }
         });
-        
+
         // invoke one more request using newClient
-        Future<HttpResponse> response = anyCustomerUri.pathParam("id", 789)
-                .cookie(new Cookie("fooName", "XYZ")).async().get();
+        Future<HttpResponse> response = anyCustomerUri.pathParam("id", 789).cookie(new Cookie("fooName", "XYZ")).async().get();
         assert response.get() != null;
-    }        
-    
+    }
+
     public void commonFluentUseCases() {
-        // Invoke a single request target a single fixed URI
-        // TODO
-        // Invoke multiple request target a single fixed URI
-        // TODO
-        // Invoke multiple request target a single parameterized URI
-        // TODO
+        Client client = ClientFactory.newClient();
+
+        client.target("http://examples.jaxrs.com/webdav").get();
+
+        client.target("http://examples.jaxrs.com/webdav").async().get();
+
+        client.target("http://examples.jaxrs.com/webdav").buildGet();
+
+        client.target("http://examples.jaxrs.com/webdav").path("123").get();
+
+        client.target("http://examples.jaxrs.com/webdav").path("123").accept("text/plain").get();
+
+        client.target("http://examples.jaxrs.com/webdav").path("123").accept("text/plain").async().get();
+
+        client.target("http://examples.jaxrs.com/webdav").path("123").accept("text/plain").buildGet().invoke();
     }
 }
