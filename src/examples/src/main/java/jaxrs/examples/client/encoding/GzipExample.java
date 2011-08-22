@@ -54,9 +54,9 @@ public class GzipExample {
         Target target = ClientFactory.newClient().register(GzipHandler.class).target("http://example.com/foo/bar.txt");
 
         // getting a gzip encoded body
-        String text = target.request().get(String.class);
+        String text = target.get(String.class);
 
         // send a gzip encoded body
-        target.request().header("Content-Encoding", "gzip").post(text);
+        target.header("Content-Encoding", "gzip").post(text);
     }
 }

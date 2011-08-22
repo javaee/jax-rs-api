@@ -58,7 +58,7 @@ public interface Invocation extends Configurable<Invocation> {
         // request data that were used to initiate the invocation to prevent accidental
         // issues caused by mutable nature of the request
         public Invocation build(String method);
-        
+
         public Invocation build(String method, Object entity);
 
         public Invocation buildGet();
@@ -72,17 +72,17 @@ public interface Invocation extends Configurable<Invocation> {
         public AsyncInvoker async();
     }
 
-    HttpResponse invoke() throws InvocationException;
+    public HttpResponse invoke() throws InvocationException;
 
-     <T> T invoke(Class<T> responseType) throws InvocationException;
+    public <T> T invoke(Class<T> responseType) throws InvocationException;
 
-     <T> T invoke(GenericType<T> responseType) throws InvocationException;
+    public <T> T invoke(GenericType<T> responseType) throws InvocationException;
 
-    Future<HttpResponse> submit();
+    public Future<HttpResponse> submit();
 
-     <T> Future<T> submit(Class<T> responseType);
+    public <T> Future<T> submit(Class<T> responseType);
 
-     <T> Future<T> submit(GenericType<T> responseType);
+    public <T> Future<T> submit(GenericType<T> responseType);
 
-     <T> Future<T> submit(InvocationCallback<T> callback);
+    public <T> Future<T> submit(InvocationCallback<T> callback);
 }

@@ -43,7 +43,7 @@ import java.util.HashMap;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.Target;
 
 /**
  * @author Bill Burke
@@ -55,10 +55,10 @@ public class CacheExample {
         HashMap<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
         Client client = ClientFactory.newClient()
                 .register(new CacheEntryLocator(cache), new CacheResponseHandler(cache));
-        Invocation.Builder request = client.target("http://example.com/foo/bar.txt").request();
+        Target resource = client.target("http://example.com/foo/bar.txt");
 
-        String text = request.get(String.class);
-        String second = request.get(String.class);
+        String text = resource.get(String.class);
+        String second = resource.get(String.class);
         
         System.out.println(text);
         System.out.println(second);

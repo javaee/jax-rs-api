@@ -43,6 +43,7 @@ import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.RequestHeaders;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -51,7 +52,7 @@ import javax.ws.rs.core.UriBuilder;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface Target extends Configurable<Target> {
+public interface Target extends Configurable<Target>, RequestHeaders.Builder<Invocation.Builder>, SyncInvoker {
 
     // Getters
     /**
@@ -59,7 +60,7 @@ public interface Target extends Configurable<Target> {
      *
      * @return the resource URI.
      */
-    URI getURI();
+    public URI getURI();
 
     /**
      * Get the URI builder initialized with the {@link URI} identifying the
@@ -67,27 +68,29 @@ public interface Target extends Configurable<Target> {
      *
      * @return the initialized URI builder.
      */
-    UriBuilder getUriBuilder();
+    public UriBuilder getUriBuilder();
 
     // Sub-resource URI buidler methods
-    Target path(String path) throws IllegalArgumentException;
+    public Target path(String path) throws IllegalArgumentException;
 
-    Target pathParam(String name, Object value) throws IllegalArgumentException;
+    public Target pathParam(String name, Object value) throws IllegalArgumentException;
     
-    Target pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
+    public Target pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
-    Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+    public Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
-    Target matrixParam(String name, Object... values) throws IllegalArgumentException;
+    public Target matrixParam(String name, Object... values) throws IllegalArgumentException;
 
-    Target queryParam(String name, Object value) throws IllegalArgumentException;
+    public Target queryParam(String name, Object value) throws IllegalArgumentException;
     
-    Target queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
+    public Target queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
-    Target queryParams(MultivaluedMap<String, Object> parameters)
+    public Target queryParams(MultivaluedMap<String, Object> parameters)
             throws IllegalArgumentException;
     
-    Invocation.Builder request();
+    public AsyncInvoker async();
     
-    Invocation.Builder request(Invocation.Builder original);
+//    Invocation.Builder request();
+//    
+//    Invocation.Builder request(Invocation.Builder original);
 }
