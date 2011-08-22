@@ -47,15 +47,15 @@ import javax.ws.rs.core.MultivaluedMap;
  */
 public class CacheEntry {
 
-    private MultivaluedMap<String, String> headers;
+    private MultivaluedMap<String, Object> headers;
     private byte[] body;
 
-    public CacheEntry(MultivaluedMap<String, String> headers, byte[] body) {
+    public CacheEntry(MultivaluedMap<String, Object> headers, byte[] body) {
         this.headers = headers;
         this.body = body;
     }
 
-    public MultivaluedMap<String, String> getHeaders() {
+    public MultivaluedMap<String, Object> getHeaders() {
         return headers;
     }
 

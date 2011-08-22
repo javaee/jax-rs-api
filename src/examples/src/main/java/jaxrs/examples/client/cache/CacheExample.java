@@ -52,9 +52,7 @@ import javax.ws.rs.client.Target;
 public class CacheExample {
 
     public void cacheExample() {
-        HashMap<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
-        Client client = ClientFactory.newClient()
-                .register(new CacheEntryLocator(cache), new CacheResponseHandler(cache));
+        Client client = ClientFactory.newClient().register(CachingFeature.class);
         Target resource = client.target("http://example.com/foo/bar.txt");
 
         String text = resource.get(String.class);

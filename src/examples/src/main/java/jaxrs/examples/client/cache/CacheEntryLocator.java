@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.FilterContext.FilterAction;
@@ -55,16 +56,17 @@ import javax.ws.rs.ext.RequestFilter;
  * @author Santiago Pericas-Geertsen
  */
 public class CacheEntryLocator implements RequestFilter {
-
     private Map<String, CacheEntry> cache;
+    AtomicBoolean enabledFlag;
 
-    public CacheEntryLocator(Map<String, CacheEntry> cache) {
+    public CacheEntryLocator(Map<String, CacheEntry> cache, AtomicBoolean enabled) {
         this.cache = cache;
+        this.enabledFlag = enabled;
     }
 
     @Override
     public FilterAction preFilter(FilterContext ctx) throws IOException {
-        if (ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
+        if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
             URI uri = ctx.getRequest().getAbsolutePath();   // TODO: getURI()?
             CacheEntry entry = cache.get(uri.toString());
             

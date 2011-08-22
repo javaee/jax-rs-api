@@ -107,11 +107,11 @@ public class SpecExamples {
     public void typeRelationships() {
         Client client = ClientFactory.newClient();
         Target uri = client.target("");
-        Invocation.Builder builder = uri.accept("text/plain");
+        Invocation.TargetedBuilder builder = uri.accept("text/plain");
         
         SyncInvoker syncInvoker = builder;
         AsyncInvoker asyncInvoker = builder.async();
-        Invocation inv = builder.buildGet();
+        Invocation inv = builder.prepare().get();
         
         HttpResponse r1 = builder.get();
         HttpResponse r2 = syncInvoker.get();

@@ -44,6 +44,8 @@ import java.util.concurrent.Future;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.Configurable;
+import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Cookie;
@@ -231,21 +233,55 @@ public class BasicExamples {
         assert response.get() != null;
     }
 
+    public static class TestFeature implements Feature {
+
+        @Override
+        public void enable(Configurable configuration) {
+            // do nothing
+        }
+
+        @Override
+        public void disable(Configurable configuration) {
+            // do nothing
+        }
+    }
+    
     public void commonFluentUseCases() {
         Client client = ClientFactory.newClient();
 
-        client.target("http://examples.jaxrs.com/webdav").get();
+        // Invocation
+        client.target("http://examples.jaxrs.com/");
+        
+        client.target("http://examples.jaxrs.com/").get();
+        client.target("http://examples.jaxrs.com/").async().get();
+        client.target("http://examples.jaxrs.com/").prepare().get().invoke();
+        client.target("http://examples.jaxrs.com/").prepare().get().submit();
 
-        client.target("http://examples.jaxrs.com/webdav").async().get();
 
-        client.target("http://examples.jaxrs.com/webdav").buildGet();
+        client.target("http://examples.jaxrs.com/").path("123").get();
+        client.target("http://examples.jaxrs.com/").path("123").async().get();
+        client.target("http://examples.jaxrs.com/").path("123").prepare().get().invoke();
+        client.target("http://examples.jaxrs.com/").path("123").prepare().get().submit();
 
-        client.target("http://examples.jaxrs.com/webdav").path("123").get();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").get();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").async().get();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").prepare().get().invoke();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").prepare().get().submit();
 
-        client.target("http://examples.jaxrs.com/webdav").path("123").accept("text/plain").get();
-
-        client.target("http://examples.jaxrs.com/webdav").path("123").accept("text/plain").async().get();
-
-        client.target("http://examples.jaxrs.com/webdav").path("123").accept("text/plain").buildGet().invoke();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").get();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").async().get();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").prepare().get().invoke();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").prepare().get().submit();
+        
+        // Configurable
+        client.enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/").enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/").accept("text/plain").enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/").prepare().get().enable(TestFeature.class);
+        
+        client.target("http://examples.jaxrs.com/").enable(TestFeature.class).path("123").accept("text/plain").header("custom-name", "custom_value").get();
+        client.target("http://examples.jaxrs.com/").path("123").enable(TestFeature.class).accept("text/plain").header("custom-name", "custom_value").async().get();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").enable(TestFeature.class).header("custom-name", "custom_value").prepare().get().invoke();
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").enable(TestFeature.class).prepare().get().submit();        
     }
 }

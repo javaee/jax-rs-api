@@ -52,7 +52,7 @@ import javax.ws.rs.core.UriBuilder;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface Target extends Configurable<Target>, RequestHeaders.Builder<Invocation.Builder>, SyncInvoker {
+public interface Target extends Configurable<Target>, RequestHeaders.Builder<Invocation.TargetedBuilder>, SyncInvoker {
 
     // Getters
     /**
@@ -74,7 +74,7 @@ public interface Target extends Configurable<Target>, RequestHeaders.Builder<Inv
     public Target path(String path) throws IllegalArgumentException;
 
     public Target pathParam(String name, Object value) throws IllegalArgumentException;
-    
+
     public Target pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
     public Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
@@ -82,15 +82,16 @@ public interface Target extends Configurable<Target>, RequestHeaders.Builder<Inv
     public Target matrixParam(String name, Object... values) throws IllegalArgumentException;
 
     public Target queryParam(String name, Object value) throws IllegalArgumentException;
-    
+
     public Target queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
     public Target queryParams(MultivaluedMap<String, Object> parameters)
             throws IllegalArgumentException;
-    
+
+    public Invocation.PreparedBuilder prepare();
+
     public AsyncInvoker async();
-    
-//    Invocation.Builder request();
+//    Invocation.PreparedBuilder request();
 //    
-//    Invocation.Builder request(Invocation.Builder original);
+//    Invocation.PreparedBuilder request(Invocation.PreparedBuilder original);
 }

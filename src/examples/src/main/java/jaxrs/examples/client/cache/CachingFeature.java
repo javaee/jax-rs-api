@@ -39,62 +39,43 @@
  */
 package jaxrs.examples.client.cache;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Map;
-
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.ws.rs.core.HttpResponse;
-import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.FilterContext.FilterAction;
-import javax.ws.rs.ext.ResponseFilter;
+import javax.ws.rs.client.Configurable;
+import javax.ws.rs.client.Feature;
 
 /**
- * @author Bill Burke
- * @author Marek Potociar
- * @author Santiago Pericas-Geertsen
+ *
+ * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public class CacheResponseHandler implements ResponseFilter {
-
-    private Map<String, CacheEntry> cache;
-    AtomicBoolean enabledFlag;
-
-    public CacheResponseHandler(Map<String, CacheEntry> cache, AtomicBoolean enabled) {
-        this.cache = cache;
-        this.enabledFlag = enabled;
+public class CachingFeature implements Feature {
+    
+    @Override
+    public void enable(Configurable configuration) {
+        if (setEnabledFlag(configuration, true)) {
+            return;
+        }
+        
+        final HashMap<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
+        final AtomicBoolean flag = new AtomicBoolean(true);
+        configuration.register(new CacheEntryLocator(cache, flag), new CacheResponseHandler(cache, flag));
     }
 
     @Override
-    public FilterAction postFilter(FilterContext ctx) throws IOException {
-        if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
-            URI uri = ctx.getRequest().getAbsolutePath();   // TODO: getURI()?
-            HttpResponse response = ctx.getResponse();
-            byte[] body = readFromStream(1024, response.getEntityInputStream());
-            CacheEntry entry = new CacheEntry(response.getHeaderMap(), body);
-            cache.put(uri.toString(), entry);
-            response.setEntityInputStream(new ByteArrayInputStream(body));
-        }
-        return FilterAction.NEXT;
+    public void disable(Configurable configuration) {
+        setEnabledFlag(configuration, false);
     }
 
-    public static byte[] readFromStream(int bufferSize, InputStream entityStream) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        byte[] buffer = new byte[bufferSize];
-        int wasRead = 0;
-        do {
-            try {
-                wasRead = entityStream.read(buffer);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+    private boolean setEnabledFlag(Configurable configuration, boolean value) {
+        for (Object provider : configuration.getProviderSingletons()) {
+            if (provider instanceof CacheEntryLocator) {
+                CacheEntryLocator.class.cast(provider).enabledFlag.set(value);
+                return true;
+            } else if (provider instanceof CacheResponseHandler) {
+                CacheResponseHandler.class.cast(provider).enabledFlag.set(value);
+                return true;
             }
-            if (wasRead > 0) {
-                baos.write(buffer, 0, wasRead);
-            }
-        } while (wasRead > -1);
-        return baos.toByteArray();
+        }
+        return false;
     }
 }
