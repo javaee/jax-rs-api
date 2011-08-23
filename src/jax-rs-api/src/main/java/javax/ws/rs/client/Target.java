@@ -60,7 +60,7 @@ public interface Target extends Configurable<Target>, RequestHeaders.Builder<Inv
      *
      * @return the resource URI.
      */
-    public URI getURI();
+    public URI getUri();
 
     /**
      * Get the URI builder initialized with the {@link URI} identifying the
