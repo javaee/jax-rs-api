@@ -41,6 +41,7 @@ package javax.ws.rs.client;
 
 import java.net.URI;
 
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -68,4 +69,6 @@ public interface Client extends Configurable<Client> {
     Target target(URI uri) throws NullPointerException;
 
     Target target(UriBuilder uriBuilder) throws NullPointerException;
+    
+    Target target(Link link) throws NullPointerException;
 }

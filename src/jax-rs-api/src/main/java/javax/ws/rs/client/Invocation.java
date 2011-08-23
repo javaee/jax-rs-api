@@ -49,40 +49,44 @@ import javax.ws.rs.core.RequestHeaders;
  * @author Marek Potociar
  */
 public interface Invocation extends Configurable<Invocation> {
+    public static interface TargetedBuilder extends RequestHeaders.Builder<TargetedBuilder>, Configurable<TargetedBuilder>, SyncInvoker {
+        public PreparedBuilder prepare();
+        
+        public AsyncInvoker async();
+    }
 
-    public static interface Builder extends RequestHeaders.Builder<Builder>, Configurable<Builder>, SyncInvoker {
+    public static interface PreparedBuilder {
 
         // InvocationBuilder methods
         // TODO: document that the request instance needs to be cloned so that the 
         // data used in the invocation processing chain are decoupled from the original
         // request data that were used to initiate the invocation to prevent accidental
         // issues caused by mutable nature of the request
-        public Invocation build(String method);
-        
-        public Invocation build(String method, Object entity);
+        public Invocation method(String method);
 
-        public Invocation buildGet();
+        public Invocation method(String method, Object entity);
 
-        public Invocation buildDelete();
+        public Invocation get();
 
-        public Invocation buildPost(Object entity);
+        public Invocation delete();
 
-        public Invocation buildPut(Object entity);
+        public Invocation post(Object entity);
 
-        public AsyncInvoker async();
+        public Invocation put(Object entity);
+
     }
 
-    HttpResponse invoke() throws InvocationException;
+    public HttpResponse invoke() throws InvocationException;
 
-     <T> T invoke(Class<T> responseType) throws InvocationException;
+    public <T> T invoke(Class<T> responseType) throws InvocationException;
 
-     <T> T invoke(GenericType<T> responseType) throws InvocationException;
+    public <T> T invoke(GenericType<T> responseType) throws InvocationException;
 
-    Future<HttpResponse> submit();
+    public Future<HttpResponse> submit();
 
-     <T> Future<T> submit(Class<T> responseType);
+    public <T> Future<T> submit(Class<T> responseType);
 
-     <T> Future<T> submit(GenericType<T> responseType);
+    public <T> Future<T> submit(GenericType<T> responseType);
 
-     <T> Future<T> submit(InvocationCallback<T> callback);
+    public <T> Future<T> submit(InvocationCallback<T> callback);
 }

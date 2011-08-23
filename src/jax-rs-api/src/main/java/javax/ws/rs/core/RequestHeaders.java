@@ -79,7 +79,7 @@ public interface RequestHeaders extends Headers {
      * @author Marek Potociar
      * @since 2.0
      */    
-    public static interface Builder<T extends Builder> extends Headers.Builder<T> {
+    public static interface Builder<T extends RequestHeaders.Builder> extends Headers.Builder<T> {
 
         /**
          * Add acceptable media types.

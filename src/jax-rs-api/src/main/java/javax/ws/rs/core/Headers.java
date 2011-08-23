@@ -83,7 +83,7 @@ public interface Headers {
      * @author Marek Potociar
      * @since 2.0
      */
-    public static interface Builder<T extends Builder> {
+    public static interface Builder<T extends Headers.Builder> {
         
         /**
          * Set the list of allowed methods for the resource. Any duplicate method

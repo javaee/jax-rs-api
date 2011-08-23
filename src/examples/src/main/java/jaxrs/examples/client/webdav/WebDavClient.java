@@ -37,68 +37,23 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.client.custom;
+package jaxrs.examples.client.webdav;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.Target;
-import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.ext.ClientBuilderFactory;
 
 /**
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public class ThrottledClient implements Client {
-
-    public static class Builder implements Client.Builder<ThrottledClient> {
-
-        private static final int DEFAULT_QUEUE_SIZE = 3;
-
-        public static class Factory implements ClientBuilderFactory<ThrottledClient.Builder> {
-
-            @Override
-            public ThrottledClient.Builder newBuilder() {
-                return new ThrottledClient.Builder();
-            }
-        }
-        private int requestQueueCapacity = DEFAULT_QUEUE_SIZE;
-
-        @Override
-        public ThrottledClient build() {
-            return new ThrottledClient(requestQueueCapacity);
-        }
-
-        @Override
-        public ThrottledClient build(Configurable<?> configuration) {
-            return new ThrottledClient(configuration, requestQueueCapacity);
-        }
-
-        public Builder requestQueueCapacity(int capacity) {
-            this.requestQueueCapacity = capacity;
-
-            return this;
-        }
-    }
-    private final BlockingQueue<HttpRequest> requestQueue;
-
-    private ThrottledClient(int queueCapacity) {
-        this.requestQueue = new ArrayBlockingQueue<HttpRequest>(queueCapacity);
-    }
-
-    private ThrottledClient(Configurable<?> configuration, int queueCapacity) {
-        this(queueCapacity);
-
-        configure(configuration);
-    }
+public class WebDavClient implements Client {
 
     @Override
     public void close() {
@@ -106,22 +61,17 @@ public class ThrottledClient implements Client {
     }
 
     @Override
-    public Target target(String uri) throws IllegalArgumentException, NullPointerException {
+    public WebDavTarget target(String uri) throws IllegalArgumentException, NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Target target(URI uri) throws NullPointerException {
+    public WebDavTarget target(URI uri) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Target target(UriBuilder uriBuilder) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Target target(Link link) throws NullPointerException {
+    public WebDavTarget target(UriBuilder uriBuilder) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -156,37 +106,43 @@ public class ThrottledClient implements Client {
     }
 
     @Override
-    public Client register(Class<?> providerClass) {
+    public WebDavClient configure(Configurable<?> configuration) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Client register(Object... providers) {
+    public WebDavClient register(Class<?> providerClass) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Client enable(Class<? extends Feature> feature) {
+    public WebDavClient register(Object... providers) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Client disable(Class<? extends Feature> feature) {
+    public WebDavClient enable(Class<? extends Feature> feature) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Client setProperties(Map<String, Object> properties) {
+    public WebDavClient disable(Class<? extends Feature> feature) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Client setProperty(String name, Object value) {
+    public WebDavClient setProperties(Map<String, Object> properties) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public final Client configure(Configurable<?> configuration) {
+    public WebDavClient setProperty(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public WebDavTarget target(Link link) throws NullPointerException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
 }
