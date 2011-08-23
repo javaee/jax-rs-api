@@ -41,8 +41,8 @@ package javax.ws.rs.core;
 
 import java.net.URI;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ws.rs.core.Response.Status;
 
 /**
@@ -156,7 +156,16 @@ public interface ResponseHeaders extends Headers {
          *     value will remove an existing value for Vary header.
          * @return the updated response header builder.
          */
-        T variants(List<Variant> variants);
+        T variants(Variant... variants);
+        
+        /**
+         * Add one or more link headers.
+         * 
+         * @param links links to be added to the message as headers, a {@code null}
+         *     value will remove any existing Link headers.
+         * @return the updated response header builder.
+         */
+        T links(Link... links);
     }
     
     
@@ -208,4 +217,8 @@ public interface ResponseHeaders extends Headers {
      *
      */
     int getStatusCode();
+    
+    Set<Link> getLinks();
+    
+    Link getLink(String relation);
 }

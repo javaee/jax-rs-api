@@ -49,6 +49,7 @@ import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.HttpRequest;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.ClientBuilderFactory;
 
@@ -116,6 +117,11 @@ public class ThrottledClient implements Client {
 
     @Override
     public Target target(UriBuilder uriBuilder) throws NullPointerException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Target target(Link link) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -45,6 +45,8 @@ import java.util.Set;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Feature;
+import javax.ws.rs.client.Target;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -135,6 +137,11 @@ public class WebDavClient implements Client {
 
     @Override
     public WebDavClient setProperty(String name, Object value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public WebDavTarget target(Link link) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
