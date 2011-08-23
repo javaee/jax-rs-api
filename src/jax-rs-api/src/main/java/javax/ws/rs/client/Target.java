@@ -91,7 +91,4 @@ public interface Target extends Configurable<Target>, RequestHeaders.Builder<Inv
     public Invocation.PreparedBuilder prepare();
 
     public AsyncInvoker async();
-//    Invocation.PreparedBuilder request();
-//    
-//    Invocation.PreparedBuilder request(Invocation.PreparedBuilder original);
 }
