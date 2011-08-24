@@ -39,26 +39,64 @@
  */
 package javax.ws.rs.client;
 
-import java.util.concurrent.Future;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.ResponseHeaders;
 
 
 /**
- * Callback that you can register to receive the {code onComplete} event when 
+ * Callback that you can receiveNextChunk to receive the {code onEntity} event when 
  * a HTTP invocation processing is finished.
  *
- * @param <Response> response type. It can be either a general-purpose
+ * @param <ENTITY_TYPE> response type. It can be either a general-purpose
  *     {@link javax.ws.rs.core.HttpResponse} or the anticipated response entity
  *     type.
  *
  * @author Marek Potociar
  * @since 2.0
  */
-public interface InvocationCallback<Response> {
+public interface InvocationCallback<ENTITY_TYPE> {
+    public static enum NextAction {
+        CONTINUE,
+        ABORT;
+    }
+    
+    public static interface EntityDataChunk {
+        public byte[] getAvailableBytes();
+        
+        public boolean isLast();
+        
+        public void receiveNextChunk(InvocationCallback<EntityDataChunk> callback);
+        
+        public void abort();
+    }
+    
+    /**
+     * TODO javadoc.
+     *
+     * @param statusCode
+     * @return 
+     */
+    public NextAction onStatus(Response.StatusType statusCode);
+    
+    /**
+     * TODO javadoc.
+     *
+     * @param headers
+     * @return 
+     */
+    public NextAction onHeaders(ResponseHeaders headers);    
+    
+    /**
+     * TODO javadoc.
+     *
+     * @param response 
+     */
+    public void onEntity(ENTITY_TYPE response);
 
     /**
      * TODO javadoc.
      *
-     * @param future TODO.
+     * @param error 
      */
-    public void onComplete(Future<Response> future);
+    public void onError(Throwable error);
 }

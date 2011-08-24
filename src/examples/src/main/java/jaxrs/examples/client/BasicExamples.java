@@ -47,9 +47,12 @@ import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.InvocationCallback;
+import javax.ws.rs.client.InvocationCallback.NextAction;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response.StatusType;
+import javax.ws.rs.core.ResponseHeaders;
+import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
 
@@ -144,7 +147,7 @@ public class BasicExamples {
     }
 
     public void typedGenericResponse() {
-        List<Customer> customers = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers").get(new GenericType<List<Customer>>() {
+        List<Customer> customers = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers").get(new TypeLiteral<List<Customer>>() {
         });
         assert customers != null;
     }
@@ -187,8 +190,23 @@ public class BasicExamples {
         target.pathParam("id", 123).async().get(new InvocationCallback<Customer>() {
 
             @Override
-            public void onComplete(Future<Customer> future) {
+            public void onEntity(Customer customer) {
                 // Do something
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                // process error
+            }
+
+            @Override
+            public NextAction onStatus(StatusType statusCode) {
+                return NextAction.CONTINUE;
+            }
+
+            @Override
+            public NextAction onHeaders(ResponseHeaders headers) {
+                return NextAction.CONTINUE;
             }
         });
 
@@ -196,8 +214,23 @@ public class BasicExamples {
         Future<?> handle = target.pathParam("id", 456).async().get(new InvocationCallback<HttpResponse>() {
 
             @Override
-            public void onComplete(Future<HttpResponse> future) {
+            public void onEntity(HttpResponse response) {
                 // do something
+            }
+            
+            @Override
+            public void onError(Throwable error) {
+                // process error
+            }
+
+            @Override
+            public NextAction onStatus(StatusType statusCode) {
+                return NextAction.CONTINUE;
+            }
+
+            @Override
+            public NextAction onHeaders(ResponseHeaders headers) {
+                return NextAction.CONTINUE;
             }
         });
         handle.cancel(true);
@@ -212,8 +245,23 @@ public class BasicExamples {
                 .async().get(new InvocationCallback<Customer>() {
 
             @Override
-            public void onComplete(Future<Customer> future) {
+            public void onEntity(Customer customer) {
                 // Do something
+            }
+            
+            @Override
+            public void onError(Throwable error) {
+                // process error
+            }
+
+            @Override
+            public NextAction onStatus(StatusType statusCode) {
+                return NextAction.CONTINUE;
+            }
+
+            @Override
+            public NextAction onHeaders(ResponseHeaders headers) {
+                return NextAction.CONTINUE;
             }
         });
         handle.cancel(true);
@@ -223,8 +271,23 @@ public class BasicExamples {
                 .async().get(new InvocationCallback<HttpResponse>() {
 
             @Override
-            public void onComplete(Future<HttpResponse> future) {
+            public void onEntity(HttpResponse response) {
                 // do something
+            }
+            
+            @Override
+            public void onError(Throwable error) {
+                // process error
+            }
+
+            @Override
+            public NextAction onStatus(StatusType statusCode) {
+                return NextAction.CONTINUE;
+            }
+
+            @Override
+            public NextAction onHeaders(ResponseHeaders headers) {
+                return NextAction.CONTINUE;
             }
         });
 
@@ -283,5 +346,46 @@ public class BasicExamples {
         client.target("http://examples.jaxrs.com/").path("123").enable(TestFeature.class).accept("text/plain").header("custom-name", "custom_value").async().get();
         client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").enable(TestFeature.class).header("custom-name", "custom_value").prepare().get().invoke();
         client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").enable(TestFeature.class).prepare().get().submit();        
+    }
+    
+    public void advancedAsyncCallback() {
+        InvocationCallback<InvocationCallback.EntityDataChunk> icb = new InvocationCallback<InvocationCallback.EntityDataChunk>() {
+            private volatile int processedBytes = 0;
+
+            @Override
+            public NextAction onStatus(StatusType statusCode) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public NextAction onHeaders(ResponseHeaders headers) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+            @Override
+            public void onEntity(InvocationCallback.EntityDataChunk currentChunk) {
+                byte[] data = currentChunk.getAvailableBytes(); 
+                processedBytes += data.length;
+                        
+                // process available data chunk
+                
+                if (!currentChunk.isLast() || processedBytes > 1024) { 
+                    // unless we processed whole response 
+                    // or at least first 1kB of response entity data
+                    // register for receiving next data chunk
+                    currentChunk.receiveNextChunk(this);
+                }
+                
+                // we've seen enough; abort further processing
+                currentChunk.abort();
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+        };
+                
     }
 }

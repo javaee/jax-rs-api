@@ -40,7 +40,7 @@
 package javax.ws.rs.client;
 
 import java.util.concurrent.Future;
-import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.HttpResponse;
 
 /**
@@ -56,7 +56,7 @@ public interface AsyncInvoker {
 
      <T> Future<T> get(Class<T> responseType) throws InvocationException;
 
-     <T> Future<T> get(GenericType<T> responseType) throws InvocationException;
+     <T> Future<T> get(TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> get(InvocationCallback<T> callback);
 
@@ -65,7 +65,7 @@ public interface AsyncInvoker {
 
      <T> Future<T> put(Object entity, Class<T> responseType) throws InvocationException;
 
-     <T> Future<T> put(Object entity, GenericType<T> responseType) throws InvocationException;
+     <T> Future<T> put(Object entity, TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> put(Object entity, InvocationCallback<T> callback);
 
@@ -74,7 +74,7 @@ public interface AsyncInvoker {
 
      <T> Future<T> post(Object entity, Class<T> responseType) throws InvocationException;
 
-     <T> Future<T> post(Object entity, GenericType<T> responseType) throws InvocationException;
+     <T> Future<T> post(Object entity, TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> post(Object entity, InvocationCallback<T> callback);
 
@@ -83,7 +83,7 @@ public interface AsyncInvoker {
 
      <T> Future<T> delete(Class<T> responseType) throws InvocationException;
 
-     <T> Future<T> delete(GenericType<T> responseType) throws InvocationException;
+     <T> Future<T> delete(TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> delete(InvocationCallback<T> callback);
 
@@ -92,7 +92,7 @@ public interface AsyncInvoker {
 
      <T> Future<T> head(Class<T> responseType) throws InvocationException;
 
-     <T> Future<T> head(GenericType<T> responseType) throws InvocationException;
+     <T> Future<T> head(TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> head(InvocationCallback<T> callback);
 
@@ -101,7 +101,7 @@ public interface AsyncInvoker {
 
      <T> Future<T> options(Class<T> responseType) throws InvocationException;
 
-     <T> Future<T> options(GenericType<T> responseType) throws InvocationException;
+     <T> Future<T> options(TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> options(InvocationCallback<T> callback);
      
@@ -110,7 +110,7 @@ public interface AsyncInvoker {
 
      <T> Future<T> trace(Object entity, Class<T> responseType) throws InvocationException;
 
-     <T> Future<T> trace(Object entity, GenericType<T> responseType) throws InvocationException;
+     <T> Future<T> trace(Object entity, TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> trace(Object entity, InvocationCallback<T> callback);
 
@@ -119,7 +119,7 @@ public interface AsyncInvoker {
 
      <T> Future<T> method(String name, Class<T> responseType) throws InvocationException;
 
-     <T> Future<T> method(String name, GenericType<T> responseType) throws InvocationException;
+     <T> Future<T> method(String name, TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> method(String name, InvocationCallback<T> callback);
 }

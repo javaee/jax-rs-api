@@ -198,7 +198,7 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      * @throws MessageProcessingException if the content of the message
      *     cannot be mapped to an entity of the requested type.
      */
-    <T> T getEntity(GenericType<T> entityType) throws MessageProcessingException;
+    <T> T getEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
     
     /**
      * Check if there is an entity available in the request.

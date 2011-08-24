@@ -49,10 +49,10 @@ import java.lang.reflect.Type;
  *
  * @param <T> the generic type parameter.
  *
- * @author Paul Sandoz
+ * @author Marek Potociar
  * @since 2.0
  */
-public class GenericType<T> {
+public class TypeLiteral<T> {
 
     private final Type t;
     private final Class c;
@@ -62,7 +62,7 @@ public class GenericType<T> {
      * type parameter. Note that this constructor is protected, users should create
      * a (usually anonymous) subclass as shown above.
      */
-    protected GenericType() {
+    protected TypeLiteral() {
         Type superclass = getClass().getGenericSuperclass();
         if (!(superclass instanceof ParameterizedType)) {
             throw new RuntimeException("Missing type parameter.");
@@ -82,7 +82,7 @@ public class GenericType<T> {
      * is null or is neither an instance of Class or ParameterizedType whose raw
      * type is not an instance of Class.
      */
-    public GenericType(final Type genericType) throws IllegalArgumentException {
+    public TypeLiteral(final Type genericType) throws IllegalArgumentException {
         if (genericType == null) {
             throw new IllegalArgumentException("Type must not be null");
         }

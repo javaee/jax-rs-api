@@ -48,7 +48,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.Headers;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
@@ -226,7 +226,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T get(GenericType<T> responseType) throws InvocationException {
+    public <T> T get(TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -241,7 +241,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T put(Object entity, GenericType<T> responseType) throws InvocationException {
+    public <T> T put(Object entity, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -256,7 +256,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T post(Object entity, GenericType<T> responseType) throws InvocationException {
+    public <T> T post(Object entity, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -271,7 +271,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T delete(GenericType<T> responseType) throws InvocationException {
+    public <T> T delete(TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -286,7 +286,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T head(GenericType<T> responseType) throws InvocationException {
+    public <T> T head(TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -301,7 +301,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T options(GenericType<T> responseType) throws InvocationException {
+    public <T> T options(TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -316,7 +316,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T trace(Object entity, GenericType<T> responseType) throws InvocationException {
+    public <T> T trace(Object entity, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -331,7 +331,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T method(String name, GenericType<T> responseType) throws InvocationException {
+    public <T> T method(String name, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -346,7 +346,7 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     }
 
     @Override
-    public <T> T method(String name, Object entity, GenericType<T> responseType) throws InvocationException {
+    public <T> T method(String name, Object entity, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

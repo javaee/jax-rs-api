@@ -40,7 +40,7 @@
 package javax.ws.rs.client;
 
 import java.util.concurrent.Future;
-import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.RequestHeaders;
 
@@ -80,13 +80,13 @@ public interface Invocation extends Configurable<Invocation> {
 
     public <T> T invoke(Class<T> responseType) throws InvocationException;
 
-    public <T> T invoke(GenericType<T> responseType) throws InvocationException;
+    public <T> T invoke(TypeLiteral<T> responseType) throws InvocationException;
 
     public Future<HttpResponse> submit();
 
     public <T> Future<T> submit(Class<T> responseType);
 
-    public <T> Future<T> submit(GenericType<T> responseType);
+    public <T> Future<T> submit(TypeLiteral<T> responseType);
 
     public <T> Future<T> submit(InvocationCallback<T> callback);
 }
