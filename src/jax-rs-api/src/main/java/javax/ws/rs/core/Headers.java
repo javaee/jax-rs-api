@@ -205,7 +205,7 @@ public interface Headers {
      * @return the allowed HTTP methods, all methods will returned as upper case
      *     strings.
      */
-    Set<String> getAllow();
+    Set<String> getAllowedMethods();
     
 
     /**
