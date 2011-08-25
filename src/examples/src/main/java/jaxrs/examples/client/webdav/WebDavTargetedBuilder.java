@@ -58,10 +58,39 @@ import javax.ws.rs.core.Variant;
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDavSyncInvoker {
+public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvoker {
+
+    public Invocation buildSearch(Object entity) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
-    public WebDavPreparedBuilder prepare() {
+    public Invocation build(String method) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Invocation build(String method, Object entity) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Invocation buildDelete() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Invocation buildGet() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Invocation buildPost(Object entity) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Invocation buildPut(Object entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -354,5 +383,4 @@ public class WebDavTargetedBuilder implements Invocation.TargetedBuilder, WebDav
     public HttpResponse search(Object entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
 }

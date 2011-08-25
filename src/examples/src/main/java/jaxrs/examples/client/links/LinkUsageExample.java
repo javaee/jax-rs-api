@@ -54,10 +54,10 @@ public class LinkUsageExample {
         Client client = ClientFactory.newClient();
         
         HttpResponse current = client.target("http://examples.jax-rs-spec.com/current")
-                .accept(MediaType.APPLICATION_XML)
+                .request(MediaType.APPLICATION_XML)
                 .get();
         
-        HttpResponse next = client.target(current.getLink("next")).get();
+        HttpResponse next = client.target(current.getLink("next")).request(MediaType.APPLICATION_XML).get();
         
     }
 }

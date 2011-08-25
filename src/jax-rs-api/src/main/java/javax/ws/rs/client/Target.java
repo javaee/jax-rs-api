@@ -42,8 +42,8 @@ package javax.ws.rs.client;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.RequestHeaders;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -52,7 +52,7 @@ import javax.ws.rs.core.UriBuilder;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface Target extends Configurable<Target>, RequestHeaders.Builder<Invocation.TargetedBuilder>, SyncInvoker {
+public interface Target extends Configurable<Target> {
 
     // Getters
     /**
@@ -88,7 +88,9 @@ public interface Target extends Configurable<Target>, RequestHeaders.Builder<Inv
     public Target queryParams(MultivaluedMap<String, Object> parameters)
             throws IllegalArgumentException;
 
-    public Invocation.PreparedBuilder prepare();
+    public Invocation.Builder request();
 
-    public AsyncInvoker async();
+    public Invocation.Builder request(String... mediaTypes);
+
+    public Invocation.Builder request(MediaType... mediaTypes);
 }

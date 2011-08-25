@@ -49,30 +49,26 @@ import javax.ws.rs.core.RequestHeaders;
  * @author Marek Potociar
  */
 public interface Invocation extends Configurable<Invocation> {
-    public static interface TargetedBuilder extends RequestHeaders.Builder<TargetedBuilder>, Configurable<TargetedBuilder>, SyncInvoker {
-        public PreparedBuilder prepare();
-        
-        public AsyncInvoker async();
-    }
-
-    public static interface PreparedBuilder {
+    public static interface Builder extends RequestHeaders.Builder<Builder>, Configurable<Builder>, SyncInvoker {
 
         // InvocationBuilder methods
         // TODO: document that the request instance needs to be cloned so that the 
         // data used in the invocation processing chain are decoupled from the original
         // request data that were used to initiate the invocation to prevent accidental
         // issues caused by mutable nature of the request
-        public Invocation method(String method);
+        public Invocation build(String method);
 
-        public Invocation method(String method, Object entity);
+        public Invocation build(String method, Object entity);
 
-        public Invocation get();
+        public Invocation buildGet();
 
-        public Invocation delete();
+        public Invocation buildDelete();
 
-        public Invocation post(Object entity);
+        public Invocation buildPost(Object entity);
 
-        public Invocation put(Object entity);
+        public Invocation buildPut(Object entity);
+        
+        public AsyncInvoker async();
 
     }
 

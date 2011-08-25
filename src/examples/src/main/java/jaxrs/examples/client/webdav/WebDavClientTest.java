@@ -52,6 +52,7 @@ public class WebDavClientTest {
         WebDavClient wdc = null; // TODO
         return wdc;
     }
+
     static class TestFeature implements Feature {
 
         @Override
@@ -70,71 +71,71 @@ public class WebDavClientTest {
 
         client.target("http://examples.jaxrs.com/webdav/");
         client.enable(TestFeature.class).target("http://examples.jaxrs.com/webdav/");
-        
-        // HTTP
-        client.target("http://examples.jaxrs.com/webdav/").get();
-        client.target("http://examples.jaxrs.com/webdav/").async().get();
-        client.target("http://examples.jaxrs.com/webdav/").prepare().get().invoke();
-        client.target("http://examples.jaxrs.com/webdav/").prepare().get().submit();
-        // WebDAV
-        client.target("http://examples.jaxrs.com/webdav/").search(null);
-        client.target("http://examples.jaxrs.com/webdav/").async().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").prepare().search(null).invoke();
-        client.target("http://examples.jaxrs.com/webdav/").prepare().search(null).submit();
 
         // HTTP
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).get();
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).async().get();
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).prepare().get().invoke();
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).prepare().get().submit();
+        client.target("http://examples.jaxrs.com/webdav/").request().get();
+        client.target("http://examples.jaxrs.com/webdav/").request().async().get();
+        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().invoke();
+        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().submit();
         // WebDAV
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).search(null);
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).async().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).prepare().search(null).invoke();
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).prepare().search(null).submit();
+        client.target("http://examples.jaxrs.com/webdav/").request().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").request().async().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").request().buildSearch(null).invoke();
+        client.target("http://examples.jaxrs.com/webdav/").request().buildSearch(null).submit();
 
         // HTTP
-        client.target("http://examples.jaxrs.com/webdav/").path("123").get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").async().get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").prepare().get().invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").prepare().get().submit();
+        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().get();
+        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().async().get();
+        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().buildGet().invoke();
+        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().buildGet().submit();
         // WebDAV
-        client.target("http://examples.jaxrs.com/webdav/").path("123").search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").async().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").prepare().search(null).invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").prepare().search(null).submit();
+        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().async().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().buildSearch(null).invoke();
+        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().buildSearch(null).submit();
 
         // HTTP
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").async().get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").prepare().get().invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").prepare().get().submit();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request().get();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request().async().get();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request().buildGet().invoke();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request().buildGet().submit();
         // WebDAV
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").async().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").prepare().search(null).invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").prepare().search(null).submit();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request().async().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request().buildSearch(null).invoke();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request().buildSearch(null).submit();
 
         // HTTP
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").enable(TestFeature.class).get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").enable(TestFeature.class).async().get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").enable(TestFeature.class).prepare().get().invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").enable(TestFeature.class).prepare().get().submit();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").get();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").async().get();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").buildGet().invoke();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").buildGet().submit();
         // WebDAV
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").enable(TestFeature.class).search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").enable(TestFeature.class).async().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").enable(TestFeature.class).prepare().search(null).invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").enable(TestFeature.class).prepare().search(null).submit();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").search(null);
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").async().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").buildSearch(null).invoke();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").buildSearch(null).submit();
 
         // HTTP
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").header("custom-name", "custom_value").get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").header("custom-name", "custom_value").async().get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").header("custom-name", "custom_value").prepare().get().invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").header("custom-name", "custom_value").prepare().get().submit();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).get();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).async().get();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).buildGet().invoke();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).buildGet().submit();
         // WebDAV
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").header("custom-name", "custom_value").search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").header("custom-name", "custom_value").async().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").header("custom-name", "custom_value").prepare().search(null).invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").accept("text/plain").header("custom-name", "custom_value").prepare().search(null).submit();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).search(null);
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).async().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).buildSearch(null).invoke();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).buildSearch(null).submit();
+
+        // HTTP
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").get();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").async().get();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").buildGet().invoke();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").buildGet().submit();
+        // WebDAV
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").search(null);
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").async().search(null);
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").buildSearch(null).invoke();
+        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").buildSearch(null).submit();
     }
 }

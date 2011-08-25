@@ -95,11 +95,11 @@ public class SpecExamples {
     public void fluentMethodChaining() {
         Client client = ClientFactory.newClient();
         HttpResponse res = client.target("http://example.org/hello")
-                .accept("text/plain").get();
+                .request("text/plain").get();
         
         HttpResponse res2 = client.target("http://example.org/hello")
                 .queryParam("MyParam","...")
-                .accept("text/plain")
+                .request("text/plain")
                 .header("MyHeader", "...")
                 .get();
     }
@@ -107,11 +107,11 @@ public class SpecExamples {
     public void typeRelationships() {
         Client client = ClientFactory.newClient();
         Target uri = client.target("");
-        Invocation.TargetedBuilder builder = uri.accept("text/plain");
+        Invocation.Builder builder = uri.request("text/plain");
         
         SyncInvoker syncInvoker = builder;
         AsyncInvoker asyncInvoker = builder.async();
-        Invocation inv = builder.prepare().get();
+        Invocation inv = builder.buildGet();
         
         HttpResponse r1 = builder.get();
         HttpResponse r2 = syncInvoker.get();
@@ -126,21 +126,21 @@ public class SpecExamples {
         Target base = client.target("http://example.org/");
         Target hello = base.path("hello").path("{whom}");   
         final Target whomToGreet = hello.pathParam("whom", "world");
-        HttpResponse res = whomToGreet.get();
+        HttpResponse res = whomToGreet.request().get();
     }
     
     public void gettingAndPostingCustomers() {
         Client client = ClientFactory.newClient();
         Customer c = client.target("http://examples.org/customers/123")
-                .accept("application/xml").get(Customer.class);
+                .request("application/xml").get(Customer.class);
         HttpResponse res = client.target("http://examples.org/premium-customers/")
-                .type("application/xml").post(c);     
+                .request().type("application/xml").post(c);     
     }
     
     public void asyncSamples() throws Exception {
         Client client = ClientFactory.newClient();
         Future<Customer> fc = client.target("http://examples.org/customers/123")
-                .accept("application/xml").async().get(Customer.class);
+                .request("application/xml").async().get(Customer.class);
         Customer c = fc.get();   
     }
     

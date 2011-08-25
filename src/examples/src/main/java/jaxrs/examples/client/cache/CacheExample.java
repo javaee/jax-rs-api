@@ -55,8 +55,8 @@ public class CacheExample {
         Client client = ClientFactory.newClient().register(CachingFeature.class);
         Target resource = client.target("http://example.com/foo/bar.txt");
 
-        String text = resource.get(String.class);
-        String second = resource.get(String.class);
+        String text = resource.request("text/plain").get(String.class);
+        String second = resource.request("text/plain").get(String.class);
         
         System.out.println(text);
         System.out.println(second);
