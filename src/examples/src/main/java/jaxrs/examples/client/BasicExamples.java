@@ -48,6 +48,7 @@ import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.InvocationCallback;
+import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpResponse;
@@ -192,7 +193,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(Throwable error) {
+            public void failed(InvocationException error) {
                 // process error
             }
         });
@@ -206,7 +207,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(Throwable error) {
+            public void failed(InvocationException error) {
                 // process error
             }
         });
@@ -227,7 +228,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(Throwable error) {
+            public void failed(InvocationException error) {
                 // process error
             }
         });
@@ -243,7 +244,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(Throwable error) {
+            public void failed(InvocationException error) {
                 // process error
             }
         });

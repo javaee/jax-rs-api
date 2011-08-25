@@ -64,5 +64,5 @@ public interface InvocationCallback<ENTITY_TYPE> {
      *
      * @param error 
      */
-    public void failed(Throwable error);
+    public void failed(InvocationException error);
 }
