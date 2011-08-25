@@ -39,27 +39,22 @@
  */
 package jaxrs.examples.client;
 
-import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Future;
+import jaxrs.examples.client.custom.ThrottledClient;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.InvocationCallback;
-import javax.ws.rs.client.InvocationCallback.NextAction;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.Response.StatusType;
-import javax.ws.rs.core.ResponseHeaders;
-import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.TypeLiteral;
 
-import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
-import jaxrs.examples.client.custom.ThrottledClient;
 
 /**
  * @author Bill Burke
@@ -192,23 +187,13 @@ public class BasicExamples {
         target.pathParam("id", 123).async().get(new InvocationCallback<Customer>() {
 
             @Override
-            public void onEntity(Customer customer) {
+            public void completed(Customer customer) {
                 // Do something
             }
 
             @Override
-            public void onError(Throwable error) {
+            public void failed(Throwable error) {
                 // process error
-            }
-
-            @Override
-            public NextAction onStatus(StatusType statusCode) {
-                return NextAction.CONTINUE;
-            }
-
-            @Override
-            public NextAction onHeaders(ResponseHeaders headers) {
-                return NextAction.CONTINUE;
             }
         });
 
@@ -216,23 +201,13 @@ public class BasicExamples {
         Future<?> handle = target.pathParam("id", 456).async().get(new InvocationCallback<HttpResponse>() {
 
             @Override
-            public void onEntity(HttpResponse response) {
+            public void completed(HttpResponse response) {
                 // do something
             }
-            
+
             @Override
-            public void onError(Throwable error) {
+            public void failed(Throwable error) {
                 // process error
-            }
-
-            @Override
-            public NextAction onStatus(StatusType statusCode) {
-                return NextAction.CONTINUE;
-            }
-
-            @Override
-            public NextAction onHeaders(ResponseHeaders headers) {
-                return NextAction.CONTINUE;
             }
         });
         handle.cancel(true);
@@ -247,23 +222,13 @@ public class BasicExamples {
                 .async().get(new InvocationCallback<Customer>() {
 
             @Override
-            public void onEntity(Customer customer) {
+            public void completed(Customer customer) {
                 // Do something
             }
-            
+
             @Override
-            public void onError(Throwable error) {
+            public void failed(Throwable error) {
                 // process error
-            }
-
-            @Override
-            public NextAction onStatus(StatusType statusCode) {
-                return NextAction.CONTINUE;
-            }
-
-            @Override
-            public NextAction onHeaders(ResponseHeaders headers) {
-                return NextAction.CONTINUE;
             }
         });
         handle.cancel(true);
@@ -273,23 +238,13 @@ public class BasicExamples {
                 .async().get(new InvocationCallback<HttpResponse>() {
 
             @Override
-            public void onEntity(HttpResponse response) {
+            public void completed(HttpResponse response) {
                 // do something
             }
-            
+
             @Override
-            public void onError(Throwable error) {
+            public void failed(Throwable error) {
                 // process error
-            }
-
-            @Override
-            public NextAction onStatus(StatusType statusCode) {
-                return NextAction.CONTINUE;
-            }
-
-            @Override
-            public NextAction onHeaders(ResponseHeaders headers) {
-                return NextAction.CONTINUE;
             }
         });
 
@@ -310,13 +265,13 @@ public class BasicExamples {
             // do nothing
         }
     }
-    
+
     public void commonFluentUseCases() {
         Client client = ClientFactory.newClient();
 
         // Invocation
         client.target("http://examples.jaxrs.com/");
-        
+
         client.target("http://examples.jaxrs.com/").get();
         client.target("http://examples.jaxrs.com/").async().get();
         client.target("http://examples.jaxrs.com/").prepare().get().invoke();
@@ -337,56 +292,16 @@ public class BasicExamples {
         client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").async().get();
         client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").prepare().get().invoke();
         client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").prepare().get().submit();
-        
+
         // Configurable
         client.enable(TestFeature.class);
         client.target("http://examples.jaxrs.com/").enable(TestFeature.class);
         client.target("http://examples.jaxrs.com/").accept("text/plain").enable(TestFeature.class);
         client.target("http://examples.jaxrs.com/").prepare().get().enable(TestFeature.class);
-        
+
         client.target("http://examples.jaxrs.com/").enable(TestFeature.class).path("123").accept("text/plain").header("custom-name", "custom_value").get();
         client.target("http://examples.jaxrs.com/").path("123").enable(TestFeature.class).accept("text/plain").header("custom-name", "custom_value").async().get();
         client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").enable(TestFeature.class).header("custom-name", "custom_value").prepare().get().invoke();
-        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").enable(TestFeature.class).prepare().get().submit();        
-    }
-    
-    public void advancedAsyncCallback() {
-        InvocationCallback<String> icb = new InvocationCallback<String>() {
-            private volatile boolean redirect = false;
-
-            @Override
-            public NextAction onStatus(StatusType status) {
-                if (status.getFamily() == Response.Status.Family.REDIRECTION) {
-                    if ( Response.Status.NOT_MODIFIED.equals(status)) {
-                        return NextAction.ABORT; 
-                    }
-                    
-                    redirect = true;
-                }
-                
-                return NextAction.CONTINUE;
-            }
-
-            @Override
-            public NextAction onHeaders(ResponseHeaders headers) {
-                if (redirect) {
-                    URI newTarget = headers.getLocation();
-                    // shedule new request
-                    
-                    return NextAction.ABORT;
-                }
-                return NextAction.CONTINUE;
-            }
-
-            @Override
-            public void onEntity(String response) {
-                // process response
-            }
-
-            @Override
-            public void onError(Throwable error) {
-                // process error
-            }
-        };                
+        client.target("http://examples.jaxrs.com/").path("123").accept("text/plain").header("custom-name", "custom_value").enable(TestFeature.class).prepare().get().submit();
     }
 }

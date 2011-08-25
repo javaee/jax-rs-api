@@ -39,12 +39,8 @@
  */
 package javax.ws.rs.client;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.ResponseHeaders;
-
-
 /**
- * Callback that you can receiveNextChunk to receive the {code onEntity} event when 
+ * Callback that you can receiveNextChunk to receive the {code completed} event when 
  * a HTTP invocation processing is finished.
  *
  * @param <ENTITY_TYPE> response type. It can be either a general-purpose
@@ -55,38 +51,18 @@ import javax.ws.rs.core.ResponseHeaders;
  * @since 2.0
  */
 public interface InvocationCallback<ENTITY_TYPE> {
-    public static enum NextAction {
-        CONTINUE,
-        ABORT;
-    }
-    
-    /**
-     * TODO javadoc.
-     *
-     * @param statusCode
-     * @return 
-     */
-    public NextAction onStatus(Response.StatusType statusCode);
-    
-    /**
-     * TODO javadoc.
-     *
-     * @param headers
-     * @return 
-     */
-    public NextAction onHeaders(ResponseHeaders headers);    
-    
+
     /**
      * TODO javadoc.
      *
      * @param response 
      */
-    public void onEntity(ENTITY_TYPE response);
+    public void completed(ENTITY_TYPE response);
 
     /**
      * TODO javadoc.
      *
      * @param error 
      */
-    public void onError(Throwable error);
+    public void failed(Throwable error);
 }
