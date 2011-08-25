@@ -53,29 +53,30 @@ import java.util.Set;
 public interface Headers {
     /*
     general-header =                                
-       * Cache-Control            ; Section 14.9
-        Connection               ; Section 14.10
-       a? Date                     ; Section 14.18
-        Pragma                   ; Section 14.32
-        Trailer                  ; Section 14.40
-        Transfer-Encoding        ; Section 14.41
-        Upgrade                  ; Section 14.42
-        Via                      ; Section 14.45
-        Warning                  ; Section 14.46
+     * Cache-Control            ; Section 14.9
+    Connection               ; Section 14.10
+    a? Date                     ; Section 14.18
+    Pragma                   ; Section 14.32
+    Trailer                  ; Section 14.40
+    Transfer-Encoding        ; Section 14.41
+    Upgrade                  ; Section 14.42
+    Via                      ; Section 14.45
+    Warning                  ; Section 14.46
     
     entity-header  =                                Req     Res
-      *  Allow                    ; Section 14.7      +       +
-      *  Content-Encoding         ; Section 14.11     +       +
-      *  Content-Language         ; Section 14.12     +       +
-      a  Content-Length           ; Section 14.13     +       +
-      -  Content-Location         ; Section 14.14     ?       +
-        Content-MD5              ; Section 14.15     +       +
-        Content-Range            ; Section 14.16     -       +
-      *  Content-Type             ; Section 14.17     +       +
-      -  Expires                  ; Section 14.21     -       +
-      -  Last-Modified            ; Section 14.29     -       +
-      *  extension-header = message-header
-    */
+     *  Allow                    ; Section 14.7      +       +
+     *  Content-Encoding         ; Section 14.11     +       +
+     *  Content-Language         ; Section 14.12     +       +
+    a  Content-Length           ; Section 14.13     +       +
+    -  Content-Location         ; Section 14.14     ?       +
+    Content-MD5              ; Section 14.15     +       +
+    Content-Range            ; Section 14.16     -       +
+     *  Content-Type             ; Section 14.17     +       +
+    -  Expires                  ; Section 14.21     -       +
+    -  Last-Modified            ; Section 14.29     -       +
+     *  extension-header = message-header
+     */
+
     /**
      * TODO javadoc.
      * 
@@ -84,7 +85,7 @@ public interface Headers {
      * @since 2.0
      */
     public static interface Builder<T extends Headers.Builder> {
-        
+
         /**
          * Set the list of allowed methods for the resource. Any duplicate method
          * names will be truncated to a single entry.
@@ -122,7 +123,7 @@ public interface Headers {
          * @return the updated headers builder.
          */
         T encoding(String encoding);
-        
+
         /**
          * Add an arbitrary header.
          *
@@ -136,7 +137,7 @@ public interface Headers {
          * @return the updated header builder.
          */
         T header(String name, Object value);
-        
+
         /**
          * Replaces all existing headers with the newly supplied headers.
          * 
@@ -163,7 +164,7 @@ public interface Headers {
          * @return the updated headers builder.
          */
         T language(Locale language);
-        
+
         /**
          * Set the message entity media type.
          *
@@ -206,7 +207,6 @@ public interface Headers {
      *     strings.
      */
     Set<String> getAllowedMethods();
-    
 
     /**
      * Get message date.
@@ -214,7 +214,7 @@ public interface Headers {
      * @return the message date, otherwise {@code null} if not present.
      */
     Date getDate();
-    
+
     /**
      * Get a HTTP header as a single string value.
      * <p/>
@@ -230,31 +230,48 @@ public interface Headers {
      *     value then the empty string is returned. If the HTTP header is present
      *     more than once then the values of joined together and separated by a ','
      *     character.
+     * @see #getHeaderMap()
+     * @see #getHeaderValues(java.lang.String) 
      */
     String getHeader(String name);
 
     /**
      * Get the map of HTTP message headers names to their respective values.
      * The returned map is case-insensitive wrt. keys and is read-only.
+     * <p/>
+     * Each single header value is converted to String using a
+     * {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available
+     * via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
+     * for the header value class or using its {@code toString} method  if a header
+     * delegate is not available.
      *
      * @return a read-only map of header names and values.
      * @throws java.lang.IllegalStateException if called outside of the message
      *     processing scope.
+     * @see #getHeader(java.lang.String) 
+     * @see #getHeaderValues(java.lang.String) 
      */
-    MultivaluedMap<String, Object> getHeaderMap();
-    
+    MultivaluedMap<String, String> getHeaderMap();
+
     /**
      * Get the values of a single HTTP message header. The returned List is read-only.
      * This is a convenience shortcut for {@code getHeaderMap().get(name)}.
+     * <p/>
+     * Each single header value is converted to String using a
+     * {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available
+     * via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
+     * for the header value class or using its {@code toString} method  if a header
+     * delegate is not available.
      *
      * @param name the header name, case insensitive.
      * @return a read-only list of header values.
      * @throws java.lang.IllegalStateException if called outside of the message
      *     processing scope.
      * @see #getHeaderMap()
+     * @see #getHeader(java.lang.String) 
      */
-    List<Object> getHeaderValues(String name);
-    
+    List<String> getHeaderValues(String name);
+
     /**
      * Get the language of the entity
      * @return the language of the entity or null if not specified
@@ -268,13 +285,12 @@ public interface Headers {
      * @return Content-Length as integer if present and valid number. In other
      * cases returns -1.
      */
-    int getLength();    
-    
+    int getLength();
+
     /**
      * Get the media type of the entity
      * @return the media type or null if there is no request entity.
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
     MediaType getMediaType();
-
 }
