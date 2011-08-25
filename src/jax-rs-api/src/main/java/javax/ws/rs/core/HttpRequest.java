@@ -42,7 +42,6 @@ package javax.ws.rs.core;
 import java.net.URI;
 import java.util.List;
 
-
 /**
  * Defines a runtime contract for a HTTP request.
  *
@@ -51,21 +50,14 @@ import java.util.List;
  */
 public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<HttpRequest>, Cloneable {
 
-    // Getters    
+    // Getters
     /**
-     * Get the base URI of the application. URIs of root resource classes
-     * are all relative to this base URI.
+     * Get the request method, e.g. GET, POST, etc.
      *
-     * @return the base URI of the application.
+     * @return the request method.
+     * @see javax.ws.rs.HttpMethod
      */
-    URI getBaseUri();
-
-    /**
-     * Get the base URI of the application in the form of a {@link UriBuilder}.
-     *
-     * @return a {@code UriBuilder} initialized with the base URI of the application.
-     */
-    UriBuilder getBaseUriBuilder();
+    String getMethod();
 
     /**
      * Get the absolute request URI. This includes query parameters and
@@ -80,18 +72,16 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      *
      * @return a {@code UriBuilder} initialized with the absolute request URI.
      */
-    UriBuilder getUriAsBuilder();
+    UriBuilder getUriBuilder();
 
     /**
      * Get the absolute path of the request. This includes everything preceding
      * the path (host, port etc) but excludes query parameters and fragment.
      * <p/>
-     * This is a shortcut for
-     * {@code uriInfo.getBase().resolve(uriInfo.getPath()).}
      *
      * @return the absolute path of the request.
      */
-    URI getAbsolutePath();
+    URI getPath();
 
     /**
      * Get the absolute path of the request in the form of a {@link UriBuilder}.
@@ -100,24 +90,14 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      *
      * @return a {@code UriBuilder} initialized with the absolute path of the request.
      */
-    UriBuilder getAbsolutePathBuilder();
+    UriBuilder getPathBuilder();
 
     /**
-     * Get the path of the current request relative to the base URI as
-     * a string. All sequences of escaped octets are decoded, equivalent to
-     * {@code getPath(true)}.
-     * 
-     * @return the relative URI path.
-     */
-    String getPath();
-
-    /**
-     * Get the path of the current request relative to the base URI as
-     * a string.
+     * Get the absolute path of the request in the form of a {@link String}.
      *
      * @param decode controls whether sequences of escaped octets are decoded
      * ({@code true}) or not ({@code false}).
-     * @return the relative URI path.
+     * @return the {@link String} containing the absolute path of the request.
      */
     String getPath(boolean decode);
 
@@ -158,7 +138,7 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      * @return an unmodifiable map of query parameter names and values.
      */
     MultivaluedMap<String, String> getQueryParameters();
-    
+
     /**
      * Get the URI query parameters of the current request.
      *
@@ -187,7 +167,7 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      *     cannot be mapped to an entity of the requested type.
      */
      <T> T getEntity(Class<T> type) throws MessageProcessingException;
-     
+
     /**
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
@@ -198,41 +178,21 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      * @throws MessageProcessingException if the content of the message
      *     cannot be mapped to an entity of the requested type.
      */
-    <T> T getEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
-    
+     <T> T getEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
+
     /**
      * Check if there is an entity available in the request.
      *
      * @return {@code true} if there is an entity present in the request.
      */
-    boolean hasEntity();     
+    boolean hasEntity();
 
-    /**
-     * Get the request method, e.g. GET, POST, etc.
-     *
-     * @return the request method.
-     * @see javax.ws.rs.HttpMethod
-     */
-    String getMethod();
-
-    // URI builder methods
-    HttpRequest pathParam(String name, Object value) throws IllegalArgumentException;
-
-    HttpRequest pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
-
-    HttpRequest matrixParam(String name, Object... values) throws IllegalArgumentException;
-
-    HttpRequest queryParam(String name, Object value) throws IllegalArgumentException;
-
-    HttpRequest queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
-
+    // Modifiers
     HttpRequest redirect(String uri);
 
     HttpRequest redirect(URI uri);
 
     HttpRequest redirect(UriBuilder uri);
-
-    // Message modifiers    
 
     /**
      * Modify the HTTP method of the request.

@@ -70,7 +70,7 @@ public class CacheResponseHandler implements ResponseFilter {
     @Override
     public FilterAction postFilter(FilterContext ctx) throws IOException {
         if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
-            URI uri = ctx.getRequest().getAbsolutePath();   // TODO: getURI()?
+            URI uri = ctx.getRequest().getUri();
             HttpResponse response = ctx.getResponse();
             byte[] body = readFromStream(1024, response.getEntityInputStream());
             CacheEntry entry = new CacheEntry(response.getHeaderMap(), body);

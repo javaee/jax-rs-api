@@ -67,7 +67,7 @@ public class CacheEntryLocator implements RequestFilter {
     @Override
     public FilterAction preFilter(FilterContext ctx) throws IOException {
         if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
-            URI uri = ctx.getRequest().getAbsolutePath();   // TODO: getURI()?
+            URI uri = ctx.getRequest().getUri();
             CacheEntry entry = cache.get(uri.toString());
             
             if (entry != null) {
