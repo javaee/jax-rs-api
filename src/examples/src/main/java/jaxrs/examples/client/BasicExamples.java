@@ -39,6 +39,7 @@
  */
 package jaxrs.examples.client;
 
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -56,6 +57,7 @@ import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
 
+import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
 import jaxrs.examples.client.custom.ThrottledClient;
 
@@ -349,43 +351,42 @@ public class BasicExamples {
     }
     
     public void advancedAsyncCallback() {
-        InvocationCallback<InvocationCallback.EntityDataChunk> icb = new InvocationCallback<InvocationCallback.EntityDataChunk>() {
-            private volatile int processedBytes = 0;
+        InvocationCallback<String> icb = new InvocationCallback<String>() {
+            private volatile boolean redirect = false;
 
             @Override
-            public NextAction onStatus(StatusType statusCode) {
-                throw new UnsupportedOperationException("Not supported yet.");
+            public NextAction onStatus(StatusType status) {
+                if (status.getFamily() == Response.Status.Family.REDIRECTION) {
+                    if ( Response.Status.NOT_MODIFIED.equals(status)) {
+                        return NextAction.ABORT; 
+                    }
+                    
+                    redirect = true;
+                }
+                
+                return NextAction.CONTINUE;
             }
 
             @Override
             public NextAction onHeaders(ResponseHeaders headers) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                if (redirect) {
+                    URI newTarget = headers.getLocation();
+                    // shedule new request
+                    
+                    return NextAction.ABORT;
+                }
+                return NextAction.CONTINUE;
             }
 
             @Override
-            public void onEntity(InvocationCallback.EntityDataChunk currentChunk) {
-                byte[] data = currentChunk.getAvailableBytes(); 
-                processedBytes += data.length;
-                        
-                // process available data chunk
-                
-                if (!currentChunk.isLast() || processedBytes > 1024) { 
-                    // unless we processed whole response 
-                    // or at least first 1kB of response entity data
-                    // register for receiving next data chunk
-                    currentChunk.receiveNextChunk(this);
-                }
-                
-                // we've seen enough; abort further processing
-                currentChunk.abort();
+            public void onEntity(String response) {
+                // process response
             }
 
             @Override
             public void onError(Throwable error) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                // process error
             }
-
-        };
-                
+        };                
     }
 }
