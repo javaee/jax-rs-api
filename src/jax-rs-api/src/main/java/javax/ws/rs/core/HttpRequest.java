@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.core;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -229,4 +230,18 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      * @see #entity(java.lang.Object, java.lang.annotation.Annotation[])
      */
     HttpRequest entity(Object entity);
+
+    /**
+     * Get the request input stream.
+     *
+     * @return the input stream of the request.
+     */
+    InputStream getEntityInputStream();
+    
+    /**
+     * Set the input stream of the request.
+     *
+     * @param entity the input stream of the request.
+     */
+    void setEntityInputStream(InputStream entity);
 }
