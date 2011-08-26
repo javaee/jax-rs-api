@@ -40,24 +40,24 @@
 package javax.ws.rs.client;
 
 /**
- * Callback that you can receiveNextChunk to receive the {code completed} event when 
- * a HTTP invocation processing is finished.
+ * Callback that can be implemented to receive the asynchronous processing 
+ * events from the invocation processing.
  *
- * @param <ENTITY_TYPE> response type. It can be either a general-purpose
+ * @param <RESPONSE> response type. It can be either a general-purpose
  *     {@link javax.ws.rs.core.HttpResponse} or the anticipated response entity
  *     type.
  *
  * @author Marek Potociar
  * @since 2.0
  */
-public interface InvocationCallback<ENTITY_TYPE> {
+public interface InvocationCallback<RESPONSE> {
 
     /**
      * TODO javadoc.
      *
      * @param response 
      */
-    public void completed(ENTITY_TYPE response);
+    public void completed(RESPONSE response);
 
     /**
      * TODO javadoc.
