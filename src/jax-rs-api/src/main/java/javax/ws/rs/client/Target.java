@@ -75,15 +75,11 @@ public interface Target extends Configurable<Target> {
 
     public Target pathParam(String name, Object value) throws IllegalArgumentException;
 
-    public Target pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
-
     public Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
 
     public Target matrixParam(String name, Object... values) throws IllegalArgumentException;
 
     public Target queryParam(String name, Object value) throws IllegalArgumentException;
-
-    public Target queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException;
 
     public Target queryParams(MultivaluedMap<String, Object> parameters)
             throws IllegalArgumentException;
