@@ -39,7 +39,6 @@
  */
 package javax.ws.rs.client;
 
-import java.lang.annotation.Annotation;
 import java.net.URI;
 
 import javax.ws.rs.core.MediaType;

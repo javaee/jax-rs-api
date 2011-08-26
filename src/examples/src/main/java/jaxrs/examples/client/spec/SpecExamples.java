@@ -52,6 +52,8 @@ import javax.ws.rs.core.HttpResponse;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import static javax.ws.rs.client.Entity.*;
+
 /**
  * @author Bill Burke
  * @author Marek Potociar
@@ -134,7 +136,7 @@ public class SpecExamples {
         Customer c = client.target("http://examples.org/customers/123")
                 .request("application/xml").get(Customer.class);
         HttpResponse res = client.target("http://examples.org/premium-customers/")
-                .request().type("application/xml").post(c);     
+                .request().post(entity(c, "application/xml"));     
     }
     
     public void asyncSamples() throws Exception {

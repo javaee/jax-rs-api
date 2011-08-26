@@ -39,7 +39,6 @@
  */
 package jaxrs.examples.client.webdav;
 
-import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
@@ -83,11 +82,6 @@ public class WebDavTarget implements Target {
     }
 
     @Override
-    public WebDavTarget pathParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public WebDavTarget pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -99,11 +93,6 @@ public class WebDavTarget implements Target {
 
     @Override
     public WebDavTarget queryParam(String name, Object value) throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTarget queryParam(String name, Object value, Annotation... annotations) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

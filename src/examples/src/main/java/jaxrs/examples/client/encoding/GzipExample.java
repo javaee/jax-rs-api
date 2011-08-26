@@ -44,6 +44,8 @@ import javax.ws.rs.client.Target;
 
 import jaxrs.examples.filter.compression.GzipHandler;
 
+import static javax.ws.rs.client.Entity.*;
+
 /**
  * @author Bill Burke
  * @author Marek Potociar
@@ -54,9 +56,9 @@ public class GzipExample {
         Target target = ClientFactory.newClient().register(GzipHandler.class).target("http://example.com/foo/bar.txt");
 
         // getting a gzip encoded body
-        String text = target.request("text/plain").get(String.class);
+        String body = target.request("text/plain").get(String.class);
 
         // send a gzip encoded body
-        target.request().header("Content-Encoding", "gzip").post(text);
+        target.request().header("Content-Encoding", "gzip").post(text(body));
     }
 }

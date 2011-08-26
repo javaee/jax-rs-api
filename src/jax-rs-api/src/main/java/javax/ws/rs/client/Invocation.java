@@ -39,10 +39,17 @@
  */
 package javax.ws.rs.client;
 
+import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.Future;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.Headers;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.RequestHeaders;
+import javax.ws.rs.core.Variant;
 
 /**
  *
@@ -58,15 +65,15 @@ public interface Invocation extends Configurable<Invocation> {
         // issues caused by mutable nature of the request
         public Invocation build(String method);
 
-        public Invocation build(String method, Object entity);
+        public Invocation build(String method, Entity<?> entity);
 
         public Invocation buildGet();
 
         public Invocation buildDelete();
 
-        public Invocation buildPost(Object entity);
+        public Invocation buildPost(Entity<?> entity);
 
-        public Invocation buildPut(Object entity);
+        public Invocation buildPut(Entity<?> entity);
         
         public AsyncInvoker async();
 

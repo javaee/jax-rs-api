@@ -57,6 +57,8 @@ import javax.ws.rs.core.TypeLiteral;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import static javax.ws.rs.client.Entity.*;
+
 /**
  * @author Bill Burke
  * @author Marek Potociar
@@ -135,7 +137,7 @@ public class BasicExamples {
         customer = response.getEntity(Customer.class);
         assert customer != null;
 
-        response = customersUri.request().type("application/xml").post(new Customer("Marek"));
+        response = customersUri.request().post(xml(new Customer("Marek")));
         assert response.getStatusCode() == 201;
     }
 
@@ -155,7 +157,7 @@ public class BasicExamples {
         Target customer = customersUri.path("{id}");
 
         // Create a customer
-        HttpResponse response = customersUri.request().type("application/xml").post(new Customer("Bill"));
+        HttpResponse response = customersUri.request().post(xml(new Customer("Bill")));
         assert response.getStatusCode() == 201;
 
         Customer favorite;
@@ -275,7 +277,7 @@ public class BasicExamples {
 
         client.target("http://examples.jaxrs.com/").request("text/plain").get();
         client.target("http://examples.jaxrs.com/").request("text/plain").async().get();
-        client.target("http://examples.jaxrs.com/").request().buildPut("Hi").invoke();
+        client.target("http://examples.jaxrs.com/").request().buildPut(text("Hi")).invoke();
         client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().submit();
 
 

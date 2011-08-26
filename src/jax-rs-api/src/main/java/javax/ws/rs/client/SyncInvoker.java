@@ -50,7 +50,6 @@ import javax.ws.rs.core.HttpResponse;
  */
 public interface SyncInvoker {
     // GET
-
     HttpResponse get() throws InvocationException;
 
      <T> T get(Class<T> responseType) throws InvocationException;
@@ -58,18 +57,18 @@ public interface SyncInvoker {
      <T> T get(TypeLiteral<T> responseType) throws InvocationException;
 
     // PUT
-    HttpResponse put(Object entity) throws InvocationException;
+    HttpResponse put(Entity<?> entity) throws InvocationException;
 
-     <T> T put(Object entity, Class<T> responseType) throws InvocationException;
+     <T> T put(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
-     <T> T put(Object entity, TypeLiteral<T> responseType) throws InvocationException;
+     <T> T put(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException;
 
     // POST
-    HttpResponse post(Object entity) throws InvocationException;
+    HttpResponse post(Entity<?> entity) throws InvocationException;
 
-     <T> T post(Object entity, Class<T> responseType) throws InvocationException;
+     <T> T post(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
-     <T> T post(Object entity, TypeLiteral<T> responseType) throws InvocationException;
+     <T> T post(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException;
 
     // DELETE
     HttpResponse delete() throws InvocationException;
@@ -93,11 +92,11 @@ public interface SyncInvoker {
      <T> T options(TypeLiteral<T> responseType) throws InvocationException;
 
     // TRACE
-    HttpResponse trace(Object entity) throws InvocationException;
+    HttpResponse trace(Entity<?> entity) throws InvocationException;
 
-     <T> T trace(Object entity, Class<T> responseType) throws InvocationException;
+     <T> T trace(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
-     <T> T trace(Object entity, TypeLiteral<T> responseType) throws InvocationException;
+     <T> T trace(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException;
 
     // ARBITRARY METHOD
     HttpResponse method(String name) throws InvocationException;
@@ -106,9 +105,9 @@ public interface SyncInvoker {
 
      <T> T method(String name, TypeLiteral<T> responseType) throws InvocationException;
 
-    HttpResponse method(String name, Object entity) throws InvocationException;
+    HttpResponse method(String name, Entity<?> entity) throws InvocationException;
 
-     <T> T method(String name, Object entity, Class<T> responseType) throws InvocationException;
+     <T> T method(String name, Entity<?> entity, Class<T> responseType) throws InvocationException;
 
-     <T> T method(String name, Object entity, TypeLiteral<T> responseType) throws InvocationException;
+     <T> T method(String name, Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException;
 }

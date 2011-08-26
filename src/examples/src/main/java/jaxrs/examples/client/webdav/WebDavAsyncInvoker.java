@@ -41,6 +41,7 @@ package jaxrs.examples.client.webdav;
 
 import java.util.concurrent.Future;
 import javax.ws.rs.client.AsyncInvoker;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpResponse;
 
 /**
@@ -49,7 +50,7 @@ import javax.ws.rs.core.HttpResponse;
  */
 public interface WebDavAsyncInvoker extends AsyncInvoker {
 
-    public Future<HttpResponse> search(Object entity);
+    public Future<HttpResponse> search(Entity<?> entity);
     
     // TODO other WebDAV methods    
 }

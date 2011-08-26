@@ -37,19 +37,82 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.client.webdav;
+package javax.ws.rs.client;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.SyncInvoker;
-import javax.ws.rs.core.HttpResponse;
+import java.util.Locale;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Variant;
 
 /**
+ * TODO javadoc.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @param <T> 
+ * @author Marek Potociar
  */
-public interface WebDavSyncInvoker extends SyncInvoker {
+public class Entity<T> {
+
+    private final T entity;
+    private final Variant variant;
+
+    public static <T> Entity<T> entity(T entity, MediaType mediaType) {
+        return new Entity<T>(entity, mediaType);
+    }
+
+    public static <T> Entity<T> entity(T entity, String mediaType) throws IllegalStateException {
+        return new Entity<T>(entity, MediaType.valueOf(mediaType));
+    }
+
+    public static <T> Entity<T> entity(T entity, Variant variant) throws IllegalStateException {
+        return new Entity<T>(entity, variant);
+    }
+
+    public static <T> Entity<T> text(T entity) {
+        return new Entity<T>(entity, MediaType.TEXT_PLAIN_TYPE);
+    }
+
+    public static <T> Entity<T> xml(T entity) {
+        return new Entity<T>(entity, MediaType.APPLICATION_XML_TYPE);
+    }
+
+    public static <T> Entity<T> json(T entity) {
+        return new Entity<T>(entity, MediaType.APPLICATION_JSON_TYPE);
+    }
+
+    public static <T> Entity<T> html(T entity) {
+        return new Entity<T>(entity, MediaType.TEXT_HTML_TYPE);
+    }
+
+    public static <T> Entity<T> xhtml(T entity) {
+        return new Entity<T>(entity, MediaType.APPLICATION_XHTML_XML_TYPE);
+    }
+
+    private Entity(T entity, MediaType mediaType) {
+        this.entity = entity;
+        this.variant = new Variant(mediaType, null, null);
+    }
     
-    public HttpResponse search(Entity<?> entity);
+    private Entity(T entity, Variant variant) {
+        this.entity = entity;
+        this.variant = variant;
+    }
+
+    public Variant getVariant() {
+        return variant;
+    }
     
-    // TODO other WebDAV methods
+    public MediaType getMediaType() {
+        return variant.getMediaType();
+    }
+
+    public String getEncoding() {
+        return variant.getEncoding();
+    }
+
+    public Locale getLanguage() {
+        return variant.getLanguage();
+    }
+
+    public T getEntity() {
+        return entity;
+    }
 }

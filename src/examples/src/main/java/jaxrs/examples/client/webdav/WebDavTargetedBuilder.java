@@ -43,6 +43,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.client.Configurable;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationException;
@@ -70,7 +71,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public Invocation build(String method, Object entity) {
+    public Invocation build(String method, Entity<?> entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -85,12 +86,12 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public Invocation buildPost(Object entity) {
+    public Invocation buildPost(Entity<?> entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Invocation buildPut(Object entity) {
+    public Invocation buildPut(Entity<?> entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -260,32 +261,32 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse put(Object entity) throws InvocationException {
+    public HttpResponse put(Entity<?> entity) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T put(Object entity, Class<T> responseType) throws InvocationException {
+    public <T> T put(Entity<?> entity, Class<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T put(Object entity, TypeLiteral<T> responseType) throws InvocationException {
+    public <T> T put(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public HttpResponse post(Object entity) throws InvocationException {
+    public HttpResponse post(Entity<?> entity) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T post(Object entity, Class<T> responseType) throws InvocationException {
+    public <T> T post(Entity<?> entity, Class<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T post(Object entity, TypeLiteral<T> responseType) throws InvocationException {
+    public <T> T post(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -335,17 +336,17 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse trace(Object entity) throws InvocationException {
+    public HttpResponse trace(Entity<?> entity) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T trace(Object entity, Class<T> responseType) throws InvocationException {
+    public <T> T trace(Entity<?> entity, Class<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T trace(Object entity, TypeLiteral<T> responseType) throws InvocationException {
+    public <T> T trace(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -365,22 +366,22 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse method(String name, Object entity) throws InvocationException {
+    public HttpResponse method(String name, Entity<?> entity) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T method(String name, Object entity, Class<T> responseType) throws InvocationException {
+    public <T> T method(String name, Entity<?> entity, Class<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T method(String name, Object entity, TypeLiteral<T> responseType) throws InvocationException {
+    public <T> T method(String name, Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public HttpResponse search(Object entity) {
+    public HttpResponse search(Entity<?> entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

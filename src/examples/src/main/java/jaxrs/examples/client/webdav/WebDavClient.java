@@ -45,7 +45,6 @@ import java.util.Set;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Feature;
-import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
