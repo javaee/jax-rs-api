@@ -52,8 +52,6 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.Headers;
 import javax.ws.rs.core.HttpResponse;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Variant;
 
 /**
  *
@@ -101,16 +99,6 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public WebDavTargetedBuilder accept(MediaType... types) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder accept(String... types) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public WebDavTargetedBuilder acceptLanguage(Locale... locales) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -141,42 +129,12 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public WebDavTargetedBuilder encoding(String encoding) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public WebDavTargetedBuilder header(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public WebDavTargetedBuilder headers(Headers headers) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder language(String language) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder language(Locale language) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder type(MediaType type) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder type(String type) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder variant(Variant variant) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

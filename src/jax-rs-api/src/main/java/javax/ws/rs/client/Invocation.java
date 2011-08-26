@@ -45,20 +45,19 @@ import java.util.concurrent.Future;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Headers;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.HttpResponse;
-import javax.ws.rs.core.RequestHeaders;
-import javax.ws.rs.core.Variant;
 
 /**
  *
  * @author Marek Potociar
  */
 public interface Invocation extends Configurable<Invocation> {
-    public static interface Builder extends RequestHeaders.Builder<Builder>, Configurable<Builder>, SyncInvoker {
 
-        // InvocationBuilder methods
+    public static interface Builder extends Configurable<Builder>, SyncInvoker {
+
+        // Invocation builder methods
         // TODO: document that the request instance needs to be cloned so that the 
         // data used in the invocation processing chain are decoupled from the original
         // request data that were used to initiate the invocation to prevent accidental
@@ -74,9 +73,25 @@ public interface Invocation extends Configurable<Invocation> {
         public Invocation buildPost(Entity<?> entity);
 
         public Invocation buildPut(Entity<?> entity);
-        
+
         public AsyncInvoker async();
 
+        // Headers builder methods
+        public Builder acceptLanguage(Locale... locales);
+
+        public Builder acceptLanguage(String... locales);
+
+        public Builder cookie(Cookie cookie);
+
+        public Builder allow(String... methods);
+
+        public Builder allow(Set<String> methods);
+
+        public Builder cacheControl(CacheControl cacheControl);
+
+        public Builder header(String name, Object value);
+
+        public Builder headers(Headers headers);
     }
 
     public HttpResponse invoke() throws InvocationException;
@@ -92,4 +107,6 @@ public interface Invocation extends Configurable<Invocation> {
     public <T> Future<T> submit(TypeLiteral<T> responseType);
 
     public <T> Future<T> submit(InvocationCallback<T> callback);
+
+    public HttpRequest asRequest();
 }
