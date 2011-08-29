@@ -39,10 +39,6 @@
  */
 package javax.ws.rs.core;
 
-import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Represents the the HTML form data request entity encoded using the
  * {@code "application/x-www-form-urlencoded"} content type.
@@ -51,38 +47,5 @@ import java.util.List;
  * @since 2.0
  */
 public class Form extends MultivaluedHashMap<String, String> {
-
     private static final long serialVersionUID = 9081959911712065219L;
-    //
-    private final MultivaluedHashMap<String, Annotation> parameterAnnotations = new MultivaluedHashMap<String, Annotation>();
-
-    /**
-     * Add a new form parameter with custom annotations attached.
-     *
-     * @param parameterName form parameter name.
-     * @param value form parameter value.
-     * @param annotations array of annotations to be attached to the form parameter.
-     * @throws NullPointerException if the supplied parameter annotation array 
-     *     is {@code null}.
-     */
-    public void add(String parameterName, String value, Annotation... annotations) {
-        add(parameterName, value);
-        parameterAnnotations.addAll(parameterName, annotations);
-    }
-    
-    /**
-     * Return a non-null list of annotations attached to a given form parameter.
-     * If there are no annotations attached to the given parameter or if the
-     * parameter does not exist, the returned list will be empty.
-     *
-     * @param parameterName the form parameter name.
-     * @return annotations attached to the form parameter. If the parameter 
-     *     does not exist or if there are no annotations attached to the parameter,
-     *     an empty annotation list is returned. The method is guaranteed to never
-     *     return {@code null}.
-     */
-    public List<Annotation> getParameterAnnotations(String parameterName) {
-        List<Annotation> annotations = parameterAnnotations.get(parameterName);
-        return (annotations != null) ? annotations : Collections.<Annotation>emptyList();
-    }
 }
