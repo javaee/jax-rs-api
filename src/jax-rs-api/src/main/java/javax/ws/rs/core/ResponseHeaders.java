@@ -52,23 +52,24 @@ import javax.ws.rs.core.Response.Status;
  * @since 2.0
  */
 public interface ResponseHeaders extends Headers {
-    /*
-    entity-header  =                                Req     Res
-      *  Content-Location         ; Section 14.14     ?       +
-        Content-Range            ; Section 14.16     -       +
-      *  Expires                  ; Section 14.21     -       +
-      *  Last-Modified            ; Section 14.29     -       +
-    
-    response-header = 
-        Accept-Ranges           ; Section 14.5
-        Age                     ; Section 14.6
-      *  ETag                    ; Section 14.19
-      *  Location                ; Section 14.30
-        Proxy-Authenticate      ; Section 14.33
-        Retry-After             ; Section 14.37
-        Server                  ; Section 14.38
-      *  Vary                    ; Section 14.44
-        WWW-Authenticate        ; Section 14.47
+
+    /**
+     * entity-header =                                      Req     Res
+     *       *  Content-Location         ; Section 14.14     ?       +
+     *          Content-Range            ; Section 14.16     -       +
+     *       *  Expires                  ; Section 14.21     -       +
+     *       *  Last-Modified            ; Section 14.29     -       +
+     *    
+     * response-header =
+     *          Accept-Ranges           ; Section 14.5
+     *          Age                     ; Section 14.6
+     *       *  ETag                    ; Section 14.19
+     *       *  Location                ; Section 14.30
+     *          Proxy-Authenticate      ; Section 14.33
+     *          Retry-After             ; Section 14.37
+     *          Server                  ; Section 14.38
+     *       *  Vary                    ; Section 14.44
+     *          WWW-Authenticate        ; Section 14.47
      */
     /**
      * TODO javadoc.
@@ -76,7 +77,7 @@ public interface ResponseHeaders extends Headers {
      * @param <T> actual response headers builder type.
      * @author Marek Potociar
      * @since 2.0
-     */    
+     */
     public static interface Builder<T extends Builder> extends Headers.Builder<T> {
 
         /**
@@ -116,7 +117,7 @@ public interface ResponseHeaders extends Headers {
          * @return the updated response headers builder.
          */
         T lastModified(Date lastModified);
-        
+
         /**
          * Set the location.
          *
@@ -126,8 +127,8 @@ public interface ResponseHeaders extends Headers {
          *     If {@code null} any existing value for location will be removed.
          * @return the updated response header builder.
          */
-        T location(URI location);        
-        
+        T location(URI location);
+
         /**
          * Set a response entity tag.
          *
@@ -157,7 +158,7 @@ public interface ResponseHeaders extends Headers {
          * @return the updated response header builder.
          */
         T variants(Variant... variants);
-        
+
         /**
          * Add one or more link headers.
          * 
@@ -167,8 +168,7 @@ public interface ResponseHeaders extends Headers {
          */
         T links(Link... links);
     }
-    
-    
+
     /**
      * Get any new cookies set on the response message.
      * 
@@ -184,7 +184,6 @@ public interface ResponseHeaders extends Headers {
     EntityTag getEntityTag();
 
     // TODO add support for link headers
-
     /**
      * Get the last modified date.
      *
@@ -209,7 +208,7 @@ public interface ResponseHeaders extends Headers {
      * {@link javax.ws.rs.core.Response.Status response status enumeration} value.
      */
     Status getStatus();
-    
+
     /**
      * Get the response status code.
      *
@@ -217,8 +216,8 @@ public interface ResponseHeaders extends Headers {
      *
      */
     int getStatusCode();
-    
+
     Set<Link> getLinks();
-    
+
     Link getLink(String relation);
 }

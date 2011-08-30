@@ -51,32 +51,32 @@ import java.util.Set;
  * @since 2.0
  */
 public interface Headers {
-    /*
-    general-header =                                
-     * Cache-Control            ; Section 14.9
-    Connection               ; Section 14.10
-    a? Date                     ; Section 14.18
-    Pragma                   ; Section 14.32
-    Trailer                  ; Section 14.40
-    Transfer-Encoding        ; Section 14.41
-    Upgrade                  ; Section 14.42
-    Via                      ; Section 14.45
-    Warning                  ; Section 14.46
-    
-    entity-header  =                                Req     Res
-     *  Allow                    ; Section 14.7      +       +
-     *  Content-Encoding         ; Section 14.11     +       +
-     *  Content-Language         ; Section 14.12     +       +
-    a  Content-Length           ; Section 14.13     +       +
-    -  Content-Location         ; Section 14.14     ?       +
-    Content-MD5              ; Section 14.15     +       +
-    Content-Range            ; Section 14.16     -       +
-     *  Content-Type             ; Section 14.17     +       +
-    -  Expires                  ; Section 14.21     -       +
-    -  Last-Modified            ; Section 14.29     -       +
-     *  extension-header = message-header
-     */
 
+    /**
+     * general-header =
+     *      * Cache-Control            ; Section 14.9
+     *        Connection               ; Section 14.10
+     *        a? Date                  ; Section 14.18
+     *        Pragma                   ; Section 14.32
+     *        Trailer                  ; Section 14.40
+     *        Transfer-Encoding        ; Section 14.41
+     *        Upgrade                  ; Section 14.42
+     *        Via                      ; Section 14.45
+     *        Warning                  ; Section 14.46
+     *
+     * entity-header  =                                    Req     Res
+     *      *  Allow                    ; Section 14.7      +       +
+     *      *  Content-Encoding         ; Section 14.11     +       +
+     *      *  Content-Language         ; Section 14.12     +       +
+     *      a  Content-Length           ; Section 14.13     +       +
+     *      -  Content-Location         ; Section 14.14     ?       +
+     *         Content-MD5              ; Section 14.15     +       +
+     *         Content-Range            ; Section 14.16     -       +
+     *      *  Content-Type             ; Section 14.17     +       +
+     *      -  Expires                  ; Section 14.21     -       +
+     *      -  Last-Modified            ; Section 14.29     -       +
+     *      *  extension-header = message-header
+     */
     /**
      * TODO javadoc.
      * 
