@@ -46,6 +46,45 @@ package javax.ws.rs.core;
  * @author Marek Potociar
  * @since 2.0
  */
-public class Form extends MultivaluedHashMap<String, String> {
+public class Form {
+
     private static final long serialVersionUID = 9081959911712065219L;
+    private final MultivaluedMap<String, String> parameters;
+
+    public Form() {
+        this(new MultivaluedHashMap<String, String>());
+    }
+
+    public Form(String parameterName, String parameterValue) {
+        this(new MultivaluedHashMap<String, String>());
+        
+        parameters.add(parameterName, parameterValue);
+    }
+
+    public Form(MultivaluedMap<String, String> store) {
+        this.parameters = store;
+    }
+
+    /**
+     * Adds a new value to the specified form parameter.
+     *
+     * @param name name of the parameter.
+     * @param value new parameter value to be added.
+     * @return updated {@code Form} instance.
+     */
+    public Form param(String name, String value) {
+        parameters.add(name, value);
+
+        return this;
+    }
+    
+    /**
+     * Returns multivalued map representation of the form.
+     * 
+     * @return form represented as multivalued map.
+     * @see MultivaluedMap
+     */
+    public MultivaluedMap<String, String> asMap() {
+        return parameters;
+    }
 }

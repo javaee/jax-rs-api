@@ -40,7 +40,9 @@
 package javax.ws.rs.client;
 
 import java.util.Locale;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Variant;
 
 /**
@@ -84,6 +86,14 @@ public class Entity<T> {
 
     public static <T> Entity<T> xhtml(T entity) {
         return new Entity<T>(entity, MediaType.APPLICATION_XHTML_XML_TYPE);
+    }
+    
+    public static Entity<Form> form(Form form) {
+        return new Entity<Form>(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+    }
+
+    public static Entity<Form> form(MultivaluedMap<String, String> formData) {
+        return new Entity<Form>(new Form(formData), MediaType.APPLICATION_FORM_URLENCODED_TYPE);
     }
 
     private Entity(T entity, MediaType mediaType) {

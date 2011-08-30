@@ -39,6 +39,7 @@
  */
 package jaxrs.examples.client;
 
+import javax.ws.rs.core.Form;
 import java.util.List;
 import java.util.concurrent.Future;
 import jaxrs.examples.client.custom.ThrottledClient;
@@ -53,6 +54,8 @@ import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpResponse;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.TypeLiteral;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -295,6 +298,15 @@ public class BasicExamples {
         client.target("http://examples.jaxrs.com/").path("123").request("text/plain").header("custom-name", "custom_value").async().get();
         client.target("http://examples.jaxrs.com/").path("123").request("text/plain").header("custom-name", "custom_value").buildGet().invoke();
         client.target("http://examples.jaxrs.com/").path("123").request("text/plain").header("custom-name", "custom_value").buildGet().submit();
+        
+        // POSTing Forms
+        client.target("http://examples.jaxrs.com/").path("123").request(MediaType.APPLICATION_JSON).post(form(new Form("param1", "a").param("param2", "b")));
+        
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+        formData.add("param1", "a");
+        formData.add("param2", "b");
+        client.target("http://examples.jaxrs.com/").path("123").request(MediaType.APPLICATION_JSON).post(form(formData));
+        
 
         // Configurable
         client.enable(TestFeature.class);
