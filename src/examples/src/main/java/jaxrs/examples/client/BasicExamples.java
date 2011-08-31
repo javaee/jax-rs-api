@@ -39,6 +39,7 @@
  */
 package jaxrs.examples.client;
 
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Form;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -318,5 +319,19 @@ public class BasicExamples {
         client.target("http://examples.jaxrs.com/").path("123").enable(TestFeature.class).request("text/plain").header("custom-name", "custom_value").async().get();
         client.target("http://examples.jaxrs.com/").path("123").request("text/plain").enable(TestFeature.class).header("custom-name", "custom_value").buildGet().invoke();
         client.target("http://examples.jaxrs.com/").path("123").request("text/plain").header("custom-name", "custom_value").enable(TestFeature.class).buildGet().submit();
+    }
+    
+    public void invocationFlexibility() {
+        // For users who really need it...
+       Invocation i = ClientFactory.newClient().target("http://examples.jaxrs.com/").path("greeting").request("text/plain").header("custom-name", "custom_value").buildPut(text("Hi"));       
+       
+       i.asRequest()
+               .accept("text/html")                             // Actually it's HTML I want to receive back
+               .method("POST")                                  // ...and it turns out, the service does not support PUT
+               .type(MediaType.APPLICATION_FORM_URLENCODED)     // ...and the data must be form-urlencoded
+               .entity("Dear Sir or Madam")                     // ...and we are not close friends after all
+               .redirect("http://jaxrs.org/examples/greeting"); // ...oops, I almost forgot that the service was moved last month and the old domain is down!
+       
+       i.invoke();                                              // Ok, now I can send the updated request
     }
 }
