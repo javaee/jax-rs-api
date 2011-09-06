@@ -46,15 +46,15 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Injects a resource method parameter, resource class field, or resource class
- * bean property with a {@link java.lang.annotation.Target resource target}
- * pointing at a resource identified by the resolved URI.
+ * Injects a {@link java.lang.annotation.Target resource target} pointing at
+ * a resource identified by the resolved URI into a method parameter,
+ * class field or a bean property.
  * <p/>
  * Injected variable must be of type {@link javax.ws.rs.client.Target}.
  *
  * @author Marek Potociar
  * @see javax.ws.rs.client.Target
- * @see Path
+ *
  * @since 2.0
  */
 @java.lang.annotation.Target({PARAMETER, FIELD, METHOD})
@@ -115,6 +115,9 @@ public @interface Uri {
      *    ...
      *}
      * </pre>
+     * 
+     * @see javax.ws.rs.client.Target
+     * @see javax.ws.rs.Path
      */
     String value();
 }
