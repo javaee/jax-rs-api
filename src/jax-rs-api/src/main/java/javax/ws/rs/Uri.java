@@ -61,12 +61,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Documented
 public @interface Uri {
+
     /**
-     * Specifies the URI of the injected {@link javax.ws.rs.client.Target resource target}. 
+     * Specifies the URI of the injected {@link javax.ws.rs.client.Target resource target}.
      * The value must be in the form of absolute URI if not used from inside of
      * a JAX-RS component class. For example:
      * <pre>
-     * 
+     *
      *public class AuditingFilter implements RequestFilter {
      *    &#64;Uri("users/{name}/orders")
      *    Target userOrders;
@@ -78,13 +79,13 @@ public @interface Uri {
      *    ...
      *}
      * </pre>
-     * 
+     *
      * If used from within a JAX-RS component class (e.g. resource, filter, provider &hellip;),
      * the value can take a form of absolute or relative URI or absolute or relative URI.
      * A relative URI is resolved using the {@link ApplicationPath application path}
      * as the base URI. For example:
      * <pre>
-     * 
+     *
      *public class AuditingFilter implements RequestFilter {
      *    &#64;Uri("audit/logs")
      *    Target applicationLogs;
@@ -95,14 +96,14 @@ public @interface Uri {
      *    ...
      *}
      * </pre>
-     * 
+     *
      * In case the annotation is used from a JAX-RS resource class, an absolute
      * or relative URI template value may be provided. The template parameter (e.g. {id})
      * values are resolved in the context of the enclosing resource class
      * {@link Path path template} as well as the context of the processed request.
      * For example:
      * <pre>
-     * 
+     *
      *&#64;Path("users/{name}")
      *public class MyResource {
      *    &#64;Uri("users/{name}/orders")
