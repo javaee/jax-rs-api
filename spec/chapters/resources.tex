@@ -276,6 +276,36 @@ In the above:
 
 An implementation MUST NOT invoke a method whose effective value of \Produces\ does not match the request \code{Accept} header. An implementation MUST NOT invoke a method whose effective value of \Consumes\ does not match the request \code{Content-Type} header.
 
+When accepting multiple media types, clients may indicate preferences by using a relative quality factor known as the q parameter. The value of the q parameter, or q-value, is used to sort the set of accepted types. For example, a client may indicate preference for \code{application/widgets+xml} with a relative quality factor of 1 and for \code{application/xml} with a relative quality factor of 0.8. Q-values range from 0 (undesirable) to 1 (highly desirable), with 1 used as default when omitted. A \code{GET} request matched to the \code{WidgetsResource} class with an accept header of \code{text/html; q=1, application/widgets+xml; q=0.8} will result in a call to method \code{getAsHtml} instead of \code{getAsXML} based on the value of q. 
+
+A server can also indicate media type preference using the qs parameter; server preference is only examined when multiple media types are accepted by a client {\em with the same q-value}. Consider the following example:
+
+\begin{listing}{1}
+@Path("widgets2")
+public class WidgetsResource2 {
+  
+  @GET
+  @Produces("application/xml", "application/json")
+  public Widgets getAsXML() {...}
+
+}
+\end{listing}
+
+Suppose a client issues a \code{GET} request with an accept header of \code{application/*; q=0.5, text/html}. Based on this request, the server determines that both \code{application/xml} and \code{application/json} are equally preferred by the client with a q-value of 0.5. By specifying a server relative quality factor as part of the \Produces\ annotation, it is possible to control which response media type to select:
+
+\begin{listing}{1}
+@Path("widgets2")
+public class WidgetsResource2 {
+  
+  @GET
+  @Produces("application/xml; qs=1", "application/json; qs=0.5")
+  public Widgets getAsXML() {...}
+
+}
+\end{listing}
+
+With the updated value for \Produces\ in this example, and in response to a \code{GET} request with an accept header of \code{application/*; q=0.5, text/html}, JAX-RS implementations will select the media type \code{application/xml} for the response given its higher qs-value. Note that qs-values, just like q-values, are relative and as such are only comparable to other qs-values within the same \Produces\ annotation instance. For more information see Section~\ref{determine_response_type}.
+
 \section{Annotation Inheritance}
 \label{annotationinheritance}
 
@@ -459,13 +489,13 @@ In many cases it is not possible to statically determine the media type of a res
 \begin{itemize}
 \item For each member of $P, p$:
 \begin{itemize}
-\item If $a$ is compatible with $p$, add $S(a,p)$ to $M$, where the function $S$ returns the most specific media type of the pair with the q-value of $a$.
+\item If $a$ is compatible with $p$, add $S(a,p)$ to $M$, where the function $S$ returns the most specific media type of the pair with the q-value of $a$ and server-side qs-value of $p$.
 \end{itemize}
 \end{itemize}
 
 \item If $M = \{\}$ then generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}. Finish.
 
-\item Sort $M$ in descending order, with a primary key of specificity ($\mbox{n/m} > \mbox{n/*} > \mbox{*/*}$)  and secondary key of q-value.
+\item Sort $M$ in descending order, with a primary key of specificity ($\mbox{n/m} > \mbox{n/*} > \mbox{*/*}$), a secondary key of q-value and a tertiary key of qs-value.
 
 \item For each member of $M, m$:
 \begin{itemize}
