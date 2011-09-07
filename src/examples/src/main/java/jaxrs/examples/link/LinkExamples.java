@@ -1,29 +1,64 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * 
+ * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * 
+ * The contents of this file are subject to the terms of either the GNU
+ * General Public License Version 2 only ("GPL") or the Common Development
+ * and Distribution License("CDDL") (collectively, the "License").  You
+ * may not use this file except in compliance with the License.  You can
+ * obtain a copy of the License at
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
+ * or packager/legal/LICENSE.txt.  See the License for the specific
+ * language governing permissions and limitations under the License.
+ * 
+ * When distributing the software, include this License Header Notice in each
+ * file and include the License file at packager/legal/LICENSE.txt.
+ * 
+ * GPL Classpath Exception:
+ * Oracle designates this particular file as subject to the "Classpath"
+ * exception as provided by Oracle in the GPL Version 2 section of the License
+ * file that accompanied this code.
+ * 
+ * Modifications:
+ * If applicable, add the following below the License Header, with the fields
+ * enclosed by brackets [] replaced by your own identifying information:
+ * "Portions Copyright [year] [name of copyright owner]"
+ * 
+ * Contributor(s):
+ * If you wish your version of this file to be governed by only the CDDL or
+ * only the GPL Version 2, indicate your decision by adding "[Contributor]
+ * elects to include this software in this distribution under the [CDDL or GPL
+ * Version 2] license."  If you don't indicate a single choice of license, a
+ * recipient has the option to distribute your version of this file under
+ * either the CDDL, the GPL Version 2 or to extend the choice of license to
+ * its licensees as provided above.  However, if you add GPL Version 2 code
+ * and therefore, elected the GPL Version 2 license, then the option applies
+ * only if the new code is made subject to such option by the copyright
+ * holder.
+ */
+
 package jaxrs.examples.link;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Link;
-import javax.ws.rs.core.LinkBuilder;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 /**
  * LinkExamples class.
  *
- * @author Santiago.Pericas-Geertsen@oracle.com
+ * @author Santiago Pericas-Geertsen
  */
 public class LinkExamples {
-    
-    @Path("employees")
-    static class EmployeeResource {  }
     
     /**
      * 3-step process: Build URI, build Link and build Response.
      */
     public Response example1() {
         URI uri = UriBuilder.fromUri("http://foo.bar/employee/john").build();
-        Link link = LinkBuilder.fromUri(uri).rel("emp").title("employee").build();
+        Link link = Link.fromUri(uri).rel("emp").title("employee").build();
         return Response.ok().linkHeader(link).build();
     }
     
@@ -31,8 +66,9 @@ public class LinkExamples {
      * 2-step process: Build Link from String and build Response.
      */
     public Response example2() {
-        Link link = LinkBuilder.fromUri("http://foo.bar/employee/john")
-                .rel("manager").title("employee").build();
+        Link link = Link.fromUri("http://foo.bar/employee/john")
+                .rel("manager").rel("friend").title("employee").type("application/xml").build();
+        System.out.println("Link = " + link);
         return Response.ok().linkHeader(link).build();
     }
     
@@ -49,39 +85,4 @@ public class LinkExamples {
         return r;
     }
     
-    /**
-     * 3-step process: Build URI, build Link and build Response.
-     */
-    public Response example11() {
-        URI uri = UriBuilder.fromUri("http://foo.bar/employee/john").build();
-        Link link = Link.fromUri(uri).rel("emp").title("employee").build();
-        return Response.ok().linkHeader(link).build();
-    }
-    
-    /**
-     * 2-step process: Build Link from String and build Response.
-     */
-    public Response example21() {
-        Link link = Link.fromUri("http://foo.bar/employee/john")
-                .rel("manager").rel("friend").title("employee").type("application/xml").build();
-        System.out.println("Link = " + link);
-        return Response.ok().build(); // .linkHeader(link).build();
-    }
-    
-    /**
-     * 1-step process: Build Response and add a link directly to it
-     * using either a String or a URI.
-     * @return 
-     */
-    public Response example31() throws URISyntaxException {
-        Response r;
-        r = Response.ok().linkHeader("http://foo.bar/employee/john", "manager").build();
-        r = Response.ok().linkHeader(new URI("http://foo.bar/employee/john"), 
-                                     "manager").build();
-        return r;
-    }
-    
-    public static void main(String... args) {
-        new LinkExamples().example21();
-    }
 }

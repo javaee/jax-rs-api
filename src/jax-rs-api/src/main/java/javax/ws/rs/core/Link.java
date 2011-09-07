@@ -40,26 +40,205 @@
 package javax.ws.rs.core;
 
 import java.net.URI;
-import java.util.Set;
+import java.net.URISyntaxException;
+import java.util.List;
 
 /**
- *
+ * Link class.
+ * 
  * @author Marek Potociar
+ * @author Santiago Pericas-Geertsen
  */
-public interface Link {
-    // TODO add builder
+public class Link {
 
-    public URI getUri();
+    private URI uri;
+    
+    private URI context;
+    
+    private MultivaluedMap<String, String> map = new MultivaluedHashMap();
 
-    public UriBuilder getUriBuilder();
+    /**
+     * Returns the underlying URI associated with this link.
+     * 
+     * @return Underlying URI 
+     */
+    public URI getUri() {
+        return uri;
+    }
 
-    public URI getContextUri();
+    /** 
+     * Convenience method that returns a {@link UriBuilder}
+     * initialized with this link's underlying URI.
+     * 
+     * @return UriBuilder initialized using underlying URI 
+     */
+    public UriBuilder getBuilder() {
+        return UriBuilder.fromUri(uri);
+    }
 
-    public Set<String> getRelationTypes();
+    /**
+     * Returns context URI for this link, if set.
+     * 
+     * @return Context URI or null if not set.
+     */
+    public URI getContextUri() {
+        return context;
+    }
 
-    public String getTitle();
+    /**
+     * Returns a list containing all the relations types defined
+     * on this link via the "rel" parameter. If no relation types are 
+     * defined, this method returns an empty list.
+     * 
+     * @return List of relation types
+     */
+    public List<String> getRelationTypes() {
+        return map.get("rel");
+    }
 
-    public MediaType getMediaType();
+    /**
+     * Returns the value associated with the link param "title", or
+     * null if this param is not specified in this link.
+     * 
+     * @return Value of "title" parameter
+     */
+    public String getTitle() {
+        return map.getFirst("title");
+    }
 
-    public MultivaluedMap<String, String> getAttributes();
+    /**
+     * Returns the value associated with the link parm "type", or
+     * null if this param is not specified in this link.
+     * 
+     * @return Value of "type" parameter
+     */
+    public MediaType getMediaType() {
+        return MediaType.valueOf(map.getFirst("type"));
+    }
+
+    /**
+     * Returns an immutable map that includes all the link parameters
+     * defined on this link. If defined, this map will include entries
+     * for "rel", "title" and "type".
+     * 
+     * @return Immutable map of link parameters
+     */
+    public MultivaluedMap<String, String> getLinkParams() {
+        return new MultivaluedHashMap<String, String>(map);
+    }
+
+    /**
+     * Returns a simplified string representation for this link's value. 
+     * All link params are serialized as link-param="value" where value
+     * is a list of space-separated tokens. For example,
+     * 
+     * <http://foo.bar/employee/john>; title="employee"; rel="manager friend"
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('<').append(uri).append('>');
+        for (String key : map.keySet()) {
+            sb.append("; ").append(key).append("=\"");
+            boolean first = true;
+            for (String value : map.get(key)) {
+                sb.append(first ? "" : " ");
+                sb.append(value);
+                first = false;
+            }
+            sb.append("\"");
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Create a new instance initialized from an existing URI.
+     * @param uri a URI that will be used to initialize the LinkBuilder.
+     * @return a new LinkBuilder
+     * @throws IllegalArgumentException if uri is null
+     */
+    public static LinkBuilder fromUri(URI uri) throws IllegalArgumentException {
+        LinkBuilder b = new LinkBuilder();
+        b.uri(uri);
+        return b;
+    }
+
+    /**
+     * Create a new instance initialized from an existing URI.
+     * @param uri a URI that will be used to initialize the LinkBuilder.
+     * @return a new LinkBuilder
+     * @throws IllegalArgumentException if uri is null
+     */
+    public static LinkBuilder fromUri(String uri) throws IllegalArgumentException {
+        LinkBuilder b = new LinkBuilder();
+        b.uri(uri);
+        return b;
+    }
+
+    public static class LinkBuilder {
+
+        private Link link = new Link();
+        
+        protected LinkBuilder() {
+        }
+
+        public LinkBuilder uri(URI uri) throws IllegalArgumentException {
+            link.uri = uri;
+            return this;
+        }
+
+        public LinkBuilder uri(String uri) throws IllegalArgumentException {
+            try {
+                link.uri = new URI(uri);
+            } catch (URISyntaxException ex) {
+                throw new IllegalArgumentException(ex);
+            }
+            return this;
+        }
+
+        public LinkBuilder context(URI context) throws IllegalArgumentException {
+            link.context = context;
+            return this;
+        }
+
+        public LinkBuilder context(String context) throws IllegalArgumentException {
+            try {
+                link.context = new URI(context);
+            } catch (URISyntaxException ex) {
+                throw new IllegalArgumentException(ex);
+            }
+            return this;
+        }
+        
+        public LinkBuilder rel(String name) throws IllegalArgumentException {
+            link.map.add("rel", name);
+            return this;
+        }
+
+        public LinkBuilder title(String name) throws IllegalArgumentException {
+            link.map.add("title", name);
+            return this;
+            
+        }
+
+        public LinkBuilder type(String name) throws IllegalArgumentException {
+            link.map.add("type", name);
+            return this;
+            
+        }
+
+        public LinkBuilder type(MediaType type) throws IllegalArgumentException {
+            return type(type.toString());
+            
+        }
+
+        public LinkBuilder param(String name, String value) throws IllegalArgumentException {
+            link.map.add(name, value);
+            return this;            
+        }
+
+        public Link build() {
+            return link;
+        }
+    }
 }

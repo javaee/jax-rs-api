@@ -600,6 +600,13 @@ public abstract class Response {
          * @return the updated ResponseBuilder
          */
         public abstract ResponseBuilder cookie(NewCookie... cookies);
+        
+        public abstract ResponseBuilder linkHeader(Link link);
+        
+        public abstract ResponseBuilder linkHeader(URI uri, String rel);
+        
+        public abstract ResponseBuilder linkHeader(String uri, String rel);
+        
     }
 
     /**
