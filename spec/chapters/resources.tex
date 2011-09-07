@@ -327,8 +327,13 @@ A request is matched to the corresponding resource method or sub-resource method
 \begin{enumerate}
 \item Identify the root resource class:
 
+\begin{description}
+\item[Input]  $U=\mbox{request URI path},C=\{\mbox{root resource classes}\}$
+\item[Output] $U=\mbox{final capturing group not yet matched}, O=\mbox{instance of resource class matched so far}$
+\end{description}
+
 \begin{enumerate}
-\item Set $U=\mbox{request URI path}, C=\{\mbox{root resource classes}\}, E=\{\}$
+\item Set $E=\{\}$
 
 \item For each class in $C$ add a regular expression (computed using the function $R(A)$ described in section \ref{template_to_regex}) to $E$ as follows:
 \begin{itemize}
@@ -350,6 +355,11 @@ A request is matched to the corresponding resource method or sub-resource method
 \end{enumerate}
 
 \item \label{find_object} Obtain the object that will handle the request and a set of candidate methods:
+
+\begin{description}
+\item[Input]   $U=\mbox{final capturing group not yet matched}, O=\mbox{instance of resource class matched so far}$
+\item[Output] $O=\mbox{instance of resource class matched}, M=\mbox{candidate resource methods of $O$}$
+\end{description}
 
 \begin{enumerate}
 \item \label{check_null} If $U$ is null or \lq/\rq, set
@@ -387,6 +397,12 @@ $$M = \{\mbox{subresource methods of }O \mbox{ where } R(T_{\mbox{method}}) = R_
 
 \item \label{find_method} Identify the method that will handle the request:
 
+\begin{description}
+\item[Input]   $O=\mbox{instance of resource class matched}, M=\mbox{candidate resource methods of $O$}$
+\item[Output] $O=\mbox{instance of resource class matched}, m=\mbox{resource method matched from $M$}$
+\end{description}
+
+
 \begin{enumerate}
 \item \label{filter_methods} Filter $M$ by removing members that do not meet the following criteria:
 \begin{itemize}
@@ -402,7 +418,7 @@ $$M = \{\mbox{subresource methods of }O \mbox{ where } R(T_{\mbox{method}}) = R_
 
 Determining the best matching media types follows the general rule: $\mbox{n/m} > \mbox{n/*} > \mbox{*/*}$, i.e. a method that explicitly consumes the request media type or produces one of the requested media types is sorted before a method that consumes or produces */*. Quality parameter values in the accept header are also considered such that methods that produce media types with a higher acceptable q-value are sorted ahead of those with a lower acceptable q-value (i.e. n/m;q=1.0 $>$ n/m;q=0.7) - see section 14.1 of \cite{http11} for more details.
 
-\item \label{dispatch_method} The request is dispatched to the first Java method in the set\footnote{Step \ref{filter_methods} ensures the set contains at least one member.}.
+\item \label{dispatch_method} The request is dispatched to the first resource method $m$ in the set $M$\footnote{Step \ref{filter_methods} ensures the set contains at least one member.}.
 \end{enumerate}
 
 \end{enumerate}
