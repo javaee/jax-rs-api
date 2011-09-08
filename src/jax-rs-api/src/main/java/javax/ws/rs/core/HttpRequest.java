@@ -218,16 +218,13 @@ public interface HttpRequest extends RequestHeaders, RequestHeaders.Builder<Http
      * be used.
      * <p />
      * A specific entity media type can be set using one of the {@code type(...)}
-     * methods. If required (e.g. for validation purposes), external annotations 
-     * can be {@link #entity(java.lang.Object, java.lang.annotation.Annotation[]) attached}
-     * to the entity too.
+     * methods. If required (e.g. for validation purposes).
      *
      * @param entity the request entity.
      * @return updated request instance.
      *
      * @see #type(javax.ws.rs.core.MediaType)
      * @see #type(java.lang.String) 
-     * @see #entity(java.lang.Object, java.lang.annotation.Annotation[])
      */
     HttpRequest entity(Object entity);
 

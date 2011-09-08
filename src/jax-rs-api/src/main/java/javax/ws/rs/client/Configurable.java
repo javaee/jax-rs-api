@@ -152,7 +152,7 @@ public interface Configurable<T extends Configurable> {
      * configured instance.
      * <p/>
      * As opposed to the providers registered by the 
-     * {@link #register(java.lang.Object) provider instances}, providers
+     * {@link #register(java.lang.Object[]) provider instances}, providers
      * registered using this method are instantiated per interaction.
      *
      * @param providerClass provider class to be instantiated and used in the scope

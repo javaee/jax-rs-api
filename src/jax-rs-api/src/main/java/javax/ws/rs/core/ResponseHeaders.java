@@ -202,9 +202,8 @@ public interface ResponseHeaders extends Headers {
      * Get the response status represented as a response {@link Status} enumeration
      * value.
      *
-     * @return the status type instance, or {@code null} if the underlying status
-     * code was set using the method {@link #setStatusCode(int)} and there is no
-     * mapping between the integer value and the
+     * @return the status type instance, or {@code null} if there is no
+     * mapping between the integer status code and the
      * {@link javax.ws.rs.core.Response.Status response status enumeration} value.
      */
     Status getStatus();
