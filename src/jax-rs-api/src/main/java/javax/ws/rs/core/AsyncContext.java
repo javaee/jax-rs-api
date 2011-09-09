@@ -55,4 +55,8 @@ public interface AsyncContext {
     Future<?> suspend(long time, TimeUnit unit);
 
     public void cancel();
+
+    public void setResponse(Object response);
+    public Response getResponse();
+    
 }
