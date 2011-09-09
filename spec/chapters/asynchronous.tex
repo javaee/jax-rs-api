@@ -68,9 +68,9 @@ public void longRunningOp() {
 }
 \end{listing}
 
-\begin{ednote}
-Explain what happens when the timer expires.
-\end{ednote}
+JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set in \AsyncContext. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set in \AsyncContext\ (using method \code{setResponse}) JAX-RS implementations are REQUIRED to return the fallback response without generating a \WebApplicationException\ when the timeout is reached.
+
+Overloaded versions of the method \code{suspend} in \AsyncContext\ also accept a timeout value and a unit, thus providing the same functionality as the \Suspend\ annotation. 
 
 \section{Client API}
 \label{client_api}
