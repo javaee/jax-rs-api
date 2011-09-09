@@ -6,129 +6,99 @@
 
 This chapter introduces the reader to the Client API. This API can be used to access Web resources. Unless otherwise stated, types presented in this chapter live in the \code{javax.ws.rs.client} package.
 
-\section{Request and Responses}
+%\section{Request and Responses}
 
-The \jaxrs\ 1.X types \code{javax.ws.rs.core.Request} and \code{javax.ws.rs.core.Response} have been designed specifically for the Server API. These classes do not provide the necessary support to satisfy all the use cases covered by the Client API. Two new interfaces,  \code{javax.ws.rs.core.HttpRequest}  and \code{javax.ws.rs.core.HttpResponse}, are hereby introduced to accommodate the new set of requirements. As indicated by their location in the core package, their scope is \emph{not} limited to the Client API. 
+%The \jaxrs\ 1.X types \code{javax.ws.rs.core.Request} and \code{javax.ws.rs.core.Response} have been designed specifically for the Server API. %These classes do not provide the necessary support to satisfy all the use cases covered by the Client API. Two new interfaces,  %\code{javax.ws.rs.core.HttpRequest}  and \code{javax.ws.rs.core.HttpResponse}, are hereby introduced to accommodate the new set of %equirements. As indicated by their location in the core package, their scope is \emph{not} limited to the Client API. 
 
 \section{Bootstrapping a Client Instance}
 
-An instance of \Client\ is required to access a Web resource using the Client API. Instances of \Client\ can be obtained using \ClientFactory\ and, optionally, an instance of \ClientConfiguration. For example,
+An instance of \Client\ is required to access a Web resource using the Client API. The default instance of \Client\ can be obtained by calling \code{newClient} on \ClientFactory. Instances of \Client\ implement the \code{Configurable} interface and can, therefore, be configured using properties and features:
 
 \begin{listing}{1}
-// Default client using default configuration
+// Default instance of client
 Client client = ClientFactory.newClient();
 
-// Default client using custom configuration
-ClientConfiguration cfg = new DefaultClientConfiguration();
-cfg.enable("CUSTOM_FEATURE");
-Client confClient = ClientFactory.newClient(cfg);
+// Additional configuration of default client
+client.setProperty("MyProperty", "MyValue");
+client.enable(MyFeature.class);
 \end{listing}
 
-The example above demonstrates the creation of \Client\ instances using the default \ClientBuilderFactory. Further customization is possible by providing a different implementation of \ClientBuilderFactory\ and, optionally, a different implementation of \ClientConfiguration\ that is specific to that factory. In the following example, a custom configuration is used to create a custom client that supports caching:
+Features must implement the \code{Feature} interface by providing concrete implementations of the \code{enable} and \code{disable} methods; properties are simply name-value pairs, where the value is an arbitrary object.
+
+A instance of \code{ClientBuilderFactory} can be provided in order to obtain customized instances of \code{Client} which may provide functionality beyond what it is described in this document.  
 
 \begin{listing}{1}
-// Custom client using custom configuration
-MyClientConfiguration myCfg = new MyClientConfiguration();
-myCfg.enableCaching();
-MyClient customConfClient = 
-    ClientFactory.newClientBy(MyClientBuilderFactory.class).create(myCfg);
+// Custom client using different factory class
+MyClient myClient = 
+    ClientFactory.newClientBy(MyClientBuilderFactory.class).build();
+myClient.enableCaching(true);
 \end{listing}
 
-Note the call to the method \code{enableCaching} which is part of the extended configuration defined by \code{MyClientConfiguration}, and supported by \code{MyClientBuilderFactory}.
+Note that in this example the client instance returned by the factory is of type \code{MyClient}. The method \code{enableCaching} is not defined in the default client shown in the previous example.
 
 \section{Resource Access}
 \label{resource_access}
 
-The Client API provides a few different ways in which to access a Web resource. First, a resource can be accessed using the fluent method chaining approach whereby methods are called to configure a request using the builder pattern. The following example gets a \code{text/plain} representation of the resource identified by the \code{http://example.org/hello} URI:
+A Web resource can be accessed using a fluent API in which methods invocations are chained to configure and ultimately submit an HTTP request. The following example gets a \code{text/plain} representation of the resource identified by \code{http://example.org/hello}:
 
 \begin{listing}{1}
 Client client = ClientFactory.newClient();
-HttpResponse res = client.link("http://example.org/hello")
-    .get().accept("text/plain").invoke();
+HttpResponse res = client.target("http://example.org/hello")
+    .request("text/plain").get();
 \end{listing}
 
 Method chaining is not limited to the example shown above. A request can be further configured by specifying additional headers, cookies, query parameters, etc. For example:
 
 \begin{listing}{1}
-Client client = ClientFactory.newClient();
-HttpResponse res = client.link("http://example.org/hello")
-    .get().accept("text/plain").header("MyHeader", "...")
-    .queryParam("MyParam","...").invoke();
+HttpResponse res = client.target("http://example.org/hello")
+    .request("text/plain").header("MyHeader", "...")
+    .queryParam("MyParam","...").get();
 \end{listing}
 
 See the Javadoc for the classes in the \code{javax.ws.rs.client} package for more information.
 
-\section{Link, Invocation and HttpRequest}
+\subsection{Targets}
 
-A \Link\ is a builder for instances of type \Invocation. An \Invocation\ is an \emph{invocable} version of a \HttpRequest. The following example shows the relationships between these types:
-
-\begin{listing}{1}
-// Get a Link from a URI
-Link uri = client.link("http://example.org/");
-// Get an Invocation by specifying an HTTP method
-Invocation inv = uri.get();
-// Upcast to HttpRequest
-HttpRequest req = inv;
-\end{listing}
-
-The minimum requirement to obtain an instance of \Invocation\ is to provide a URI and an HTTP method. Even thought instances of \HttpRequest\ are not directly invocable, they can be used to access Web resources when passed as parameters to the \code{Client.invoke} (synchronous) and \code{Client.queue} (asynchronous) method families.
-
-Instances of \HttpRequest\ can also be created directly from \Client\ without the need to create an \Invocation\ first by calling \code{request} instead of \code{link}:
+The benefits of using a \code{Target} become apparent when building complex URIs, for example by extending base URIs with additional path segments or using URI templates. The following example highlights these features:
 
 \begin{listing}{1}
-// Get an HttpRequest from client
-HttpRequest req = client.request("http://example.org/").get();
-HttpResponse res = client.invoke(req);
-\end{listing}
-
-\subsection{Building URIs}
-
-The benefits of using a \Link\ become apparent when building complex URIs, for example by extending base URIs with additional path segments or using URI templates. The following example highlights these features:
-
-\begin{listing}{1}
-Link base = client.link("http://example.org/");
-Link hello = base.path("hello").path("{whom}");   
-HttpResponse res = hello.pathParam("whom", "world").get().invoke();
+Target base = client.target("http://example.org/");
+Target hello = base.path("hello").path("{whom}");   
+HttpResponse res = hello.request().pathParam("whom", "world").get();
 \end{listing}
 
 Note the use of the URI template parameter \code{\{whom\}}. The example above gets a representation for the resource identified by the http://example.org/hello/world URI.
 
-\section{HTTP Methods}
-
-The Client API provides built-in support for configuring the following HTTP methods in a request: GET, PUT, POST, DELETE, HEAD, OPTIONS and TRACE. Additional verbs can be specified using a generic method that takes a string. For example, a WebDAV client could configure a request as follows:
-
-\begin{listing}{1}
-Link file = client.link("http://examples.org/index.html");
-HttpRequest copyRequest = file.method("COPY") 
-    .header("Destination", "http://examples.org/backup/index.html")
-    .header("Overwrite", "T");
-\end{listing}
-
 \section{Typed Entities}
 
-The response to an invocation is not limited to be of type \HttpResponse. It is possible to request a specific entity response type when calling \code{Invocation.invoke} (or \code{Client.invoke}) as follows:
+The response to a request is not limited to be of type \HttpResponse. It is possible to request a specific entity response as follows:
 
 \begin{listing}{1}
-Customer c = client.link("http://examples.org/customers/123").get()
-    .accept("application/xml").invoke(Customer.class);
-String newId = client.link("http://examples.org/gold-customers/")
-    .post().type("application/xml").entity(c).invoke(String.class);
+Customer c = client.target("http://examples.org/customers/123")
+    .request("application/xml").get(Customer.class);
+String newId = client.target("http://examples.org/gold-customers/")
+    .request().post(xml(c), String.class);
 \end{listing}
 
 In the example above, just like in the Server API, \jaxrs\ implementations are REQUIRED to use registered providers (implementing \code{MessageBodyReader} and \code{MessageBodyWrite}) to map a representation of type \code{"application/xml"} to an instance of \code{Customer} and vice versa. See Section \ref{standard_entity_providers} for a list of entity providers that MUST be supported by all \jaxrs\ implementations.
 
+\section{Invocations}
+\label{invocations}
+
+TODO
+
 \section{Configurable Types}
 \label{configurable_types}
 
-The Client API types \Client, \ClientConfiguration, \Link\ and \Invocation\ all implement the \Configurable\ interface. This interface supports configuration of:
+The Client API types \Client, \Invocation, \InvocationBuilder\ and \Target\ all implement the \Configurable\ interface. This interface supports configuration of:
 
 \begin{description}
-\item [Features] Identified by unique strings; can be enabled or disabled in order to configure a \jaxrs\ implementation.
+\item [Features] Instances of classes that implement \code{Feature} and can be enabled or disabled in order to configure a \jaxrs\ implementation.
 \item [Properties] Name-value pairs for additional configuration of features or other components of a \jaxrs\ implementation.
-\item [Providers] Classes or singleton instances of classes annotated by \Provider. A provider can be a message body reader, a filter, a context provider, etc. See Chapter \ref{providers} for more information.
+\item [Providers] Classes or instances of classes annotated by \Provider. A provider can be a message body reader, a filter, a context provider, etc. See Chapter \ref{providers} for more information.
 \end{description}
 
-A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Link\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Link\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations MUST not be visible to each other.
+A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Target\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Target\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations are not be visible to each other.
 
 
 
