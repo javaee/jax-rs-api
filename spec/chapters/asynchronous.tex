@@ -1,0 +1,126 @@
+\chapter{Asynchronous Processing}
+\label{asynchronous_processing}
+
+This chapter describes the asynchronous processing capabilities in JAX-RS. Asynchronous processing is supported both in the Client API and in the Server API.
+
+\section{Introduction}
+\label{introduction}
+
+Asynchronous processing is a technique that enables a better and more efficient use of processing threads. On the client side, a thread that issues a request may also be responsible for updating a UI component; if that thread is blocked waiting for a response, the user's perceived performance of the application will suffer. Similarly, on the server side, a thread that is processing a request should avoid blocking while waiting for an external event to complete so that it can process other requests that may be arriving to the server during that period\footnote{The maximum number of request threads is typically set by the administrator; if that upper bound is reached, subsequent requests will be rejected.}.
+
+\section{Server API}
+\label{server_api}
+
+Synchronous processing requires a resource method to produce a response upon returning control back to the JAX-RS implementation. Asynchronous processing enables a resource method to inform the JAX-RS implementation that a response is not readily available upon return but will be produced at a future time. This can be accomplished by first {\em suspending} and later {\em resuming} the client connection on which the request was received. 
+
+Let us illustrate these concepts via an example:
+
+\begin{listing}{1}
+@Path("/async/longRunning")
+public class MyResource {
+    @Context
+    private AsyncContext ctx;
+    
+    @GET
+    public void longRunningOp() {
+        Executors.newSingleThreadExecutor().submit(
+            new Runnable() {
+                public void run() {
+                    executeLongRunningOp();
+                    ctx.resume("Hello async world!");
+        } });
+        ctx.suspend();    // Suspend connection
+    } 
+}
+\end{listing}
+
+Resource classes that support asynchronous processing must inject an instance of \code{AsyncContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) forks a thread to execute a long running operation, (ii) calls \code{suspend} on the injected \code{AsyncContext} and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{AsyncContext}.
+
+\subsection{Suspend Annotation}
+
+An alternative to calling \code{ctx.suspend()} as the last step before returning is to annotate the method with \Suspend. Thus, the \code{longRunningOp} method above is equivalent to:
+
+\begin{listing}{1}
+@GET @Suspend
+public void longRunningOp() {
+    Executors.newSingleThreadExecutor().submit(
+        new Runnable() {
+            public void run() {
+                executeLongRunningOp();
+                ctx.resume("Hello async world!");
+        } });
+    } 
+}
+\end{listing}
+
+The \Suspend\ annotation supports a timeout value that can be used to avoid waiting for a response indefinitely. The default unit is milliseconds, but any unit of type \code{java.util.concurrent.TimeUnit} can be used:
+
+\begin{listing}{1}
+@GET @Suspend(timeOut = 15, timeUnit = TimeUnit.SECONDS)
+public void longRunningOp() {
+    Executors.newSingleThreadExecutor().submit(
+        new Runnable() {
+            public void run() {
+                executeLongRunningOp();
+                ctx.resume("Hello async world!");
+        } });
+    } 
+}
+\end{listing}
+
+\begin{ednote}
+Explain what happens when the timer expires.
+\end{ednote}
+
+\section{Client API}
+\label{client_api}
+
+The fluent API supports asynchronous invocations as part of the invocation building process. By default, invocations are synchronous but can be set to run asynchronously by calling the \code{async} method and (optionally) registering an instance of \code{InvocationCallback} as shown next:
+
+\begin{listing}{1}
+Client client = ClientFactory.newClient();
+Target target = client.target("http://example.org/customers/{id}");
+target.pathParam("id", 123).request().async().get(
+    new InvocationCallback<Customer>() {
+        @Override
+        public void completed(Customer customer) {
+            // Do something
+        }
+        @Override
+        public void failed(InvocationException error) {
+            // Process error
+        }
+    });
+\end{listing}
+
+Note that in this example, the call to \code{get} after calling \code{async} returns immediately without blocking the caller's thread.
+The type of the response is specified as a type parameter to \code{InvocationCallback}. The method \code{completed} is called when the invocation completes successfully and a response is available; the method \code{failed} is called with an instance of \code{InvocationException} when the invocation fails.
+
+All asynchronous invocations return an instance of \code{Future<T>} here the type parameter \code{T} matches the type specified in \code{InvocationCallback}. This instance can be used to monitor or cancel the asynchronous invocation:
+
+\begin{listing}{1}
+Future<Customer> ff = target.pathParam("id", 123).request().async().get(
+    new InvocationCallback<Customer>() {
+        @Override
+        public void completed(Customer customer) {
+            // Do something
+        }
+        @Override
+        public void failed(InvocationException error) {
+            // Process error
+        }
+    });
+
+// After waiting for a while ...
+if (!ff.isDone()) {
+    ff.cancel(true);
+} 
+\end{listing}
+
+Even though it is recommended to pass an instance of \code{InvocationCallback} when executing an asynchronous call, it is not mandated. When omitted, the \code{Future<T>} returned by the invocation can be used to gain access to the response by calling the method \code{Future.get()}, which will return an instance of \code{T} if the invocation was successful or \code{null} if the invocation failed.
+
+
+
+
+
+
