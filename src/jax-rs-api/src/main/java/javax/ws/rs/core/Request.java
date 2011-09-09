@@ -39,6 +39,8 @@
  */
 package javax.ws.rs.core;
 
+import java.io.InputStream;
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
@@ -66,14 +68,225 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * @author Marc Hadley
  * @since 1.0
  */
-public interface Request {
+public interface Request extends RequestHeaders {
+
+    /**
+     * @since 2.0
+     */
+    public static interface RequestBuilder extends Request, RequestHeaders.Builder<RequestBuilder>, Cloneable {
+
+        RequestBuilder redirect(String uri);
+
+        RequestBuilder redirect(URI uri);
+
+        RequestBuilder redirect(UriBuilder uri);
+
+        /**
+         * Modify the HTTP method of the request.
+         * <p />
+         * The method name parameter can be any arbitrary, non-empty string, containing
+         * but NOT limited to the command verbs of HTTP, WebDAV and other protocols.
+         * An implementation MUST NOT expect the method to be part of any particular set
+         * of methods. Any provided method name MUST be forwarded to the resource without
+         * any limitations.
+         *
+         * @param httpMethod new method to be set on the request.
+         * @return updated request builder instance.
+         */
+        RequestBuilder method(String httpMethod);
+
+        /**
+         * Set the request entity.
+         * <p />
+         * Any Java type instance for a request entity, that is supported by the client
+         * configuration of the client, can be passed. If generic information is
+         * required then an instance of {@link javax.ws.rs.core.GenericEntity} may
+         * be used.
+         * <p />
+         * A specific entity media type can be set using one of the {@code type(...)}
+         * methods. If required (e.g. for validation purposes).
+         *
+         * @param entity the request entity.
+         * @return updated request builder instance.
+         *
+         * @see #type(javax.ws.rs.core.MediaType)
+         * @see #type(java.lang.String) 
+         */
+        RequestBuilder entity(Object entity);
+
+        /**
+         * Set the input stream of the request.
+         *
+         * @param entity the input stream of the request.
+         * @return updated request builder instance.
+         */
+        RequestBuilder entityInputStream(InputStream entity);
+        
+        /**
+         * Create a copy of the request builder preserving its state.
+         * @return a copy of the request builder
+         */
+        RequestBuilder clone();        
+        
+        Request build();
+    }
 
     /**
      * Get the request method, e.g. GET, POST, etc.
-     * @return the request method
+     *
+     * @return the request method.
      * @see javax.ws.rs.HttpMethod
      */
     String getMethod();
+
+    /**
+     * Get the absolute request URI. This includes query parameters and
+     * any supplied fragment.
+     *
+     * @return the absolute request URI.
+     * @since 2.0
+     */
+    URI getUri();
+
+    /**
+     * Get the absolute request URI in the form of a {@link UriBuilder}.
+     *
+     * @return a {@code UriBuilder} initialized with the absolute request URI.
+     * @since 2.0
+     */
+    UriBuilder getUriBuilder();
+
+    /**
+     * Get the absolute path of the request. This includes everything preceding
+     * the path (host, port etc) but excludes query parameters and fragment.
+     * <p/>
+     *
+     * @return the absolute path of the request.
+     * @since 2.0
+     */
+    URI getPath();
+
+    /**
+     * Get the absolute path of the request in the form of a {@link UriBuilder}.
+     * This includes everything preceding the path (host, port etc) but excludes
+     * query parameters and fragment.
+     *
+     * @return a {@code UriBuilder} initialized with the absolute path of the request.
+     * @since 2.0
+     */
+    UriBuilder getPathBuilder();
+
+    /**
+     * Get the absolute path of the request in the form of a {@link String}.
+     *
+     * @param decode controls whether sequences of escaped octets are decoded
+     * ({@code true}) or not ({@code false}).
+     * @return the {@link String} containing the absolute path of the request.
+     * @since 2.0
+     */
+    String getPath(boolean decode);
+
+    /**
+     * Get the path of the current request relative to the base URI as a list
+     * of {@link PathSegment}. This method is useful when the path needs to be
+     * parsed, particularly when matrix parameters may be present in the path.
+     * All sequences of escaped octets in path segments and matrix parameter names
+     * and values are decoded, equivalent to {@code getPathSegments(true)}.
+     *
+     * @return an unmodifiable list of {@link PathSegment}. The matrix parameter
+     *     map of each path segment is also unmodifiable.
+     * @see PathSegment
+     * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
+     * @since 2.0
+     */
+    List<PathSegment> getPathSegments();
+
+    /**
+     * Get the path of the current request relative to the base URI as a list
+     * of {@link PathSegment}. This method is useful when the path needs to be
+     * parsed, particularly when matrix parameters may be present in the path.
+     *
+     * @param decode controls whether sequences of escaped octets in path segments
+     *     and matrix parameter names and values are decoded ({@code true})
+     *     or not ({@code false}).
+     * @return an unmodifiable list of {@link PathSegment}. The matrix parameter
+     *     map of each path segment is also unmodifiable.
+     * @see PathSegment
+     * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
+     * @since 2.0
+     */
+    List<PathSegment> getPathSegments(boolean decode);
+
+    /**
+     * Get the URI query parameters of the current request. All sequences of
+     * escaped octets in parameter names and values are decoded,
+     * equivalent to {@code getQueryParameters(true)}.
+     * 
+     * @return an unmodifiable map of query parameter names and values.
+     * @since 2.0
+     */
+    MultivaluedMap<String, String> getQueryParameters();
+
+    /**
+     * Get the URI query parameters of the current request.
+     *
+     * @param decode controls whether sequences of escaped octets in parameter
+     * names and values are decoded ({@code true}) or not ({@code false}).
+     * @return an unmodifiable map of query parameter names and values.
+     * @since 2.0
+     */
+    MultivaluedMap<String, String> getQueryParameters(boolean decode);
+
+    /**
+     * Get the message entity, returns {@code null} if the message does not
+     * contain an entity body.
+     * 
+     * @return the message entity or {@code null}.
+     * @since 2.0
+     */
+    Object getEntity();
+
+    /**
+     * Get the message entity, returns {@code null} if the message does not
+     * contain an entity body.
+     * 
+     * @param <T> entity type.
+     * @param type the type of entity.
+     * @return the message entity or {@code null}.
+     * @throws MessageProcessingException if the content of the message
+     *     cannot be mapped to an entity of the requested type.
+     * @since 2.0
+     */
+     <T> T getEntity(Class<T> type) throws MessageProcessingException;
+
+    /**
+     * Get the message entity, returns {@code null} if the message does not
+     * contain an entity body.
+     * 
+     * @param <T> entity type.
+     * @param entityType the generic type of the entity.
+     * @return the message entity or {@code null}.
+     * @throws MessageProcessingException if the content of the message
+     *     cannot be mapped to an entity of the requested type.
+     * @since 2.0
+     */
+     <T> T getEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
+
+    /**
+     * Check if there is an entity available in the request.
+     *
+     * @return {@code true} if there is an entity present in the request.
+     * @since 2.0
+     */
+    boolean hasEntity();
+
+    /**
+     * Get the request input stream.
+     *
+     * @return the input stream of the request.
+     * @since 2.0
+     */
+    InputStream getEntityInputStream();
 
     /**
      * Select the representation variant that best matches the request. More

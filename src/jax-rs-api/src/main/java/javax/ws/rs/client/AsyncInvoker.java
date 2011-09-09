@@ -40,8 +40,9 @@
 package javax.ws.rs.client;
 
 import java.util.concurrent.Future;
+
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.TypeLiteral;
-import javax.ws.rs.core.HttpResponse;
 
 /**
  * TODO javadoc.
@@ -52,7 +53,7 @@ import javax.ws.rs.core.HttpResponse;
 public interface AsyncInvoker {
 
     // GET
-    Future<HttpResponse> get() throws InvocationException;
+    Future<Response> get() throws InvocationException;
 
      <T> Future<T> get(Class<T> responseType) throws InvocationException;
 
@@ -61,7 +62,7 @@ public interface AsyncInvoker {
      <T> Future<T> get(InvocationCallback<T> callback);
 
     // PUT
-    Future<HttpResponse> put(Entity<?> entity) throws InvocationException;
+    Future<Response> put(Entity<?> entity) throws InvocationException;
 
      <T> Future<T> put(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
@@ -70,7 +71,7 @@ public interface AsyncInvoker {
      <T> Future<T> put(Entity<?> entity, InvocationCallback<T> callback);
 
     // POST
-    Future<HttpResponse> post(Entity<?> entity) throws InvocationException;
+    Future<Response> post(Entity<?> entity) throws InvocationException;
 
      <T> Future<T> post(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
@@ -79,7 +80,7 @@ public interface AsyncInvoker {
      <T> Future<T> post(Entity<?> entity, InvocationCallback<T> callback);
 
     // DELETE
-    Future<HttpResponse> delete() throws InvocationException;
+    Future<Response> delete() throws InvocationException;
 
      <T> Future<T> delete(Class<T> responseType) throws InvocationException;
 
@@ -88,7 +89,7 @@ public interface AsyncInvoker {
      <T> Future<T> delete(InvocationCallback<T> callback);
 
     // HEAD
-    Future<HttpResponse> head() throws InvocationException;
+    Future<Response> head() throws InvocationException;
 
      <T> Future<T> head(Class<T> responseType) throws InvocationException;
 
@@ -97,7 +98,7 @@ public interface AsyncInvoker {
      <T> Future<T> head(InvocationCallback<T> callback);
 
     // OPTIONS
-    Future<HttpResponse> options() throws InvocationException;
+    Future<Response> options() throws InvocationException;
 
      <T> Future<T> options(Class<T> responseType) throws InvocationException;
 
@@ -106,7 +107,7 @@ public interface AsyncInvoker {
      <T> Future<T> options(InvocationCallback<T> callback);
 
     // TRACE
-    Future<HttpResponse> trace(Entity<?> entity) throws InvocationException;
+    Future<Response> trace(Entity<?> entity) throws InvocationException;
 
      <T> Future<T> trace(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
@@ -115,15 +116,15 @@ public interface AsyncInvoker {
      <T> Future<T> trace(Entity<?> entity, InvocationCallback<T> callback);
 
     // ARBITRARY METHOD
-    Future<HttpResponse> method(String name) throws InvocationException;
+    Future<Response> method(String name) throws InvocationException;
 
      <T> Future<T> method(String name, Class<T> responseType) throws InvocationException;
 
      <T> Future<T> method(String name, TypeLiteral<T> responseType) throws InvocationException;
 
      <T> Future<T> method(String name, InvocationCallback<T> callback);
-     
-    Future<HttpResponse> method(String name, Entity<?> entity) throws InvocationException;
+
+    Future<Response> method(String name, Entity<?> entity) throws InvocationException;
 
      <T> Future<T> method(String name, Entity<?> entity, Class<T> responseType) throws InvocationException;
 

@@ -49,7 +49,7 @@ import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Headers;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.TypeLiteral;
 
 /**
@@ -138,7 +138,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse get() throws InvocationException {
+    public Response get() throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -153,7 +153,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse put(Entity<?> entity) throws InvocationException {
+    public Response put(Entity<?> entity) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -168,7 +168,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse post(Entity<?> entity) throws InvocationException {
+    public Response post(Entity<?> entity) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -183,7 +183,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse delete() throws InvocationException {
+    public Response delete() throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -198,7 +198,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse head() throws InvocationException {
+    public Response head() throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -213,7 +213,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse options() throws InvocationException {
+    public Response options() throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -228,7 +228,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse trace(Entity<?> entity) throws InvocationException {
+    public Response trace(Entity<?> entity) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -243,7 +243,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse method(String name) throws InvocationException {
+    public Response method(String name) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -258,7 +258,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse method(String name, Entity<?> entity) throws InvocationException {
+    public Response method(String name, Entity<?> entity) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -273,7 +273,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public HttpResponse search(Entity<?> entity) {
+    public Response search(Entity<?> entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -41,7 +41,7 @@ package jaxrs.examples.client.webdav;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.SyncInvoker;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -49,7 +49,7 @@ import javax.ws.rs.core.HttpResponse;
  */
 public interface WebDavSyncInvoker extends SyncInvoker {
     
-    public HttpResponse search(Entity<?> entity);
+    public Response search(Entity<?> entity);
     
     // TODO other WebDAV methods
 }

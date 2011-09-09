@@ -39,8 +39,8 @@
  */
 package javax.ws.rs.ext;
 
-import javax.ws.rs.core.HttpRequest;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
 /**
  * Context class used by instances of {@link javax.ws.rs.ext.RequestFilter}
@@ -64,16 +64,16 @@ public interface FilterContext extends BaseContext {
      * 
      * @return request object being filtered
      */
-    HttpRequest getRequest();
+    Request.RequestBuilder getRequest();
 
     /**
      * Get instance of HTTP response object. May return null in a
      * {@link javax.ws.rs.ext.RequestFilter} unless set via
-     * {@link #setResponse(javax.ws.rs.core.HttpResponse)}.
+     * {@link #setResponse(javax.ws.rs.core.Response.ResponseBuilder)}.
      * 
      * @return response object being filtered
      */
-    HttpResponse getResponse();
+    Response.ResponseBuilder getResponse();
 
     /**
      * Set an HTTP response object in the context. A caching filter
@@ -83,7 +83,7 @@ public interface FilterContext extends BaseContext {
      * 
      * @param res response object to be set
      */
-    void setResponse(HttpResponse res);
+    void setResponse(Response.ResponseBuilder res);
 
     /**
      * Create a fresh HTTP response object. A caching filter
@@ -92,7 +92,7 @@ public interface FilterContext extends BaseContext {
      * the state of the context object.
      * 
      * @return newly created HTTP response object
-     * @see #setResponse(javax.ws.rs.core.HttpResponse) 
+     * @see #setResponse(javax.ws.rs.core.Response.ResponseBuilder) 
      */
-    HttpResponse createResponse();
+    Response.ResponseBuilder createResponse();
 }

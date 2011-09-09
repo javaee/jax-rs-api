@@ -39,8 +39,8 @@
  */
 package javax.ws.rs.client;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.TypeLiteral;
-import javax.ws.rs.core.HttpResponse;
 
 /**
  * TODO javadoc.
@@ -50,62 +50,62 @@ import javax.ws.rs.core.HttpResponse;
  */
 public interface SyncInvoker {
     // GET
-    HttpResponse get() throws InvocationException;
+    Response get() throws InvocationException;
 
      <T> T get(Class<T> responseType) throws InvocationException;
 
      <T> T get(TypeLiteral<T> responseType) throws InvocationException;
 
     // PUT
-    HttpResponse put(Entity<?> entity) throws InvocationException;
+    Response put(Entity<?> entity) throws InvocationException;
 
      <T> T put(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
      <T> T put(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException;
 
     // POST
-    HttpResponse post(Entity<?> entity) throws InvocationException;
+    Response post(Entity<?> entity) throws InvocationException;
 
      <T> T post(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
      <T> T post(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException;
 
     // DELETE
-    HttpResponse delete() throws InvocationException;
+    Response delete() throws InvocationException;
 
      <T> T delete(Class<T> responseType) throws InvocationException;
 
      <T> T delete(TypeLiteral<T> responseType) throws InvocationException;
 
     // HEAD
-    HttpResponse head() throws InvocationException;
+    Response head() throws InvocationException;
 
      <T> T head(Class<T> responseType) throws InvocationException;
 
      <T> T head(TypeLiteral<T> responseType) throws InvocationException;
 
     // OPTIONS
-    HttpResponse options() throws InvocationException;
+    Response options() throws InvocationException;
 
      <T> T options(Class<T> responseType) throws InvocationException;
 
      <T> T options(TypeLiteral<T> responseType) throws InvocationException;
 
     // TRACE
-    HttpResponse trace(Entity<?> entity) throws InvocationException;
+    Response trace(Entity<?> entity) throws InvocationException;
 
      <T> T trace(Entity<?> entity, Class<T> responseType) throws InvocationException;
 
      <T> T trace(Entity<?> entity, TypeLiteral<T> responseType) throws InvocationException;
 
     // ARBITRARY METHOD
-    HttpResponse method(String name) throws InvocationException;
+    Response method(String name) throws InvocationException;
 
      <T> T method(String name, Class<T> responseType) throws InvocationException;
 
      <T> T method(String name, TypeLiteral<T> responseType) throws InvocationException;
 
-    HttpResponse method(String name, Entity<?> entity) throws InvocationException;
+    Response method(String name, Entity<?> entity) throws InvocationException;
 
      <T> T method(String name, Entity<?> entity, Class<T> responseType) throws InvocationException;
 

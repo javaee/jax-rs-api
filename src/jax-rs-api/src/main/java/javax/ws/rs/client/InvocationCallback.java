@@ -44,7 +44,7 @@ package javax.ws.rs.client;
  * events from the invocation processing.
  *
  * @param <RESPONSE> response type. It can be either a general-purpose
- *     {@link javax.ws.rs.core.HttpResponse} or the anticipated response entity
+ *     {@link javax.ws.rs.core.Response} or the anticipated response entity
  *     type.
  *
  * @author Marek Potociar
