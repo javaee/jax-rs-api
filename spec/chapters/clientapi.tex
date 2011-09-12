@@ -25,7 +25,7 @@ client.enable(MyFeature.class);
 
 Features must implement the \code{Feature} interface by providing concrete implementations of the \code{enable} and \code{disable} methods; properties are simply name-value pairs, where the value is an arbitrary object.
 
-A instance of \code{ClientBuilderFactory} can be provided in order to obtain customized instances of \code{Client} which may provide functionality beyond what it is described in this document.  
+An instance of \code{ClientBuilderFactory} can be provided in order to obtain customized instances of \code{Client} which may provide functionality beyond what it is described in this document.  
 
 \begin{listing}{1}
 // Custom client using different factory class
@@ -47,6 +47,8 @@ HttpResponse res = client.target("http://example.org/hello")
     .request("text/plain").get();
 \end{listing}
 
+Conceptually, the steps required to submit a request are the following: (i) obtain an instance of \Client\ (ii) create a \Target\ (iii) create a request from the \Target\ and (iv) submit a request or get a prepared \Invocation\ for later submission. See section \ref{invocations} for more information on using \Invocation.
+
 Method chaining is not limited to the example shown above. A request can be further configured by specifying additional headers, cookies, query parameters, etc. For example:
 
 \begin{listing}{1}
@@ -57,21 +59,21 @@ HttpResponse res = client.target("http://example.org/hello")
 
 See the Javadoc for the classes in the \code{javax.ws.rs.client} package for more information.
 
-\subsection{Targets}
+\section{Targets}
 
 The benefits of using a \code{Target} become apparent when building complex URIs, for example by extending base URIs with additional path segments or using URI templates. The following example highlights these features:
 
 \begin{listing}{1}
 Target base = client.target("http://example.org/");
 Target hello = base.path("hello").path("{whom}");   
-HttpResponse res = hello.request().pathParam("whom", "world").get();
+HttpResponse res = hello.pathParam("whom", "world").request().get();
 \end{listing}
 
 Note the use of the URI template parameter \code{\{whom\}}. The example above gets a representation for the resource identified by the http://example.org/hello/world URI.
 
 \section{Typed Entities}
 
-The response to a request is not limited to be of type \HttpResponse. It is possible to request a specific entity response as follows:
+The response to a request is not limited to be of type \HttpResponse. The following example upgrades the status of customer number 123 to ``gold status'' by first obtaining an entity of type \code{Customer} and then posting that entity to a different URI:
 
 \begin{listing}{1}
 Customer c = client.target("http://examples.org/customers/123")
@@ -80,12 +82,36 @@ String newId = client.target("http://examples.org/gold-customers/")
     .request().post(xml(c), String.class);
 \end{listing}
 
-In the example above, just like in the Server API, \jaxrs\ implementations are REQUIRED to use registered providers (implementing \code{MessageBodyReader} and \code{MessageBodyWrite}) to map a representation of type \code{"application/xml"} to an instance of \code{Customer} and vice versa. See Section \ref{standard_entity_providers} for a list of entity providers that MUST be supported by all \jaxrs\ implementations.
+Note the use of the {\em variant} \code{xml()} in the call to \code{post}. The class \code{javax.ws.rs.client.Entity} defines variants for the most popular media types used in JAX-RS applications.
+
+In the example above, just like in the Server API, \jaxrs\ implementations are REQUIRED to use entity providers to map a representation of type \code{"application/xml"} to an instance of \code{Customer} and vice versa. See Section \ref{standard_entity_providers} for a list of entity providers that MUST be supported by all \jaxrs\ implementations.
 
 \section{Invocations}
 \label{invocations}
 
-TODO
+An invocation is a request that has been prepared and is ready for execution. Invocations provide a {\em generic interface} that enables a separation of concerns between the creator and the submitter. In particular, the submitter does not need to know how the invocation was prepared, but only how it should be executed: namely, synchronously or asynchronously.
+
+ Let us consider the following example\footnote{The Collections class in this example is arbitrary and does not correspond to any specific implementation. There are a number of Java collection libraries available that provide similar functionality.}:
+
+\begin{listing}{1}
+// Executed by the creator
+Invocation inv1 = client.target("http://examples.org/atm/balance")
+    .queryParam("card", "111122223333").queryParam("pin", "9876")
+    .request("text/plain").buildGet();
+Invocation inv2 = client.target("http://examples.org/atm/withdrawal")
+    .queryParam("card", "111122223333").queryParam("pin", "9876")
+    .request().buildPost(text("50.0")));
+Collection<Invocation> invs = Arrays.asList(inv1, inv2);
+
+// Executed by the submitter
+Collection<HttpResponse> ress =
+    Collections.transform(invs,
+        new F<Invocation, HttpResponse>() {
+             public HttpResponse apply(Invocation inv) {
+                 return inv.invoke(); } });
+\end{listing}
+
+In this example, two invocations are prepared and stored in a collection by the creator. The submitter then traverses the collection applying a transformation that maps an \Invocation\ to an \HttpResponse. The mapping calls \code{Invocation.invoke()} to execute the invocation synchronously; asynchronous executions are also supported by calling \code{Invocation.submit()}.
 
 \section{Configurable Types}
 \label{configurable_types}
@@ -100,6 +126,28 @@ The Client API types \Client, \Invocation, \InvocationBuilder\ and \Target\ all 
 
 A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Target\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Target\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations are not be visible to each other.
 
+\subsection{Filters and Handlers}
+\label{filters_handlers_client}
+
+As explained in Chapter \ref{filters_and_handlers}, filters and handlers are defined as JAX-RS providers. Therefore, they can be registered in any of the configurable types listed in the previous section. The following example shows how to register filters and handlers on instances of \Client, \Target\ and \InvocationBuilder:
+
+\begin{listing}{1}
+Client client = ClientFactory.newClient();
+client.register(LoggingFilter.class);
+
+// Executes logging filter from client and caching filter from target
+Customer c = client.target("http://examples.org/customers/123")
+    .register(CachingFilter.class)
+    .request("application/xml").get(Customer.class);
+
+// Executes logging filter from client and gzip handler from request
+String newId = client.target("http://examples.org/gold-customers/")
+    .request()
+    .register(GzipHandler.class)
+    .post(xml(c), String.class);
+\end{listing}
+
+In this example, \code{LoggingFilter} is inherited by each instance of \Target\ created from \code{client}; the providers \code{CachingFilter} and \code{GzipHandler} are defined on a \Target\ and an \InvocationBuilder, respectively.
 
 
 
