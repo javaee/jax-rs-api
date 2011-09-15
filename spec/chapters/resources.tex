@@ -76,9 +76,7 @@ When a resource method is invoked, parameters annotated with \FormParam\ or one 
 
 \subsubsection{Entity Parameters}
 
-The value of a non-annotated parameter, called the entity parameter, is mapped from the request entity body. Conversion between an entity body and a Java type is the responsibility of an entity provider, see section \ref{entity_providers}.
-
-Resource methods MUST NOT have more than one parameter that is not annotated with one of the above-listed annotations.
+The value of a parameter not annotated with \FormParam\ or any of the annotations listed in in section \ref{resource_field}, called the entity parameter, is mapped from the request entity body. Conversion between an entity body and a Java type is the responsibility of an entity provider, see section \ref{entity_providers}. Resource methods MUST have at most one entity parameter.
 
 \subsection{Return Type}
 \label{resource_method_return}
