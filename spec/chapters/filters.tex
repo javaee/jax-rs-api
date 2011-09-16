@@ -113,12 +113,12 @@ By default, just like all the other providers, a single instance of each filter 
 
 \section{Binding}
 
-Binding is the process by which a handler or filter is associated with a resource class or method (Server API) or an HTTP invocation (Client API). The forms of binding presented in the next sections (static, global and dynamic) are only supported as part of the Server API. See Section \ref{binding_in_client_api} for binding in the Client API.
+Binding is the process by which a handler or filter is associated with a resource class or method (Server API) or an invocation (Client API). The forms of binding presented in the next sections are only supported as part of the Server API. See Section \ref{binding_in_client_api} for binding in the Client API.
 
-\subsection{Static Binding}
-\label{Static_Binding}
+\subsection{Name Binding}
+\label{Name_Binding}
 
-A handler or filter can be associated with a resource class or method by declaring a new \emph{binding} annotation \`{a} la CDI~\cite{jsr299}. These annotations are declared using the \jaxrs\ meta-annotation \NameBinding and are used to decorate both the filter (or handler) and the resource method (or class). For example, the \code{LoggingFilter} defined in Section ~\ref{filters} can be bound to \code{MyResourceClass.hello} as follows:
+A handler or filter can be associated with a resource class or method by declaring a new \emph{binding} annotation \`{a} la CDI~\cite{jsr299}. These annotations are declared using the \jaxrs\ meta-annotation \NameBinding\ and are used to decorate both the filter (or handler) and the resource method (or class). For example, the \code{LoggingFilter} defined in Section \ref{filters} can be bound to the method \code{hello} in \code{MyResourceClass} as follows:
 
 \begin{listing}{1}
 @Provider
@@ -141,7 +141,7 @@ public class MyResourceClass {
 }
 \end{listing}
 
-According to the semantics of \code{LoggingFilter}, the request will be logged before the decorated method is called and the response will be logged after it returns. The declaration of the \code{@Logged} annotation is shown next.
+According to the semantics of \code{LoggingFilter}, the request will be logged before the \code{hello} method is called and the response will be logged after it returns. The declaration of the \code{@Logged} annotation is shown next.
 
 \begin{listing}{1}
 @NameBinding
@@ -150,11 +150,11 @@ According to the semantics of \code{LoggingFilter}, the request will be logged b
 public @interface Logged { }
 \end{listing}
 
-Binding annotations that decorate resource classes apply to all the resource methods defined in them. A filter or handler class can be decorated with multiple binding annotations. Similarly, a resource method can be decorated with multiple binding annotations.  Each binding annotation instance in a resource method denotes a set of filters and handlers whose class definitions are decorated (possibly among others) with that annotation. The final set of (static) filters and handlers is the union of all these sets; this set must be sorted based on priorities as explained in Section \ref{priorities}. 
+Binding annotations that decorate resource classes apply to all the resource methods defined in them. A filter or handler class can be decorated with multiple binding annotations. Similarly, a resource method can be decorated with multiple binding annotations.  Each binding annotation instance in a resource method denotes a set of filters and handlers whose class definitions are decorated (possibly among others) with that annotation. The final set of (static) filters and handlers is the union of all these sets \footnote{By definition of {\em set}, any duplicate filters or handlers in each individual set or the final set are eliminated.}; this set must be sorted based on priorities as explained in Section \ref{priorities}. 
 
 \subsection{Global Binding}
 
-Occasionally, it is useful to declare a handler or filter as being bound to all the resource classes in an application. This can be accomplished by using the \GlobalBinding\ annotation directly on the handler or filter class without the need to declare a new binding annotation. For example, the \code{LoggingFilter} defined in Section \ref{filters} can be defined as follows:
+Name binding is a form of {\em local} binding in which filters or handlers are bound to specific methods or classes. Occasionally, it is useful to declare a handler or filter as being bound to all the resource classes in an application. This can be accomplished by using the \GlobalBinding\ annotation directly on the handler or filter class without the need to declare a new binding annotation. For example, the \code{LoggingFilter} defined in Section \ref{filters} can be defined as follows:
 
 \begin{listing}{1}
 @Provider
@@ -166,11 +166,28 @@ public class LoggingFilter implements RequestFilter, ResponseFilter {
 
 If this filter is registered as part of an application, requests and responses will be logged for all resource methods. 
 
-A filter or handler whose class is decorated with \GlobalBinding\ cannot be associated with a resource class or method statically, as defined in Section~\ref{Static_Binding}. Implementations are REQUIRED to report an error if this condition is detected.
+A filter or handler whose class is decorated with \GlobalBinding\ cannot be associated with a resource class or method using name binding. Implementations are REQUIRED to report an error if a filter or handler is annotated with both \GlobalBinding\ and any other annotation derived from \NameBinding.
 
 \subsection{Dynamic Binding}
 
-A handler or filter that implements the \DynamicBinding\ interface is bound to a resource method at runtime. Binding is determined based on the value returned by the \code{isBound} method, regardless of whether the handler or filter is decorated with \GlobalBinding\ or a binding annotation derived from \NameBinding. That is, if annotated with \GlobalBinding, the \code{isBound} method will be called for every resource method in the application; if annotated with a binding annotation derived from \NameBinding, it will be called for every resource method for which it was bound via that annotation.
+The annotation-based forms of binding presented thus far are {\em static}.  By having a filter or handler implement the \DynamicBinding\ interface, {\em dynamic} variants of name binding and global binding are possible. In these cases, binding is determined based on (i) the filter or handler being associated to a resource method globally or by name and (ii) the value returned by the \code{isBound} method in \DynamicBinding. 
+
+The following example defines a global \code{LoggingFilter} that is bound dynamically to all resource methods in \code{MyResourceClass} that are annotated by \code{@GET}.
+
+\begin{listing}{1}
+@Provider
+@GlobalBinding
+public class LoggingFilter implements RequestFilter, DynamicBinding {
+
+    public boolean isBound(Class<?> type, Method method) {
+        return type.equals(MyResourceClass.class) 
+            && method.isAnnotationPresent(GET.class);    
+    }
+    ...
+}
+\end{listing}
+
+
 
 \subsection{Binding in Client API}
 \label{binding_in_client_api}
@@ -194,7 +211,9 @@ public class AuthenticationFilter implements RequestFilter {
 }
 \end{listing}
 
-Note that even though, as explained in Section \ref{binding_in_client_api}, annotations are not used for binding in the Client API, they are still used to define priorities. Therefore, if a priority other than the default is required, the \BindingPriority\ annotation must be used for a filter or handler registered using the Client API. \jaxrs\ implementations are REQUIRED to sort filters and handlers based on \code{BindingPriority.value()}, using \code{BindingPriority.USER} as the default if the annotation is absent. The order in which filters or handlers that belong to the same priority class are executed is \emph{undefined}.
+Note that even though, as explained in Section \ref{binding_in_client_api}, annotations are not used for binding in the Client API, they are still used to define priorities. Therefore, if a priority other than the default is required, the \BindingPriority\ annotation must be used for a filter or handler registered using the Client API. 
+
+Implementations are REQUIRED to sort filters and handlers according to \code{BindingPriority.value()}, using \code{BindingPriority.USER} as the default if the annotation is absent. The order in which filters or handlers that belong to the same priority class are executed is implementation dependent.
 
 
 
