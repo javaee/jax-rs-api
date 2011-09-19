@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -40,18 +40,17 @@
 package jaxrs.examples.client.webdav;
 
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-import javax.ws.rs.client.Configurable;
+
+import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.TypeLiteral;
 import javax.ws.rs.core.Headers;
 import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.TypeLiteral;
 
 /**
  *
@@ -135,71 +134,6 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
 
     @Override
     public WebDavTargetedBuilder headers(Headers headers) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Map<String, Object> getProperties() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Object getProperty(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Set<Class<? extends Feature>> getFeatures() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean isEnabled(Class<? extends Feature> feature) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Set<Class<?>> getProviderClasses() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Set<Object> getProviderSingletons() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder configure(Configurable<?> configuration) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Class<?> providerClass) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Object... providers) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder enable(Class<? extends Feature> feature) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder disable(Class<? extends Feature> feature) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder setProperties(Map<String, Object> properties) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder setProperty(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -340,6 +274,11 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
 
     @Override
     public HttpResponse search(Entity<?> entity) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Configuration configuration() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

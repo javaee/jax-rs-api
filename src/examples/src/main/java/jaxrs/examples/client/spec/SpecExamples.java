@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents target this file are subject to the terms target either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file target packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section target the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name target copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version target this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -77,15 +77,16 @@ public class SpecExamples {
     public void clientBootstrapping() {
         // Default newClient instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
+        defaultClient.configuration().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
         assert defaultClient != null;
 
         // Default newClient instantiation using custom configuration
 
-        Client defaultConfiguredClient = ClientFactory.newClient().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
+        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.configuration());
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
-        
+
         // Custom newClient instantiation using default configuration
         ThrottledClient myClient = ClientFactory.newClientBy(ThrottledClient.Builder.Factory.class).build();
         assert myClient != null;
@@ -93,57 +94,57 @@ public class SpecExamples {
         ThrottledClient myConfiguredClient = ClientFactory.newClientBy(ThrottledClient.Builder.Factory.class).requestQueueCapacity(10).build();
         assert myConfiguredClient != null;
     }
-    
+
     public void fluentMethodChaining() {
         Client client = ClientFactory.newClient();
         HttpResponse res = client.target("http://example.org/hello")
                 .request("text/plain").get();
-        
+
         HttpResponse res2 = client.target("http://example.org/hello")
                 .queryParam("MyParam","...")
                 .request("text/plain")
                 .header("MyHeader", "...")
                 .get();
     }
-    
+
     public void typeRelationships() {
         Client client = ClientFactory.newClient();
         Target uri = client.target("");
         Invocation.Builder builder = uri.request("text/plain");
-        
+
         SyncInvoker syncInvoker = builder;
         AsyncInvoker asyncInvoker = builder.async();
         Invocation inv = builder.buildGet();
-        
+
         HttpResponse r1 = builder.get();
         HttpResponse r2 = syncInvoker.get();
         HttpResponse r3= inv.invoke();
-        
+
         Future<HttpResponse> fr1 = asyncInvoker.get();
-        Future<HttpResponse> fr2 = inv.submit();        
+        Future<HttpResponse> fr2 = inv.submit();
     }
-    
+
     public void benefitsOfResourceUri() {
         Client client = ClientFactory.newClient();
         Target base = client.target("http://example.org/");
-        Target hello = base.path("hello").path("{whom}");   
+        Target hello = base.path("hello").path("{whom}");
         final Target whomToGreet = hello.pathParam("whom", "world");
         HttpResponse res = whomToGreet.request().get();
     }
-    
+
     public void gettingAndPostingCustomers() {
         Client client = ClientFactory.newClient();
         Customer c = client.target("http://examples.org/customers/123")
                 .request("application/xml").get(Customer.class);
         HttpResponse res = client.target("http://examples.org/premium-customers/")
-                .request().post(entity(c, "application/xml"));     
+                .request().post(entity(c, "application/xml"));
     }
-    
+
     public void asyncSamples() throws Exception {
         Client client = ClientFactory.newClient();
         Future<Customer> fc = client.target("http://examples.org/customers/123")
                 .request("application/xml").async().get(Customer.class);
-        Customer c = fc.get();   
+        Customer c = fc.get();
     }
-    
+
 }

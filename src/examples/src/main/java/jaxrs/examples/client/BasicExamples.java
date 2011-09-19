@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents target this file are subject to the terms target either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file target packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section target the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name target copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version target this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -47,7 +47,7 @@ import jaxrs.examples.client.custom.ThrottledClient;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.client.Configurable;
+import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.InvocationException;
@@ -86,11 +86,12 @@ public class BasicExamples {
     public void clientBootstrapping() {
         // Default newClient instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
+        defaultClient.configuration().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
         assert defaultClient != null;
 
         // Default newClient instantiation using custom configuration
 
-        Client defaultConfiguredClient = ClientFactory.newClient().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
+        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.configuration());
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
@@ -263,12 +264,12 @@ public class BasicExamples {
     public static class TestFeature implements Feature {
 
         @Override
-        public void enable(Configurable configuration) {
+        public void onEnable(Configuration configuration) {
             // do nothing
         }
 
         @Override
-        public void disable(Configurable configuration) {
+        public void onDisable(Configuration configuration) {
             // do nothing
         }
     }
@@ -299,39 +300,33 @@ public class BasicExamples {
         client.target("http://examples.jaxrs.com/").path("123").request("text/plain").header("custom-name", "custom_value").async().get();
         client.target("http://examples.jaxrs.com/").path("123").request("text/plain").header("custom-name", "custom_value").buildGet().invoke();
         client.target("http://examples.jaxrs.com/").path("123").request("text/plain").header("custom-name", "custom_value").buildGet().submit();
-        
+
         // POSTing Forms
         client.target("http://examples.jaxrs.com/").path("123").request(MediaType.APPLICATION_JSON).post(form(new Form("param1", "a").param("param2", "b")));
-        
+
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
         formData.add("param1", "a");
         formData.add("param2", "b");
         client.target("http://examples.jaxrs.com/").path("123").request(MediaType.APPLICATION_JSON).post(form(formData));
-        
 
-        // Configurable
-        client.enable(TestFeature.class);
-        client.target("http://examples.jaxrs.com/").enable(TestFeature.class);
-        client.target("http://examples.jaxrs.com/").request("text/plain").enable(TestFeature.class);
-        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().enable(TestFeature.class);
-
-        client.target("http://examples.jaxrs.com/").enable(TestFeature.class).path("123").request("text/plain").header("custom-name", "custom_value").get();
-        client.target("http://examples.jaxrs.com/").path("123").enable(TestFeature.class).request("text/plain").header("custom-name", "custom_value").async().get();
-        client.target("http://examples.jaxrs.com/").path("123").request("text/plain").enable(TestFeature.class).header("custom-name", "custom_value").buildGet().invoke();
-        client.target("http://examples.jaxrs.com/").path("123").request("text/plain").header("custom-name", "custom_value").enable(TestFeature.class).buildGet().submit();
+        // Configuration
+        client.configuration().enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/").configuration().enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/").request("text/plain").configuration().enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().configuration().enable(TestFeature.class);
     }
-    
+
     public void invocationFlexibility() {
         // For users who really need it...
-       Invocation i = ClientFactory.newClient().target("http://examples.jaxrs.com/").path("greeting").request("text/plain").header("custom-name", "custom_value").buildPut(text("Hi"));       
-       
+       Invocation i = ClientFactory.newClient().target("http://examples.jaxrs.com/").path("greeting").request("text/plain").header("custom-name", "custom_value").buildPut(text("Hi"));
+
        i.asRequest()
                .accept("text/html")                             // Actually it's HTML I want to receive back
                .method("POST")                                  // ...and it turns out, the service does not support PUT
                .type(MediaType.APPLICATION_FORM_URLENCODED)     // ...and the data must be form-urlencoded
                .entity("Dear Sir or Madam")                     // ...and we are not close friends after all
                .redirect("http://jaxrs.org/examples/greeting"); // ...oops, I almost forgot that the service was moved last month and the old domain is down!
-       
+
        i.invoke();                                              // Ok, now I can send the updated request
     }
 }

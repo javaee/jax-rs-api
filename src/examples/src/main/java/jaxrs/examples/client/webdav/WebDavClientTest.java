@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -39,7 +39,7 @@
  */
 package jaxrs.examples.client.webdav;
 
-import javax.ws.rs.client.Configurable;
+import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Feature;
 
 /**
@@ -56,21 +56,24 @@ public class WebDavClientTest {
     static class TestFeature implements Feature {
 
         @Override
-        public void enable(Configurable<?> configurable) {
+        public void onEnable(Configuration configurable) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         @Override
-        public void disable(Configurable<?> configurable) {
+        public void onDisable(Configuration configurable) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 
     public void fluentUseCases() {
         WebDavClient client = createClient();
+        client.configuration().enable(TestFeature.class);
 
         client.target("http://examples.jaxrs.com/webdav/");
-        client.enable(TestFeature.class).target("http://examples.jaxrs.com/webdav/");
+        client.target("http://examples.jaxrs.com/webdav/").configuration().enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/webdav/").request().configuration().enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().configuration().enable(TestFeature.class);
 
         // HTTP
         client.target("http://examples.jaxrs.com/webdav/").request().get();
@@ -82,17 +85,6 @@ public class WebDavClientTest {
         client.target("http://examples.jaxrs.com/webdav/").request().async().search(null);
         client.target("http://examples.jaxrs.com/webdav/").request().buildSearch(null).invoke();
         client.target("http://examples.jaxrs.com/webdav/").request().buildSearch(null).submit();
-
-        // HTTP
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().get();
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().async().get();
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().buildGet().invoke();
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().buildGet().submit();
-        // WebDAV
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().async().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().buildSearch(null).invoke();
-        client.target("http://examples.jaxrs.com/webdav/").enable(TestFeature.class).request().buildSearch(null).submit();
 
         // HTTP
         client.target("http://examples.jaxrs.com/webdav/").path("123").request().get();
@@ -115,17 +107,6 @@ public class WebDavClientTest {
         client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").async().search(null);
         client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").buildSearch(null).invoke();
         client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").buildSearch(null).submit();
-
-        // HTTP
-        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).async().get();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).buildGet().invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).buildGet().submit();
-        // WebDAV
-        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).async().search(null);
-        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).buildSearch(null).invoke();
-        client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").enable(TestFeature.class).buildSearch(null).submit();
 
         // HTTP
         client.target("http://examples.jaxrs.com/webdav/").path("123").request("text/plain").header("custom-name", "custom_value").get();

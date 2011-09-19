@@ -45,30 +45,33 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- * Client is the main entry point to the fluent API used to build and execute client 
- * requests in order to consume responses returned. 
+ * Client is the main entry point to the fluent API used to build and execute client
+ * requests in order to consume responses returned.
  *
  * @author Marek Potociar
- * @see Configurable
+ * @see Configuration
  * @since 2.0
  */
-public interface Client extends Configurable<Client> {
+public interface Client {
 
     interface Builder<C extends Client> {
 
         C build();
 
-        C build(Configurable<?> configuration);
+        C build(Configuration configuration);
     }
-    
+
     void close();
-    
-    // Resource target builder methods    
+
+    // Configuration
+    public Configuration configuration();
+
+    // Resource target builder methods
     Target target(String uri) throws IllegalArgumentException, NullPointerException;
 
     Target target(URI uri) throws NullPointerException;
 
     Target target(UriBuilder uriBuilder) throws NullPointerException;
-    
+
     Target target(Link link) throws NullPointerException;
 }
