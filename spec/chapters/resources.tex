@@ -284,7 +284,7 @@ public class WidgetsResource2 {
   
   @GET
   @Produces("application/xml", "application/json")
-  public Widgets getAsXML() {...}
+  public Widgets getWidget() {...}
 
 }
 \end{listing}
@@ -296,13 +296,13 @@ Suppose a client issues a \code{GET} request with an accept header of \code{appl
 public class WidgetsResource2 {
   
   @GET
-  @Produces("application/xml; qs=1", "application/json; qs=0.5")
-  public Widgets getAsXML() {...}
+  @Produces("application/xml; qs=1", "application/json; qs=0.75")
+  public Widgets getWidget() {...}
 
 }
 \end{listing}
 
-With the updated value for \Produces\ in this example, and in response to a \code{GET} request with an accept header of \code{application/*; q=0.5, text/html}, JAX-RS implementations will select the media type \code{application/xml} for the response given its higher qs-value. Note that qs-values, just like q-values, are relative and as such are only comparable to other qs-values within the same \Produces\ annotation instance. For more information see Section~\ref{determine_response_type}.
+With the updated value for \Produces\ in this example, and in response to a \code{GET} request with an accept header of \code{application/*; q=0.5, text/html}, JAX-RS implementations are REQUIRED to select the media type \code{application/xml} given its higher qs-value. Note that qs-values, just like q-values, are relative and as such are only comparable to other qs-values within the same \Produces\ annotation instance. For more information see Section~\ref{determine_response_type}.
 
 \section{Annotation Inheritance}
 \label{annotationinheritance}
