@@ -54,6 +54,6 @@ public class DynamicLoggingFilter extends LoggingFilter implements DynamicBindin
 
     @Override
     public boolean isBound(Class<?> type, Method method) {
-        return method.isAnnotationPresent(GET.class);
+        return type == MyResourceClass.class && method.isAnnotationPresent(GET.class);
     }
 }
