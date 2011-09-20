@@ -44,7 +44,7 @@ import java.util.Map;
 
 /**
  * Base context shared by handlers and filters.
- * 
+ *
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
@@ -52,14 +52,14 @@ import java.util.Map;
 public interface BaseContext {
 
     /**
-     * Get a mutable map of properties that can be used for 
-     * communication between handlers and between filters. As part of 
-     * the client API, this property map is initialized by calling 
-     * {@link javax.ws.rs.client.Invocation.Builder#getProperties() Invocation.Builder.getProperties}.
+     * Get a mutable map of properties that can be used for
+     * communication between handlers and between filters. As part of
+     * the client API, this property map is initialized by calling
+     * {@link javax.ws.rs.client.Configuration#getProperties() configured request properties}.
      * Otherwise, it is initialized to the empty map.
      *
      * @return a mutable property map
-     * @see javax.ws.rs.client.Configurable
+     * @see javax.ws.rs.client.Configuration
      * @see javax.ws.rs.client.Invocation.Builder Invocation.Builder
      */
     Map<String, Object> getProperties();
@@ -67,7 +67,7 @@ public interface BaseContext {
     /**
      * Get the resource method that is the target of a request. As
      * part of the client API, this method returns null.
-     * 
+     *
      * @return resource method or null
      * @see #getResourceClass()
      */
@@ -76,9 +76,9 @@ public interface BaseContext {
     /**
      * Get the resource class that is the target of a request. As
      * part of the client API, this method returns null.
-     * 
+     *
      * @return resource class or null
-     * @see #getResourceMethod() 
+     * @see #getResourceMethod()
      */
     Class<?> getResourceClass();
 
