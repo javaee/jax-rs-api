@@ -103,13 +103,13 @@ This is a note.
 \section{Terminology}
 
 \begin{description}
-\item[Resource class] A Java class that uses \jaxrs\ annotations to implement a corresponding Web resource, see chapter \ref{resources}.
-\item[Root resource class] A {\em resource class} annotated with \Path. Root resource classes provide the roots of the resource class tree and provide access to sub-resources, see chapter \ref{resources}.
+\item[Resource class] A Java class that uses \jaxrs\ annotations to implement a corresponding Web resource, see Chapter \ref{resources}.
+\item[Root resource class] A {\em resource class} annotated with \Path. Root resource classes provide the roots of the resource class tree and provide access to sub-resources, see Chapter \ref{resources}.
 \item[Request method designator] A runtime annotation annotated with \HttpMethod. Used to identify the HTTP request method to be handled by a {\em resource method}.
-\item[Resource method] A method of a {\em resource class} annotated with a {\em request method designator} that is used to handle requests on the corresponding resource, see section \ref{resource_method}.
-\item[Sub-resource locator] A method of a {\em resource class} that is used to locate sub-resources of the corresponding resource, see section \ref{sub_resources}.
-\item[Sub-resource method] A method of a {\em resource class} that is used to handle requests on a sub-resource of the corresponding resource, see section \ref{sub_resources}.
-\item[Provider] An implementation of a \jaxrs\ extension interface. Providers extend the capabilities of a \jaxrs\ runtime and are described in chapter \ref{providers}.
+\item[Resource method] A method of a {\em resource class} annotated with a {\em request method designator} that is used to handle requests on the corresponding resource, see Section \ref{resource_method}.
+\item[Sub-resource locator] A method of a {\em resource class} that is used to locate sub-resources of the corresponding resource, see Section \ref{sub_resources}.
+\item[Sub-resource method] A method of a {\em resource class} that is used to handle requests on a sub-resource of the corresponding resource, see Section \ref{sub_resources}.
+\item[Provider] An implementation of a \jaxrs\ extension interface. Providers extend the capabilities of a \jaxrs\ runtime and are described in Chapter \ref{providers}.
 \item[Filter] A class that implements \code{RequestFilter} or \code{ResponseFilter} (or both) and is annotated with \Provider.
 \item[Handler] A class that implements \code{ReadFromHandler} or \code{WriteFromHandler} (or both) and is annotated with \Provider.
 \item[Invocation] A Client API object that can be configured to issue an HTTP request.

@@ -7,7 +7,7 @@ An implementation of \jaxrs\ MUST provide a concrete subclass of \rd. Using the 
 
 \begin{enumerate}
 \item An instance of \rd\ can be instantiated and injected using its static method \code{set\-Instance}. In this case the implementation is responsible for creating the instance; this option is intended for use with implementations based on IoC frameworks.
-\item The class to be used can be configured, see section \ref{rdconfig}. In this case \jaxrs\ is responsible for instantiating an instance of the class and the configured class MUST have a public constructor which takes no arguments.
+\item The class to be used can be configured, see Section \ref{rdconfig}. In this case \jaxrs\ is responsible for instantiating an instance of the class and the configured class MUST have a public constructor which takes no arguments.
 \end{enumerate}
 
 Note that an implementation MAY supply an alternate implementation of the \rd\ API class (provided it passes the TCK signature test and behaves according to the specification) that supports alternate means of locating a concrete subclass.

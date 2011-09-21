@@ -9,7 +9,7 @@ A resource class is a Java class that uses \jaxrs\ annotations to implement a co
 
 \subsection{Lifecycle and Environment}
 
-By default a new resource class instance is created for each request to that resource. First the constructor (see section \ref{resource_class_constructor}) is called, then any requested dependencies are injected (see section \ref{resource_field}), then the appropriate method (see section \ref{resource_method}) is invoked and finally the object is made available for garbage collection.
+By default a new resource class instance is created for each request to that resource. First the constructor (see Section \ref{resource_class_constructor}) is called, then any requested dependencies are injected (see Section \ref{resource_field}), then the appropriate method (see Section \ref{resource_method}) is invoked and finally the object is made available for garbage collection.
 
 An implementation MAY offer other resource class lifecycles, mechanisms for specifying these are outside the scope of this specification. E.g. an implementation based on an inversion-of-control framework may support all of the lifecycle options provided by that framework.
 
@@ -38,7 +38,7 @@ When a resource class is instantiated, the values of fields and bean properties 
 
 Because injection occurs at object creation time, use of these annotations (with the exception of \Context) on resource class fields and bean properties is only supported for the default per-request resource class lifecycle. An implementation SHOULD warn if resource classes with other lifecycles use these annotations on resource class fields or bean properties.
 
-An implementation is only required to set the annotated field and bean property values of instances created by the implementation runtime. Objects returned by sub-resource locators (see section \ref{sub_resources}) are expected to be initialized by their creator and field and bean properties are not modified by the implementation runtime.
+An implementation is only required to set the annotated field and bean property values of instances created by the implementation runtime. Objects returned by sub-resource locators (see Section \ref{sub_resources}) are expected to be initialized by their creator and field and bean properties are not modified by the implementation runtime.
 
 Valid parameter types for each of the above annotations are listed in the corresponding Javadoc, however in general (excluding \Context) the following types are supported:
 
@@ -51,7 +51,7 @@ Valid parameter types for each of the above annotations are listed in the corres
 
 The \code{Default\-Value} annotation may be used to supply a default value for some of the above, see the Javadoc for \code{Default\-Value} for usage details and rules for generating a value in the absence of this annotation and the requested data. The \code{Encoded} annotation may be used to disable automatic URI decoding for \MatrixParam, \QueryParam, and \PathParam\ annotated fields and properties.
 
-A \WebAppExc\ thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above is processed directly as described in section \ref{method_exc}. Other exceptions thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above are treated as client errors: if the field or property is annotated with \MatrixParam, \QueryParam\ or \PathParam\ then an implementation MUST generate a \WebAppExc\ that wraps the thrown exception with a not found response (404 status) and no entity; if the field or property is annotated with \HeaderParam\ or \CookieParam\ then an implementation MUST generate a \WebAppExc\ that wraps the thrown exception with  a client error response (400 status) and no entity. The \WebAppExc\ MUST then be processed as described in section \ref{method_exc}.
+A \WebAppExc\ thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above is processed directly as described in Section \ref{method_exc}. Other exceptions thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above are treated as client errors: if the field or property is annotated with \MatrixParam, \QueryParam\ or \PathParam\ then an implementation MUST generate a \WebAppExc\ that wraps the thrown exception with a not found response (404 status) and no entity; if the field or property is annotated with \HeaderParam\ or \CookieParam\ then an implementation MUST generate a \WebAppExc\ that wraps the thrown exception with  a client error response (400 status) and no entity. The \WebAppExc\ MUST then be processed as described in Section \ref{method_exc}.
 
 \section{Resource Methods}
 \label{resource_method}
@@ -67,16 +67,16 @@ Only \code{public} methods may be exposed as resource methods. An implementation
 \subsection{Parameters}
 \label{resource_method_params}
 
-When a resource method is invoked, parameters annotated with \FormParam\ or one of the  annotations listed in section \ref{resource_field} are mapped from the request according to the semantics of the annotation. Similar to fields and bean properties:
+When a resource method is invoked, parameters annotated with \FormParam\ or one of the  annotations listed in Section \ref{resource_field} are mapped from the request according to the semantics of the annotation. Similar to fields and bean properties:
 \begin{itemize}
 \item The \code{Default\-Value} annotation may be used to supply a default value for parameters
 \item The \code{Encoded} annotation may be used to disable automatic URI decoding of parameter values
-\item Exceptions thrown during construction of parameter values are treated the same as exceptions thrown during construction of field or bean property values, see section \ref{resource_field}. Exceptions thrown during construction of \FormParam\ annotated parameter values are treated the same as if the parameter were annotated with \HeaderParam.
+\item Exceptions thrown during construction of parameter values are treated the same as exceptions thrown during construction of field or bean property values, see Section \ref{resource_field}. Exceptions thrown during construction of \FormParam\ annotated parameter values are treated the same as if the parameter were annotated with \HeaderParam.
 \end{itemize}
 
 \subsubsection{Entity Parameters}
 
-The value of a parameter not annotated with \FormParam\ or any of the annotations listed in in section \ref{resource_field}, called the entity parameter, is mapped from the request entity body. Conversion between an entity body and a Java type is the responsibility of an entity provider, see section \ref{entity_providers}. Resource methods MUST have at most one entity parameter.
+The value of a parameter not annotated with \FormParam\ or any of the annotations listed in in Section \ref{resource_field}, called the entity parameter, is mapped from the request entity body. Conversion between an entity body and a Java type is the responsibility of an entity provider, see Section \ref{entity_providers}. Resource methods MUST have at most one entity parameter.
 
 \subsection{Return Type}
 \label{resource_method_return}
@@ -92,7 +92,7 @@ Resource methods MAY return \code{void}, \Response, \code{Generic\-Entity}, or a
 
 Methods that need to provide additional metadata with a response should return an instance of \Response, the \Response\code{Builder} class provides a convenient way to create a \Response\ instance using a builder pattern.
 
-Conversion between a Java object and an entity body is the responsibility of an entity provider, see section \ref{entity_providers}. The return type of a resource method and the type of the returned instance are used to determine the raw type and generic type supplied to the \code{isWritable} method of \MsgWrite as follows:
+Conversion between a Java object and an entity body is the responsibility of an entity provider, see Section \ref{entity_providers}. The return type of a resource method and the type of the returned instance are used to determine the raw type and generic type supplied to the \code{isWritable} method of \MsgWrite as follows:
 
 \begin{longtable}{|l|l|l|l|}
 \hline
@@ -135,8 +135,8 @@ To illustrate the above consider a method that always returns an instance of \co
 A resource method, sub-resource method or sub-resource locator may throw any checked or unchecked exception. An implementation MUST catch all exceptions and process them as follows:
 
 \begin{enumerate}
-\item Instances of \WebAppExc\ MUST be mapped to a response as follows. If the \code{response} property of the exception does not contain an entity and an exception mapping provider (see section \ref{exceptionmapper}) is available for \WebAppExc\, an implementation MUST use the provider to create a new \Response\ instance, otherwise the \code{response} property is used directly. The resulting \Response\ instance is then processed according to section \ref{resource_method_return}.
-\item If an exception mapping provider (see section \ref{exceptionmapper}) is available for the exception or one of its superclasses, an implementation MUST use the provider whose generic type is the nearest superclass of the exception to create a \Response\ instance that is then processed according to section \ref{resource_method_return}. If the exception mapping provider throws an exception while creating a \Response\ then return a server error (status code 500) response to the client.
+\item Instances of \WebAppExc\ MUST be mapped to a response as follows. If the \code{response} property of the exception does not contain an entity and an exception mapping provider (see Section \ref{exceptionmapper}) is available for \WebAppExc\, an implementation MUST use the provider to create a new \Response\ instance, otherwise the \code{response} property is used directly. The resulting \Response\ instance is then processed according to Section \ref{resource_method_return}.
+\item If an exception mapping provider (see Section \ref{exceptionmapper}) is available for the exception or one of its superclasses, an implementation MUST use the provider whose generic type is the nearest superclass of the exception to create a \Response\ instance that is then processed according to Section \ref{resource_method_return}. If the exception mapping provider throws an exception while creating a \Response\ then return a server error (status code 500) response to the client.
 \item\label{runtimeexc} Unchecked exceptions and errors MUST be re-thrown and allowed to propagate to the underlying container.
 \item\label{checkedexc} Checked exceptions and throwables that cannot be thrown directly MUST be wrapped in a container-specific exception that is then thrown and allowed to propagate to the underlying container. Servlet-based implementations MUST use \code{Servlet\-Exception} as the wrapper. JAX-WS \code{Provider}-based implementations MUST use \code{Web\-Service\-Exception} as the wrapper.
 \end{enumerate}
@@ -202,8 +202,8 @@ In the above example the \code{Widget} resource class will be matched for any re
 Methods of a resource class that are annotated with \Path\ are either sub-resource methods or sub-resource locators. Sub-resource methods handle a HTTP request directly whilst sub-resource locators return an object that will handle a HTTP request. The presence or absence of a request method designator (e.g. @GET) differentiates between the two:
 
 \begin{description}
-\item[Present] Such methods, known as {\em sub-resource methods}, are treated like a normal resource method (see section \ref{resource_method}) except the method is only invoked for request URIs that match a URI template created by concatenating the URI template of the resource class with the URI template of the method\footnote{If the resource class URI template does not end with a \lq/\rq\ character then one is added during the concatenation.}.
-\item[Absent] Such methods, known as {\em sub-resource locators}, are used to dynamically resolve the object that will handle the request. Any returned object is treated as a resource class instance and used to either handle the request or to further resolve the object that will handle the request, see \ref{mapping_requests_to_java_methods} for further details. An implementation MUST dynamically determine the class of object returned rather than relying on the static sub-resource locator return type since the returned instance may be a subclass of the declared type with potentially different annotations, see section \ref{annotationinheritance} for rules on annotation inheritance. Sub-resource locators may have all the same parameters as a normal resource method (see section \ref{resource_method}) except that they MUST NOT have an entity parameter. 
+\item[Present] Such methods, known as {\em sub-resource methods}, are treated like a normal resource method (see Section \ref{resource_method}) except the method is only invoked for request URIs that match a URI template created by concatenating the URI template of the resource class with the URI template of the method\footnote{If the resource class URI template does not end with a \lq/\rq\ character then one is added during the concatenation.}.
+\item[Absent] Such methods, known as {\em sub-resource locators}, are used to dynamically resolve the object that will handle the request. Any returned object is treated as a resource class instance and used to either handle the request or to further resolve the object that will handle the request, see \ref{mapping_requests_to_java_methods} for further details. An implementation MUST dynamically determine the class of object returned rather than relying on the static sub-resource locator return type since the returned instance may be a subclass of the declared type with potentially different annotations, see Section \ref{annotationinheritance} for rules on annotation inheritance. Sub-resource locators may have all the same parameters as a normal resource method (see Section \ref{resource_method}) except that they MUST NOT have an entity parameter. 
 \end{description}
 
 The following example illustrates the difference:
@@ -235,7 +235,7 @@ In the above a \code{GET} request for the \code{widgets/offers} resource is hand
 \section{Declaring Media Type Capabilities}
 \label{declaring_method_capabilities}
 
-Application classes can declare the supported request and response media types using the \Consumes\ and \Produces\ annotations respectively. These annotations MAY be applied to a resource method, a resource class, or to an entity provider (see section \ref{declaring_provider_capabilities}). Use of these annotations on a resource method overrides any on the resource class or on an entity provider for a method argument or return type. In the absence of either of these annotations, support for any media type (\lq\lq*/*\rq\rq) is assumed.
+Application classes can declare the supported request and response media types using the \Consumes\ and \Produces\ annotations respectively. These annotations MAY be applied to a resource method, a resource class, or to an entity provider (see Section \ref{declaring_provider_capabilities}). Use of these annotations on a resource method overrides any on the resource class or on an entity provider for a method argument or return type. In the absence of either of these annotations, support for any media type (\lq\lq*/*\rq\rq) is assumed.
 
 The following example illustrates the use of these annotations:
 
@@ -267,9 +267,9 @@ public class WidgetProvider implements MessageBodyReader<Widget> {...}
 
 In the above:
 \begin{itemize}
-\item The \code{getAsXML} resource method will be called for \code{GET} requests that specify a response media type of \code{application/widgets+xml}. It returns a \code{Widgets} instance that will be mapped to that format using the \code{WidgetsProvider} class (see section \ref{entity_providers} for more information on \MsgWrite).
+\item The \code{getAsXML} resource method will be called for \code{GET} requests that specify a response media type of \code{application/widgets+xml}. It returns a \code{Widgets} instance that will be mapped to that format using the \code{WidgetsProvider} class (see Section \ref{entity_providers} for more information on \MsgWrite).
 \item The \code{getAsHtml} resource method will be called for \code{GET} requests that specify a response media type of \code{text/html}. It returns a \code{String} containing \code{text/html} that will be written using the default implementation of \code{MessageBodyWriter<String>}.
-\item The \code{addWidget} resource method will be called for \code{POST} requests that contain an entity of the media type \code{application/widgets+xml}. The value of the \code{widget} parameter will be mapped from the request entity using the \code{WidgetProvider} class (see section \ref{entity_providers} for more information on \MsgRead).
+\item The \code{addWidget} resource method will be called for \code{POST} requests that contain an entity of the media type \code{application/widgets+xml}. The value of the \code{widget} parameter will be mapped from the request entity using the \code{WidgetProvider} class (see Section \ref{entity_providers} for more information on \MsgRead).
 \end{itemize}
 
 An implementation MUST NOT invoke a method whose effective value of \Produces\ does not match the request \code{Accept} header. An implementation MUST NOT invoke a method whose effective value of \Consumes\ does not match the request \code{Content-Type} header.
@@ -350,7 +350,7 @@ Prior to matching, request URIs are normalized\footnote{Note: some containers mi
 \subsection{Request Matching}
 \label{request_matching}
 
-A request is matched to the corresponding resource method or sub-resource method by comparing the normalized request URI (see section \ref{reqpreproc}), the media type of any request entity, and the requested response entity format to the metadata annotations on the resource classes and their methods. If no matching resource method or sub-resource method can be found then an appropriate error response is returned. Matching of requests to resource methods proceeds in three stages as follows:
+A request is matched to the corresponding resource method or sub-resource method by comparing the normalized request URI (see Section \ref{reqpreproc}), the media type of any request entity, and the requested response entity format to the metadata annotations on the resource classes and their methods. If no matching resource method or sub-resource method can be found then an appropriate error response is returned. Matching of requests to resource methods proceeds in three stages as follows:
 
 \begin{enumerate}
 \item Identify the root resource class:
@@ -363,7 +363,7 @@ A request is matched to the corresponding resource method or sub-resource method
 \begin{enumerate}
 \item Set $E=\{\}$
 
-\item For each class in $C$ add a regular expression (computed using the function $R(A)$ described in section \ref{template_to_regex}) to $E$ as follows:
+\item For each class in $C$ add a regular expression (computed using the function $R(A)$ described in Section \ref{template_to_regex}) to $E$ as follows:
 \begin{itemize}
 \item Add $R(T_{\mbox{class}})$ where $T_{\mbox{class}}$ is the URI path template specified for the class.
 \end{itemize}
@@ -374,7 +374,7 @@ A request is matched to the corresponding resource method or sub-resource method
 \item Remove members for which the final regular expression capturing group (henceforth simply referred to as a capturing group) value is neither empty nor \lq/\rq\ and the class associated with $R(T_{\mbox{class}})$ had no sub-resource methods or locators.
 \end{itemize}
 
-\item If $E$ is empty then no matching resource can be found, the algorithm terminates and an implementation MUST generate a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}.
+\item If $E$ is empty then no matching resource can be found, the algorithm terminates and an implementation MUST generate a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
 
 \item Sort $E$ using the number of literal characters\footnote{Here, literal characters means those not resulting from template variable substitution.} in each member as the primary key (descending order), the number of capturing groups as a secondary key (descending order) and the number of capturing groups with non-default regular expressions (i.e. not \lq([\^{ }/]+?)\rq) as the tertiary key (descending order).
 
@@ -408,7 +408,7 @@ and go to step \ref{find_method}
 \item Remove members derived from $T_{\mbox{method}}$ (those added in step \ref{t_method_items}) for which the final capturing group value is neither empty nor \lq/\rq.
 \end{itemize}
 
-\item If $E$ is empty then no matching resource can be found, the algorithm terminates and an implementation MUST generate a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}.
+\item If $E$ is empty then no matching resource can be found, the algorithm terminates and an implementation MUST generate a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
 
 \item Sort $E$ using the number of literal characters in each member as the primary key (descending order), the number of capturing groups as a secondary key (descending order), the number of capturing groups with non-default regular expressions (i.e. not \lq([\^{ }/]+?)\rq) as the tertiary key (descending order), and the source of each member as quaternary key sorting those derived from $T_{\mbox{method}}$ ahead of those derived from $T_{\mbox{locator}}$.
 
@@ -434,9 +434,9 @@ $$M = \{\mbox{subresource methods of }O \mbox{ where } R(T_{\mbox{method}}) = R_
 \begin{enumerate}
 \item \label{filter_methods} Filter $M$ by removing members that do not meet the following criteria:
 \begin{itemize}
-\item The request method is supported. If no methods support the request method an implementation MUST generate a \WebAppExc\ with a method not allowed response (HTTP 405 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}. Note the additional support for \code{HEAD} and \code{OPTIONS} described in section \ref{head_and_options}.
-\item The media type of the request entity body (if any) is a supported input data format (see section \ref{declaring_method_capabilities}). If no methods support the media type of the request entity body an implementation MUST generate a \WebAppExc\ with an unsupported media type response (HTTP 415 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}.
-\item At least one of the acceptable response entity body media types is a supported output data format (see section \ref{declaring_method_capabilities}). If no methods support one of the acceptable response entity body media types an implementation MUST generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}.
+\item The request method is supported. If no methods support the request method an implementation MUST generate a \WebAppExc\ with a method not allowed response (HTTP 405 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}. Note the additional support for \code{HEAD} and \code{OPTIONS} described in Section \ref{head_and_options}.
+\item The media type of the request entity body (if any) is a supported input data format (see Section \ref{declaring_method_capabilities}). If no methods support the media type of the request entity body an implementation MUST generate a \WebAppExc\ with an unsupported media type response (HTTP 415 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
+\item At least one of the acceptable response entity body media types is a supported output data format (see Section \ref{declaring_method_capabilities}). If no methods support one of the acceptable response entity body media types an implementation MUST generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
 \end{itemize} 
 \item Sort $M$ in descending order as follows:
 \begin{itemize}
@@ -491,7 +491,7 @@ In many cases it is not possible to statically determine the media type of a res
 \end{itemize}
 \end{itemize}
 
-\item If $M = \{\}$ then generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}. Finish.
+\item If $M = \{\}$ then generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}. Finish.
 
 \item Sort $M$ in descending order, with a primary key of specificity ($\mbox{n/m} > \mbox{n/*} > \mbox{*/*}$), a secondary key of q-value and a tertiary key of qs-value.
 
@@ -502,7 +502,7 @@ In many cases it is not possible to statically determine the media type of a res
 
 \item If $M$ contains \lq*/*\rq\ or \lq application/*\rq, set $M_{\mbox{selected}} = \mbox{\lq application/octet-stream\rq}$, finish.
 
-\item Generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in section \ref{method_exc}. Finish.
+\item Generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}. Finish.
 \end{enumerate}
 
 Note that the above renders a response with a default media type of \lq application/octet-stream\rq\ when a concrete type cannot be determined. It is RECOMMENDED that \MsgWrite\ implementations specify at least one concrete type via \Produces.

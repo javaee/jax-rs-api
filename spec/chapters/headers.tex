@@ -1,24 +1,24 @@
 \chapter{HTTP Header Support}
 \label{headersupport}
 
-The following table lists HTTP headers that are directly supported, either automatically by a \jaxrs\ implementation runtime or by an application using the \jaxrs\ API. Any request header may be obtained using \HttpHeaders, see section \ref{httpheaders}; response headers not listed here may set using the \ResponseBuilder\-\code{.header} method.
+The following table lists HTTP headers that are directly supported, either automatically by a \jaxrs\ implementation runtime or by an application using the \jaxrs\ API. Any request header may be obtained using \HttpHeaders, see Section \ref{httpheaders}; response headers not listed here may set using the \ResponseBuilder\-\code{.header} method.
 
 %\begin{center}
 \begin{longtable}{|l|p{4.5in}|}
 \hline
 \bfseries Header & \bfseries Description \tabularnewline
 \hline\hline\endhead
-\code{Accept} & \raggedright Used by runtime when selecting a resource method, compared to value of \Produces\ annotation, see section \ref{declaring_method_capabilities}. \tabularnewline
+\code{Accept} & \raggedright Used by runtime when selecting a resource method, compared to value of \Produces\ annotation, see Section \ref{declaring_method_capabilities}. \tabularnewline
 \hline
-\code{Accept-Charset} & \raggedright Processed by runtime if application uses \Request\code{.selectVariant} method, see section \ref{conneg_and_preconditions}. \tabularnewline
+\code{Accept-Charset} & \raggedright Processed by runtime if application uses \Request\code{.selectVariant} method, see Section \ref{conneg_and_preconditions}. \tabularnewline
 \hline
-\code{Accept-Encoding} & \raggedright Processed by runtime if application uses \Request\code{.selectVariant} method, see section \ref{conneg_and_preconditions}. \tabularnewline
+\code{Accept-Encoding} & \raggedright Processed by runtime if application uses \Request\code{.selectVariant} method, see Section \ref{conneg_and_preconditions}. \tabularnewline
 \hline
-\code{Accept-Language} & \raggedright Processed by runtime if application uses \Request\code{.selectVariant} method, see section \ref{conneg_and_preconditions}. \tabularnewline
+\code{Accept-Language} & \raggedright Processed by runtime if application uses \Request\code{.selectVariant} method, see Section \ref{conneg_and_preconditions}. \tabularnewline
 \hline
-\code{Allow} & \raggedright Included in automatically generated 405 error responses (see section \ref{request_matching}) and automatically generated responses to OPTIONS requests (see section \ref{head_and_options}).\tabularnewline
+\code{Allow} & \raggedright Included in automatically generated 405 error responses (see Section \ref{request_matching}) and automatically generated responses to OPTIONS requests (see Section \ref{head_and_options}).\tabularnewline
 \hline
-\code{Authorization} & \raggedright Depends on container, information available via \SecurityContext, see section \ref{security_context}. \tabularnewline
+\code{Authorization} & \raggedright Depends on container, information available via \SecurityContext, see Section \ref{security_context}. \tabularnewline
 \hline
 \code{Cache-Control} & \raggedright See \code{CacheControl} class and \ResponseBuilder\code{.cacheControl} method. \tabularnewline
 \hline
@@ -28,7 +28,7 @@ The following table lists HTTP headers that are directly supported, either autom
 \hline
 \code{Content-Length} & \raggedright Processed automatically for requests, set automatically in responses if value is provided by the \MsgWrite\ used to serialize the response entity. \tabularnewline
 \hline
-\code{Content-Type} & \raggedright Request header used by runtime when selecting a resource method, compared to value of \Consumes\ annotation, see section \ref{declaring_method_capabilities}. Response header either set by application using \Response\code{.ok}, \ResponseBuilder\code{.type}, or \ResponseBuilder\code{.variant}, or set automatically by runtime (see section \ref{determine_response_type}).\tabularnewline
+\code{Content-Type} & \raggedright Request header used by runtime when selecting a resource method, compared to value of \Consumes\ annotation, see Section \ref{declaring_method_capabilities}. Response header either set by application using \Response\code{.ok}, \ResponseBuilder\code{.type}, or \ResponseBuilder\code{.variant}, or set automatically by runtime (see Section \ref{determine_response_type}).\tabularnewline
 \hline
 \code{Cookie} & \raggedright See \code{Cookie} class and \HttpHeaders\code{.getCookies} method. \tabularnewline
 \hline
@@ -40,13 +40,13 @@ The following table lists HTTP headers that are directly supported, either autom
 \hline
 \code{Expires} & \raggedright Set by application using  the \ResponseBuilder\code{.expires} method. \tabularnewline
 \hline
-\code{If-Match} & \raggedright Processed by runtime if application uses corresponding \Request\code{.evaluatePreconditions} method, see section \ref{conneg_and_preconditions}. \tabularnewline
+\code{If-Match} & \raggedright Processed by runtime if application uses corresponding \Request\code{.evaluatePreconditions} method, see Section \ref{conneg_and_preconditions}. \tabularnewline
 \hline
-\code{If-Modified-Since} & \raggedright Processed by runtime if application uses corresponding \Request\code{.evaluatePreconditions} method, see section \ref{conneg_and_preconditions}. \tabularnewline
+\code{If-Modified-Since} & \raggedright Processed by runtime if application uses corresponding \Request\code{.evaluatePreconditions} method, see Section \ref{conneg_and_preconditions}. \tabularnewline
 \hline
-\code{If-None-Match} & \raggedright Processed by runtime if application uses corresponding \Request\code{.evaluatePreconditions} method, see section \ref{conneg_and_preconditions}. \tabularnewline
+\code{If-None-Match} & \raggedright Processed by runtime if application uses corresponding \Request\code{.evaluatePreconditions} method, see Section \ref{conneg_and_preconditions}. \tabularnewline
 \hline
-\code{If-Unmodified-Since} & \raggedright Processed by runtime if application uses corresponding \Request\code{.evaluatePreconditions} method, see section \ref{conneg_and_preconditions}. \tabularnewline
+\code{If-Unmodified-Since} & \raggedright Processed by runtime if application uses corresponding \Request\code{.evaluatePreconditions} method, see Section \ref{conneg_and_preconditions}. \tabularnewline
 \hline
 \code{Last-Modified} & \raggedright Set by application using  the \ResponseBuilder\code{.lastModified} method. \tabularnewline
 \hline
@@ -54,7 +54,7 @@ The following table lists HTTP headers that are directly supported, either autom
 \hline
 \code{Set-Cookie} & \raggedright See \code{NewCookie} class and \ResponseBuilder\code{.cookie} method. \tabularnewline
 \hline
-\code{Transfer-Encoding} & \raggedright See section \ref{transfer_encoding}. \tabularnewline
+\code{Transfer-Encoding} & \raggedright See Section \ref{transfer_encoding}. \tabularnewline
 \hline
 \code{Vary} & \raggedright Set by application using \Response\code{.notAcceptable} method or \ResponseBuilder\code{.variants} method. \tabularnewline
 \hline
