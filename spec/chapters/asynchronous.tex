@@ -19,7 +19,7 @@ Let us illustrate these concepts via an example:
 @Path("/async/longRunning")
 public class MyResource {
     @Context
-    private AsyncContext ctx;
+    private ExecutionContext ctx;
     
     @GET
     public void longRunningOp() {
@@ -34,7 +34,7 @@ public class MyResource {
 }
 \end{listing}
 
-Resource classes that support asynchronous processing must inject an instance of \code{AsyncContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) forks a thread to execute a long running operation, (ii) calls \code{suspend} on the injected \code{AsyncContext} and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{AsyncContext}.
+Resource classes that support asynchronous processing must inject an instance of \code{ExecutionContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) forks a thread to execute a long running operation, (ii) calls \code{suspend} on the injected \code{ExecutionContext} and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{ExecutionContext}.
 
 \subsection{Suspend Annotation}
 
@@ -68,9 +68,9 @@ public void longRunningOp() {
 }
 \end{listing}
 
-JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set in \AsyncContext. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set in \AsyncContext\ (using method \code{setResponse}) JAX-RS implementations are REQUIRED to return the fallback response without generating a \WebApplicationException\ when the timeout is reached.
+JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set in \ExecutionContext. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set in \ExecutionContext\ (using method \code{setResponse}) JAX-RS implementations are REQUIRED to return the fallback response without generating a \WebApplicationException\ when the timeout is reached.
 
-Overloaded versions of the method \code{suspend} in \AsyncContext\ also accept a timeout value and a unit, thus providing the same functionality as the \Suspend\ annotation. 
+Overloaded versions of the method \code{suspend} in \ExecutionContext\ also accept a timeout value and a unit, thus providing the same functionality as the \Suspend\ annotation. 
 
 \section{Client API}
 \label{client_api}
