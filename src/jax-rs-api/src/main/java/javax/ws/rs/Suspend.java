@@ -59,15 +59,27 @@ import java.util.concurrent.TimeUnit;
  * of the {@code suspend(...)} methods in the {@link javax.ws.rs.core.ExecutionContext}
  * programmatic API.
  * <p/>
+ * If the request processing was suspended with a positive timeout value, the
+ * processing will be resumed once the specified timeout threshold is reached
+ * provided the request processing was not explicitly resumed before the
+ * suspending has expired. The request processing will be resumed using response
+ * data returned by the associated {@link javax.ws.rs.core.ExecutionContext#getResponse()}
+ * method. Should the method return {@code null}, a {@link WebApplicationException}
+ * is raised with a HTTP 503 error status (Service unavailable). Use
+ * {@link javax.ws.rs.core.ExecutionContext#setResponse(java.lang.Object)}
+ * method to programmatically customize the default timeout response.
+ * <p/>
  * The annotation is ignored if it is used on any method other than JAX-RS
  * resource method.
  *
  * @author Marek Potociar
+ * @since 2.0
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Suspend {
+
     /**
      * Constant specifying no suspend timeout value.
      */
