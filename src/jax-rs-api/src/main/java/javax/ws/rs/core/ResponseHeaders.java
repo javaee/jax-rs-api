@@ -41,6 +41,7 @@ package javax.ws.rs.core;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.core.Response.Status;
@@ -160,13 +161,44 @@ public interface ResponseHeaders extends Headers {
         T variants(Variant... variants);
 
         /**
+         * Add a Vary header that lists the available variants.
+         *
+         * @param variants a list of available representation variants, a {@code null}
+         *     value will remove an existing value for Vary header.
+         * @return the updated response header builder.
+         */
+        T variants(List<Variant> variants);
+
+        /**
          * Add one or more link headers.
          * 
          * @param links links to be added to the message as headers, a {@code null}
          *     value will remove any existing Link headers.
          * @return the updated response header builder.
+         * @since 2.0
          */
         T links(Link... links);
+        
+        /**
+         * Add a link header.
+         *
+         * @param uri TODO.
+         * @param rel TODO.
+         * @return the updated response header builder.
+         * @since 2.0
+         */
+        T link(URI uri, String rel);
+
+        /**
+         * Add a link header.
+         *
+         * @param uri TODO.
+         * @param rel TODO.
+         * @return the updated response header builder.
+         * @since 2.0
+         */
+        T link(String uri, String rel);
+        
     }
 
     /**
@@ -197,24 +229,6 @@ public interface ResponseHeaders extends Headers {
      * @return the location URI, otherwise {@code null} if not present.
      */
     URI getLocation();
-
-    /**
-     * Get the response status represented as a response {@link Status} enumeration
-     * value.
-     *
-     * @return the status type instance, or {@code null} if there is no
-     * mapping between the integer status code and the
-     * {@link javax.ws.rs.core.Response.Status response status enumeration} value.
-     */
-    Status getStatus();
-
-    /**
-     * Get the response status code.
-     *
-     * @return the response status code.
-     *
-     */
-    int getStatusCode();
 
     Set<Link> getLinks();
 

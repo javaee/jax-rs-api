@@ -45,8 +45,8 @@ import java.util.concurrent.BlockingQueue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Target;
-import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.Link;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.ext.ClientBuilderFactory;
 
@@ -85,10 +85,10 @@ public final class ThrottledClient implements Client {
             return this;
         }
     }
-    private final BlockingQueue<HttpRequest> requestQueue;
+    private final BlockingQueue<Request.RequestBuilder> requestQueue;
 
     private ThrottledClient(int queueCapacity) {
-        this.requestQueue = new ArrayBlockingQueue<HttpRequest>(queueCapacity);
+        this.requestQueue = new ArrayBlockingQueue<Request.RequestBuilder>(queueCapacity);
     }
 
     private ThrottledClient(Configuration configuration, int queueCapacity) {

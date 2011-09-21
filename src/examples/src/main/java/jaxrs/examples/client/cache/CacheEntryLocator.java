@@ -45,7 +45,7 @@ import java.net.URI;
 import java.util.Map;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.RequestFilter;
@@ -71,11 +71,10 @@ public class CacheEntryLocator implements RequestFilter {
             CacheEntry entry = cache.get(uri.toString());
             
             if (entry != null) {
-                HttpResponse response = ctx.createResponse();
+                Response.ResponseBuilder responseBuilder = ctx.createResponse();
                 // TODO: response.getHeaders().putAll(entry.getHeaders());
-                response.setEntityInputStream(new ByteArrayInputStream(entry.getBody()));
-                response.setStatusCode(200);
-                ctx.setResponse(response);      // Set response and stop
+                responseBuilder.entityInputStream(new ByteArrayInputStream(entry.getBody())).status(200);
+                ctx.setResponse(responseBuilder);      // Set response and stop
                 return FilterAction.STOP;
             }
         }

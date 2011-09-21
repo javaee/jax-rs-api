@@ -53,7 +53,7 @@ import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -119,8 +119,8 @@ public class BasicExamples {
     public void creatingClientRequestsAndInvocations() {
         final Client client = ClientFactory.newClient();
 
-        HttpResponse response = client.target("http://jaxrs.examples.org/jaxrsApplication/customers").request(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
-        assert response.getStatusCode() == 200;
+        Response response = client.target("http://jaxrs.examples.org/jaxrsApplication/customers").request(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
+        assert response.getStatus() == 200;
     }
 
     public void creatingResourceUriRequestsAndInvocations() {
@@ -128,13 +128,13 @@ public class BasicExamples {
         final Target customersUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
         // Create target request, customize it and invoke using newClient
-        HttpResponse response = customersUri.request(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
-        assert response.getStatusCode() == 200;
+        Response response = customersUri.request(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
+        assert response.getStatus() == 200;
     }
 
     public void defaultResponse() {
         Customer customer;
-        HttpResponse response;
+        Response response;
 
         final Target customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
@@ -143,7 +143,7 @@ public class BasicExamples {
         assert customer != null;
 
         response = customersUri.request().post(xml(new Customer("Marek")));
-        assert response.getStatusCode() == 201;
+        assert response.getStatus() == 201;
     }
 
     public void typedResponse() {
@@ -162,8 +162,8 @@ public class BasicExamples {
         Target customer = customersUri.path("{id}");
 
         // Create a customer
-        HttpResponse response = customersUri.request().post(xml(new Customer("Bill")));
-        assert response.getStatusCode() == 201;
+        Response response = customersUri.request().post(xml(new Customer("Bill")));
+        assert response.getStatus() == 201;
 
         Customer favorite;
         // view a customer
@@ -177,9 +177,9 @@ public class BasicExamples {
     }
 
     public void asyncResponse() throws Exception {
-        Future<HttpResponse> future = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).request().async().get();
+        Future<Response> future = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).request().async().get();
 
-        HttpResponse response = future.get();
+        Response response = future.get();
         Customer customer = response.getEntity(Customer.class);
         assert customer != null;
     }
@@ -206,10 +206,10 @@ public class BasicExamples {
         });
 
         // invoke another request in background
-        Future<?> handle = target.pathParam("id", 456).request().async().get(new InvocationCallback<HttpResponse>() {
+        Future<?> handle = target.pathParam("id", 456).request().async().get(new InvocationCallback<Response>() {
 
             @Override
-            public void completed(HttpResponse response) {
+            public void completed(Response response) {
                 // do something
             }
 
@@ -243,10 +243,10 @@ public class BasicExamples {
 
         // invoke another request in background
         anyCustomerUri.pathParam("id", 456) // Target
-                .request().async().get(new InvocationCallback<HttpResponse>() {
+                .request().async().get(new InvocationCallback<Response>() {
 
             @Override
-            public void completed(HttpResponse response) {
+            public void completed(Response response) {
                 // do something
             }
 
@@ -257,7 +257,7 @@ public class BasicExamples {
         });
 
         // invoke one more request using newClient
-        Future<HttpResponse> response = anyCustomerUri.pathParam("id", 789).request().cookie(new Cookie("fooName", "XYZ")).async().get();
+        Future<Response> response = anyCustomerUri.pathParam("id", 789).request().cookie(new Cookie("fooName", "XYZ")).async().get();
         assert response.get() != null;
     }
 
@@ -320,7 +320,7 @@ public class BasicExamples {
         // For users who really need it...
        Invocation i = ClientFactory.newClient().target("http://examples.jaxrs.com/").path("greeting").request("text/plain").header("custom-name", "custom_value").buildPut(text("Hi"));
 
-       i.asRequest()
+       i.asRequestBuilder()
                .accept("text/html")                             // Actually it's HTML I want to receive back
                .method("POST")                                  // ...and it turns out, the service does not support PUT
                .type(MediaType.APPLICATION_FORM_URLENCODED)     // ...and the data must be form-urlencoded

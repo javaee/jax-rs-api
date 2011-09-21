@@ -42,8 +42,8 @@ package jaxrs.examples.filter.logging;
 import java.io.IOException;
 import javax.ws.rs.BindingPriority;
 
-import javax.ws.rs.core.HttpRequest;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.Provider;
@@ -71,11 +71,11 @@ public class LoggingFilter implements RequestFilter, ResponseFilter {
         return FilterAction.NEXT;
     }
 
-    private void logRequest(HttpRequest req) {
+    private void logRequest(Request.RequestBuilder req) {
         return;     // TODO
     }
 
-    private void logResponse(HttpResponse res) {
+    private void logResponse(Response.ResponseBuilder res) {
         return;     // TODO
     }
 }

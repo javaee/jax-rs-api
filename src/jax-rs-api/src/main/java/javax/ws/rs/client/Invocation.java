@@ -45,9 +45,9 @@ import java.util.concurrent.Future;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Headers;
-import javax.ws.rs.core.HttpRequest;
 import javax.ws.rs.core.TypeLiteral;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Request.RequestBuilder;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -97,13 +97,13 @@ public interface Invocation {
         public Configuration configuration();
     }
 
-    public HttpResponse invoke() throws InvocationException;
+    public Response invoke() throws InvocationException;
 
     public <T> T invoke(Class<T> responseType) throws InvocationException;
 
     public <T> T invoke(TypeLiteral<T> responseType) throws InvocationException;
 
-    public Future<HttpResponse> submit();
+    public Future<Response> submit();
 
     public <T> Future<T> submit(Class<T> responseType);
 
@@ -111,8 +111,7 @@ public interface Invocation {
 
     public <T> Future<T> submit(InvocationCallback<T> callback);
 
-    // Request data accessor
-    public HttpRequest asRequest();
+    public RequestBuilder asRequestBuilder();
 
     // Configuration
     public Configuration configuration();

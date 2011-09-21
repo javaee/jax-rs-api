@@ -43,7 +43,7 @@ import java.io.IOException;
 
 import javax.ws.rs.BindingPriority;
 import javax.ws.rs.GlobalBinding;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.Provider;
@@ -60,7 +60,7 @@ public class ServerCachingFilter implements RequestFilter {
 
     @Override
     public FilterAction preFilter(FilterContext ctx) throws IOException {
-        HttpResponse res = getCachedResponse(ctx);
+        Response.ResponseBuilder res = getCachedResponse(ctx);
         if (res != null) {
             ctx.setResponse(res);
             return FilterAction.STOP;     // break filter chain
@@ -68,7 +68,7 @@ public class ServerCachingFilter implements RequestFilter {
         return FilterAction.NEXT;
     }
 
-    private HttpResponse getCachedResponse(FilterContext ctx) {
+    private Response.ResponseBuilder getCachedResponse(FilterContext ctx) {
         return null;    // TODO
     }
 }

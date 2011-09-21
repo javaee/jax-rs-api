@@ -48,7 +48,7 @@ import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.client.Target;
-import javax.ws.rs.core.HttpResponse;
+import javax.ws.rs.core.Response;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -97,10 +97,10 @@ public class SpecExamples {
 
     public void fluentMethodChaining() {
         Client client = ClientFactory.newClient();
-        HttpResponse res = client.target("http://example.org/hello")
+        Response res = client.target("http://example.org/hello")
                 .request("text/plain").get();
 
-        HttpResponse res2 = client.target("http://example.org/hello")
+        Response res2 = client.target("http://example.org/hello")
                 .queryParam("MyParam","...")
                 .request("text/plain")
                 .header("MyHeader", "...")
@@ -116,12 +116,12 @@ public class SpecExamples {
         AsyncInvoker asyncInvoker = builder.async();
         Invocation inv = builder.buildGet();
 
-        HttpResponse r1 = builder.get();
-        HttpResponse r2 = syncInvoker.get();
-        HttpResponse r3= inv.invoke();
+        Response r1 = builder.get();
+        Response r2 = syncInvoker.get();
+        Response r3= inv.invoke();
 
-        Future<HttpResponse> fr1 = asyncInvoker.get();
-        Future<HttpResponse> fr2 = inv.submit();
+        Future<Response> fr1 = asyncInvoker.get();
+        Future<Response> fr2 = inv.submit();
     }
 
     public void benefitsOfResourceUri() {
@@ -129,14 +129,14 @@ public class SpecExamples {
         Target base = client.target("http://example.org/");
         Target hello = base.path("hello").path("{whom}");
         final Target whomToGreet = hello.pathParam("whom", "world");
-        HttpResponse res = whomToGreet.request().get();
+        Response res = whomToGreet.request().get();
     }
 
     public void gettingAndPostingCustomers() {
         Client client = ClientFactory.newClient();
         Customer c = client.target("http://examples.org/customers/123")
                 .request("application/xml").get(Customer.class);
-        HttpResponse res = client.target("http://examples.org/premium-customers/")
+        Response res = client.target("http://examples.org/premium-customers/")
                 .request().post(entity(c, "application/xml"));
     }
 

@@ -41,9 +41,8 @@ package jaxrs.examples.client.links;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.core.HttpResponse;
-import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -53,11 +52,11 @@ public class LinkUsageExample {
     public void testCLientSideLinks() {
         Client client = ClientFactory.newClient();
         
-        HttpResponse current = client.target("http://examples.jax-rs-spec.com/current")
+        Response current = client.target("http://examples.jax-rs-spec.com/current")
                 .request(MediaType.APPLICATION_XML)
                 .get();
         
-        HttpResponse next = client.target(current.getLink("next")).request(MediaType.APPLICATION_XML).get();
+        Response next = client.target(current.getLink("next")).request(MediaType.APPLICATION_XML).get();
         
     }
 }
