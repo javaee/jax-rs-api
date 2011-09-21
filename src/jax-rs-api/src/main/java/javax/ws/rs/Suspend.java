@@ -49,11 +49,48 @@ import java.util.concurrent.TimeUnit;
 /**
  * Marks a request processed by the {@code @Suspend}-annotated {@link HttpMethod JAX-RS resource method}
  * for suspending. Suspended request processing can be resumed using an injectable
- * {@link javax.ws.rs.core.ExecutionContext} instance bound to the processed request.
- * Any response value returned from the {@code @Suspend}-annotated resource method
- * is ignored by the framework.
- * <p/>
- * By default there is {@link #NEVER no timeout set} and request processing is
+ * {@link javax.ws.rs.core.ExecutionContext} instance bound to the processed request:
+ *
+ * <pre>
+ * &#64;Path("/messages/next")
+ * public class SimpleAsyncEventResource {
+ *     private static final BlockingQueue&lt;ExecutionContext&gt; suspended = new ArrayBlockingQueue&lt;ExecutionContext&gt;(5);
+ *     &#64;Context ExecutionContext ctx;
+ *
+ *     &#64;GET
+ *     &#64;Suspend
+ *     public void pickUpMessage() throws InterruptedException {
+ *         suspended.put(ctx);
+ *     }
+ *
+ *     &#64;POST
+ *     public String postMessage(final String message) throws InterruptedException {
+ *         suspended.take().resume(message);
+ *         return "Message sent";
+ *     }
+ * }
+ * </pre>
+ *
+ * Typically resource method annotated with {@code @Suspend} annotation declare
+ * {@code void} return type, but it is not a hard requirement to do so. Any response
+ * value returned from the {@code @Suspend}-annotated resource method is ignored
+ * by the framework:
+ *
+ * <pre>
+ * &#64;Path("/messages/next")
+ * public class SimpleAsyncEventResource {
+ *     &hellip;
+ *     &#64;GET
+ *     &#64;Suspend
+ *     public String pickUpMessage() throws InterruptedException {
+ *         suspended.put(ctx);
+ *         return "This response will be ignored.";
+ *     }
+ *     &hellip;
+ * }
+ * </pre>
+ *
+ * By default there is {@link #NEVER no suspend timeout set} and request processing is
  * suspended indefinitely. The suspend timeout can be specified using the annotation
  * values. Declaratively specified timeout can be further overridden using one
  * of the {@code suspend(...)} methods in the {@link javax.ws.rs.core.ExecutionContext}
