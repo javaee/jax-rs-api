@@ -1,10 +1,7 @@
 \chapter{Client API}
 \label{client_api}
 
-\section{Introduction}
-\label{introduction}
-
-This chapter introduces the reader to the Client API. This API can be used to access Web resources. Unless otherwise stated, types presented in this chapter live in the \code{javax.ws.rs.client} package.
+The Client API is used to access Web resources. It provides a higher-level API than \code{HttpURLConnection} as well as integration with JAX-RS providers. Unless otherwise stated, types presented in this chapter live in the \code{javax.ws.rs.client} package.
 
 %\section{Request and Responses}
 
@@ -12,18 +9,19 @@ This chapter introduces the reader to the Client API. This API can be used to ac
 
 \section{Bootstrapping a Client Instance}
 
-An instance of \Client\ is required to access a Web resource using the Client API. The default instance of \Client\ can be obtained by calling \code{newClient} on \ClientFactory. Instances of \Client\ implement the \code{Configurable} interface and can, therefore, be configured using properties and features:
+An instance of \Client\ is required to access a Web resource using the Client API. The default instance of \Client\ can be obtained by calling \code{newClient} on \ClientFactory. \Client\ instances can be configured by calling the \code{configuration} method; the object returned, of type \code{Configuration}, provides access to providers, properties and features:
 
 \begin{listing}{1}
 // Default instance of client
 Client client = ClientFactory.newClient();
 
 // Additional configuration of default client
-client.setProperty("MyProperty", "MyValue");
-client.enable(MyFeature.class);
+client.setProperty("MyProperty", "MyValue")
+      .register(MyProvider.class)
+      .enable(MyFeature.class);
 \end{listing}
 
-Features must implement the \code{Feature} interface by providing concrete implementations of the \code{enable} and \code{disable} methods; properties are simply name-value pairs, where the value is an arbitrary object.
+See Chapter \ref{providers} for more information on providers. Properties are simply name-value pairs where the value is an arbitrary object.  Features must implement the \code{Feature} interface by providing concrete implementations of the \code{enable} and \code{disable} methods; they are useful for grouping sets of properties and providers (or other features) that are logically related and must be enabled and disabled as a unit.
 
 An instance of \code{ClientBuilderFactory} can be provided in order to obtain customized instances of \code{Client} which may provide functionality beyond what it is described in this document.  
 
@@ -34,7 +32,7 @@ MyClient myClient =
 myClient.enableCaching(true);
 \end{listing}
 
-Note that in this example the client instance returned by the factory is of type \code{MyClient}. The method \code{enableCaching} is not defined in the default client shown in the previous example.
+Note that in this example the \Client\ instance returned by the factory is of type \code{MyClient}. The method \code{enableCaching} is not defined in the default client shown in the previous example.
 
 \section{Resource Access}
 \label{resource_access}
@@ -49,7 +47,7 @@ HttpResponse res = client.target("http://example.org/hello")
 
 Conceptually, the steps required to submit a request are the following: (i) obtain an instance of \Client\ (ii) create a \Target\ (iii) create a request from the \Target\ and (iv) submit a request or get a prepared \Invocation\ for later submission. See section \ref{invocations} for more information on using \Invocation.
 
-Method chaining is not limited to the example shown above. A request can be further configured by specifying additional headers, cookies, query parameters, etc. For example:
+Method chaining is not limited to the example shown above. A request can be further specified by setting headers, cookies, query parameters, etc. For example:
 
 \begin{listing}{1}
 HttpResponse res = client.target("http://example.org/hello")
@@ -69,7 +67,19 @@ Target hello = base.path("hello").path("{whom}");
 HttpResponse res = hello.pathParam("whom", "world").request().get();
 \end{listing}
 
-Note the use of the URI template parameter \code{\{whom\}}. The example above gets a representation for the resource identified by the http://example.org/hello/world URI.
+Note the use of the URI template parameter~\code{\{whom\}}. The example above gets a representation for the resource identified by http://example.org/hello/world.
+
+\Target\ instances are {\em immutable} with respect to their URI (or URI template): methods for specifying additional path segments and parameters return a new instance of \Target. However, \Target\ instances are {\em mutable} with respect to their configuration. Thus, configuring a \Target\ does not create new instances.
+
+\begin{listing}{1}
+// Create Target instance base
+Target base = client.target("http://example.org/");
+// Create new Target instance hello and configure
+Target hello = base.path("hello");
+hello.configuration().register(MyProvider.class);
+\end{listing}
+
+In this example, two instances of \Target\ are created. The instance \code{hello} inherits the configuration from \code{base} and it is further configured by adding another provider \code{MyProvider.class}. Note that changes \code{hello}'s configuration do not affect \code{base}, i.e.~configuration inheritance requires performing a deep copy of the configuration. See Section \ref{configurable_types} for additional information.
 
 \section{Typed Entities}
 
@@ -116,7 +126,7 @@ In this example, two invocations are prepared and stored in a collection by the 
 \section{Configurable Types}
 \label{configurable_types}
 
-The Client API types \Client, \Invocation, \InvocationBuilder\ and \Target\ all implement the \Configurable\ interface. This interface supports configuration of:
+The following Client API types are configurable: \Client, \Invocation, \InvocationBuilder\ and \Target. In all cases, the configuration can be accessed by calling the \code{configure} method. This interface supports configuration of:
 
 \begin{description}
 \item [Features] Instances of classes that implement \code{Feature} and can be enabled or disabled in order to configure a \jaxrs\ implementation.
@@ -124,30 +134,31 @@ The Client API types \Client, \Invocation, \InvocationBuilder\ and \Target\ all 
 \item [Providers] Classes or instances of classes annotated by \Provider. A provider can be a message body reader, a filter, a context provider, etc. See Chapter \ref{providers} for more information.
 \end{description}
 
-A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Target\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Target\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached from its parent configuration and changes to the parent and child configurations are not be visible to each other.
+A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Target\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Target\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached (deep copied) from its parent configuration and changes to the parent and child configurations are not be visible to each other.
 
 \subsection{Filters and Handlers}
 \label{filters_handlers_client}
 
-As explained in Chapter \ref{filters_and_handlers}, filters and handlers are defined as JAX-RS providers. Therefore, they can be registered in any of the configurable types listed in the previous section. The following example shows how to register filters and handlers on instances of \Client, \Target\ and \InvocationBuilder:
+As explained in Chapter \ref{filters_and_handlers}, filters and handlers are defined as JAX-RS providers. Therefore, they can be registered in any of the configurable types listed in the previous section. The following example shows how to register filters and handlers on instances of \Client, \Target\ and \Invocation:
 
 \begin{listing}{1}
+// Create client and register logging filter
 Client client = ClientFactory.newClient();
-client.register(LoggingFilter.class);
+client.configuration().register(LoggingFilter.class);
 
 // Executes logging filter from client and caching filter from target
-Customer c = client.target("http://examples.org/customers/123")
-    .register(CachingFilter.class)
-    .request("application/xml").get(Customer.class);
+Target t = client.target("http://examples.org/customers/123");
+t.configuration().register(CachingFilter.class);
+Customer c = t.request("application/xml").get(Customer.class);
 
-// Executes logging filter from client and gzip handler from request
-String newId = client.target("http://examples.org/gold-customers/")
-    .request()
-    .register(GzipHandler.class)
-    .post(xml(c), String.class);
+// Executes logging filter from client and gzip handler from invocation
+Invocation i = client.target("http://examples.org/gold-customers/")
+    .request().buildPost(xml(c));
+i.configuration().register(GzipHandler.class);
+String newId = i.invoke(String.class);
 \end{listing}
 
-In this example, \code{LoggingFilter} is inherited by each instance of \Target\ created from \code{client}; the providers \code{CachingFilter} and \code{GzipHandler} are defined on a \Target\ and an \InvocationBuilder, respectively.
+In this example, \code{LoggingFilter} is inherited by each instance of \Target\ created from \code{client}; the providers \code{CachingFilter} and \code{GzipHandler} are defined on a \Target\ and an \Invocation, respectively.
 
 
 
