@@ -48,8 +48,10 @@ import java.util.List;
  *
  * @author Marek Potociar
  * @author Santiago Pericas-Geertsen
+ *
+ * @since 2.0
  */
-public class Link {
+public final class Link {
 
     private URI uri;
 
