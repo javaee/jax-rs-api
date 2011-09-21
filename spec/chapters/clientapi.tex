@@ -3,10 +3,6 @@
 
 The Client API is used to access Web resources. It provides a higher-level API than \code{HttpURLConnection} as well as integration with JAX-RS providers. Unless otherwise stated, types presented in this chapter live in the \code{javax.ws.rs.client} package.
 
-%\section{Request and Responses}
-
-%The \jaxrs\ 1.X types \code{javax.ws.rs.core.Request} and \code{javax.ws.rs.core.Response} have been designed specifically for the Server API. %These classes do not provide the necessary support to satisfy all the use cases covered by the Client API. Two new interfaces,  %\code{javax.ws.rs.core.HttpRequest}  and \code{javax.ws.rs.core.HttpResponse}, are hereby introduced to accommodate the new set of %equirements. As indicated by their location in the core package, their scope is \emph{not} limited to the Client API. 
-
 \section{Bootstrapping a Client Instance}
 
 An instance of \Client\ is required to access a Web resource using the Client API. The default instance of \Client\ can be obtained by calling \code{newClient} on \ClientFactory. \Client\ instances can be configured by calling the \code{configuration} method; the object returned, of type \code{Configuration}, provides access to providers, properties and features:
@@ -41,7 +37,7 @@ A Web resource can be accessed using a fluent API in which methods invocations a
 
 \begin{listing}{1}
 Client client = ClientFactory.newClient();
-HttpResponse res = client.target("http://example.org/hello")
+Response res = client.target("http://example.org/hello")
     .request("text/plain").get();
 \end{listing}
 
@@ -50,7 +46,7 @@ Conceptually, the steps required to submit a request are the following: (i) obta
 Method chaining is not limited to the example shown above. A request can be further specified by setting headers, cookies, query parameters, etc. For example:
 
 \begin{listing}{1}
-HttpResponse res = client.target("http://example.org/hello")
+Response res = client.target("http://example.org/hello")
     .request("text/plain").header("MyHeader", "...")
     .queryParam("MyParam","...").get();
 \end{listing}
@@ -64,7 +60,7 @@ The benefits of using a \code{Target} become apparent when building complex URIs
 \begin{listing}{1}
 Target base = client.target("http://example.org/");
 Target hello = base.path("hello").path("{whom}");   
-HttpResponse res = hello.pathParam("whom", "world").request().get();
+Response res = hello.pathParam("whom", "world").request().get();
 \end{listing}
 
 Note the use of the URI template parameter~\code{\{whom\}}. The example above gets a representation for the resource identified by http://example.org/hello/world.
@@ -83,7 +79,7 @@ In this example, two instances of \Target\ are created. The instance \code{hello
 
 \section{Typed Entities}
 
-The response to a request is not limited to be of type \HttpResponse. The following example upgrades the status of customer number 123 to ``gold status'' by first obtaining an entity of type \code{Customer} and then posting that entity to a different URI:
+The response to a request is not limited to be of type \Response. The following example upgrades the status of customer number 123 to ``gold status'' by first obtaining an entity of type \code{Customer} and then posting that entity to a different URI:
 
 \begin{listing}{1}
 Customer c = client.target("http://examples.org/customers/123")
@@ -114,14 +110,14 @@ Invocation inv2 = client.target("http://examples.org/atm/withdrawal")
 Collection<Invocation> invs = Arrays.asList(inv1, inv2);
 
 // Executed by the submitter
-Collection<HttpResponse> ress =
+Collection<Response> ress =
     Collections.transform(invs,
-        new F<Invocation, HttpResponse>() {
-             public HttpResponse apply(Invocation inv) {
+        new F<Invocation, Response>() {
+             public Response apply(Invocation inv) {
                  return inv.invoke(); } });
 \end{listing}
 
-In this example, two invocations are prepared and stored in a collection by the creator. The submitter then traverses the collection applying a transformation that maps an \Invocation\ to an \HttpResponse. The mapping calls \code{Invocation.invoke()} to execute the invocation synchronously; asynchronous executions are also supported by calling \code{Invocation.submit()}.
+In this example, two invocations are prepared and stored in a collection by the creator. The submitter then traverses the collection applying a transformation that maps an \Invocation\ to an \Response. The mapping calls \code{Invocation.invoke()} to execute the invocation synchronously; asynchronous executions are also supported by calling \code{Invocation.submit()}.
 
 \section{Configurable Types}
 \label{configurable_types}
