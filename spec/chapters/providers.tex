@@ -127,3 +127,11 @@ When a resource class or provider method throws an exception, the \jaxrs\ runtim
 Exception mapping providers map a checked or runtime exception to an instance of \Response. An exception mapping provider implements the \code{ExceptionMapper<T>} interface and is annotated with \Provider. When a resource method throws an exception for which there is an exception mapping provider, the matching provider is used to obtain a \Response\ instance. The resulting \Response\ is processed as if the method throwing the exception had instead returned the \Response, see Section \ref{resource_method_return}.
 
 When choosing an exception mapping provider to map an exception, an implementation MUST use the provider whose generic type is the nearest superclass of the exception.
+
+\section{Filter and Handler Providers}
+\label{filter_and_handler_providers}
+
+Filters and handlers are also registered as providers. Filters can be registered at two extension points known as Pre and Post. Handlers can be registered at two extension points known as ReadFrom and WriteTo. In all cases, the implementation class must be annotated by \Provider. For more information see Chapter \ref{filters_and_handlers}.
+
+
+
