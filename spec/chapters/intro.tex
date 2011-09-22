@@ -12,7 +12,7 @@ REST; for more information about the REST architectural style and RESTful Web se
 \section{Status}
 \label{status}
 
-This is an editors draft; this specification is not yet complete. A list of open issues can be found at:
+This is an early draft; this specification is not yet complete. A list of open issues can be found at:
 %This is a JCP public review draft; this specification is not yet final. A list of open issues can be found at:
 %This is a JCP final specification. A list of open issues can be found at:
 
@@ -23,7 +23,7 @@ http://java.net/jira/browse/JAX\_RS\_SPEC
 The corresponding Javadocs can be found online at:
 
 \begin{quote}
-http://java.net/projects/jax-rs-spec/sources
+http://jax-rs-spec.java.net/
 \end{quote}
 
 The reference implementation can be obtained from:
@@ -63,7 +63,7 @@ The following are non-goals:
 
 \begin{description}
 
-\item[Support for Java versions prior to J2SE 5.0] The API will make extensive use of annotations and will require J2SE 5.0 or later.
+\item[Support for Java versions prior to J2SE 6.0] The API will make extensive use of annotations and will require J2SE 6.0 or later.
 
 \item[Description, registration and discovery] The specification will neither define nor require any service description, registration or discovery capability.
 
@@ -113,8 +113,8 @@ This is a note.
 \item[Sub-resource locator] A method of a {\em resource class} that is used to locate sub-resources of the corresponding resource, see Section \ref{sub_resources}.
 \item[Sub-resource method] A method of a {\em resource class} that is used to handle requests on a sub-resource of the corresponding resource, see Section \ref{sub_resources}.
 \item[Provider] An implementation of a \jaxrs\ extension interface. Providers extend the capabilities of a \jaxrs\ runtime and are described in Chapter \ref{providers}.
-\item[Filter] A class that implements \code{RequestFilter} or \code{ResponseFilter} (or both) and is annotated with \Provider.
-\item[Handler] A class that implements \code{ReadFromHandler} or \code{WriteFromHandler} (or both) and is annotated with \Provider.
+\item[Filter] A class that implements \code{RequestFilter} or \code{ResponseFilter} (or both) and is registered as a provider.
+\item[Handler] A class that implements \code{ReadFromHandler} or \code{WriteFromHandler} (or both) and is registered as a provider.
 \item[Invocation] A Client API object that can be configured to issue an HTTP request.
 \item[Target] The recipient of an Invocation, identified by a URI.
 \item[Link] A URI with additional meta-data such as a media type, a relation, a title, etc.
@@ -168,12 +168,8 @@ Stefan Tilkov (innoQ Deutschland GmbH)
 \section{Acknowledgements}
 \label{acks}
 
-During the course of the JSR we received many excellent suggestions. Special thanks to Martin Matula and Gerard Davidson from Oracle, Pete Muir and Emmanuel Bernard from Red Hat.
+During the course of this JSR we received many excellent suggestions. Special thanks to Martin Matula and Gerard Davison from Oracle, Pete Muir and Emmanuel Bernard from Red Hat.
 
-%During the course of the JSR we received many excellent suggestions on the JSR and Jersey (RI) mailing lists, thanks in particular to James Manger 
-%(Telstra) and Reto Bachmann-Gm\"{u}r (Trialox) for their contributions. 
+During the course of the JSR 311 we received many excellent suggestions on the JSR and Jersey (RI) mailing lists, thanks in particular to James Manger (Telstra) and Reto Bachmann-Gm\"{u}r (Trialox) for their contributions. The following individuals (all Sun Microsystems at the time) have also made invaluable technical contributions: Roberto Chinnici, Dianne Jiao (TCK), Ron Monzillo, Rajiv Mordani, Eduardo Pelegri-Llopart, Jakub Podlesak (RI) and Bill Shannon. 
 
-%The \code{GenericEntity} class was inspired by the Google Guice \code{Type\-Literal} class. Our thanks to Bob Lee and Google for donating this class to \jaxrs.
-
-%The following individuals (all Sun Microsystems) have also made invaluable technical contributions: Roberto Chinnici, Dianne Jiao (TCK), Ron 
-%Monzillo, Rajiv Mordani, Eduardo Pelegri-Llopart, Jakub Podlesak (RI) and Bill Shannon.
+The \code{GenericEntity} class was inspired by the Google Guice \code{Type\-Literal} class. Our thanks to Bob Lee and Google for donating this class to \jaxrs. 
