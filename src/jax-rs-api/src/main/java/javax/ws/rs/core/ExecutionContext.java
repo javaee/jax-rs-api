@@ -41,6 +41,7 @@ package javax.ws.rs.core;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import javax.ws.rs.WebApplicationException;
 
 /**
  * An injectable interface that provides access to asynchronous server side
@@ -119,7 +120,9 @@ public interface ExecutionContext {
      * processing will be resumed once the specified timeout threshold is reached
      * provided the request processing was not explicitly resumed before the
      * suspending has expired. The request processing will be resumed using response
-     * data returned by {@link #getResponse()} method. Use {@link #setResponse(java.lang.Object)}
+     * data returned by {@link #getResponse()} method. Should the {@code getResponse()}
+     * return {@code null}, {@link WebApplicationException} is raised with a HTTP
+     * 503 error status (Service unavailable). Use {@link #setResponse(java.lang.Object)}
      * method to customize the default timeout response.
      *
      * @return handle of the suspended request processing that can be used for
@@ -150,7 +153,9 @@ public interface ExecutionContext {
      * processing will be resumed once the specified timeout threshold is reached
      * provided the request processing was not explicitly resumed before the
      * suspending has expired. The request processing will be resumed using response
-     * data returned by {@link #getResponse()} method. Use {@link #setResponse(java.lang.Object)}
+     * data returned by {@link #getResponse()} method. Should the {@code getResponse()}
+     * return {@code null}, {@link WebApplicationException} is raised with a HTTP
+     * 503 error status (Service unavailable). Use {@link #setResponse(java.lang.Object)}
      * method to customize the default timeout response.
      *
      * @param millis suspend timeout value in milliseconds.
@@ -182,7 +187,9 @@ public interface ExecutionContext {
      * processing will be resumed once the specified timeout threshold is reached
      * provided the request processing was not explicitly resumed before the
      * suspending has expired. The request processing will be resumed using response
-     * data returned by {@link #getResponse()} method. Use {@link #setResponse(java.lang.Object)}
+     * data returned by {@link #getResponse()} method. Should the {@code getResponse()}
+     * return {@code null}, {@link WebApplicationException} is raised with a HTTP
+     * 503 error status (Service unavailable). Use {@link #setResponse(java.lang.Object)}
      * method to customize the default timeout response.
      *
      * @param time suspend timeout value in the give time {@code unit}.

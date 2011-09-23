@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -45,32 +45,34 @@ import java.util.List;
 
 /**
  * Link class.
- * 
+ *
  * @author Marek Potociar
  * @author Santiago Pericas-Geertsen
+ *
+ * @since 2.0
  */
-public class Link {
+public final class Link {
 
     private URI uri;
-    
+
     private URI context;
-    
-    private MultivaluedMap<String, String> map = new MultivaluedHashMap();
+
+    private MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
 
     /**
      * Returns the underlying URI associated with this link.
-     * 
-     * @return Underlying URI 
+     *
+     * @return Underlying URI
      */
     public URI getUri() {
         return uri;
     }
 
-    /** 
+    /**
      * Convenience method that returns a {@link UriBuilder}
      * initialized with this link's underlying URI.
-     * 
-     * @return UriBuilder initialized using underlying URI 
+     *
+     * @return UriBuilder initialized using underlying URI
      */
     public UriBuilder getBuilder() {
         return UriBuilder.fromUri(uri);
@@ -78,7 +80,7 @@ public class Link {
 
     /**
      * Returns context URI for this link, if set.
-     * 
+     *
      * @return Context URI or null if not set.
      */
     public URI getContextUri() {
@@ -87,9 +89,9 @@ public class Link {
 
     /**
      * Returns a list containing all the relations types defined
-     * on this link via the "rel" parameter. If no relation types are 
+     * on this link via the "rel" parameter. If no relation types are
      * defined, this method returns an empty list.
-     * 
+     *
      * @return List of relation types
      */
     public List<String> getRelationTypes() {
@@ -99,7 +101,7 @@ public class Link {
     /**
      * Returns the value associated with the link param "title", or
      * null if this param is not specified in this link.
-     * 
+     *
      * @return Value of "title" parameter
      */
     public String getTitle() {
@@ -109,7 +111,7 @@ public class Link {
     /**
      * Returns the value associated with the link parm "type", or
      * null if this param is not specified in this link.
-     * 
+     *
      * @return Value of "type" parameter
      */
     public MediaType getMediaType() {
@@ -120,7 +122,7 @@ public class Link {
      * Returns an immutable map that includes all the link parameters
      * defined on this link. If defined, this map will include entries
      * for "rel", "title" and "type".
-     * 
+     *
      * @return Immutable map of link parameters
      */
     public MultivaluedMap<String, String> getLinkParams() {
@@ -128,10 +130,10 @@ public class Link {
     }
 
     /**
-     * Returns a simplified string representation for this link's value. 
+     * Returns a simplified string representation for this link's value.
      * All link params are serialized as link-param="value" where value
      * is a list of space-separated tokens. For example,
-     * 
+     *
      * <http://foo.bar/employee/john>; title="employee"; rel="manager friend"
      */
     @Override
@@ -150,7 +152,7 @@ public class Link {
         }
         return sb.toString();
     }
-    
+
     /**
      * Create a new instance initialized from an existing URI.
      * @param uri a URI that will be used to initialize the LinkBuilder.
@@ -178,7 +180,7 @@ public class Link {
     public static class LinkBuilder {
 
         private Link link = new Link();
-        
+
         protected LinkBuilder() {
         }
 
@@ -209,7 +211,7 @@ public class Link {
             }
             return this;
         }
-        
+
         public LinkBuilder rel(String name) throws IllegalArgumentException {
             link.map.add("rel", name);
             return this;
@@ -218,23 +220,23 @@ public class Link {
         public LinkBuilder title(String name) throws IllegalArgumentException {
             link.map.add("title", name);
             return this;
-            
+
         }
 
         public LinkBuilder type(String name) throws IllegalArgumentException {
             link.map.add("type", name);
             return this;
-            
+
         }
 
         public LinkBuilder type(MediaType type) throws IllegalArgumentException {
             return type(type.toString());
-            
+
         }
 
         public LinkBuilder param(String name, String value) throws IllegalArgumentException {
             link.map.add(name, value);
-            return this;            
+            return this;
         }
 
         public Link build() {
