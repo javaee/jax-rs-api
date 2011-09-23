@@ -1,16 +1,12 @@
 \chapter{Applications}
 \label{applications}
 
-A \jaxrs\ application consists of one or more resources (see chapter \ref{resources}) and zero or more providers (see chapter \ref{providers}). This chapter describes aspects of \jaxrs\ that apply to an application as a whole, subsequent chapters describe particular aspects of a \jaxrs\ application and requirements on \jaxrs\ implementations.
+A \jaxrs\ application consists of one or more resources (see Chapter \ref{resources}) and zero or more providers (see Chapter \ref{providers}). This chapter describes aspects of \jaxrs\ that apply to an application as a whole, subsequent chapters describe particular aspects of a \jaxrs\ application and requirements on \jaxrs\ implementations.
 
 \section{Configuration}
 \label{config}
 
 The resources and providers that make up a \jaxrs\ application are configured via an application-supplied subclass of \code{Application}. An implementation MAY provide alternate mechanisms for locating resource classes and providers (e.g. runtime class scanning) but use of \code{Application} is the only portable means of configuration.
-
-\section{Validation}
-
-Specific validation requirements are detailed throughout this specification and the \jaxrs\ Javadocs. Implementations MAY perform additional validation where feasible and SHOULD report any issues arising from such validation to the user.
 
 \section{Publication}
 
@@ -49,7 +45,7 @@ It is RECOMMENDED that implementations support the Servlet 3 framework pluggabil
 </web-app>
 \end{listing} 
 
-Note that a \code{<servlet>} section is not required given that the servlet name is well-defined.
+Note that a \code{<servlet>} section is not required (but may be present) given that the servlet name is well-defined.
 
 \item If an \code{Application} subclass is present:
 
@@ -71,10 +67,10 @@ Note that a \code{<servlet>} section is not required given that the servlet name
 </web-app>
 \end{listing} 
 
-Note that a \code{<servlet>} section is not required given that the servlet name is well-defined.
+Note that a \code{<servlet>} section is not required (but may be present) given that the servlet name is well-defined.
 \end{itemize}
 
-When an \code{Application} subclass is present in the archive, if both \code{Application.getClasses} and \code{Application.getSingletons} return an empty list then all root resource classes and providers packaged in the web application MUST be included and the JAX-RS implementation is REQUIRED to discover them automatically. If either \code{getClasses} or \code{getSingletons} return a non-empty list then only those classes or singletons returned MUST be included in the published \jaxrs\ application. 
+When an \code{Application} subclass is present in the archive, if both \code{Application.getClasses} and \code{Application.getSingletons} return an empty list then all root resource classes and providers packaged in the web application MUST be included and the JAX-RS implementation is REQUIRED to discover them automatically. If either \code{getClasses} or \code{getSingletons} returns a non-empty list then only those classes or singletons returned MUST be included in the published \jaxrs\ application. 
 \end{itemize}
 
 The following table summarizes the Servlet 3 framework pluggability mechanism:
@@ -95,7 +91,7 @@ No \code{Application} subclass & Add servlet & \code{javax.\-ws.\-rs.\-core.\-Ap
 \end{longtable}
 }
 
-If not using the Servlet 3 framework pluggability mechanism (e.g. in a pre-Servlet 3.0 container), the \code{servlet-class} or \code{filter-class} element of the \code{web.xml} descriptor SHOULD name the \jaxrs\ implementation-supplied servlet or filter class respectively. The \code{Application} subclass SHOULD be identified using an \code{init-param} with a \code{param-name} of \code{javax.\-ws.\-rs.\-Application}.
+If not using the Servlet 3 framework pluggability mechanism (e.g.~in a pre-Servlet 3.0 container), the \code{servlet-class} or \code{filter-class} element of the \code{web.xml} descriptor SHOULD name the \jaxrs\ implementation-supplied servlet or filter class respectively. The \code{Application} subclass SHOULD be identified using an \code{init-param} with a \code{param-name} of \code{javax.\-ws.\-rs.\-Application}.
 
 Note that the Servlet 3 framework pluggability mechanism described above is based on servlets and not filters. Applications that prefer to use an  implementation-supplied filter class must use the pre-Servlet 3.0 configuration mechanism.
 

@@ -20,9 +20,9 @@ Servlet filters may trigger consumption of a request body by accessing request p
 This section describes the additional requirements that apply to a \jaxrs\ implementation when combined in a product that supports these other Java specifications:
 
 \begin{itemize}
-\item In a product that also supports the Servlet specification, implementations MUST support \jaxrs\ applications that are packaged as a web application. Implementations MUST behave as if built using the Servlet 3 pluggability mechanism, see section \ref{servlet}.
+\item In a product that also supports the Servlet specification, implementations MUST support \jaxrs\ applications that are packaged as a web application. Implementations MUST behave as if built using the Servlet 3 pluggability mechanism, see Section \ref{servlet}.
 \item In a product that also supports Managed Beans, implementations MUST support use of Managed Beans as root resource classes, providers and \code{Application} subclasses. In a product that also supports JSR 299, implementations MUST similarly support use of JSR299-style managed beans. Providers and \code{Application} subclasses MUST be singletons or use application scope.
-\item In a product that also supports EJB, an implementation MUST support use of stateless and singleton session beans as root resource classes, providers and \code{Application} subclasses. \jaxrs\ annotations MAY be applied to a bean's local interface or directly to a no-interface bean. If an \code{Exception\-Mapper} for a \code{EJBException} or subclass is not included with an application then exceptions thrown by an EJB resource class or provider method MUST be treated as EJB application exceptions: the embedded cause of the \code{EJBException} MUST be unwrapped and processed as described in section \ref{method_exc}.
+\item In a product that also supports EJB, an implementation MUST support use of stateless and singleton session beans as root resource classes, providers and \code{Application} subclasses. \jaxrs\ annotations MAY be applied to a bean's local interface or directly to a no-interface bean. If an \code{Exception\-Mapper} for a \code{EJBException} or subclass is not included with an application then exceptions thrown by an EJB resource class or provider method MUST be treated as EJB application exceptions: the embedded cause of the \code{EJBException} MUST be unwrapped and processed as described in Section \ref{method_exc}.
 \end{itemize}
 
 The following additional requirements apply when using Managed Beans, JSR299-style Managed Beans or EJBs as resource classes, providers or \code{Application} subclasses:
@@ -35,4 +35,4 @@ The following additional requirements apply when using Managed Beans, JSR299-sty
 
 \section{Other}
 
-Other container technologies MAY specify their own set of injectable resources but MUST, at a minimum, support access to the types of context listed in section \ref{contexttypes}.
+Other container technologies MAY specify their own set of injectable resources but MUST, at a minimum, support access to the types of context listed in Section \ref{contexttypes}.

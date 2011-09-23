@@ -1,11 +1,11 @@
 \chapter{Context}
 \label{context}
 
-\jaxrs\ provides facilities for obtaining and processing information about the application deployment context and the context of individual requests. Such information is available to \code{Application} subclasses (see section \ref{config}), root resource classes (see chapter \ref{resources}), and providers (see chapter \ref{providers}). This chapter describes these facilities.
+\jaxrs\ provides facilities for obtaining and processing information about the application deployment context and the context of individual requests. Such information is available to \code{Application} subclasses (see Section \ref{config}), root resource classes (see Chapter \ref{resources}), and providers (see Chapter \ref{providers}). This chapter describes these facilities.
 
 \section{Concurrency}
 
-Context is specific to a particular request but instances of certain \jaxrs\ components (providers and resource classes with a lifecycle other than per-request) may need to support multiple concurrent requests. When injecting an instance of one of the types listed in section \ref{contexttypes}, the instance supplied MUST be capable of selecting the correct context for a particular request. Use of a thread-local proxy is a common way to achieve this.
+Context is specific to a particular request but instances of certain \jaxrs\ components (providers and resource classes with a lifecycle other than per-request) may need to support multiple concurrent requests. When injecting an instance of one of the types listed in Section \ref{contexttypes}, the instance supplied MUST be capable of selecting the correct context for a particular request. Use of a thread-local proxy is a common way to achieve this.
 
 \section{Context Types}
 \label{contexttypes}
@@ -33,7 +33,7 @@ public String listQueryParamNames(@Context UriInfo info) {
 }
 \end{listing}
 
-Note that the methods of \UriInfo\ provide access to request URI information following the pre-processing described in section \ref{reqpreproc}.
+Note that the methods of \UriInfo\ provide access to request URI information following the pre-processing described in Section \ref{reqpreproc}.
 
 \subsection{Headers}
 \label{httpheaders}
@@ -53,7 +53,7 @@ public String listHeaderNames(@Context HttpHeaders headers) {
 }
 \end{listing}
 
-Note that the methods of \HttpHeaders\ provide access to request information following the pre-processing described in section \ref{reqpreproc}.
+Note that the methods of \HttpHeaders\ provide access to request information following the pre-processing described in Section \ref{reqpreproc}.
 
 Response headers may be provided using the \Response\ class, see \ref{resource_method_return} for more details.
 
