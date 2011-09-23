@@ -4,7 +4,7 @@
 Filters and handlers can be registered for execution at well-defined extension points in a \jaxrs\ implementation. They are used to extend an implementation in order to provide capabilities such as logging, security, entity compression, etc. 
 
 \section{Introduction}
-\label{introduction}
+\label{introduction_filters}
 Handlers wrap around a method invocation at a specific extension point. Filters execute code at an extension point but without wrapping a method invocation. There are two extension points for filters: Pre and Post. There are two extension points for handlers: ReadFrom and WriteTo.  For each of these extension points, there is a corresponding interface:
 
 \begin{listing}{1}
