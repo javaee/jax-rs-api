@@ -9,3 +9,13 @@ profile
 *.iws
 *.ipr
 *.iml
+
+# TeX build noise
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.tex~
+*.thm
+*.toc
