@@ -12,9 +12,10 @@ An instance of \Client\ is required to access a Web resource using the Client AP
 Client client = ClientFactory.newClient();
 
 // Additional configuration of default client
-client.setProperty("MyProperty", "MyValue")
-      .register(MyProvider.class)
-      .enable(MyFeature.class);
+client.configuration()
+    .setProperty("MyProperty", "MyValue")
+    .register(MyProvider.class)
+    .enable(MyFeature.class);
 \end{listing}
 
 See Chapter \ref{providers} for more information on providers. Properties are simply name-value pairs where the value is an arbitrary object.  Features must implement the \code{Feature} interface by providing concrete implementations of the \code{enable} and \code{disable} methods; they are useful for grouping sets of properties and providers (or other features) that are logically related and must be enabled and disabled as a unit.
@@ -47,8 +48,10 @@ Method chaining is not limited to the example shown above. A request can be furt
 
 \begin{listing}{1}
 Response res = client.target("http://example.org/hello")
-    .request("text/plain").header("MyHeader", "...")
-    .queryParam("MyParam","...").get();
+    .queryParam("MyParam","...")
+    .request("text/plain")
+    .header("MyHeader", "...")
+    .get();
 \end{listing}
 
 See the Javadoc for the classes in the \code{javax.ws.rs.client} package for more information.
