@@ -318,7 +318,10 @@ public class BasicExamples {
 
     public void invocationFlexibility() {
         // For users who really need it...
-       Invocation i = ClientFactory.newClient().target("http://examples.jaxrs.com/").path("greeting").request("text/plain").header("custom-name", "custom_value").buildPut(text("Hi"));
+       Invocation i = ClientFactory.newClient().target("http://examples.jaxrs.com/greeting")
+               .request("text/plain")
+               .header("custom-name", "custom_value")
+               .buildPut(text("Hi"));
 
        i.asRequestBuilder()
                .accept("text/html")                             // Actually it's HTML I want to receive back
