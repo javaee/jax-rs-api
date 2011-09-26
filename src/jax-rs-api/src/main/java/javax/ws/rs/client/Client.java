@@ -47,6 +47,15 @@ import javax.ws.rs.core.UriBuilder;
 /**
  * Client is the main entry point to the fluent API used to build and execute client
  * requests in order to consume responses returned.
+ * <p/>
+ * Clients are heavy-weight objects that manage the client-side communication
+ * infrastructure. Initialization as well as disposal of a {@code Client} instance
+ * may be a rather expensive operation. It is therefore advised to construct only
+ * a small number of {@code Client} instances in the application. Client instances
+ * must be {@link #close() properly closed} before being disposed to avoid leaking
+ * resources.
+ * <p />
+ * 
  *
  * @author Marek Potociar
  * @see Configuration
