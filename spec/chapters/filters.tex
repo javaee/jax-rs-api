@@ -1,7 +1,7 @@
 \chapter{Filters and Handlers}
 \label{filters_and_handlers}
 
-Filters and handlers can be registered for execution at well-defined extension points in a \jaxrs\ implementation. They are used to extend an implementation in order to provide capabilities such as logging, security, entity compression, etc. 
+Filters and handlers can be registered for execution at well-defined extension points in \jaxrs\ implementations. They are used to extend an implementation in order to provide capabilities such as logging, security, entity compression, etc. 
 
 \section{Introduction}
 \label{introduction_filters}
@@ -25,16 +25,12 @@ public interface WriteToHandler<T> {
 }
 \end{listing}
 
-A filter class is a class that implements \RequestFilter\ or \ResponseFilter\ (or both) and is annotated by \Provider. A handler class is a class that implements \ReadFromHandler\ or \WriteToHandler\ (or both) and is annotated by \Provider. 
+A filter is a class that implements \RequestFilter\ or \ResponseFilter\ (or both) and is annotated by \Provider. A handler is a class that implements \ReadFromHandler\ or \WriteToHandler\ (or both) and is annotated with \Provider. 
 
-In the Client API, filters implementing \RequestFilter\ MUST be executed \emph{before} the HTTP invocation and \emph{before} all handlers implementing \WriteToHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the HTTP invocation and \emph{before} all handlers implementing \ReadFromHandler. 
-In the Server API, filters implementing \RequestFilter\ MUST be executed \emph{before} the resource method is called and \emph{before} all handlers implementing \ReadFromHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the HTTP invocation and \emph{before} all handlers implementing \WriteToHandler. 
+In the Client API, filters implementing \RequestFilter\ MUST be executed \emph{before} the invocation and \emph{before} all handlers implementing \WriteToHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the invocation and \emph{before} all handlers implementing \ReadFromHandler. 
+In the Server API, filters implementing \RequestFilter\ MUST be executed \emph{before} the resource method is called and \emph{before} all handlers implementing \ReadFromHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the resource method returns and \emph{before} all handlers implementing \WriteToHandler. In summary, the general rule is: in the {\em direction of flow} filters are always executed before handlers.
 
-\begin{ednote}
-If filters can read or write entities, the rules above would be violated. For example, a server request filter could call \code{ctx.getRequest().getEntity(Customer.class)} forcing the ReadFrom handlers to be called. 
-\end{ednote}
-
-A handler implementing \ReadFromHandler\ wraps around calls to \code{MessageBodyReader.readFrom}. A handler implementing \WriteToHandler\ wraps around calls to \code{MessageBodyWrite.writeTo}. \jaxrs\ implementations are REQUIRED to call registered handlers when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
+A handler implementing \ReadFromHandler\ wraps around calls to \code{MessageBodyReader.readFrom}. A handler implementing \WriteToHandler\ wraps around calls to \code{MessageBodyWrite.writeTo} \footnote{In this sense, handlers are similar to {\em interceptors} that are defined on methods known a priori.}. \jaxrs\ implementations are REQUIRED to call registered handlers when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
 
 \section{Filters}
 \label{filters}
@@ -47,7 +43,7 @@ The following example shows an implementation of a logging filter: each method s
 
 \begin{listing}{1}
 @Provider
-public class LoggingFilter implements RequestFilter, ResponseFilter {
+class LoggingFilter implements RequestFilter, ResponseFilter {
 
     @Override
     public FilterAction preFilter(FilterContext ctx) throws IOException {
@@ -64,7 +60,7 @@ public class LoggingFilter implements RequestFilter, ResponseFilter {
 }
 \end{listing}
 
-A \FilterContext\ provides access to the request, the response (if available) as well as the ability to create and set new responses. Once the execution of a filter chain is completed, either by reaching the end of the chain or due to a filter returning \code{STOP}, \jaxrs\ implementations MUST get the response returned by \code{FilterContext.getResponse}. If this method returns null, normal execution is resumed; otherwise, the response returned is used and the HTTP invocation (Client API) or the resource method invocation (Server API) is omitted.  See Appendix \ref{extension_points} for more information.
+A \FilterContext\ provides access to the request, the response (if available) as well as the ability to create and set new responses. Once the execution of a filter chain is completed, either by reaching the end of the chain or due to a filter returning \code{STOP}, \jaxrs\ implementations MUST get the response returned by \code{FilterContext.getResponse}. If this method returns null, normal execution is resumed; otherwise, the response returned is used and the invocation (Client API) or the resource method invocation (Server API) is omitted.  See Appendix \ref{extension_points} for more information.
 
 \section{Handlers}
 
@@ -76,7 +72,7 @@ The following example shows an implementation of a GZIP handler that provides de
 
 \begin{listing}{1}
 @Provider
-public class GzipHandler implements ReadFromHandler, WriteToHandler {
+class GzipHandler implements ReadFromHandler, WriteToHandler {
 
     @Override
     public Object readFrom(ReadFromHandlerContext ctx) throws IOException {
@@ -123,7 +119,7 @@ A handler or filter can be associated with a resource class or method by declari
 \begin{listing}{1}
 @Provider
 @Logged
-public class LoggingFilter implements RequestFilter, ResponseFilter {
+class LoggingFilter implements RequestFilter, ResponseFilter {
     ...
 }
 \end{listing}
@@ -150,7 +146,7 @@ According to the semantics of \code{LoggingFilter}, the request will be logged b
 public @interface Logged { }
 \end{listing}
 
-Binding annotations that decorate resource classes apply to all the resource methods defined in them. A filter or handler class can be decorated with multiple binding annotations. Similarly, a resource method can be decorated with multiple binding annotations.  Each binding annotation instance in a resource method denotes a set of filters and handlers whose class definitions are decorated (possibly among others) with that annotation. The final set of (static) filters and handlers is the union of all these sets \footnote{By definition of {\em set}, any duplicate filters or handlers in each individual set or the final set are eliminated.}; this set must be sorted based on priorities as explained in Section \ref{priorities}. 
+Binding annotations that decorate resource classes apply to all the resource methods defined in them. A filter or handler class can be decorated with multiple binding annotations. Similarly, a resource method can be decorated with multiple binding annotations.  Each binding annotation instance in a resource method denotes a set of filters and handlers whose class definitions are decorated with that annotation (possibly among others). The final set of (static) filters and handlers is the union of all these sets \footnote{By definition of {\em set}, any duplicate filters or handlers in each individual set or the final set are eliminated.}; this set must be sorted based on priorities as explained in Section \ref{priorities}. 
 
 \subsection{Global Binding}
 
@@ -159,7 +155,7 @@ Name binding is a form of {\em local} binding in which filters or handlers are b
 \begin{listing}{1}
 @Provider
 @GlobalBinding
-public class LoggingFilter implements RequestFilter, ResponseFilter {
+class LoggingFilter implements RequestFilter, ResponseFilter {
     ...
 }
 \end{listing}
@@ -172,12 +168,12 @@ A filter or handler whose class is decorated with \GlobalBinding\ cannot be asso
 
 The annotation-based forms of binding presented thus far are {\em static}.  By having a filter or handler implement the \DynamicBinding\ interface, {\em dynamic} variants of name binding and global binding are possible. In these cases, binding is determined based on (i) the filter or handler being associated to a resource method globally or by name and (ii) the value returned by the \code{isBound} method in \DynamicBinding. 
 
-The following example defines a global \code{LoggingFilter} that is bound dynamically to all resource methods in \code{MyResourceClass} that are annotated by \code{@GET}.
+The following example defines a global \code{LoggingFilter} that is bound dynamically to all resource methods in \code{MyResourceClass} that are annotated with \code{@GET}.
 
 \begin{listing}{1}
 @Provider
 @GlobalBinding
-public class LoggingFilter implements RequestFilter, DynamicBinding {
+class LoggingFilter implements RequestFilter, DynamicBinding {
 
     public boolean isBound(Class<?> type, Method method) {
         return type.equals(MyResourceClass.class) 
@@ -192,15 +188,15 @@ public class LoggingFilter implements RequestFilter, DynamicBinding {
 \subsection{Binding in Client API}
 \label{binding_in_client_api}
 
-Binding in the Client API is accomplished via API calls instead of annotations. More specifically, filters and handlers are registered like any other provider by calling \code{Configurable.register} methods. \Client, \Invocation, \InvocationBuilder\ and \Target\ all implement the \Configurable\ interface. See Sections \ref{configurable_types} for more information.
+Binding in the Client API is accomplished via API calls instead of annotations. \Client, \Invocation, \InvocationBuilder\ and \Target\ are all configurable types: their configuration can be accessed by calling the \code{configure} method. See Sections \ref{configurable_types} for more information.
 
 \section{Priorities}
 \label{priorities}
 
-The order in which handlers or filters are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
-Priorities are represented by integer numbers: the \emph{lower} the number, the \emph{higher} the priority. The default priority for all handlers and filters---when an instance of \BindingPriority\ is absent or is present but without any value specified---is \code{BindingPriority.USER}. 
+The order in which handlers and filters are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
+Priorities are represented by integer numbers: the \emph{lower} the number, the \emph{higher} the priority. The default priority for all handlers and filters---when an instance of \BindingPriority\ is absent or is present but without any value---is \code{BindingPriority.USER}. 
 
-The \code{BindingPriority} class defines additional built-in priorities for security, header decorators, decoders and encoders. For example, the priority of authentication filter can be set as follows:
+The \code{BindingPriority} class defines additional built-in priorities for security, header decorators, decoders and encoders. For example, the priority of an authentication filter can be set as follows:
 
 \begin{listing}{1}
 @Provider
