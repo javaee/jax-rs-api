@@ -45,13 +45,13 @@ import javax.ws.rs.ext.FilterContext.FilterAction;
 /**
  * <p>Interface implemented by filters invoked at the <emph>Post</emph> 
  * extension point. Filters implementing this interface MUST be 
- * annotated by {@link javax.ws.rs.ext.Provider}.</p>
+ * annotated with {@link javax.ws.rs.ext.Provider}.</p>
  * 
  * <p>As part of the client API, these filters are 
- * executed after the HTTP invocation and before all handlers 
+ * executed after the invocation returns and before all handlers 
  * implementing {@link javax.ws.rs.ext.ReadFromHandler} are invoked.
  * As part of the server API, these filters are executed
- * after the resource method is called and before all handlers
+ * after the resource method returns and before all handlers
  * implementing {@link javax.ws.rs.ext.WriteToHandler} are invoked.</p>
  * 
  * @author Santiago Pericas-Geertsen
@@ -62,13 +62,12 @@ public interface ResponseFilter {
 
     /**
      * Filter method called at the <emph>Post</emph> extension point.
-     * I.e., after the HTTP invocation in the client API and after the
-     * resource method invocation in the server API. This method
+     * I.e., after the invocation returns in the client API and after the
+     * resource method returns in the server API. This method
      * can return {@link javax.ws.rs.ext.FilterContext.FilterAction#NEXT}
      * to continue the execution of the filter chain, or 
      * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to 
-     * abort the execution of the filter chain. Filters can override
-     * a response by calling {@link javax.ws.rs.ext.FilterContext#setResponse}.
+     * abort the execution of the filter chain. 
      *
      * @param context invocation context
      * @return filter action to continue or stop filter chain

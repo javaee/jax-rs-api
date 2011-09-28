@@ -44,7 +44,7 @@ import java.io.OutputStream;
 
 /**
  * Context class used by {@link javax.ws.rs.ext.WriteToHandler} 
- * intercepting calls to {@link javax.ws.rs.ext.MessageBodyWriter#writeTo}. 
+ * intercepting calls to <tt>javax.ws.rs.ext.MessageBodyWriter.writeTo</tt>. 
  * The getters and setters in this context class correspond to the 
  * parameters of the intercepted method.
  * 
@@ -53,6 +53,8 @@ import java.io.OutputStream;
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
+ * @see WriteToHandler
+ * @see MessageBodyWriter
  */
 public interface WriteToHandlerContext<T> extends MessageBodyHandlerContext<T> {
 
@@ -60,7 +62,7 @@ public interface WriteToHandlerContext<T> extends MessageBodyHandlerContext<T> {
      * Proceed to the next handler in the chain. Handlers MUST explicitly 
      * call this method to continue the execution chain; the call to this 
      * method in the last handler of the chain will invoke 
-     * {@link javax.ws.rs.ext.MessageBodyWriter#writeTo}.
+     * <tt>javax.ws.rs.ext.MessageBodyWriter.writeTo</tt>.
      * 
      * @throws IOException 
      */
