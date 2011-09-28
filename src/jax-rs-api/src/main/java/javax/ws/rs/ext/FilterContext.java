@@ -101,7 +101,7 @@ public interface FilterContext extends BaseContext {
      * 
      * @return request builder object 
      */
-    Request.Builder getRequestBuilder();
+    Request.RequestBuilder getRequestBuilder();
     
     /**
      * Get a builder for the response object. May return null if a 
@@ -112,7 +112,7 @@ public interface FilterContext extends BaseContext {
      * 
      * @return response builder object or null
      */
-    Response.Builder getResponseBuidler();
+    Response.ResponseBuilder getResponseBuilder();
             
     /**
      * Create a fresh response builder instance. A caching filter
