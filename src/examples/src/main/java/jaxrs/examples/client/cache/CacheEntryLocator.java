@@ -74,7 +74,7 @@ public class CacheEntryLocator implements RequestFilter {
                 Response.ResponseBuilder responseBuilder = ctx.createResponse();
                 // TODO: response.getHeaders().putAll(entry.getHeaders());
                 responseBuilder.entityInputStream(new ByteArrayInputStream(entry.getBody())).status(200);
-                ctx.setResponse(responseBuilder);      // Set response and stop
+                ctx.setResponse(responseBuilder.build());      // Set response and stop
                 return FilterAction.STOP;
             }
         }
