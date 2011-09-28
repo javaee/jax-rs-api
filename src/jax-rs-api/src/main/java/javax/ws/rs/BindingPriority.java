@@ -46,7 +46,7 @@ import java.lang.annotation.Target;
 
 /**
  * When multiple filters (or multiple handlers) are configured for
- * a resource class and method (or an HTTP invocation as part of
+ * a resource class and method (or an invocation as part of
  * the client API) the order in which they are applied is 
  * determined by their binding priority. Binding priorities are
  * represented by integer numbers; the lower the value the higher
