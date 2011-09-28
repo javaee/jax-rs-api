@@ -34,7 +34,7 @@ public class MyResource {
 }
 \end{listing}
 
-Resource classes that support asynchronous processing must inject an instance of \code{ExecutionContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) forks a thread to execute a long running operation, (ii) calls \code{suspend} on the injected \code{ExecutionContext} and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{ExecutionContext}.
+Resource classes that support asynchronous processing must inject an instance of \code{ExecutionContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) forks a (non-request) thread to execute a long running operation, (ii) calls \code{suspend} on the injected \code{ExecutionContext} and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{ExecutionContext}.
 
 \subsection{Suspend Annotation}
 
@@ -94,7 +94,7 @@ target.pathParam("id", 123).request().async().get(
 \end{listing}
 
 Note that in this example, the call to \code{get} after calling \code{async} returns immediately without blocking the caller's thread.
-The type of the response is specified as a type parameter to \code{InvocationCallback}. The method \code{completed} is called when the invocation completes successfully and a response is available; the method \code{failed} is called with an instance of \code{InvocationException} when the invocation fails.
+The response type is specified as a type parameter to \code{InvocationCallback}. The method \code{completed} is called when the invocation completes successfully and a response is available; the method \code{failed} is called with an instance of \code{InvocationException} when the invocation fails.
 
 All asynchronous invocations return an instance of \code{Future<T>} here the type parameter \code{T} matches the type specified in \code{InvocationCallback}. This instance can be used to monitor or cancel the asynchronous invocation:
 

@@ -43,8 +43,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 /**
- * Context class used by instances of {@link javax.ws.rs.ext.RequestFilter}
- * and {@link javax.ws.rs.ext.ResponseFilter}. 
+ * Context class used by filters implementing
+ * {@link javax.ws.rs.ext.RequestFilter} or 
+ * {@link javax.ws.rs.ext.ResponseFilter} (or both). 
  * 
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
@@ -60,39 +61,67 @@ public interface FilterContext extends BaseContext {
     public enum FilterAction { STOP, NEXT };
 
     /**
-     * Get instance of HTTP request object. 
+     * Get the request object.
      * 
      * @return request object being filtered
      */
-    Request.RequestBuilder getRequest();
+    Request getRequest();
 
     /**
-     * Get instance of HTTP response object. May return null in a
-     * {@link javax.ws.rs.ext.RequestFilter} unless set via
-     * {@link #setResponse(javax.ws.rs.core.Response.ResponseBuilder)}.
+     * Get the response object. May return null if a 
+     * response is not available, e.g. in a
+     * {@link javax.ws.rs.ext.RequestFilter}, and has not been
+     * set by calling
+     * {@link #setResponse(javax.ws.rs.core.Response)}.
      * 
-     * @return response object being filtered
+     * @return response object being filtered or null
      */
-    Response.ResponseBuilder getResponse();
+    Response getResponse();
 
     /**
-     * Set an HTTP response object in the context. A caching filter
+     * Set the request object in the context. 
+     * 
+     * @param req request object to be set
+     */
+    void setRequest(Request req);
+
+    /**
+     * Set the response object in the context. A caching filter
      * could set a response by calling this method and returning
      * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to
      * stop the filter chain.
      * 
      * @param res response object to be set
      */
-    void setResponse(Response.ResponseBuilder res);
-
+    void setResponse(Response res);
+    
     /**
-     * Create a fresh HTTP response object. A caching filter
-     * could call this method to get an HTTP response object and
+     * Get a builder for the request object. A newly built request can
+     * be set by calling {@link #setRequest(javax.ws.rs.core.Request)}.
+     * 
+     * @return request builder object 
+     */
+    Request.RequestBuilder getRequestBuilder();
+    
+    /**
+     * Get a builder for the response object. May return null if a 
+     * response is not available, e.g. in a
+     * {@link javax.ws.rs.ext.RequestFilter}, and has not been set. 
+     * A newly built response can be set by calling 
+     * {@link #setResponse(javax.ws.rs.core.Response)}.
+     * 
+     * @return response builder object or null
+     */
+    Response.ResponseBuilder getResponseBuilder();
+            
+    /**
+     * Create a fresh response builder instance. A caching filter
+     * could call this method to get a response builder and
      * initialize it from a cache. This method does not update
      * the state of the context object.
      * 
-     * @return newly created HTTP response object
-     * @see #setResponse(javax.ws.rs.core.Response.ResponseBuilder) 
+     * @return newly created response builder
+     * @see #setResponse(javax.ws.rs.core.Response) 
      */
     Response.ResponseBuilder createResponse();
 }

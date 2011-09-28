@@ -1,14 +1,14 @@
 \chapter{Validation}
 \label{validation}
 
-Validation is the process of verifying that some data obeys one or more pre-defined constraints. The Bean Validation specification \cite{bv11} defines an API to validate Java Beans. As described in this chapter, JAX-RS 2.0 provides native support for validating resource classes based on the concepts presented in \cite{bv11}.
+Validation is the process of verifying that some data obeys one or more pre-defined constraints. The Bean Validation specification \cite{bv11} defines an API to validate Java Beans. This chapter describes how JAX-RS provides native support for validating resource classes based on the concepts presented in \cite{bv11}.
 
 \section{Constraint Annotations}
 \label{constraint_annotations}
 
-The Server API provides support for extracting request values and mapping them into Java fields, properties and parameters using annotations such as \code{@HeaderParam}, \code{@QueryParam}, etc. It also supports binding of request entity bodies into Java objects via non-annotated parameters (i.e., parameters without any JAX-RS annotations). See Chapter \ref{resources} for additional information.
+The Server API provides support for extracting request values and mapping them into Java fields, properties and parameters using annotations such as \code{@HeaderParam}, \code{@QueryParam}, etc. It also supports mapping of request entity bodies into Java objects via non-annotated parameters (i.e., parameters without any JAX-RS annotations). See Chapter \ref{resources} for additional information.
 
-In JAX-RS 1.X, any additional validation of these values would need to be performed programmatically. JAX-RS 2.0 introduces support for declarative validation based on the Bean Validation specification \cite{bv11}. For example, consider the following resource class augmented with \emph{constraint} annotations:
+In earlier versions of JAX-RS, any additional validation of these values would need to be performed programmatically. This version of JAX-RS introduces support for declarative validation based on the Bean Validation specification \cite{bv11}. For example, consider the following resource class augmented with \emph{constraint} annotations:
 
 \begin{listing}{1}
 @Path("/")
@@ -25,7 +25,7 @@ class MyResourceClass {
 }
 \end{listing}
 
-The annotations \NotNull\ and \Email\ impose additional constraints on the form parameters \code{firstName}, \code{lastName} and \code{email}. The \NotNull\ constraint is built-in to the Bean Validation API; the \Email\ constraint is assumed to be user defined in the example above. These constraint annotations are not restricted to method parameters, they can be used in any location in which the JAX-RS binding annotations are allowed, with the exception of property setters as we shall explain shortly. Rather than using method parameters, the \code{MyResourceClass} shown above could have been defined as follows:
+The annotations \NotNull\ and \Email\ impose additional constraints on the form parameters \code{firstName}, \code{lastName} and \code{email}. The \NotNull\ constraint is built-in to the Bean Validation API; the \Email\ constraint is assumed to be user defined in the example above. These constraint annotations are not restricted to method parameters, they can be used in any location in which the JAX-RS binding annotations are allowed, with the exception of property setters as we shall explain shortly. Rather than using method parameters, the \code{MyResourceClass} shown above could have been written as follows:
 
 \begin{listing}{1}
 @Path("/")
@@ -54,7 +54,7 @@ Note that in this version, \code{firstName} and \code{lastName} are fields and \
 Should JAX-RS 2.0 allow binding annotations on setter parameters in addition to setter methods to lift this restriction while maintaining backward compatibility?. In hindsight, JAX 1.X should have annotated the parameter instead of the setter method.
 \end{ednote}
 
-Constraint annotations are also allowed on resource classes. In addition to annotating fields and properties, an annotation can be defined for the entire class. Let us assume that \code{@NonEmptyNames} validates that either of the two \emph{name} fields in \code{MyResourceClass} are not empty. Using such an annotation, the example above can be written follows:
+Constraint annotations are also allowed on resource classes. In addition to annotating fields and properties, an annotation can be defined for the entire class. Let us assume that \code{@NonEmptyNames} validates that either of the two \emph{name} fields in \code{MyResourceClass} is  not empty. Using such an annotation, the example above can be written follows:
 
 \begin{listing}{1}
 @Path("/")
@@ -200,7 +200,7 @@ In sub-resource classes, whose instances are returned by sub-resource locators, 
 
 The default resource class instance lifecycle is per-request in JAX-RS. Implementations MAY support other lifecycles; the same caveats related to the use of other annotations in resource class apply to constraint annotations. For example, a constraint validation annotating a constructor parameter in a resource class whose lifecycle is singleton (per application) will only be executed once.
 
-When processing a request, is it often desirable to collect and return as many violations as possible rather than aborting execution after the first violation is encountered. JAX-RS implementations are REQUIRED to use the following process to validate root resource class instances in the per-request lifecycle:
+When processing a request, is it often desirable to collect and return as many violations as possible rather than abort execution after the first violation is encountered. JAX-RS implementations are REQUIRED to use the following process to validate root resource class instances in the per-request lifecycle:
 
 \begin{description}
 \item[Phase 1] Validate annotations on parameters passed to the resource class constructor.
@@ -211,7 +211,7 @@ When processing a request, is it often desirable to collect and return as many v
 
 The set of constraint violations is cumulative from phase 1 to phase 4. If after phase 4 the set of constraint violations is non-empty, implementations MUST not invoke the resource method but instead return a response with a status code 400 (Bad Request) and an entity that includes a description of all the violations encountered; the actual representation of such an entity is implementation dependent. If during any of these phases, an exception of type \code{java.lang.RuntimeException} is thrown, implementations MUST abort the validation process and return a response with a status code 400 (Bad Request) and an entity that includes a description of all the violations collected up to that point.
 
- In summary, implementations must collect as many violations as possible until all phases are completed or an unrecoverable error is detected. Note, in particular, that constructors and property setters may be called and fields may be initialized even if the values passed as parameters or used as initializers are deemed invalid.
+ In summary, implementations must collect as many violations as possible until all phases are completed or an unrecoverable error is detected. Note that in order to accumulate as many violations as possible, constructors and property setters may be called and fields may be initialized even if the values passed as parameters or used as initializers are invalid.
 
 
 

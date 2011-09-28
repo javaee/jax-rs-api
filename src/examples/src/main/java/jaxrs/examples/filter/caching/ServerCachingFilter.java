@@ -62,7 +62,7 @@ public class ServerCachingFilter implements RequestFilter {
     public FilterAction preFilter(FilterContext ctx) throws IOException {
         Response.ResponseBuilder res = getCachedResponse(ctx);
         if (res != null) {
-            ctx.setResponse(res);
+            ctx.setResponse(res.build());
             return FilterAction.STOP;     // break filter chain
         }
         return FilterAction.NEXT;

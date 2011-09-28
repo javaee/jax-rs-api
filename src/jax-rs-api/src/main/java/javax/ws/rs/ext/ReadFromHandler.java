@@ -43,19 +43,22 @@ import java.io.IOException;
 
 /**
  * Interface implemented by handlers that intercept calls to
- * {@link javax.ws.rs.ext.MessageBodyReader#readFrom}. 
+ * <tt>javax.ws.rs.ext.MessageBodyReader.readFrom</tt>. Handlers 
+ * implementing this interface MUST be annotated with 
+ * {@link javax.ws.rs.ext.Provider}.
  * 
  * @param <T> Java type supported by corresponding message body provider
  * 
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
+ * @see MessageBodyReader
  */
 public interface ReadFromHandler<T> {
 
     /**
      * Handler method wrapping calls to 
-     * {@link javax.ws.rs.ext.MessageBodyReader#readFrom}. The parameters
+     * <tt>javax.ws.rs.ext.MessageBodyReader.readFrom</tt>. The parameters
      * to the wrapped method called are available from <code>context</code>.
      * Implementations of this method SHOULD explicitly call 
      * {@link javax.ws.rs.ext.ReadFromHandlerContext#proceed()} to invoke

@@ -99,6 +99,26 @@ public class LongRunningAsyncOperationResource {
     }
 
     @GET
+    @Suspend(timeOut = 15, timeUnit = SECONDS)
+    @Path("suspendViaAnnotation")
+    public void suspendViaAnnotationExample2(@Context final ExecutionContext ctx2) {
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
+                }
+                ctx2.resume("Hello async world!");
+            }
+        });
+
+        // default suspend;
+    }    
+    
+    @GET
     @Path("suspendViaContext")
     public String suspendViaContextExample(@QueryParam("query") final String query) {
         if (!isComplex(query)) {

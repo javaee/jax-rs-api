@@ -46,8 +46,8 @@ import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Context shared by handlers. Handlers can be used to intercept calls
- * to {@link javax.ws.rs.ext.MessageBodyReader#readFrom} and
- * {@link javax.ws.rs.ext.MessageBodyWriter#writeTo}. The getters and
+ * to <tt>javax.ws.rs.ext.MessageBodyReader.readFrom</tt> and
+ * <tt>javax.ws.rs.ext.MessageBodyWriter.writeTo</tt>. The getters and
  * setters in this context class correspond to the parameters in
  * the aforementioned methods.
  * 
@@ -56,8 +56,8 @@ import javax.ws.rs.core.MultivaluedMap;
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
- * @see javax.ws.rs.ext.MessageBodyReader
- * @see javax.ws.rs.ext.MessageBodyWriter
+ * @see ReadFromHandler
+ * @see WriteToHandler
  */
 public interface MessageBodyHandlerContext<T> extends BaseContext {
 

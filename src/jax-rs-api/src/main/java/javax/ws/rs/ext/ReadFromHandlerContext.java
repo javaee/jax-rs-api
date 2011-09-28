@@ -44,7 +44,7 @@ import java.io.InputStream;
 
 /**
  * Context class used by {@link javax.ws.rs.ext.ReadFromHandler} 
- * intercepting calls to {@link javax.ws.rs.ext.MessageBodyReader#readFrom}. 
+ * to intercept calls to <tt>javax.ws.rs.ext.MessageBodyReader.readFrom</tt>.
  * The getters and setters in this context class correspond to the 
  * parameters of the intercepted method.
  * 
@@ -53,6 +53,8 @@ import java.io.InputStream;
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
+ * @see ReadFromHandler
+ * @see MessageBodyReader
  */
 public interface ReadFromHandlerContext<T> extends MessageBodyHandlerContext<T> {
 
@@ -61,7 +63,7 @@ public interface ReadFromHandlerContext<T> extends MessageBodyHandlerContext<T> 
      * next handler invoked. Handlers MUST explicitly call this method
      * to continue the execution chain; the call to this method in the 
      * last handler of the chain will invoke
-     * {@link javax.ws.rs.ext.MessageBodyReader#readFrom}.
+     * <tt>javax.ws.rs.ext.MessageBodyReader.readFrom</tt>.
      * 
      * @return result of next handler invoked
      * @throws IOException 
@@ -69,7 +71,7 @@ public interface ReadFromHandlerContext<T> extends MessageBodyHandlerContext<T> 
     T proceed() throws IOException;
 
     /**
-     * Get the input stream of the object to be read
+     * Get the input stream of the object to be read.
      * 
      * @return input stream of the object to be read
      */

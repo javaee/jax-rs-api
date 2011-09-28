@@ -71,11 +71,11 @@ public class LoggingFilter implements RequestFilter, ResponseFilter {
         return FilterAction.NEXT;
     }
 
-    private void logRequest(Request.RequestBuilder req) {
+    private void logRequest(Request req) {
         return;     // TODO
     }
 
-    private void logResponse(Response.ResponseBuilder res) {
+    private void logResponse(Response res) {
         return;     // TODO
     }
 }

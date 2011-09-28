@@ -45,10 +45,10 @@ import javax.ws.rs.ext.FilterContext.FilterAction;
 /**
  * <p>Interface implemented by filters invoked at the <emph>Pre</emph> 
  * extension point. Filters implementing this interface MUST be 
- * annotated by {@link javax.ws.rs.ext.Provider}.</p>
+ * annotated with {@link javax.ws.rs.ext.Provider}.</p>
  * 
  * <p>As part of the client API, these filters are 
- * executed before the HTTP invocation and before all handlers 
+ * executed before the invocation and before all handlers 
  * implementing {@link javax.ws.rs.ext.WriteToHandler} are invoked.
  * As part of the server API, these filters are executed
  * before the resource method is called and before all handlers
@@ -62,14 +62,13 @@ public interface RequestFilter {
 
     /**
      * Filter method called at the <emph>Pre</emph> extension point. 
-     * I.e., before the HTTP invocation in the client API and before the
+     * I.e., before the invocation in the client API and before the
      * resource method invocation in the server API. This method
      * can return {@link javax.ws.rs.ext.FilterContext.FilterAction#NEXT}
      * to continue the execution of the filter chain, or 
      * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to 
      * abort the execution of the filter chain (e.g., a caching filter
-     * may want to stop execution upon a cache hit). Filters can override
-     * a response by calling {@link javax.ws.rs.ext.FilterContext#setResponse}.
+     * may want to stop execution upon a cache hit). 
      *
      * @param context invocation context
      * @return filter action to continue or stop filter chain

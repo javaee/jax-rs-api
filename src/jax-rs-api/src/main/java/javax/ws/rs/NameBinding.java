@@ -45,16 +45,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Meta-annotation that can be used to create a filter or handler
- * annotation for static binding. Static binding via annotations
- * is only supported as part of the Server API. In static binding,
+ * Meta-annotation used to create name binding annotations for filters
+ * and handlers. Name binding via annotations
+ * is only supported as part of the Server API. In name binding,
  * an annotation is defined using this meta-annotation and it is
  * then used to decorate both the filter or handler class and 
- * the resource method that it applies to. 
+ * the resource method or class that it applies to. 
  * 
  * <p>See <a href="http://jcp.org/en/jsr/detail?id=339">JAX-RS 2.0: The 
  * Java API for RESTful Web Services</a> specification for examples 
- * on how to use this meta-annotation for static binding of filters
+ * on how to use this meta-annotation for name binding of filters
  * and handlers.</p>
  * 
  * @author Santiago Pericas-Geertsen

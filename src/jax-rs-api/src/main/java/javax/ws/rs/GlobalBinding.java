@@ -46,15 +46,15 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation used to indicate that a filter or handler has global
- * binding (scope). Any filter or handler decorated with this 
- * annotation will apply to all HTTP invocations in the Client
- * API and all resource classes and methods in the Server API.
+ * binding (scope). Global binding is only supported as part of the 
+ * Server API. Any filter or handler decorated with this 
+ * annotation will apply to all resource classes and methods.
  * 
  * <p>This annotation would typically be used to decorate filters or
  * handlers that implement the {@link javax.ws.rs.ext.DynamicBinding}
  * interface to further control the applicability of a handler 
  * or filter. JAX-RS implementations MAY use package scanning to
- * automatically discover and install global filters or handlers.</p>
+ * automatically discover and install global filters and handlers.</p>
  * 
  * @author Santiago Pericas-Geertsen
  * @since 2.0
