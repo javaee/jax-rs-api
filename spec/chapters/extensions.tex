@@ -6,12 +6,12 @@ The locations of the extension points Pre, Post, ReadFrom and WriteTo are easier
 Note how the response object is obtained from the \code{FilterContext} upon completion of the Pre and Post filter chains, and how the HTTP invocation (Client API) or the resource method invocation (Server API) is bypassed if a response has been set in that context object. 
 
 \begin{listing}{1}
-public HttpResponse clientSideRequestProcessor(HttpRequest req) {
-    HttpResponse res = null;
+public Response clientSideRequestProcessor(Request req) {
+    Response res = null;
 
     // Invoke Pre filters
-    FilterContext fc = newFilterContext(req, res);
-    for (RequestFilter f : getRequestFilters()) {
+    FilterContext fc = newFilterContext(req);
+    for (RequestFilter f : getRequestFilters(req)) {
         FilterAction action = f.preFilter(fc);
         if (action == FilterAction.STOP) break;
     }
@@ -28,8 +28,8 @@ public HttpResponse clientSideRequestProcessor(HttpRequest req) {
 
     // Invoke Post filters
     fc = newFilterContext(req, res);
-    for (ResponseFilter f : getResponseFilters()) {
-        FilterAction action = f.preFilter(fc);
+    for (ResponseFilter f : getResponseFilters(req)) {
+        FilterAction action = f.postFilter(fc);
         if (action == FilterAction.STOP) break;
     }
     res = fc.getResponse();       
@@ -38,12 +38,12 @@ public HttpResponse clientSideRequestProcessor(HttpRequest req) {
 \end{listing}
 
 \begin{listing}{1}
-public HttpResponse serverSideRequestProcessor(HttpRequest req, Method m) {
-    HttpResponse res = null;
+public Response serverSideRequestProcessor(Request req, Method m) {
+    Response res = null;
 
     // Invoke Pre filters
-    FilterContext fc = newFilterContext(req, res, m);
-    for (RequestFilter f : getRequestFilters()) {
+    FilterContext fc = newFilterContext(req, m);
+    for (RequestFilter f : getRequestFilters(m)) {
         FilterAction action = f.preFilter(fc);
         if (action == FilterAction.STOP) break;
     }
@@ -52,16 +52,16 @@ public HttpResponse serverSideRequestProcessor(HttpRequest req, Method m) {
     if (res == null) {
         // Execute Read handler chain
         ReadFromHandlerContext rfc = newReadFromHandlerContext(req, m);
-        getFirstReadFromHandler(req).read(rfc);
+        getFirstReadFromHandler(m).readFrom(rfc);
 
         // Actual resource method invocation
         res = executeMethodInvocation(req, m);
     }
 
     // Invoke Post filters
-    fc = newFilterContext(req, res);
-    for (ResponseFilter f : getResponseFilters()) {
-        FilterAction action = f.preFilter(fc);
+    fc = newFilterContext(req, res, m);
+    for (ResponseFilter f : getResponseFilters(m)) {
+        FilterAction action = f.postFilter(fc);
         if (action == FilterAction.STOP) break;
     }
     res = fc.getResponse();       
