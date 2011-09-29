@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- * 
+ *
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- * 
+ *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- * 
+ *
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- * 
+ *
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- * 
+ *
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- * 
+ *
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -79,7 +79,7 @@ public interface Headers {
      */
     /**
      * TODO javadoc.
-     * 
+     *
      * @param <T> actual headers builder type.
      * @author Marek Potociar
      * @since 2.0
@@ -89,7 +89,7 @@ public interface Headers {
         /**
          * Set the list of allowed methods for the resource. Any duplicate method
          * names will be truncated to a single entry.
-         * 
+         *
          * @param methods the methods to be listed as allowed for the resource,
          *     if {@code null} any existing allowed method list will be removed.
          * @return the updated headers builder.
@@ -98,7 +98,7 @@ public interface Headers {
 
         /**
          * Set the list of allowed methods for the resource.
-         * 
+         *
          * @param methods the methods to be listed as allowed for the resource,
          *     if {@code null} any existing allowed method list will be removed.
          * @return the updated headers builder.
@@ -116,7 +116,7 @@ public interface Headers {
 
         /**
          * Set the message entity content encoding.
-         * 
+         *
          * @param encoding the content encoding of the message entity,
          *     if {@code null} any existing value for content encoding will be
          *     removed.
@@ -131,8 +131,8 @@ public interface Headers {
          * @param value the value of the header, the header will be serialized
          *     using a {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if
          *     one is available via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
-         *     for the class of {@code value} or using its {@code toString} method 
-         *     if a header delegate is not available. If {@code value} is {@code null} 
+         *     for the class of {@code value} or using its {@code toString} method
+         *     if a header delegate is not available. If {@code value} is {@code null}
          *     then all current headers of the same name will be removed.
          * @return the updated header builder.
          */
@@ -140,7 +140,7 @@ public interface Headers {
 
         /**
          * Replaces all existing headers with the newly supplied headers.
-         * 
+         *
          * @param headers new headers to be set, if {@code null} all existing
          *     headers will be removed.
          * @return the updated headers builder.
@@ -192,10 +192,10 @@ public interface Headers {
          * @param variant metadata of the message entity, a {@code null} value is
          *     equivalent to a variant with all {@code null} properties.
          * @return the updated header builder.
-         * 
-         * @see #encoding(java.lang.String) 
-         * @see #language(java.util.Locale) 
-         * @see #type(javax.ws.rs.core.MediaType) 
+         *
+         * @see #encoding(java.lang.String)
+         * @see #language(java.util.Locale)
+         * @see #type(javax.ws.rs.core.MediaType)
          */
         T variant(Variant variant);
     }
@@ -226,12 +226,12 @@ public interface Headers {
      *
      * @param name the HTTP header.
      * @return the HTTP header value. If the HTTP header is not present then
-     *     {@code null} is returned. If the HTTP header is present but has no 
+     *     {@code null} is returned. If the HTTP header is present but has no
      *     value then the empty string is returned. If the HTTP header is present
      *     more than once then the values of joined together and separated by a ','
      *     character.
      * @see #getHeaderMap()
-     * @see #getHeaderValues(java.lang.String) 
+     * @see #getHeaderValues(java.lang.String)
      */
     String getHeader(String name);
 
@@ -248,8 +248,8 @@ public interface Headers {
      * @return a read-only map of header names and values.
      * @throws java.lang.IllegalStateException if called outside of the message
      *     processing scope.
-     * @see #getHeader(java.lang.String) 
-     * @see #getHeaderValues(java.lang.String) 
+     * @see #getHeader(java.lang.String)
+     * @see #getHeaderValues(java.lang.String)
      */
     MultivaluedMap<String, String> getHeaderMap();
 
@@ -268,7 +268,7 @@ public interface Headers {
      * @throws java.lang.IllegalStateException if called outside of the message
      *     processing scope.
      * @see #getHeaderMap()
-     * @see #getHeader(java.lang.String) 
+     * @see #getHeader(java.lang.String)
      */
     List<String> getHeaderValues(String name);
 

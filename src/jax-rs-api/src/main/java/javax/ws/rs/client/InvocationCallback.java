@@ -40,7 +40,7 @@
 package javax.ws.rs.client;
 
 /**
- * Callback that can be implemented to receive the asynchronous processing 
+ * Callback that can be implemented to receive the asynchronous processing
  * events from the invocation processing.
  *
  * @param <RESPONSE> response type. It can be either a general-purpose
@@ -53,16 +53,18 @@ package javax.ws.rs.client;
 public interface InvocationCallback<RESPONSE> {
 
     /**
-     * TODO javadoc.
+     * Called when the invocation was successfully completed. Note that this does
+     * not necessarily mean the response has bean fully read. This depends on the
+     * expected invocation callback response type.
      *
-     * @param response 
+     * @param response
      */
     public void completed(RESPONSE response);
 
     /**
-     * TODO javadoc.
+     * Called when the invocation has failed for any reason.
      *
-     * @param error 
+     * @param error contains failure details.
      */
     public void failed(InvocationException error);
 }

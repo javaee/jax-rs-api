@@ -40,19 +40,27 @@
 package javax.ws.rs.client;
 
 /**
- *
+ * A configurable feature.
+ * <p />
+ * Typically encapsulates concepts that involve multiple filters, handlers and/or
+ * configuration properties.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 public interface Feature {
     /**
+     * Called when the feature is enabled. The responsibility of the feature is
+     * to properly update the supplied configuration.
      *
-     * @param configurable
+     * @param configuration configuration where the feature should be enabled.
      */
-    public void onEnable(Configuration configurable);
+    public void onEnable(Configuration configuration);
+
     /**
+     * Called when the feature is disabled. The responsibility of the feature is
+     * to properly update the supplied configuration.
      *
-     * @param configurable
+     * @param configuration configuration where the feature should be disabled.
      */
-    public void onDisable(Configuration configurable);
+    public void onDisable(Configuration configuration);
 }

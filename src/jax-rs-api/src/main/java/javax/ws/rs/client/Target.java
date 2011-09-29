@@ -69,26 +69,137 @@ public interface Target {
      */
     public UriBuilder getUriBuilder();
 
-    // Configuration
+    /**
+     * Get access to the underlying {@link Configuration configuration}.
+     *
+     * @return a mutable configuration bound to the instance.
+     */
     public Configuration configuration();
 
-    // Sub-resource URI buidler methods
-    public Target path(String path) throws IllegalArgumentException;
+    /**
+     * Create a new {@code Target} instance by appending path to the URI of
+     * the current target instance.
+     * <p />
+     * When constructing the final path, a '/' separator will be inserted between
+     * the existing path and the supplied path if necessary. Existing '/' characters
+     * are preserved thus a single value can represent multiple URI path segments.
+     * <p />
+     * A snapshot of the present configuration of the current (parent) target
+     * instance is taken and is inherited by the newly constructed (child) target
+     * instance.
+     *
+     * @param path the path, may contain URI template parameters.
+     * @return a new target instance.
+     * @exception NullPointerException if path is null.
+     */
+    public Target path(String path) throws NullPointerException;
 
-    public Target pathParam(String name, Object value) throws IllegalArgumentException;
+    /**
+     * Create a new {@code Target} instance by replacing existing path parameter
+     * in the URI of the current target instance with a supplied value.
+     * <p />
+     * A snapshot of the present configuration of the current (parent) target
+     * instance is taken and is inherited by the newly constructed (child) target
+     * instance.
+     *
+     * @param name path parameter template name.
+     * @param value value to be used to replace the template.
+     * @return a new target instance.
+     * @exception IllegalArgumentException if there is no such path parameter.
+     * @exception NullPointerException if name or value is null.
+     */
+    public Target pathParam(String name, Object value) throws IllegalArgumentException, NullPointerException;
 
-    public Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException;
+    /**
+     * Create a new {@code Target} instance by replacing one or more existing path parameters
+     * in the URI of the current target instance with supplied values.
+     * <p />
+     * A snapshot of the present configuration of the current (parent) target
+     * instance is taken and is inherited by the newly constructed (child) target
+     * instance.
+     *
+     * @param parameters a map of URI template parameter names and values.
+     * @return a new target instance.
+     * @exception IllegalArgumentException if the supplied map is empty.
+     * @exception NullPointerException if the parameter map or any of the names or values is null.
+     */
+    public Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException, NullPointerException;
 
-    public Target matrixParam(String name, Object... values) throws IllegalArgumentException;
+    /**
+     * Create a new {@code Target} instance by appending a matrix parameter to
+     * the existing set of matrix parameters of the current final segment of the
+     * URI of the current target instance. If multiple values are supplied
+     * the parameter will be added once per value. Note that the matrix parameters
+     * are tied to a particular path segment; appending a value to an existing
+     * matrix parameter name  will not affect the position of the matrix parameter
+     * in the URI path.
+     * <p />
+     * A snapshot of the present configuration of the current (parent) target
+     * instance is taken and is inherited by the newly constructed (child) target
+     * instance.
+     *
+     * @param name the matrix parameter name, may contain URI template parameters.
+     * @param values the matrix parameter value(s), each object will be converted
+     * to a {@code String} using its {@code toString()} method. Stringified
+     * values may contain URI template parameters.
+     * @return a new target instance.
+     * @exception NullPointerException if the name or any of the values is null.
+     * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
+     */
+    public Target matrixParam(String name, Object... values) throws NullPointerException;
 
-    public Target queryParam(String name, Object value) throws IllegalArgumentException;
+    /**
+     * Create a new {@code Target} instance by adding a query parameter and a value
+     * to the URI of the current target instance.
+     * <p />
+     * A snapshot of the present configuration of the current (parent) target
+     * instance is taken and is inherited by the newly constructed (child) target
+     * instance.
+     *
+     * @param name query parameter name.
+     * @param value query parameter value.
+     * @return a new target instance.
+     * @exception NullPointerException if name or value is null.
+     */
+    public Target queryParam(String name, Object value) throws NullPointerException;
 
-    public Target queryParams(MultivaluedMap<String, Object> parameters)
-            throws IllegalArgumentException;
+    /**
+     * Create a new {@code Target} instance by adding one or more query parameters and
+     * respective values to the URI of the current target instance.
+     * <p />
+     * A snapshot of the present configuration of the current (parent) target
+     * instance is taken and is inherited by the newly constructed (child) target
+     * instance.
+     *
+     * @param parameters a map of query parameter names and values.
+     * @return a new target instance.
+     * @exception IllegalArgumentException if the supplied map is empty.
+     * @exception NullPointerException if the parameter map or any of the names or values is null.
+     */
+    public Target queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException, NullPointerException;
 
+    /**
+     * Start building a request to the targeted web resource.
+     *
+     * @return builder for a request targeted at the URI referenced by this target instance.
+     */
     public Invocation.Builder request();
 
-    public Invocation.Builder request(String... mediaTypes);
+    /**
+     * Start building a request to the targeted web resource and define the accepted
+     * response media types.
+     *
+     * @param acceptedResponseTypes accepted response media types.
+     * @return builder for a request targeted at the URI referenced by this target instance.
+     */
+    public Invocation.Builder request(String... acceptedResponseTypes);
 
-    public Invocation.Builder request(MediaType... mediaTypes);
+    /**
+     * Start building a request to the targeted web resource and define the accepted
+     * response media types.
+     *
+     * @param acceptedResponseTypes accepted response media types.
+     * @return builder for a request targeted at the URI referenced by this target instance.
+     */
+    public Invocation.Builder request(MediaType... acceptedResponseTypes);
 }

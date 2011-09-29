@@ -53,9 +53,9 @@
  * elements as client-side Java artifacts and supports a pluggable architecture
  * by defining multiple extension points.
  *
- * <h2>Client API Bootstrapping</h2>
+ * <h2>Client API Bootstrapping and Configuration</h2>
  * The main entry point to the API is a {@link javax.ws.rs.client.ClientFactory}
- * that is used to bootstrap {@link javax.ws.rs.client.Client} instances,
+ * that is used to bootstrap {@link javax.ws.rs.client.Client} instances -
  * {@link javax.ws.rs.client.Configuration configurable}, heavy-weight objects
  * that manage the underlying communication infrastructure and serve as the root
  * objects for accessing any Web resource. The following example illustrates the
@@ -87,30 +87,48 @@
  * </pre>
  * Conceptually, the steps required to submit a request are the following:
  * <ol>
- *   <li>obtain an client instance</li>
- *   <li>create a {@link javax.ws.rs.client.Target resource target}</li>
- *   <li>{@link javax.ws.rs.client.Invocation.Builder build} a request</li>
+ *   <li>obtain an {@link javax.ws.rs.client.Client} instance</li>
+ *   <li>create a resource {@link javax.ws.rs.client.Target Target}</li>
+ *   <li>{@link javax.ws.rs.client.Invocation.Builder configure} a request invocation</li>
  *   <li>submit a request to directly retrieve a response or get a prepared
  *       {@link javax.ws.rs.client.Invocation} for later submission</li>
  * </ol>
  *
  * As illustrated above, individual Web resources are in the JAX-RS Client API
  * represented as resource targets. Each {@code Target} instance is bound to a
- * resource URI, e.g. {@code "http://example,org/foo/123"},
- * or a resource URI template, e.g. {@code "http://example,org/foo/{id}"}.
+ * concrete URI, e.g. {@code "http://example,org/messages/123"},
+ * or a URI template, e.g. {@code "http://example,org/messages/{id}"}.
  * That way a single target can either point at a particular resource or represent
  * a larger group of resources (that e.g. share a common configuration) from which
  * concrete resources can be later derived:
  * <pre>
- *   Target foos = client.target("http://example.org/foo/{id}");
- *   Target foo123 = foos.path("id", 123); // http://example,org/foo/123
- *   Target foo456 = foos.path("id", 456); // http://example,org/foo/456
+ *   // Parent target for all messages
+ *   Target messages = client.target("http://example.org/messages/{id}");
+ *
+ *   Target msg123 = messages.path("id", 123); // New target for http://example,org/messages/123
+ *   Target msg456 = messages.path("id", 456); // New target for http://example,org/messages/456
  * </pre>
  *
+ *<h2>Generic Invocations</h2>
+ * An {@link javax.ws.rs.client.Invocation} is a request that has been prepared
+ * and is ready for execution.
+ * Invocations provide a generic interface that enables a separation of concerns
+ * between the creator and the submitter. In particular, the submitter does not
+ * need to know how the invocation was prepared, but only whether it should be
+ * executed synchronously or asynchronously.
+ * <pre>
+ *   Invocation inv1 = client.target("http://examples.org/atm/balance")
+ *       .queryParam("card", "111122223333").queryParam("pin", "9876")
+ *       .request("text/plain").buildGet();
+ *   Invocation inv2 = client.target("http://examples.org/atm/withdrawal")
+ *       .queryParam("card", "111122223333").queryParam("pin", "9876")
+ *       .request().buildPost(text("50.0")));
  *
- *
- * <p />
- * TODO:
- * - what are the main API concepts and how to use them?
+ *   Collection<Invocation> invs = Arrays.asList(inv1, inv2);
+ *   // Executed by the submitter
+ *   Collection<Response> ress = Collections.transform(invs, new F<Invocation, Response>() {
+ *      public Response apply(Invocation inv) {return inv.invoke(); }
+ *   });
+ * </pre>
  */
 package javax.ws.rs.client;
