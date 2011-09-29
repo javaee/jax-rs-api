@@ -45,6 +45,8 @@ import javax.ws.rs.client.Client.Builder;
 import javax.ws.rs.ext.ClientBuilderFactory;
 
 /**
+ * Main entry point to the client API used to bootstrap {@link javax.ws.rs.client.Client}
+ * instances.
  *
  * @author Marek Potociar
  * @since 2.0
@@ -52,11 +54,6 @@ import javax.ws.rs.ext.ClientBuilderFactory;
 public class ClientFactory {
 
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
-
-    // Factory
-    public static <B extends Builder> B newClientBy(Class<? extends ClientBuilderFactory<B>> builderFactoryClass) {
-        return getFactory(builderFactoryClass).newBuilder();
-    }
 
     private static <FACTORY extends ClientBuilderFactory<?>> FACTORY getFactory(Class<FACTORY> builderFactoryClass) {
         try {
@@ -76,10 +73,35 @@ public class ClientFactory {
         return null;
     }
 
+    /**
+     * Create client instance using a custom client builder factory.
+     *
+     * @param <B> client builder type.
+     * @param builderFactoryClass client builder factory class.
+     * @return client builder produced by the provided client builder factory,
+     */
+    public static <B extends Builder> B newClientBy(Class<? extends ClientBuilderFactory<B>> builderFactoryClass) {
+        return getFactory(builderFactoryClass).newBuilder();
+    }
+
+    /**
+     * Create new client instance using the default client builder factory provided
+     * by the JAX-RS implementation provider.
+     *
+     * @return new client instance.
+     */
     public static Client newClient() {
         return getDefaultFactory().newBuilder().build();
     }
 
+    /**
+     * Create new configured client instance using the default client builder factory
+     * provided by the JAX-RS implementation provider.
+     *
+     * @param configuration data used to provide initial configuration for the new
+     *     client instance.
+     * @return new configured client instance.
+     */
     public static Client newClient(Configuration configuration) {
         // TODO fix the unchecked warning
         return getDefaultFactory().newBuilder().build(configuration);

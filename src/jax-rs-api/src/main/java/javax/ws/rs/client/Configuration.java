@@ -43,10 +43,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Configuration instance contract.
+ * Represents inheritable configuration of the main client-side JAX-RS components,
+ * such as {@link Client}, {@link Target}, {@link Invocation.Builder Invocation Builder}
+ * or {@link Invocation}.
  * <p />
+ * Configuration is inherited from a parent component to a child component.
  * When creating new {@link Target resource targets} using a {@link Client} instance,
- * the configuration of the {@code Client} instance is inherited by the child
+ * the configuration of the {@code Client} instance is inherited by the child target
  * instances being created. Similarly, when creating new
  * {@code Invocation.Builder invocation builders} or derived resource targets
  * using a parent target instance, the configuration of the parent target is
@@ -62,7 +65,7 @@ import java.util.Set;
  * using the provided set of instance configuration mutator methods. A change
  * made in the configuration of a child instance does not affect the configuration
  * of its parent.
- *
+ * <p />
  * TODO example.
  *
  * @author Marek Potociar

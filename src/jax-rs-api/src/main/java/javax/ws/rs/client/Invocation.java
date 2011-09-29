@@ -50,11 +50,15 @@ import javax.ws.rs.core.Request.RequestBuilder;
 import javax.ws.rs.core.Response;
 
 /**
+ * TODO javadoc.
  *
  * @author Marek Potociar
  */
 public interface Invocation {
 
+    /**
+     * TODO javadoc.
+     */
     public static interface Builder extends SyncInvoker {
 
         // Invocation builder methods
