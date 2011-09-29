@@ -88,7 +88,7 @@ Annotation constraints and validators are defined in accordance with the Bean Va
 @Retention(RUNTIME)
 @Constraint(validatedBy = EmailValidator.class)
 public @interface Email {
-    String message() default "{foo.bar.validation.constraints.email}"; 
+    String message() default "{com.example.validation.constraints.email}"; 
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
