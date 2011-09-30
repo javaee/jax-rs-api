@@ -323,12 +323,14 @@ public class BasicExamples {
                .header("custom-name", "custom_value")
                .buildPut(text("Hi"));
 
+       /*
        i.asRequestBuilder()
                .accept("text/html")                             // Actually it's HTML I want to receive back
                .method("POST")                                  // ...and it turns out, the service does not support PUT
                .type(MediaType.APPLICATION_FORM_URLENCODED)     // ...and the data must be form-urlencoded
                .entity("Dear Sir or Madam")                     // ...and we are not close friends after all
                .redirect("http://jaxrs.org/examples/greeting"); // ...oops, I almost forgot that the service was moved last month and the old domain is down!
+        */
 
        i.invoke();                                              // Ok, now I can send the updated request
     }
