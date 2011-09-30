@@ -1,0 +1,4 @@
+javax.ws.rs
+javax.ws.rs.client
+javax.ws.rs.core
+javax.ws.rs.ext
