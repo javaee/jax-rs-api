@@ -43,13 +43,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Context class used by {@link javax.ws.rs.ext.WriteToHandler} 
- * intercepting calls to <tt>javax.ws.rs.ext.MessageBodyWriter.writeTo</tt>. 
- * The getters and setters in this context class correspond to the 
+ * Context class used by {@link javax.ws.rs.ext.WriteToHandler}
+ * intercepting calls to <tt>javax.ws.rs.ext.MessageBodyWriter.writeTo</tt>.
+ * The getters and setters in this context class correspond to the
  * parameters of the intercepted method.
- * 
+ *
  * @param <T> Java type supported by corresponding message body provider
- * 
+ *
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
@@ -59,39 +59,42 @@ import java.io.OutputStream;
 public interface WriteToHandlerContext<T> extends MessageBodyHandlerContext<T> {
 
     /**
-     * Proceed to the next handler in the chain. Handlers MUST explicitly 
-     * call this method to continue the execution chain; the call to this 
-     * method in the last handler of the chain will invoke 
-     * <tt>javax.ws.rs.ext.MessageBodyWriter.writeTo</tt>.
-     * 
-     * @throws IOException 
+     * Proceed to the next handler in the chain. Handlers MUST explicitly
+     * call this method to continue the execution chain; the call to this
+     * method in the last handler of the chain will invoke
+     * {@link javax.ws.rs.ext.MessageBodyWriter#writeTo(java.lang.Object,
+     * java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[],
+     * javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap, java.io.OutputStream)
+     * javax.ws.rs.ext.MessageBodyWriter.writeTo(...)} method.
+     *
+     * @throws IOException
      */
     void proceed() throws IOException;
 
     /**
      * Get object to be written as HTTP entity
-     * 
+     *
      * @return object to be written as HTTP entity
-     */    
+     */
     T getEntity();
 
     /**
      * Update object to be written as HTTP entity
-     * 
-     * @param entity new object to be written 
-     */    
+     *
+     * @param entity new object to be written
+     */
     void setEntity(T entity);
 
     /**
      * Get the output stream for the object to be written
-     * 
+     *
      * @return output stream for the object to be written
      */
     OutputStream getOutputStream();
 
     /**
      * Update the output stream for the object to be written
-     * 
+     *
      * @param os new output stream for the object to be written
      */
     public void setOutputStream(OutputStream os);

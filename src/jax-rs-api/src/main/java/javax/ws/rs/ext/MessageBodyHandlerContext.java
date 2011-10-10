@@ -50,81 +50,81 @@ import javax.ws.rs.core.MultivaluedMap;
  * <tt>javax.ws.rs.ext.MessageBodyWriter.writeTo</tt>. The getters and
  * setters in this context class correspond to the parameters in
  * the aforementioned methods.
- * 
+ *
  * @param <T> Java type supported by corresponding message body provider
- * 
+ *
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
  * @see ReadFromHandler
  * @see WriteToHandler
  */
-public interface MessageBodyHandlerContext<T> extends BaseContext {
+`public interface MessageBodyHandlerContext<T> extends BaseContext {
 
     /**
      * Get annotations on the formal declaration of the resource
-     * method parameter that is the target of the message body 
-     * conversion. As part of the client API, this method will 
+     * method parameter that is the target of the message body
+     * conversion. As part of the client API, this method will
      * return null.
-     * 
+     *
      * @return annotations on the resource method parameter
      */
     Annotation[] getAnnotations();
 
     /**
      * Update annotations on the formal declaration of the resource
-     * method parameter that is the target of the message body conversion. 
+     * method parameter that is the target of the message body conversion.
      * Calling this method has no effect in the client API.
-     * 
+     *
      * @param annotations annotations for the resource method parameter
      */
     void setAnnotations(Annotation[] annotations);
 
     /**
      * Get Java type supported by corresponding message body provider.
-     * 
-     * @return java type supported by provider 
+     *
+     * @return java type supported by provider
      */
     Class<T> getType();
 
     /**
      * Update Java type before calling message body provider.
-     * 
+     *
      * @param type java type for provider
      */
     void setType(Class<T> type);
 
     /**
      * Get the type of the object to be produced or written.
-     * 
+     *
      * @return type of object produced or written
      */
     Type getGenericType();
 
     /**
      * Update type of the object to be produced or written.
-     * 
+     *
      * @param genericType new type for object
      */
     void setGenericType(Type genericType);
 
     /**
      * Get media type of HTTP entity.
-     * 
-     * @return media type of HTTP entity 
+     *
+     * @return media type of HTTP entity
      */
     MediaType getMediaType();
 
     /**
      * Update media type of HTTP entity.
-     * 
+     *
      * @param mediaType new type for HTTP entity
      */
     void setMediaType(MediaType mediaType);
 
     /**
      * Get mutable map of HTTP headers.
-     * 
+     *
      * @return map of HTTP headers
      */
     MultivaluedMap<String, String> getHeaders();
