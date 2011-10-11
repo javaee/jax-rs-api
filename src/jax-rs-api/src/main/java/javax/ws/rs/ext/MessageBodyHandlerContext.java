@@ -59,7 +59,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * @see ReadFromHandler
  * @see WriteToHandler
  */
-`public interface MessageBodyHandlerContext<T> extends BaseContext {
+public interface MessageBodyHandlerContext<T> extends BaseContext {
 
     /**
      * Get annotations on the formal declaration of the resource
