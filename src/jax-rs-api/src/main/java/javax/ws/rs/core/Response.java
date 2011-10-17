@@ -106,7 +106,7 @@ public abstract class Response implements ResponseHeaders {
      * Upon sending, the response will be serialized using a {@link javax.ws.rs.ext.MessageBodyWriter}
      * for either the class of the entity or, in the case of {@link GenericEntity},
      * the value of {@link GenericEntity#getRawType()}.
-     * 
+     *
      * @return the message entity or {@code null} if there is no entity.
      * @see javax.ws.rs.ext.MessageBodyWriter
      */
@@ -115,7 +115,7 @@ public abstract class Response implements ResponseHeaders {
     /**
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
-     * 
+     *
      * @param <T> entity type.
      * @param type the type of entity.
      * @return the message entity or {@code null}.
@@ -128,7 +128,7 @@ public abstract class Response implements ResponseHeaders {
     /**
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
-     * 
+     *
      * @param <T> entity type.
      * @param entityType the generic type of the entity.
      * @return the message entity or {@code null}.
@@ -493,7 +493,7 @@ public abstract class Response implements ResponseHeaders {
          */
         @Override
         public abstract ResponseBuilder clone();
-        
+
         /**
          * Get the map of response properties.
          * <p>
@@ -532,7 +532,7 @@ public abstract class Response implements ResponseHeaders {
          * Upon sending, the response will be serialized using a {@link javax.ws.rs.ext.MessageBodyWriter}
          * for either the class of the entity or, in the case of {@link GenericEntity},
          * the value of {@link GenericEntity#getRawType()}.
-         * 
+         *
          * @return the message entity or {@code null} if there is no entity.
          * @see javax.ws.rs.ext.MessageBodyWriter
          * @since 2.0
@@ -542,7 +542,7 @@ public abstract class Response implements ResponseHeaders {
         /**
          * Get the message entity, returns {@code null} if the message does not
          * contain an entity body.
-         * 
+         *
          * @param <T> entity type.
          * @param type the type of entity.
          * @return the message entity or {@code null}.
@@ -555,7 +555,7 @@ public abstract class Response implements ResponseHeaders {
         /**
          * Get the message entity, returns {@code null} if the message does not
          * contain an entity body.
-         * 
+         *
          * @param <T> entity type.
          * @param entityType the generic type of the entity.
          * @return the message entity or {@code null}.
@@ -624,7 +624,7 @@ public abstract class Response implements ResponseHeaders {
          * @since 2.0
          */
         public abstract ResponseBuilder entityInputStream(InputStream entity);
-        
+
         /**
          * Set the entity on the ResponseBuilder. It is the
          * callers responsibility to wrap the actual entity with
@@ -634,7 +634,6 @@ public abstract class Response implements ResponseHeaders {
          * @return the updated ResponseBuilder
          */
         public abstract ResponseBuilder entity(Object entity);
-
     }
 
     /**
@@ -859,32 +858,36 @@ public abstract class Response implements ResponseHeaders {
          */
         public enum Family {
 
-            INFORMATIONAL, SUCCESSFUL, REDIRECTION, CLIENT_ERROR, SERVER_ERROR, OTHER
-        };
+            INFORMATIONAL, SUCCESSFUL, REDIRECTION, CLIENT_ERROR, SERVER_ERROR, OTHER;
+
+            /**
+             * Get the response status family for the status code.
+             *
+             * @param statusCode response status code to get the family for.
+             * @return family of the response status code.
+             */
+            public static Family familyOf(final int statusCode) {
+                switch (statusCode / 100) {
+                    case 1:
+                        return Family.INFORMATIONAL;
+                    case 2:
+                        return Family.SUCCESSFUL;
+                    case 3:
+                        return Family.REDIRECTION;
+                    case 4:
+                        return Family.CLIENT_ERROR;
+                    case 5:
+                        return Family.SERVER_ERROR;
+                    default:
+                        return Family.OTHER;
+                }
+            }
+        }
 
         Status(final int statusCode, final String reasonPhrase) {
             this.code = statusCode;
             this.reason = reasonPhrase;
-            switch (code / 100) {
-                case 1:
-                    this.family = Family.INFORMATIONAL;
-                    break;
-                case 2:
-                    this.family = Family.SUCCESSFUL;
-                    break;
-                case 3:
-                    this.family = Family.REDIRECTION;
-                    break;
-                case 4:
-                    this.family = Family.CLIENT_ERROR;
-                    break;
-                case 5:
-                    this.family = Family.SERVER_ERROR;
-                    break;
-                default:
-                    this.family = Family.OTHER;
-                    break;
-            }
+            this.family = Family.familyOf(statusCode);
         }
 
         /**
