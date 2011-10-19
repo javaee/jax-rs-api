@@ -69,7 +69,7 @@ public class ClientFactory {
 
     // todo make generic
     private static ClientBuilderFactory<? extends Builder<Client>> getDefaultFactory() {
-        // todo implement
+        // TODO implement
         return null;
     }
 
@@ -103,7 +103,6 @@ public class ClientFactory {
      * @return new configured client instance.
      */
     public static Client newClient(Configuration configuration) {
-        // TODO fix the unchecked warning
         return getDefaultFactory().newBuilder().build(configuration);
     }
 }
