@@ -8,6 +8,13 @@ A \jaxrs\ application consists of one or more resources (see Chapter \ref{resour
 
 The resources and providers that make up a \jaxrs\ application are configured via an application-supplied subclass of \code{Application}. An implementation MAY provide alternate mechanisms for locating resource classes and providers (e.g. runtime class scanning) but use of \code{Application} is the only portable means of configuration.
 
+\section{Verification}
+\label{verification}
+
+Specific application requirements are detailed throughout this specification and the \jaxrs\ Javadocs. Implementations MAY perform verification steps that go beyond what it is stated in this document. 
+
+A \jaxrs\ implementation MAY report an error condition if it detects that two or more resources could result in an ambiguity during the execution of the algorithm described Section \ref{request_matching}. For example, if two resource methods in the same resource class have identical (or even intersecting) values in all the annotations that are relevant to the algorithm described in that section. The exact set of verification steps as well as the error reporting mechanism is implementation dependent.
+
 \section{Publication}
 
 Applications are published in different ways depending on whether the application is run in a Java SE environment or within a container. This section describes the alternate means of publication.
