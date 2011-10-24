@@ -89,7 +89,7 @@ public class WebDavTarget implements Target {
     }
 
     @Override
-    public WebDavTarget queryParam(String name, Object value) throws IllegalArgumentException {
+    public WebDavTarget queryParam(String name, Object... values) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

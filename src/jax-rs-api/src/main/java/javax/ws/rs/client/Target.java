@@ -149,19 +149,23 @@ public interface Target {
     public Target matrixParam(String name, Object... values) throws NullPointerException;
 
     /**
-     * Create a new {@code Target} instance by adding a query parameter and a value
-     * to the URI of the current target instance.
+     *
+     * Create a new {@code Target} instance by adding a query parameter to the URI
+     * of the current target instance. If multiple values are supplied the parameter
+     * will be added once per value.
      * <p />
      * A snapshot of the present configuration of the current (parent) target
      * instance is taken and is inherited by the newly constructed (child) target
      * instance.
      *
-     * @param name query parameter name.
-     * @param value query parameter value.
+     * @param name the query parameter name, may contain URI template parameters
+     * @param values the query parameter value(s), each object will be converted
+     *     to a {@code String} using its {@code toString()} method. Stringified
+     *     values may contain URI template parameters.
      * @return a new target instance.
-     * @exception NullPointerException if name or value is null.
+     * @exception NullPointerException if name or any of the values is {@code null}.
      */
-    public Target queryParam(String name, Object value) throws NullPointerException;
+    public Target queryParam(String name, Object... values) throws NullPointerException;
 
     /**
      * Create a new {@code Target} instance by adding one or more query parameters and

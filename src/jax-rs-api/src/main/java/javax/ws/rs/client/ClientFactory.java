@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.client;
 
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.client.Client.Builder;
@@ -54,6 +55,12 @@ import javax.ws.rs.ext.ClientBuilderFactory;
 public class ClientFactory {
 
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
+    /**
+     * Name of the property identifying the {@link RuntimeDelegate} implementation
+     * to be returned from {@link RuntimeDelegate#getInstance()}.
+     */
+    public static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY_PROPERTY = "javax.ws.rs.ext.ClientBuilderFactory";
+    private static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY = "org.glassfish.jersey.client.Client$Builder$Factory";
 
     private static <FACTORY extends ClientBuilderFactory<?>> FACTORY getFactory(Class<FACTORY> builderFactoryClass) {
         try {
@@ -68,9 +75,28 @@ public class ClientFactory {
     }
 
     // todo make generic
+    @SuppressWarnings("unchecked")
     private static ClientBuilderFactory<? extends Builder<Client>> getDefaultFactory() {
-        // todo implement
-        return null;
+        try {
+            Object delegate =
+                    FactoryFinder.find(JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY_PROPERTY,
+                    JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY);
+            if (!(delegate instanceof ClientBuilderFactory)) {
+                Class pClass = ClientBuilderFactory.class;
+                String classnameAsResource = pClass.getName().replace('.', '/') + ".class";
+                ClassLoader loader = pClass.getClassLoader();
+                if (loader == null) {
+                    loader = ClassLoader.getSystemClassLoader();
+                }
+                URL targetTypeURL = loader.getResource(classnameAsResource);
+                throw new LinkageError("ClassCastException: attempting to cast"
+                        + delegate.getClass().getClassLoader().getResource(classnameAsResource)
+                        + "to" + targetTypeURL.toString());
+            }
+            return (ClientBuilderFactory<? extends Builder<Client>>) delegate;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -103,7 +129,6 @@ public class ClientFactory {
      * @return new configured client instance.
      */
     public static Client newClient(Configuration configuration) {
-        // TODO fix the unchecked warning
         return getDefaultFactory().newBuilder().build(configuration);
     }
 }

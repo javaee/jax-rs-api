@@ -237,7 +237,7 @@ public interface Configuration {
      * @return the updated configuration.
      * @see Configuration
      */
-    Configuration setProperties(Map<String, Object> properties);
+    Configuration setProperties(Map<String, ? extends Object> properties);
 
     /**
      * Set the new configuration property, if already set, the existing value of

@@ -63,20 +63,20 @@ public class InvocationException extends ClientException {
     private transient final Response response;
 
     /**
-     * Construct a uniform interface exception.
+     * Construct a client-side invocation exception.
      * <p>
      * The client response entity will be buffered by calling
      * {@link Response#bufferEntity() }.
      *
-     * @param response the client response. The message of the exception is set to
-     *        r.toString();
+     * @param response the client response. The message of the exception is set
+     *     to value returned by {@code response.toString()}.
      */
     public InvocationException(final Response response) {
         this(response, true);
     }
 
     /**
-     * Construct a uniform interface exception.
+     * Construct a client-side invocation exception.
      *
      * @param response the client response. The message of the exception is set to
      *        r.toString();
@@ -92,7 +92,7 @@ public class InvocationException extends ClientException {
     }
 
     /**
-     * Construct a uniform interface exception.
+     * Construct a client-side invocation exception.
      * <p>
      * The client response entity will be buffered by calling
      * {@link Response#bufferEntity() }.
@@ -106,7 +106,7 @@ public class InvocationException extends ClientException {
     }
 
     /**
-     * Construct a uniform interface exception.
+     * Construct a client-side invocation exception.
      *
      * @param message the message of the exception.
      * @param response the client response.
@@ -126,7 +126,7 @@ public class InvocationException extends ClientException {
 
     /**
      * Get the client response associated with the exception.
-    
+
      * @return the client response.
      */
     public Response getResponse() {
