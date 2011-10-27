@@ -71,6 +71,10 @@ import java.util.concurrent.TimeUnit;
  * }
  * </pre>
  *
+ * Using {@code @Suspend} on a resource method is equivalent to calling 
+ * {@link javax.ws.rs.core.ExecutionContext#suspend} as the first step upon
+ * entering the method.
+ * 
  * Typically resource method annotated with {@code @Suspend} annotation declare
  * {@code void} return type, but it is not a hard requirement to do so. Any response
  * value returned from the {@code @Suspend}-annotated resource method is ignored
