@@ -23,22 +23,22 @@ public class MyResource {
     
     @GET
     public void longRunningOp() {
+        ctx.suspend();    // Suspend connection
         Executors.newSingleThreadExecutor().submit(
             new Runnable() {
                 public void run() {
                     executeLongRunningOp();
                     ctx.resume("Hello async world!");
         } });
-        ctx.suspend();    // Suspend connection
     } 
 }
 \end{listing}
 
-Resource classes that support asynchronous processing must inject an instance of \code{ExecutionContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) forks a (non-request) thread to execute a long running operation, (ii) calls \code{suspend} on the injected \code{ExecutionContext} and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{ExecutionContext}.
+Resource classes that support asynchronous processing must inject an instance of \code{ExecutionContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) calls \code{suspend} on the injected \code{ExecutionContext}, (ii) forks a (non-request) thread to execute a long running operation and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{ExecutionContext}.
 
 \subsection{Suspend Annotation}
 
-An alternative to calling \code{ctx.suspend()} as the last step before returning is to annotate the method with \Suspend. Thus, the \code{longRunningOp} method above is equivalent to:
+An alternative to calling \code{ctx.suspend()} as the first step after entering an asynchronous method is to annotate the method with \Suspend. Thus, the \code{longRunningOp} method above is equivalent to:
 
 \begin{listing}{1}
 @GET @Suspend
@@ -68,7 +68,7 @@ public void longRunningOp() {
 }
 \end{listing}
 
-JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set in \ExecutionContext. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set in \ExecutionContext\ (using method \code{setResponse}) JAX-RS implementations are REQUIRED to return the fallback response without generating a \WebApplicationException\ when the timeout is reached.
+JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set in \ExecutionContext. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set in \ExecutionContext, via the method \code{setResponse}, JAX-RS implementations are REQUIRED to return the fallback response without generating a \WebApplicationException\ when the timeout is reached.
 
 Overloaded versions of the method \code{suspend} in \ExecutionContext\ also accept a timeout value and a unit, thus providing the same functionality as the \Suspend\ annotation. 
 
