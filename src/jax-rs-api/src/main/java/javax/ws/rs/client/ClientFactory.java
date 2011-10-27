@@ -56,8 +56,8 @@ public class ClientFactory {
 
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
     /**
-     * Name of the property identifying the {@link RuntimeDelegate} implementation
-     * to be returned from {@link RuntimeDelegate#getInstance()}.
+     * Name of the property identifying the {@link javax.ws.rs.ext.RuntimeDelegate} implementation
+     * to be returned from {@link javax.ws.rs.ext.RuntimeDelegate#getInstance()}.
      */
     public static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY_PROPERTY = "javax.ws.rs.ext.ClientBuilderFactory";
     private static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY = "org.glassfish.jersey.client.Client$Builder$Factory";
