@@ -80,7 +80,7 @@ public interface ExecutionContext {
      *
      * @see #resume(java.lang.Exception)
      */
-    void resume(Object response);
+    public void resume(Object response);
 
     /**
      * Resume processing of the request bound to the execution context using
@@ -97,7 +97,7 @@ public interface ExecutionContext {
      *
      * @see #resume(java.lang.Object)
      */
-    void resume(Exception response);
+    public void resume(Exception response);
 
     /**
      * Programmatically suspend a request processing without explicitly specifying
@@ -136,7 +136,7 @@ public interface ExecutionContext {
      * @see #suspend(long, java.util.concurrent.TimeUnit)
      * @see #setResponse(java.lang.Object)
      */
-    Future<?> suspend();
+    public Future<?> suspend();
 
     /**
      * Programmatically suspend a request processing with explicitly specified
@@ -170,7 +170,7 @@ public interface ExecutionContext {
      * @see #suspend(long, java.util.concurrent.TimeUnit)
      * @see #setResponse(java.lang.Object)
      */
-    Future<?> suspend(long millis);
+    public Future<?> suspend(long millis);
 
     /**
      * Programmatically suspend a request processing with explicitly specified
@@ -205,7 +205,7 @@ public interface ExecutionContext {
      * @see #suspend(long, java.util.concurrent.TimeUnit)
      * @see #setResponse(java.lang.Object)
      */
-    Future<?> suspend(long time, TimeUnit unit);
+    public Future<?> suspend(long time, TimeUnit unit);
 
     /**
      * Cancel the request processing.
