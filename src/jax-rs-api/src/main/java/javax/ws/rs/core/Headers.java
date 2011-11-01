@@ -145,7 +145,7 @@ public interface Headers {
          *     headers will be removed.
          * @return the updated headers builder.
          */
-        T headers(Headers headers);
+        T replaceAll(Headers headers);
 
         /**
          * Set the message entity language.
@@ -236,7 +236,7 @@ public interface Headers {
     String getHeader(String name);
 
     /**
-     * Get the map of HTTP message headers names to their respective values.
+     * Get the map of HTTP message header names to their respective values.
      * The returned map is case-insensitive wrt. keys and is read-only.
      * <p/>
      * Each single header value is converted to String using a
