@@ -125,6 +125,7 @@ public class LongRunningAsyncOperationResource {
             return "Simple result for " + query; // process simple queries synchronously
         }
 
+        ctx.suspend(); // programmatic suspend
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -138,7 +139,6 @@ public class LongRunningAsyncOperationResource {
             }
         });
 
-        ctx.suspend(); // programmatic suspend
         return null; // return value ignored for suspended requests
     }
 
