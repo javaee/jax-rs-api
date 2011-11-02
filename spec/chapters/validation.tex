@@ -209,9 +209,17 @@ When processing a request, is it often desirable to collect and return as many v
 \item[Phase 4] Validate annotations on parameters passed to the resource method selected for invocation.
 \end{description}
 
-The set of constraint violations is cumulative from phase 1 to phase 4. If after phase 4 the set of constraint violations is non-empty, implementations MUST not invoke the resource method but instead return a response with a status code 400 (Bad Request) and an entity that includes a description of all the violations encountered; the actual representation of such an entity is implementation dependent. If during any of these phases, an exception of type \code{java.lang.RuntimeException} is thrown, implementations MUST abort the validation process and return a response with a status code 400 (Bad Request) and an entity that includes a description of all the violations collected up to that point.
+The set of constraint violations is cumulative from phase 1 to phase 4. If after phase 4 the set of constraint violations is non-empty, implementations MUST not invoke the resource method but instead return a response with a status code 400 (Bad Request) and an entity that includes a description of all the violations encountered; the actual representation of such an entity is implementation dependent. 
+
+%If during any of these phases, an exception of type \code{java.lang.RuntimeException} is thrown, implementations MUST abort the validation %process and return a response with a status code 400 (Bad Request) and an entity that includes a description of all the violations collected up to %that point.
 
  In summary, implementations must collect as many violations as possible until all phases are completed or an unrecoverable error is detected. Note that in order to accumulate as many violations as possible, constructors and property setters may be called and fields may be initialized even if the values passed as parameters or used as initializers are invalid.
+
+\section{Exceptions}
+\label{exceptions_validators}
+
+When a validator method throws an exception, the \jaxrs\ runtime will attempt to map the exception to a suitable HTTP response in the same way as described for methods and locators in Section \ref{method_exc}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping.
+
 
 
 

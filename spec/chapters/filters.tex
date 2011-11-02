@@ -211,5 +211,12 @@ Note that even though, as explained in Section \ref{binding_in_client_api}, anno
 
 Implementations are REQUIRED to sort filters and handlers according to \code{BindingPriority.value()}, using \code{BindingPriority.USER} as the default if the annotation is absent. The order in which filters or handlers that belong to the same priority class are executed is implementation dependent.
 
+\section{Exceptions}
+\label{exceptions_filters_and_handlers}
+
+When a filter or handler method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping.
+
+
+
 
 
