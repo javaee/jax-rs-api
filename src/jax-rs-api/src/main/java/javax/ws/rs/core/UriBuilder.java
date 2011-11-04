@@ -125,6 +125,17 @@ public abstract class UriBuilder {
     }
 
     /**
+     * Create a new instance initialized from a Link.
+     * @param link a Link that will be used to initialize the UriBuilder, only
+     * its URI is used and may not contain URI parameters.
+     * @return a new UriBuilder
+     * @throws IllegalArgumentException if link is null
+     */
+    public static UriBuilder fromLink(Link link) throws IllegalArgumentException {
+        return UriBuilder.fromUri(link.getUri());
+    }
+    
+    /**
      * Create a new instance representing a relative URI initialized from a
      * URI path.
      * @param path a URI path that will be used to initialize the UriBuilder,
