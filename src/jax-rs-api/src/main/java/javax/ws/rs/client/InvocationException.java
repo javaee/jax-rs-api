@@ -63,6 +63,18 @@ public class InvocationException extends ClientException {
     private transient final Response response;
 
     /**
+     * Construct a client-side invocation exception without a response.
+     * <p>
+     * The client response wrapped by the exception will be set to {@code null}.
+     *
+     * @param message the message of the exception.
+     */
+    public InvocationException(final String message) {
+        super(message);
+        response = null;
+    }
+
+    /**
      * Construct a client-side invocation exception.
      * <p>
      * The client response entity will be buffered by calling
@@ -114,20 +126,20 @@ public class InvocationException extends ClientException {
      *                             {@link Response#bufferEntity() }.
      *
      */
-    public InvocationException(final String message,
-            final Response response,
+    public InvocationException(final String message, final Response response,
             final boolean bufferResponseEntity) {
         super(message);
-        if (bufferResponseEntity) {
+        if (bufferResponseEntity && response != null) {
             response.bufferEntity();
         }
         this.response = response;
     }
 
     /**
-     * Get the client response associated with the exception.
+     * Get the client response associated with the exception. May return {@code null}
+     * the exception was not associated with any particular response.
 
-     * @return the client response.
+     * @return the client response if set, otherwise {@code null}.
      */
     public Response getResponse() {
         return response;
