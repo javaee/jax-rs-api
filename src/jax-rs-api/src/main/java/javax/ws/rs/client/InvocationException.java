@@ -53,6 +53,10 @@ import javax.ws.rs.core.Response;
  * or a {@link Client} instance. Additionally, the exception is also thrown by
  * {@link Response} {@code getEntity(...)} methods in case the returned response is
  * HTTP 204 (No Content).
+ * <p />
+ * Whenever the exception is thrown in the context of an existing {@link Response response},
+ * the response will be {@link #getResponse() referenced} by the exception.
+ *
  *
  * @author Marek Potociar
  * @since 2.0
@@ -75,25 +79,52 @@ public class InvocationException extends ClientException {
     }
 
     /**
-     * Construct a client-side invocation exception.
+     * Constructs a new client-side invocation exception with the specified detail
+     * message and cause. The nested {@link #getResponse() response reference}
+     * will be set to {@code null}.
+     * <p/>
+     * Note that the detail message associated with {@code cause} is <i>not</i>
+     * automatically incorporated in this runtime exception's detail message.
+     *
+     * @param  message the detail message (which is saved for later retrieval
+     *     by the {@link #getMessage()} method).
+     * @param  cause the cause (which is saved for later retrieval by the
+     *     {@link #getCause()} method). (A {@code null} value is permitted,
+     *     and indicates that the cause is nonexistent or unknown.)
+     */
+    public InvocationException(final String message, Throwable cause) {
+        super(message, cause);
+        response = null;
+    }
+
+    /**
+     * Construct a client-side invocation exception and set the exception's
+     * {@link #getResponse() response reference} to point to the provided
+     * {@code response} input parameter. The message of the exception is set
+     * to a value returned by {@code response.toString()}.
      * <p>
-     * The client response entity will be buffered by calling
-     * {@link Response#bufferEntity() }.
+     * The entity of the referenced response will be {@link Response#bufferEntity() buffered}.
      *
      * @param response the client response. The message of the exception is set
-     *     to value returned by {@code response.toString()}.
+     *     to a value returned by {@code response.toString()}.
      */
     public InvocationException(final Response response) {
         this(response, true);
     }
 
     /**
-     * Construct a client-side invocation exception.
+     * Construct a client-side invocation exception and set the exception's
+     * {@link #getResponse() response reference} to point to the provided
+     * {@code response} input parameter. The message of the exception is set
+     * to a value returned by {@code response.toString()}.
+     * <p>
+     * The entity of the referenced response will be {@link Response#bufferEntity() buffered}
+     * if the {@code bufferResponseEntity} is set to {@code true}.
      *
-     * @param response the client response. The message of the exception is set to
-     *        r.toString();
-     * @param bufferResponseEntity if true buffer the client response entity by calling
-     *                             {@link Response#bufferEntity() }.
+     * @param response the client response. The message of the exception is set
+     *     to a value returned by {@code response.toString()}.
+     * @param bufferResponseEntity if {@code true} the entity of the referenced
+     *      response will be {@link Response#bufferEntity() buffered}.
      */
     public InvocationException(final Response response, final boolean bufferResponseEntity) {
         super(response.toString());
@@ -104,27 +135,37 @@ public class InvocationException extends ClientException {
     }
 
     /**
-     * Construct a client-side invocation exception.
+     * Construct a client-side invocation exception and set the exception's
+     * {@link #getResponse() response reference} to point to the provided
+     * {@code response} input parameter. The message of the exception is set
+     * to a value of {@code message} input parameter.
      * <p>
-     * The client response entity will be buffered by calling
-     * {@link Response#bufferEntity() }.
+     * The entity of the referenced response will be {@link Response#bufferEntity() buffered}.
      *
-     * @param message the message of the exception.
-     * @param response the client response.
-     *
+     * @param  message the detail message (which is saved for later retrieval
+     *     by the {@link #getMessage()} method).
+     * @param response the client response. The message of the exception is set
+     *     to a value returned by {@code response.toString()}.
      */
     public InvocationException(final String message, final Response response) {
         this(message, response, true);
     }
 
     /**
-     * Construct a client-side invocation exception.
+     * Construct a client-side invocation exception and set the exception's
+     * {@link #getResponse() response reference} to point to the provided
+     * {@code response} input parameter. The message of the exception is set
+     * to a value of {@code message} input parameter.
+     * <p>
+     * The entity of the referenced response will be {@link Response#bufferEntity() buffered}
+     * if the {@code bufferResponseEntity} is set to {@code true}.
      *
-     * @param message the message of the exception.
-     * @param response the client response.
-     * @param bufferResponseEntity if true buffer the client response entity by calling
-     *                             {@link Response#bufferEntity() }.
-     *
+     * @param  message the detail message (which is saved for later retrieval
+     *     by the {@link #getMessage()} method).
+     * @param response the client response. The message of the exception is set
+     *     to a value returned by {@code response.toString()}.
+     * @param bufferResponseEntity if {@code true} the entity of the referenced
+     *      response will be {@link Response#bufferEntity() buffered}.
      */
     public InvocationException(final String message, final Response response,
             final boolean bufferResponseEntity) {
@@ -137,7 +178,7 @@ public class InvocationException extends ClientException {
 
     /**
      * Get the client response associated with the exception. May return {@code null}
-     * the exception was not associated with any particular response.
+     * if the exception was not associated with any particular response.
 
      * @return the client response if set, otherwise {@code null}.
      */
