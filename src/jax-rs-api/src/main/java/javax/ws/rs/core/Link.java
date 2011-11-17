@@ -42,7 +42,6 @@ package javax.ws.rs.core;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 /**
@@ -191,26 +190,48 @@ public final class Link {
     /**
      * Simple parser to convert link string representations into links.
      * 
+     * link ::= '<' uri '>' (';' link-param)*
+     * link-param ::= name '=' quoted-string
+     * 
+     * The resulting language is similar to that defined in RFC 5988.
+     * 
      * @param link String representation
      * @return New link
      * @throws IllegalArgumentException 
      */
     public static Link valueOf(String link) throws IllegalArgumentException {
         LinkBuilder lb = null;
-        StringTokenizer st = new StringTokenizer(link, "<>;=\"");
+        StringTokenizer st = new StringTokenizer(link.trim(), "<>;=\"", true);
         try {
-            String t = st.nextToken();
-            lb = Link.fromUri(t);
+            checkToken(st, "<");
+            lb = Link.fromUri(st.nextToken().trim());
+            checkToken(st, ">");            
             while (st.hasMoreTokens()) {
-                lb.param(st.nextToken().trim(), st.nextToken());
+                checkToken(st, ";");
+                String name = st.nextToken().trim();
+                checkToken(st, "=");
+                checkToken(st, "\"");
+                String value = st.nextToken();
+                checkToken(st, "\"");
+                lb.param(name, value);
             }
-        } catch (NoSuchElementException e) {
+        } catch (Throwable e) {
             lb = null;
         }
         if (lb == null) {
             throw new IllegalArgumentException("Unable to parse link " + link);
         }
         return lb.build();
+    }
+    
+    private static void checkToken(StringTokenizer st, String expected) throws AssertionError {
+        String token;
+        do {
+            token = st.nextToken().trim();
+        } while (token.length() == 0);
+        if (!token.equals(expected)) {
+            throw new AssertionError("Expected token " + expected + " but found " + token);
+        }
     }
 
     /**
