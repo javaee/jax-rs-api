@@ -42,6 +42,8 @@ package javax.ws.rs.core;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 /**
  * Link class.
@@ -130,11 +132,44 @@ public final class Link {
     }
 
     /**
+     * Equality test for links.
+     * @param other Object to compare against
+     * @return True if equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof Link) {
+            final Link olink = (Link) other;
+            return uri.equals(olink.uri) && map.equals(olink.map) 
+                    && (context == null || context.equals(olink.context));
+        }
+        return false;
+    }
+
+    /**
+     * Hash code computation for links.
+     * @return Hash code for this link
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + (this.uri != null ? this.uri.hashCode() : 0);
+        hash = 89 * hash + (this.context != null ? this.context.hashCode() : 0);
+        hash = 89 * hash + (this.map != null ? this.map.hashCode() : 0);
+        return hash;
+    }
+    
+    /**
      * Returns a simplified string representation for this link's value.
      * All link params are serialized as link-param="value" where value
      * is a list of space-separated tokens. For example,
      *
      * <http://foo.bar/employee/john>; title="employee"; rel="manager friend"
+     * 
+     * @return String representation for this link
      */
     @Override
     public String toString() {
@@ -151,6 +186,31 @@ public final class Link {
             sb.append("\"");
         }
         return sb.toString();
+    }
+    
+    /**
+     * Simple parser to convert link string representations into links.
+     * 
+     * @param link String representation
+     * @return New link
+     * @throws IllegalArgumentException 
+     */
+    public static Link valueOf(String link) throws IllegalArgumentException {
+        LinkBuilder lb = null;
+        StringTokenizer st = new StringTokenizer(link, "<>;=\"");
+        try {
+            String t = st.nextToken();
+            lb = Link.fromUri(t);
+            while (st.hasMoreTokens()) {
+                lb.param(st.nextToken().trim(), st.nextToken());
+            }
+        } catch (NoSuchElementException e) {
+            lb = null;
+        }
+        if (lb == null) {
+            throw new IllegalArgumentException("Unable to parse link " + link);
+        }
+        return lb.build();
     }
 
     /**
