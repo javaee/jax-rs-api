@@ -42,13 +42,14 @@ package javax.ws.rs.core;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.StringTokenizer;
+import javax.ws.rs.ext.RuntimeDelegate;
+import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 /**
  * Link class.
  *
  * @author Marek Potociar
- * @author Santiago Pericas-Geertsen
+ * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
  *
  * @since 2.0
  */
@@ -60,6 +61,9 @@ public final class Link {
 
     private MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
 
+    private static final HeaderDelegate<Link> delegate = 
+            RuntimeDelegate.getInstance().createHeaderDelegate(Link.class);
+    
     /**
      * Returns the underlying URI associated with this link.
      *
@@ -172,19 +176,7 @@ public final class Link {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append('<').append(uri).append('>');
-        for (String key : map.keySet()) {
-            sb.append("; ").append(key).append("=\"");
-            boolean first = true;
-            for (String value : map.get(key)) {
-                sb.append(first ? "" : " ");
-                sb.append(value);
-                first = false;
-            }
-            sb.append("\"");
-        }
-        return sb.toString();
+        return delegate.toString(this);
     }
     
     /**
@@ -195,45 +187,14 @@ public final class Link {
      * 
      * The resulting language is similar to that defined in RFC 5988.
      * 
-     * @param link String representation
+     * @param value String representation
      * @return New link
      * @throws IllegalArgumentException 
      */
-    public static Link valueOf(String link) throws IllegalArgumentException {
-        LinkBuilder lb = null;
-        StringTokenizer st = new StringTokenizer(link.trim(), "<>;=\"", true);
-        try {
-            checkToken(st, "<");
-            lb = Link.fromUri(st.nextToken().trim());
-            checkToken(st, ">");            
-            while (st.hasMoreTokens()) {
-                checkToken(st, ";");
-                String name = st.nextToken().trim();
-                checkToken(st, "=");
-                checkToken(st, "\"");
-                String value = st.nextToken();
-                checkToken(st, "\"");
-                lb.param(name, value);
-            }
-        } catch (Throwable e) {
-            lb = null;
-        }
-        if (lb == null) {
-            throw new IllegalArgumentException("Unable to parse link " + link);
-        }
-        return lb.build();
+    public static Link valueOf(String value) throws IllegalArgumentException {
+        return delegate.fromString(value);
     }
     
-    private static void checkToken(StringTokenizer st, String expected) throws AssertionError {
-        String token;
-        do {
-            token = st.nextToken().trim();
-        } while (token.length() == 0);
-        if (!token.equals(expected)) {
-            throw new AssertionError("Expected token " + expected + " but found " + token);
-        }
-    }
-
     /**
      * Create a new instance initialized from an existing URI.
      * @param uri a URI that will be used to initialize the LinkBuilder.
