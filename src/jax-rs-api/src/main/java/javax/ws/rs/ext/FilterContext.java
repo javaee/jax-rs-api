@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.ext;
 
+import java.util.Map;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
@@ -51,7 +52,7 @@ import javax.ws.rs.core.Response;
  * @author Bill Burke
  * @since 2.0
  */
-public interface FilterContext extends BaseContext {
+public interface FilterContext {
 
     /**
      * Enumeration to control how the filter chain is processed.
@@ -60,6 +61,22 @@ public interface FilterContext extends BaseContext {
      */
     public enum FilterAction { STOP, NEXT };
 
+    /**
+     * Get a mutable map of properties that can be used for
+     * communication between handlers and between filters. In
+     * the Client API, this property map is initialized by calling
+     * {@link javax.ws.rs.client.Configuration#getProperties()} on
+     * the configuration object associated with the corresponding
+     * {@link javax.ws.rs.client.Invocation} or
+     * {@link javax.ws.rs.client.Invocation.Builder} instance on
+     * which a filter or handler is registered.
+     * Otherwise, it is initialized to the empty map.
+     *
+     * @return a mutable property map
+     * @see javax.ws.rs.client.Configuration
+     */
+    Map<String, Object> getProperties();
+    
     /**
      * Get the request object.
      * 

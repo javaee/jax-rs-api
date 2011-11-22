@@ -41,6 +41,7 @@ package javax.ws.rs.ext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -59,7 +60,23 @@ import javax.ws.rs.core.MultivaluedMap;
  * @see ReadFromHandler
  * @see WriteToHandler
  */
-public interface MessageBodyHandlerContext<T> extends BaseContext {
+public interface MessageBodyHandlerContext<T> {
+
+    /**
+     * Get a mutable map of properties that can be used for
+     * communication between handlers and between filters. In
+     * the Client API, this property map is initialized by calling
+     * {@link javax.ws.rs.client.Configuration#getProperties()} on
+     * the configuration object associated with the corresponding
+     * {@link javax.ws.rs.client.Invocation} or
+     * {@link javax.ws.rs.client.Invocation.Builder} instance on
+     * which a filter or handler is registered.
+     * Otherwise, it is initialized to the empty map.
+     *
+     * @return a mutable property map
+     * @see javax.ws.rs.client.Configuration
+     */
+    Map<String, Object> getProperties();
 
     /**
      * Get annotations on the formal declaration of the resource

@@ -47,24 +47,25 @@ import javax.ws.rs.ext.FilterContext.FilterAction;
  * extension point. Filters implementing this interface MUST be 
  * annotated with {@link javax.ws.rs.ext.Provider}.</p>
  * 
- * <p>As part of the client API, these filters are 
- * executed before the invocation and before all handlers 
- * implementing {@link javax.ws.rs.ext.WriteToHandler} are invoked.
- * As part of the server API, these filters are executed
- * before the resource method is called and before all handlers
- * implementing {@link javax.ws.rs.ext.ReadFromHandler} are invoked.</p>
+ * <p>As part of the client API, these filters are executed before 
+ * the HTTP invocation. As part of the server API, these filters are
+ * executed before the resource method is called but after it has been
+ * matched. If processing is required before resource matching,
+ * a {@link PreMatchRequestFilter} should be used instead.</p>
  * 
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
+ * @see PreMatchRequestFilter
  */
 public interface RequestFilter {
 
     /**
      * Filter method called at the <emph>Pre</emph> extension point. 
-     * I.e., before the invocation in the client API and before the
-     * resource method invocation in the server API. This method
-     * can return {@link javax.ws.rs.ext.FilterContext.FilterAction#NEXT}
+     * I.e., before the HTTP invocation in the client and before the
+     * resource method invocation (but after resource matching) in the
+     * server. This method can return
+     * {@link javax.ws.rs.ext.FilterContext.FilterAction#NEXT}
      * to continue the execution of the filter chain, or 
      * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to 
      * abort the execution of the filter chain (e.g., a caching filter

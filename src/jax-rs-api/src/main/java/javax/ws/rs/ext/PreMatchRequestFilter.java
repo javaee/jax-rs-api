@@ -43,36 +43,33 @@ import java.io.IOException;
 import javax.ws.rs.ext.FilterContext.FilterAction;
 
 /**
- * <p>Interface implemented by filters invoked at the <emph>Pre</emph> 
- * extension point. Filters implementing this interface MUST be 
- * annotated with {@link javax.ws.rs.ext.Provider}.</p>
+ * <p>Interface implemented by filters invoked at the <emph>PreMatch</emph>
+ * extension point. Use a filter of this type to update the input to the
+ * JAX-RS matching algorithm, e.g., the HTTP method, Accept header, etc. 
+ * Otherwise, the use of a filter invoked at the <emph>Pre</emph> extension
+ * point (after resource matching) is recommended. </p>
  * 
- * <p>As part of the client API, these filters are 
- * executed before the invocation and before all handlers 
- * implementing {@link javax.ws.rs.ext.WriteToHandler} are invoked.
- * As part of the server API, these filters are executed
- * before the resource method is called and before all handlers
- * implementing {@link javax.ws.rs.ext.ReadFromHandler} are invoked.</p>
+ * <p>Filters implementing
+ * this interface MUST be annotated with {@link javax.ws.rs.ext.Provider}.
+ * This type of filters is supported only as part of the Server API.</p>
  * 
  * @author Santiago Pericas-Geertsen
- * @author Bill Burke
  * @since 2.0
+ * @see RequestFilter
  */
-public interface RequestFilter {
+public interface PreMatchRequestFilter {
 
     /**
-     * Filter method called at the <emph>Pre</emph> extension point. 
-     * I.e., before the invocation in the client API and before the
-     * resource method invocation in the server API. This method
+     * Filter method called at the <emph>PreMatch</emph> extension point.
+     * I.e., before resource matching as part of the Server API. This method
      * can return {@link javax.ws.rs.ext.FilterContext.FilterAction#NEXT}
      * to continue the execution of the filter chain, or 
      * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to 
-     * abort the execution of the filter chain (e.g., a caching filter
-     * may want to stop execution upon a cache hit). 
+     * abort the execution of the filter chain.
      *
      * @param context invocation context
      * @return filter action to continue or stop filter chain
      * @throws IOException 
      */
-    FilterAction preFilter(FilterContext context) throws IOException;
+    FilterAction preMatchFilter(FilterContext context) throws IOException;
 }

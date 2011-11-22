@@ -47,12 +47,9 @@ import javax.ws.rs.ext.FilterContext.FilterAction;
  * extension point. Filters implementing this interface MUST be 
  * annotated with {@link javax.ws.rs.ext.Provider}.</p>
  * 
- * <p>As part of the client API, these filters are 
- * executed after the invocation returns and before all handlers 
- * implementing {@link javax.ws.rs.ext.ReadFromHandler} are invoked.
- * As part of the server API, these filters are executed
- * after the resource method returns and before all handlers
- * implementing {@link javax.ws.rs.ext.WriteToHandler} are invoked.</p>
+ * <p>As part of the client API, these filters are executed after the 
+ * HTTP invocation returns. As part of the server API, these filters are
+ * executed after the resource method returns.</p>
  * 
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke

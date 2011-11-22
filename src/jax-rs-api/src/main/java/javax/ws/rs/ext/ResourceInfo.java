@@ -40,49 +40,33 @@
 package javax.ws.rs.ext;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
- * Base context shared by handlers and filters.
+ * An injectable class to access the resource class and resource method
+ * matched by the current request. Methods in this class MAY return
+ * <code>null</code> if a resource class and method have not been matched.
+ * E.g., in a {@link PreMatchRequestFilter}.
  *
  * @author Santiago Pericas-Geertsen
- * @author Bill Burke
  * @since 2.0
  */
-public interface BaseContext {
+public interface ResourceInfo {
 
     /**
-     * Get a mutable map of properties that can be used for
-     * communication between handlers and between filters. In
-     * the Client API, this property map is initialized by calling
-     * {@link javax.ws.rs.client.Configuration#getProperties()} on 
-     * the configuration object associated with the corresponding
-     * {@link javax.ws.rs.client.Invocation} or
-     * {@link javax.ws.rs.client.Invocation.Builder} instance on
-     * which a filter or handler is registered.
-     * Otherwise, it is initialized to the empty map.
+     * Get the resource method that is the target of a request,
+     * or <code>null</code> if this information is not available.
      *
-     * @return a mutable property map
-     * @see javax.ws.rs.client.Configuration
-     */
-    Map<String, Object> getProperties();
-
-    /**
-     * Get the resource method that is the target of a request.
-     * In the client API, this method returns null.
-     *
-     * @return resource method or null
+     * @return resource method instance or null
      * @see #getResourceClass()
      */
     Method getResourceMethod();
 
     /**
-     * Get the resource class that is the target of a request.
-     * In the Client API, this method returns null.
+     * Get the resource class that is the target of a request,
+     * or <code>null</code> if this information is not available.
      *
-     * @return resource class or null
+     * @return resource class instance or null
      * @see #getResourceMethod()
      */
     Class<?> getResourceClass();
-
 }
