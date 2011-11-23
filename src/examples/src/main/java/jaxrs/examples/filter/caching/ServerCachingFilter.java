@@ -42,7 +42,6 @@ package jaxrs.examples.filter.caching;
 import java.io.IOException;
 
 import javax.ws.rs.BindingPriority;
-import javax.ws.rs.GlobalBinding;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.FilterContext.FilterAction;
@@ -50,11 +49,10 @@ import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.RequestFilter;
 
 /**
- * 
+ *
  * @author Santiago Pericas-Geertsen
  */
 @Provider
-@GlobalBinding
 @BindingPriority(BindingPriority.USER)
 public class ServerCachingFilter implements RequestFilter {
 
