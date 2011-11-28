@@ -233,4 +233,6 @@ public interface ResponseHeaders extends Headers {
     Set<Link> getLinks();
 
     Link getLink(String relation);
+    
+    boolean hasLink(String relation);
 }

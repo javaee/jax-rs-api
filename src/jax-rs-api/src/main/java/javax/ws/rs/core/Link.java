@@ -218,25 +218,40 @@ public final class Link {
         b.uri(uri);
         return b;
     }
+    
+    public static LinkBuilder fromResourceMethod(Class<?> resource, String method) 
+            throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not supported");
+    }
 
     public static class LinkBuilder {
 
         private Link link = new Link();
+        
+        private UriBuilder uriBuilder;
+        
+        private String defaultRel;
 
         protected LinkBuilder() {
+            this.defaultRel = null;
         }
 
+        protected LinkBuilder(String defaultRel) {
+            this.defaultRel = defaultRel;
+        }
+        
         public LinkBuilder uri(URI uri) throws IllegalArgumentException {
-            link.uri = uri;
+            uriBuilder = UriBuilder.fromUri(uri);
             return this;
         }
 
         public LinkBuilder uri(String uri) throws IllegalArgumentException {
-            try {
-                link.uri = new URI(uri);
-            } catch (URISyntaxException ex) {
-                throw new IllegalArgumentException(ex);
-            }
+            uriBuilder = UriBuilder.fromUri(uri);
+            return this;
+        }
+        
+        public LinkBuilder uriBuilder(UriBuilder uriBuilder) throws IllegalArgumentException {
+            this.uriBuilder = uriBuilder;
             return this;
         }
 
@@ -282,7 +297,20 @@ public final class Link {
         }
 
         public Link build() {
+            if (defaultRel != null && !link.map.containsKey("rel")) {
+                link.map.add("rel", defaultRel);
+            }
+            link.uri = uriBuilder.build();
             return link;
         }
+        
+        public Link build(Object... values) throws IllegalArgumentException, UriBuilderException {
+            if (defaultRel != null && !link.map.containsKey("rel")) {
+                link.map.add("rel", defaultRel);
+            }
+            link.uri = uriBuilder.build(values);
+            return link;
+        }
+        
     }
 }

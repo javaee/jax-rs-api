@@ -44,6 +44,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Configuration;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Request;
@@ -124,6 +125,11 @@ public final class ThrottledClient implements Client {
 
     @Override
     public Configuration configuration() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Invocation invocation(Link link, Object... values) throws NullPointerException, IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -140,4 +140,7 @@ public interface Client {
      * @throws NullPointerException in case the supplied argument is null.
      */
     Target target(Link link) throws NullPointerException;
+    
+    Invocation invocation(Link link, Object... values) 
+            throws NullPointerException, IllegalArgumentException;
 }
