@@ -188,6 +188,6 @@ public class InvocationException extends ClientException {
 
     @Override
     public String toString() {
-        return "InvocationException{" + "response=" + response + '}';
+        return "InvocationException{message=" + getMessage() + ", response=" + response + '}';
     }
 }
