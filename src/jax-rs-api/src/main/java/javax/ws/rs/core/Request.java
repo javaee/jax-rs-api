@@ -71,15 +71,25 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 public interface Request extends RequestHeaders {
 
     /**
+     * An interface used to build {@link Request} instances, typically used in
+     * JAX-RS filters. An initial instance may be obtained via {@link FilterContext}
+     * that is passed to the filters.
+     * <p/>
+     * Methods of this interface provide the ability to set request metadata, such
+     * as headers or entity.
+     * <p/>
+     * Where multiple variants of the same method are provided, the type of
+     * the supplied parameter is retained in the metadata of the built {@code Request}.
+     *
      * @since 2.0
      */
     public static interface RequestBuilder extends Request, RequestHeaders.Builder<RequestBuilder>, Cloneable {
 
-        RequestBuilder redirect(String uri);
+        public RequestBuilder redirect(String uri);
 
-        RequestBuilder redirect(URI uri);
+        public RequestBuilder redirect(URI uri);
 
-        RequestBuilder redirect(UriBuilder uri);
+        public RequestBuilder redirect(UriBuilder uri);
 
         /**
          * Modify the HTTP method of the request.
@@ -93,7 +103,7 @@ public interface Request extends RequestHeaders {
          * @param httpMethod new method to be set on the request.
          * @return updated request builder instance.
          */
-        RequestBuilder method(String httpMethod);
+        public RequestBuilder method(String httpMethod);
 
         /**
          * Set the request entity.
@@ -112,7 +122,7 @@ public interface Request extends RequestHeaders {
          * @see #type(javax.ws.rs.core.MediaType)
          * @see #type(java.lang.String)
          */
-        RequestBuilder entity(Object entity);
+        public RequestBuilder entity(Object entity);
 
         /**
          * Set the input stream of the request.
@@ -120,15 +130,15 @@ public interface Request extends RequestHeaders {
          * @param entity the input stream of the request.
          * @return updated request builder instance.
          */
-        RequestBuilder entityInputStream(InputStream entity);
+        public RequestBuilder entityInputStream(InputStream entity);
 
         /**
          * Create a copy of the request builder preserving its state.
          * @return a copy of the request builder
          */
-        RequestBuilder clone();
+        public RequestBuilder clone();
 
-        Request build();
+        public Request build();
     }
 
     /**
@@ -137,7 +147,7 @@ public interface Request extends RequestHeaders {
      * @return the request method.
      * @see javax.ws.rs.HttpMethod
      */
-    String getMethod();
+    public String getMethod();
 
     /**
      * Get the absolute request URI. This includes query parameters and
@@ -146,7 +156,7 @@ public interface Request extends RequestHeaders {
      * @return the absolute request URI.
      * @since 2.0
      */
-    URI getUri();
+    public URI getUri();
 
     /**
      * Get the absolute request URI in the form of a {@link UriBuilder}.
@@ -154,7 +164,7 @@ public interface Request extends RequestHeaders {
      * @return a {@code UriBuilder} initialized with the absolute request URI.
      * @since 2.0
      */
-    UriBuilder getUriBuilder();
+    public UriBuilder getUriBuilder();
 
     /**
      * Get the absolute path of the request. This includes everything preceding
@@ -164,7 +174,7 @@ public interface Request extends RequestHeaders {
      * @return the absolute path of the request.
      * @since 2.0
      */
-    URI getPath();
+    public URI getPath();
 
     /**
      * Get the absolute path of the request in the form of a {@link UriBuilder}.
@@ -174,7 +184,7 @@ public interface Request extends RequestHeaders {
      * @return a {@code UriBuilder} initialized with the absolute path of the request.
      * @since 2.0
      */
-    UriBuilder getPathBuilder();
+    public UriBuilder getPathBuilder();
 
     /**
      * Get the absolute path of the request in the form of a {@link String}.
@@ -184,7 +194,7 @@ public interface Request extends RequestHeaders {
      * @return the {@link String} containing the absolute path of the request.
      * @since 2.0
      */
-    String getPath(boolean decode);
+    public String getPath(boolean decode);
 
     /**
      * Get the path of the current request relative to the base URI as a list
@@ -199,7 +209,7 @@ public interface Request extends RequestHeaders {
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      * @since 2.0
      */
-    List<PathSegment> getPathSegments();
+    public List<PathSegment> getPathSegments();
 
     /**
      * Get the path of the current request relative to the base URI as a list
@@ -215,7 +225,7 @@ public interface Request extends RequestHeaders {
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      * @since 2.0
      */
-    List<PathSegment> getPathSegments(boolean decode);
+    public List<PathSegment> getPathSegments(boolean decode);
 
     /**
      * Get the URI query parameters of the current request. All sequences of
@@ -225,7 +235,7 @@ public interface Request extends RequestHeaders {
      * @return an unmodifiable map of query parameter names and values.
      * @since 2.0
      */
-    MultivaluedMap<String, String> getQueryParameters();
+    public MultivaluedMap<String, String> getQueryParameters();
 
     /**
      * Get the URI query parameters of the current request.
@@ -235,7 +245,7 @@ public interface Request extends RequestHeaders {
      * @return an unmodifiable map of query parameter names and values.
      * @since 2.0
      */
-    MultivaluedMap<String, String> getQueryParameters(boolean decode);
+    public MultivaluedMap<String, String> getQueryParameters(boolean decode);
 
     /**
      * Get the message entity, returns {@code null} if the message does not
@@ -244,7 +254,7 @@ public interface Request extends RequestHeaders {
      * @return the message entity or {@code null}.
      * @since 2.0
      */
-    Object getEntity();
+    public Object getEntity();
 
     /**
      * Get the message entity, returns {@code null} if the message does not
@@ -257,7 +267,7 @@ public interface Request extends RequestHeaders {
      *     cannot be mapped to an entity of the requested type.
      * @since 2.0
      */
-     <T> T getEntity(Class<T> type) throws MessageProcessingException;
+    public <T> T getEntity(Class<T> type) throws MessageProcessingException;
 
     /**
      * Get the message entity, returns {@code null} if the message does not
@@ -270,7 +280,7 @@ public interface Request extends RequestHeaders {
      *     cannot be mapped to an entity of the requested type.
      * @since 2.0
      */
-     <T> T getEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
+    public <T> T getEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
 
     /**
      * Check if there is an entity available in the request.
@@ -278,7 +288,7 @@ public interface Request extends RequestHeaders {
      * @return {@code true} if there is an entity present in the request.
      * @since 2.0
      */
-    boolean hasEntity();
+    public boolean hasEntity();
 
     /**
      * Get the request input stream.
@@ -286,7 +296,7 @@ public interface Request extends RequestHeaders {
      * @return the input stream of the request.
      * @since 2.0
      */
-    InputStream getEntityInputStream();
+    public InputStream getEntityInputStream();
 
     /**
      * Select the representation variant that best matches the request. More
@@ -303,7 +313,7 @@ public interface Request extends RequestHeaders {
      * @throws java.lang.IllegalArgumentException if variants is empty or null
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
-    Variant selectVariant(List<Variant> variants) throws IllegalArgumentException;
+    public Variant selectVariant(List<Variant> variants) throws IllegalArgumentException;
 
     /**
      * Evaluate request preconditions based on the passed in value.
@@ -315,7 +325,7 @@ public interface Request extends RequestHeaders {
      * @throws java.lang.IllegalArgumentException if eTag is null
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
-    ResponseBuilder evaluatePreconditions(EntityTag eTag);
+    public ResponseBuilder evaluatePreconditions(EntityTag eTag);
 
     /**
      * Evaluate request preconditions based on the passed in value.
@@ -326,7 +336,7 @@ public interface Request extends RequestHeaders {
      * @throws java.lang.IllegalArgumentException if lastModified is null
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
-    ResponseBuilder evaluatePreconditions(Date lastModified);
+    public ResponseBuilder evaluatePreconditions(Date lastModified);
 
     /**
      * Evaluate request preconditions based on the passed in value.
@@ -339,7 +349,7 @@ public interface Request extends RequestHeaders {
      * @throws java.lang.IllegalArgumentException if lastModified or eTag is null
      * @throws java.lang.IllegalStateException if called outside the scope of a request
      */
-    ResponseBuilder evaluatePreconditions(Date lastModified, EntityTag eTag);
+    public ResponseBuilder evaluatePreconditions(Date lastModified, EntityTag eTag);
 
     /**
      * Evaluate request preconditions for a resource that does not currently
@@ -364,5 +374,5 @@ public interface Request extends RequestHeaders {
      * a request
      * @since 1.1
      */
-    ResponseBuilder evaluatePreconditions();
+    public ResponseBuilder evaluatePreconditions();
 }
