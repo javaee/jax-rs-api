@@ -110,7 +110,7 @@ public interface Request extends RequestHeaders {
          * @return updated request builder instance.
          *
          * @see #type(javax.ws.rs.core.MediaType)
-         * @see #type(java.lang.String) 
+         * @see #type(java.lang.String)
          */
         RequestBuilder entity(Object entity);
 
@@ -121,13 +121,13 @@ public interface Request extends RequestHeaders {
          * @return updated request builder instance.
          */
         RequestBuilder entityInputStream(InputStream entity);
-        
+
         /**
          * Create a copy of the request builder preserving its state.
          * @return a copy of the request builder
          */
-        RequestBuilder clone();        
-        
+        RequestBuilder clone();
+
         Request build();
     }
 
@@ -221,7 +221,7 @@ public interface Request extends RequestHeaders {
      * Get the URI query parameters of the current request. All sequences of
      * escaped octets in parameter names and values are decoded,
      * equivalent to {@code getQueryParameters(true)}.
-     * 
+     *
      * @return an unmodifiable map of query parameter names and values.
      * @since 2.0
      */
@@ -240,7 +240,7 @@ public interface Request extends RequestHeaders {
     /**
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
-     * 
+     *
      * @return the message entity or {@code null}.
      * @since 2.0
      */
@@ -249,7 +249,7 @@ public interface Request extends RequestHeaders {
     /**
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
-     * 
+     *
      * @param <T> entity type.
      * @param type the type of entity.
      * @return the message entity or {@code null}.
@@ -262,7 +262,7 @@ public interface Request extends RequestHeaders {
     /**
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
-     * 
+     *
      * @param <T> entity type.
      * @param entityType the generic type of the entity.
      * @return the message entity or {@code null}.
