@@ -68,7 +68,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
  * @author Marc Hadley
  * @since 1.0
  */
-public interface Request extends RequestHeaders {
+public interface Request {
 
     /**
      * An interface used to build {@link Request} instances, typically used in
@@ -148,6 +148,16 @@ public interface Request extends RequestHeaders {
      * @see javax.ws.rs.HttpMethod
      */
     public String getMethod();
+
+    /**
+     * Get the request message headers. This method never returns {@code null}.
+     *
+     * @return request message headers. Returned headers may be empty but never
+     *     {@code null}.
+     * @see RuntimeDelegate.HeaderDelegate
+     * @since 2.0
+     */
+    public RequestHeaders getHeaders();
 
     /**
      * Get the absolute request URI. This includes query parameters and

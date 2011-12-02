@@ -60,7 +60,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * @see Response.ResponseBuilder
  * @since 1.0
  */
-public abstract class Response implements ResponseHeaders {
+public abstract class Response {
 
     /**
      * Protected constructor, use one of the static methods to obtain a
@@ -98,6 +98,16 @@ public abstract class Response implements ResponseHeaders {
      * @since 2.0
      */
     public abstract Status getStatusEnum();
+
+    /**
+     * Get the response message headers. This method never returns {@code null}.
+     *
+     * @return response message headers. Returned headers may be empty but never
+     *     {@code null}.
+     * @see RuntimeDelegate.HeaderDelegate
+     * @since 2.0
+     */
+    public abstract ResponseHeaders getHeaders();
 
     /**
      * Get the message entity, returns {@code null} if the message does not
@@ -182,8 +192,9 @@ public abstract class Response implements ResponseHeaders {
      * {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
      * for the class of the value or using the values {@code toString} method if a
      * header delegate is not available.
-     *
-     * TODO introduce getHeaders() instead.
+     * <p/>
+     * This method is effectively a shortcut for
+     * {@link #getHeaders()}.{@link ResponseHeaders#getHeaderMap() getHeaderMap()}.
      *
      * @return response metadata as a map
      */
@@ -524,6 +535,16 @@ public abstract class Response implements ResponseHeaders {
          * @since 2.0
          */
         public abstract Status getStatusEnum();
+
+        /**
+         * Get the response message headers. This method never returns {@code null}.
+         *
+         * @return response message headers. Returned headers may be empty but never
+         *     {@code null}.
+         * @see RuntimeDelegate.HeaderDelegate
+         * @since 2.0
+         */
+        public abstract ResponseHeaders getHeaders();
 
         /**
          * Get the message entity, returns {@code null} if the message does not
