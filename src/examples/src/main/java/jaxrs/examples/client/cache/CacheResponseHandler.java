@@ -73,7 +73,7 @@ public class CacheResponseHandler implements ResponseFilter {
             URI uri = ctx.getRequest().getUri();
             Response.ResponseBuilder responseBuilder = ctx.getResponseBuilder();
             byte[] body = readFromStream(1024, responseBuilder.getEntityInputStream());
-            CacheEntry entry = new CacheEntry(responseBuilder.asMap(), body);
+            CacheEntry entry = new CacheEntry(responseBuilder.getHeaders().asMap(), body);
             cache.put(uri.toString(), entry);
             responseBuilder.entityInputStream(new ByteArrayInputStream(body));
         }

@@ -102,177 +102,13 @@ import java.util.Set;
  */
 public interface RequestHeaders {
 
-    /**
-     * TODO javadoc.
-     *
-     * @param <T> actual request headers builder type.
-     * @author Marek Potociar
-     * @since 2.0
-     */
-    public static interface Builder<T extends RequestHeaders.Builder> {
-
-        // General headers
-        /**
-         * Set the list of allowed methods for the resource. Any duplicate method
-         * names will be truncated to a single entry.
-         *
-         * @param methods the methods to be listed as allowed for the resource,
-         *     if {@code null} any existing allowed method list will be removed.
-         * @return the updated headers builder.
-         */
-        public T allow(String... methods);
-
-        /**
-         * Set the list of allowed methods for the resource.
-         *
-         * @param methods the methods to be listed as allowed for the resource,
-         *     if {@code null} any existing allowed method list will be removed.
-         * @return the updated headers builder.
-         */
-        public T allow(Set<String> methods);
-
-        /**
-         * Set the cache control data of the message.
-         *
-         * @param cacheControl the cache control directives, if {@code null}
-         *     any existing cache control directives will be removed.
-         * @return the updated headers builder.
-         */
-        public T cacheControl(CacheControl cacheControl);
-
-        /**
-         * Set the message entity content encoding.
-         *
-         * @param encoding the content encoding of the message entity,
-         *     if {@code null} any existing value for content encoding will be
-         *     removed.
-         * @return the updated headers builder.
-         */
-        public T encoding(String encoding);
-
-        /**
-         * Add an arbitrary header.
-         *
-         * @param name the name of the header
-         * @param value the value of the header, the header will be serialized
-         *     using a {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if
-         *     one is available via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
-         *     for the class of {@code value} or using its {@code toString} method
-         *     if a header delegate is not available. If {@code value} is {@code null}
-         *     then all current headers of the same name will be removed.
-         * @return the updated header builder.
-         */
-        public T header(String name, Object value);
-
-        /**
-         * Replaces all existing headers with the newly supplied headers.
-         *
-         * @param headers new headers to be set, if {@code null} all existing
-         *     headers will be removed.
-         * @return the updated headers builder.
-         */
-        public T replaceAll(RequestHeaders headers);
-
-        /**
-         * Set the message entity language.
-         *
-         * @param language the language of the message entity, if {@code null} any
-         *     existing value for language will be removed.
-         * @return the updated headers builder.
-         */
-        public T language(String language);
-
-        /**
-         * Set the message entity language.
-         *
-         * @param language the language of the message entity, if {@code null} any
-         *     existing value for type will be removed.
-         * @return the updated headers builder.
-         */
-        public T language(Locale language);
-
-        /**
-         * Set the message entity media type.
-         *
-         * @param type the media type of the message entity. If {@code null}, any
-         *     existing value for type will be removed
-         * @return the updated header builder.
-         */
-        public T type(MediaType type);
-
-        /**
-         * Set the message entity media type.
-         *
-         * @param type the media type of the message entity. If {@code null}, any
-         *     existing value for type will be removed
-         * @return the updated header builder.
-         */
-        public T type(String type);
-
-        /**
-         * Set message entity representation metadata.
-         * <p/>
-         * Equivalent to setting the values of content type, content language,
-         * and content encoding separately using the values of the variant properties.
-         *
-         * @param variant metadata of the message entity, a {@code null} value is
-         *     equivalent to a variant with all {@code null} properties.
-         * @return the updated header builder.
-         *
-         * @see #encoding(java.lang.String)
-         * @see #language(java.util.Locale)
-         * @see #type(javax.ws.rs.core.MediaType)
-         */
-        public T variant(Variant variant);
-
-        // Request-specific headers
-        /**
-         * Add acceptable media types.
-         *
-         * @param types an array of the acceptable media types
-         * @return updated request headers builder.
-         */
-        public T accept(MediaType... types);
-
-        /**
-         * Add acceptable media types.
-         *
-         * @param types an array of the acceptable media types
-         * @return updated request headers builder.
-         */
-        public T accept(String... types);
-
-        /**
-         * Add acceptable languages.
-         *
-         * @param locales an array of the acceptable languages
-         * @return updated request headers builder.
-         */
-        public T acceptLanguage(Locale... locales);
-
-        /**
-         * Add acceptable languages.
-         *
-         * @param locales an array of the acceptable languages
-         * @return updated request headers builder.
-         */
-        public T acceptLanguage(String... locales);
-
-        /**
-         * Add a cookie to be set.
-         *
-         * @param cookie to be set.
-         * @return updated request headers builder.
-         */
-        public T cookie(Cookie cookie);
-    }
-
     // General header getters
     /**
      * Get the allowed HTTP methods from the Allow HTTP header.
      *
      * @return the allowed HTTP methods, all methods will returned as upper case
      *     strings.
+     * @since 2.0
      */
     public Set<String> getAllowedMethods();
 
@@ -280,6 +116,7 @@ public interface RequestHeaders {
      * Get message date.
      *
      * @return the message date, otherwise {@code null} if not present.
+     * @since 2.0
      */
     public Date getDate();
 
@@ -300,6 +137,7 @@ public interface RequestHeaders {
      *     character.
      * @see #asMap()
      * @see #getHeaderValues(java.lang.String)
+     * @since 2.0
      */
     public String getHeader(String name);
 
@@ -318,6 +156,7 @@ public interface RequestHeaders {
      *     processing scope.
      * @see #getHeader(java.lang.String)
      * @see #getHeaderValues(java.lang.String)
+     * @since 2.0
      */
     public MultivaluedMap<String, String> asMap();
 
@@ -337,13 +176,14 @@ public interface RequestHeaders {
      *     processing scope.
      * @see #asMap()
      * @see #getHeader(java.lang.String)
+     * @since 2.0
      */
     public List<String> getHeaderValues(String name);
 
     /**
      * Get the language of the entity
      * @return the language of the entity or null if not specified
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @since 2.0
      */
     public Locale getLanguage();
 
@@ -352,13 +192,14 @@ public interface RequestHeaders {
      *
      * @return Content-Length as integer if present and valid number. In other
      * cases returns -1.
+     * @since 2.0
      */
     public int getLength();
 
     /**
      * Get the media type of the entity
      * @return the media type or null if there is no request entity.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @since 2.0
      */
     public MediaType getMediaType();
 
@@ -368,6 +209,7 @@ public interface RequestHeaders {
      *
      * @return a read-only list of requested response media types sorted according
      * to their q-value, with highest preference first.
+     * @since 2.0
      */
     public List<MediaType> getAcceptableMediaTypes();
 
@@ -376,13 +218,14 @@ public interface RequestHeaders {
      *
      * @return a read-only list of acceptable languages sorted according
      * to their q-value, with highest preference first.
+     * @since 2.0
      */
     public List<Locale> getAcceptableLanguages();
 
     /**
      * Get any cookies that accompanied the request.
      * @return a read-only map of cookie name (String) to Cookie.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @since 2.0
      */
     public Map<String, Cookie> getCookies();
 }

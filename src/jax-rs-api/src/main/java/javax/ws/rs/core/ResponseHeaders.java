@@ -92,255 +92,13 @@ import java.util.Set;
  */
 public interface ResponseHeaders {
 
-    /**
-     * Response headers builder.
-     *
-     * @param <T> actual response headers builder type.
-     * @author Marek Potociar
-     * @since 2.0
-     */
-    public static interface Builder<T extends Builder> {
-
-        // General headers
-        /**
-         * Set the list of allowed methods for the resource. Any duplicate method
-         * names will be truncated to a single entry.
-         *
-         * @param methods the methods to be listed as allowed for the resource,
-         *     if {@code null} any existing allowed method list will be removed.
-         * @return the updated headers builder.
-         */
-        public T allow(String... methods);
-
-        /**
-         * Set the list of allowed methods for the resource.
-         *
-         * @param methods the methods to be listed as allowed for the resource,
-         *     if {@code null} any existing allowed method list will be removed.
-         * @return the updated headers builder.
-         */
-        public T allow(Set<String> methods);
-
-        /**
-         * Set the cache control data of the message.
-         *
-         * @param cacheControl the cache control directives, if {@code null}
-         *     any existing cache control directives will be removed.
-         * @return the updated headers builder.
-         */
-        public T cacheControl(CacheControl cacheControl);
-
-        /**
-         * Set the message entity content encoding.
-         *
-         * @param encoding the content encoding of the message entity,
-         *     if {@code null} any existing value for content encoding will be
-         *     removed.
-         * @return the updated headers builder.
-         */
-        public T encoding(String encoding);
-
-        /**
-         * Add an arbitrary header.
-         *
-         * @param name the name of the header
-         * @param value the value of the header, the header will be serialized
-         *     using a {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if
-         *     one is available via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
-         *     for the class of {@code value} or using its {@code toString} method
-         *     if a header delegate is not available. If {@code value} is {@code null}
-         *     then all current headers of the same name will be removed.
-         * @return the updated header builder.
-         */
-        public T header(String name, Object value);
-
-        /**
-         * Replaces all existing headers with the newly supplied headers.
-         *
-         * @param headers new headers to be set, if {@code null} all existing
-         *     headers will be removed.
-         * @return the updated headers builder.
-         */
-        public T replaceAll(ResponseHeaders headers);
-
-        /**
-         * Set the message entity language.
-         *
-         * @param language the language of the message entity, if {@code null} any
-         *     existing value for language will be removed.
-         * @return the updated headers builder.
-         */
-        public T language(String language);
-
-        /**
-         * Set the message entity language.
-         *
-         * @param language the language of the message entity, if {@code null} any
-         *     existing value for type will be removed.
-         * @return the updated headers builder.
-         */
-        public T language(Locale language);
-
-        /**
-         * Set the message entity media type.
-         *
-         * @param type the media type of the message entity. If {@code null}, any
-         *     existing value for type will be removed
-         * @return the updated header builder.
-         */
-        public T type(MediaType type);
-
-        /**
-         * Set the message entity media type.
-         *
-         * @param type the media type of the message entity. If {@code null}, any
-         *     existing value for type will be removed
-         * @return the updated header builder.
-         */
-        public T type(String type);
-
-        /**
-         * Set message entity representation metadata.
-         * <p/>
-         * Equivalent to setting the values of content type, content language,
-         * and content encoding separately using the values of the variant properties.
-         *
-         * @param variant metadata of the message entity, a {@code null} value is
-         *     equivalent to a variant with all {@code null} properties.
-         * @return the updated header builder.
-         *
-         * @see #encoding(java.lang.String)
-         * @see #language(java.util.Locale)
-         * @see #type(javax.ws.rs.core.MediaType)
-         */
-        public T variant(Variant variant);
-
-        // Response-specific headers
-        /**
-         * Set the content location.
-         *
-         * @param location the content location. Relative or absolute URIs
-         *     may be used for the value of content location. If {@code null} any
-         *     existing value for content location will be removed.
-         * @return the updated response headers builder.
-         */
-        public T contentLocation(URI location);
-
-        /**
-         * Add cookies to the response message.
-         *
-         * @param cookies new cookies that will accompany the response. A {@code null}
-         *     value will remove all cookies, including those added via the
-         *     {@link #header(java.lang.String, java.lang.Object)} method.
-         * @return the updated response headers builder.
-         */
-        public T cookie(NewCookie... cookies);
-
-        /**
-         * Set the response expiration date.
-         *
-         * @param expires the expiration date, if {@code null} removes any existing
-         *     expires value.
-         * @return the updated response headers builder.
-         */
-        public T expires(Date expires);
-
-        /**
-         * Set the response entity last modification date.
-         *
-         * @param lastModified the last modified date, if {@code null} any existing
-         *     last modified value will be removed.
-         * @return the updated response headers builder.
-         */
-        public T lastModified(Date lastModified);
-
-        /**
-         * Set the location.
-         *
-         * @param location the location. If a relative URI is supplied it will be
-         *     converted into an absolute URI by resolving it relative to the
-         *     base URI of the application (see {@link UriInfo#getBaseUri}).
-         *     If {@code null} any existing value for location will be removed.
-         * @return the updated response header builder.
-         */
-        public T location(URI location);
-
-        /**
-         * Set a response entity tag.
-         *
-         * @param tag the entity tag, if {@code null} any existing entity tag
-         *     value will be removed.
-         * @return the updated response headers builder.
-         */
-        public T tag(EntityTag tag);
-
-        /**
-         * Set a strong response entity tag.
-         * <p/>
-         * This is a shortcut for <code>tag(new EntityTag(<i>value</i>))</code>.
-         *
-         * @param tag the string content of a strong entity tag. The JAX-RS
-         *     runtime will quote the supplied value when creating the header.
-         *     If {@code null} any existing entity tag value will be removed.
-         * @return the updated response headers builder.
-         */
-        public T tag(String tag);
-
-        /**
-         * Add a Vary header that lists the available variants.
-         *
-         * @param variants a list of available representation variants, a {@code null}
-         *     value will remove an existing value for Vary header.
-         * @return the updated response header builder.
-         */
-        public T variants(Variant... variants);
-
-        /**
-         * Add a Vary header that lists the available variants.
-         *
-         * @param variants a list of available representation variants, a {@code null}
-         *     value will remove an existing value for Vary header.
-         * @return the updated response header builder.
-         */
-        public T variants(List<Variant> variants);
-
-        /**
-         * Add one or more link headers.
-         *
-         * @param links links to be added to the message as headers, a {@code null}
-         *     value will remove any existing Link headers.
-         * @return the updated response header builder.
-         * @since 2.0
-         */
-        public T links(Link... links);
-
-        /**
-         * Add a link header.
-         *
-         * @param uri TODO.
-         * @param rel TODO.
-         * @return the updated response header builder.
-         * @since 2.0
-         */
-        public T link(URI uri, String rel);
-
-        /**
-         * Add a link header.
-         *
-         * @param uri TODO.
-         * @param rel TODO.
-         * @return the updated response header builder.
-         * @since 2.0
-         */
-        public T link(String uri, String rel);
-    }
-
     // General header getters
     /**
      * Get the allowed HTTP methods from the Allow HTTP header.
      *
      * @return the allowed HTTP methods, all methods will returned as upper case
      *     strings.
+     * @since 2.0
      */
     public Set<String> getAllowedMethods();
 
@@ -348,6 +106,7 @@ public interface ResponseHeaders {
      * Get message date.
      *
      * @return the message date, otherwise {@code null} if not present.
+     * @since 2.0
      */
     public Date getDate();
 
@@ -368,6 +127,7 @@ public interface ResponseHeaders {
      *     character.
      * @see #asMap()
      * @see #getHeaderValues(java.lang.String)
+     * @since 2.0
      */
     public String getHeader(String name);
 
@@ -386,6 +146,7 @@ public interface ResponseHeaders {
      *     processing scope.
      * @see #getHeader(java.lang.String)
      * @see #getHeaderValues(java.lang.String)
+     * @since 2.0
      */
     public MultivaluedMap<String, String> asMap();
 
@@ -405,13 +166,14 @@ public interface ResponseHeaders {
      *     processing scope.
      * @see #asMap()
      * @see #getHeader(java.lang.String)
+     * @since 2.0
      */
     public List<String> getHeaderValues(String name);
 
     /**
      * Get the language of the entity
      * @return the language of the entity or null if not specified
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @since 2.0
      */
     public Locale getLanguage();
 
@@ -420,13 +182,14 @@ public interface ResponseHeaders {
      *
      * @return Content-Length as integer if present and valid number. In other
      * cases returns -1.
+     * @since 2.0
      */
     public int getLength();
 
     /**
      * Get the media type of the entity
      * @return the media type or null if there is no request entity.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @since 2.0
      */
     public MediaType getMediaType();
 
@@ -435,6 +198,7 @@ public interface ResponseHeaders {
      * Get any new cookies set on the response message.
      *
      * @return a read-only map of cookie name (String) to Cookie.
+     * @since 2.0
      */
     public Map<String, NewCookie> getCookies();
 
@@ -442,6 +206,7 @@ public interface ResponseHeaders {
      * Get the entity tag.
      *
      * @return the entity tag, otherwise {@code null} if not present.
+     * @since 2.0
      */
     public EntityTag getEntityTag();
 
@@ -449,6 +214,7 @@ public interface ResponseHeaders {
      * Get the last modified date.
      *
      * @return the last modified date, otherwise {@code null} if not present.
+     * @since 2.0
      */
     public Date getLastModified();
 
@@ -456,10 +222,25 @@ public interface ResponseHeaders {
      * Get the location.
      *
      * @return the location URI, otherwise {@code null} if not present.
+     * @since 2.0
      */
     public URI getLocation();
 
+    /**
+     * Get the links attached to the message as header.
+     *
+     * @return links, may return empty {@link Set} if no links are present. Never
+     *     returns {@code null}.
+     * @since 2.0
+     */
     public Set<Link> getLinks();
 
+    /**
+     * Get the link for the relation.
+     *
+     * @param relation link relation.
+     * @return the link for the relation, otherwise {@code null} if not present.
+     * @since 2.0
+     */
     public Link getLink(String relation);
 }

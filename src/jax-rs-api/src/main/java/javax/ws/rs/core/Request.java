@@ -44,7 +44,10 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import java.util.Locale;
+import java.util.Set;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.ext.FilterContext;
 
 /**
  * An injectable helper for request processing, all methods throw an
@@ -83,8 +86,165 @@ public interface Request {
      *
      * @since 2.0
      */
-    public static interface RequestBuilder extends Request, RequestHeaders.Builder<RequestBuilder>, Cloneable {
+    public static interface RequestBuilder extends Request, Cloneable {
 
+        // Headers
+        // General headers
+        /**
+         * Set the list of allowed methods for the resource. Any duplicate method
+         * names will be truncated to a single entry.
+         *
+         * @param methods the methods to be listed as allowed for the resource,
+         *     if {@code null} any existing allowed method list will be removed.
+         * @return the updated headers builder.
+         */
+        public RequestBuilder allow(String... methods);
+
+        /**
+         * Set the list of allowed methods for the resource.
+         *
+         * @param methods the methods to be listed as allowed for the resource,
+         *     if {@code null} any existing allowed method list will be removed.
+         * @return the updated headers builder.
+         */
+        public RequestBuilder allow(Set<String> methods);
+
+        /**
+         * Set the cache control data of the message.
+         *
+         * @param cacheControl the cache control directives, if {@code null}
+         *     any existing cache control directives will be removed.
+         * @return the updated headers builder.
+         */
+        public RequestBuilder cacheControl(CacheControl cacheControl);
+
+        /**
+         * Set the message entity content encoding.
+         *
+         * @param encoding the content encoding of the message entity,
+         *     if {@code null} any existing value for content encoding will be
+         *     removed.
+         * @return the updated headers builder.
+         */
+        public RequestBuilder encoding(String encoding);
+
+        /**
+         * Add an arbitrary header.
+         *
+         * @param name the name of the header
+         * @param value the value of the header, the header will be serialized
+         *     using a {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if
+         *     one is available via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
+         *     for the class of {@code value} or using its {@code toString} method
+         *     if a header delegate is not available. If {@code value} is {@code null}
+         *     then all current headers of the same name will be removed.
+         * @return the updated header builder.
+         */
+        public RequestBuilder header(String name, Object value);
+
+        /**
+         * Replaces all existing headers with the newly supplied headers.
+         *
+         * @param headers new headers to be set, if {@code null} all existing
+         *     headers will be removed.
+         * @return the updated headers builder.
+         */
+        public RequestBuilder replaceAll(RequestHeaders headers);
+
+        /**
+         * Set the message entity language.
+         *
+         * @param language the language of the message entity, if {@code null} any
+         *     existing value for language will be removed.
+         * @return the updated headers builder.
+         */
+        public RequestBuilder language(String language);
+
+        /**
+         * Set the message entity language.
+         *
+         * @param language the language of the message entity, if {@code null} any
+         *     existing value for type will be removed.
+         * @return the updated headers builder.
+         */
+        public RequestBuilder language(Locale language);
+
+        /**
+         * Set the message entity media type.
+         *
+         * @param type the media type of the message entity. If {@code null}, any
+         *     existing value for type will be removed
+         * @return the updated header builder.
+         */
+        public RequestBuilder type(MediaType type);
+
+        /**
+         * Set the message entity media type.
+         *
+         * @param type the media type of the message entity. If {@code null}, any
+         *     existing value for type will be removed
+         * @return the updated header builder.
+         */
+        public RequestBuilder type(String type);
+
+        /**
+         * Set message entity representation metadata.
+         * <p/>
+         * Equivalent to setting the values of content type, content language,
+         * and content encoding separately using the values of the variant properties.
+         *
+         * @param variant metadata of the message entity, a {@code null} value is
+         *     equivalent to a variant with all {@code null} properties.
+         * @return the updated header builder.
+         *
+         * @see #encoding(java.lang.String)
+         * @see #language(java.util.Locale)
+         * @see #type(javax.ws.rs.core.MediaType)
+         */
+        public RequestBuilder variant(Variant variant);
+
+        // Request-specific headers
+        /**
+         * Add acceptable media types.
+         *
+         * @param types an array of the acceptable media types
+         * @return updated request headers builder.
+         */
+        public RequestBuilder accept(MediaType... types);
+
+        /**
+         * Add acceptable media types.
+         *
+         * @param types an array of the acceptable media types
+         * @return updated request headers builder.
+         */
+        public RequestBuilder accept(String... types);
+
+        /**
+         * Add acceptable languages.
+         *
+         * @param locales an array of the acceptable languages
+         * @return updated request headers builder.
+         */
+        public RequestBuilder acceptLanguage(Locale... locales);
+
+        /**
+         * Add acceptable languages.
+         *
+         * @param locales an array of the acceptable languages
+         * @return updated request headers builder.
+         */
+        public RequestBuilder acceptLanguage(String... locales);
+
+        /**
+         * Add a cookie to be set.
+         *
+         * @param cookie to be set.
+         * @return updated request headers builder.
+         */
+        public RequestBuilder cookie(Cookie cookie);
+
+        // Request URI, entity....
         public RequestBuilder redirect(String uri);
 
         public RequestBuilder redirect(URI uri);
@@ -154,7 +314,7 @@ public interface Request {
      *
      * @return request message headers. Returned headers may be empty but never
      *     {@code null}.
-     * @see RuntimeDelegate.HeaderDelegate
+     * @see javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate
      * @since 2.0
      */
     public RequestHeaders getHeaders();
