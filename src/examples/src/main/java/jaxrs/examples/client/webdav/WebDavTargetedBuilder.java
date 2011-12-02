@@ -48,7 +48,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.Headers;
+import javax.ws.rs.core.RequestHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.TypeLiteral;
 
@@ -133,7 +133,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public WebDavTargetedBuilder headers(Headers headers) {
+    public WebDavTargetedBuilder headers(RequestHeaders headers) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

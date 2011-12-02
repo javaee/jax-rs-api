@@ -42,11 +42,12 @@ package javax.ws.rs.client;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.Future;
+
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.Headers;
-import javax.ws.rs.core.TypeLiteral;
+import javax.ws.rs.core.RequestHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.TypeLiteral;
 
 /**
  * TODO javadoc.
@@ -65,7 +66,6 @@ public interface Invocation {
         // data used in the invocation processing chain are decoupled from the original
         // request data that were used to initiate the invocation to prevent accidental
         // issues caused by mutable nature of the request
-
         /**
          * Build a request invocation using an arbitrary request method name.
          *
@@ -195,7 +195,7 @@ public interface Invocation {
          *     headers will be removed.
          * @return the updated builder.
          */
-        public Builder headers(Headers headers);
+        public Builder headers(RequestHeaders headers);
 
         /**
          * Get access to the underlying {@link Configuration configuration}.
