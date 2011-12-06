@@ -393,7 +393,7 @@ A request is matched to the corresponding resource method or sub-resource method
 \begin{enumerate}
 \item \label{check_null} If $U$ is null or \lq/\rq, set
 $$M = \{\mbox{resource methods of } O \mbox{ (excluding sub resource methods)}\}$$
-and go to step \ref{find_method}
+and if $M \neq \{\}$ go to step \ref{find_method}
 
 \item Set $C=\mbox{class of } O, E=\{\}$
 
