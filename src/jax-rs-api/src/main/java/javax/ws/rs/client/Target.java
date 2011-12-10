@@ -63,8 +63,10 @@ public interface Target {
     public URI getUri();
 
     /**
-     * Get the URI builder initialized with the {@link URI} identifying the
-     * resource.
+     * Get the URI builder initialized with the {@link URI} of the current
+     * resource target. The returned URI builder is detached from the target,
+     * i.e. any updates in the URI builder MUST NOT have any effects on the
+     * URI of the originating target.
      *
      * @return the initialized URI builder.
      */
