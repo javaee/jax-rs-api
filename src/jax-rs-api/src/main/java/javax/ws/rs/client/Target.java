@@ -41,6 +41,7 @@ package javax.ws.rs.client;
 
 import java.net.URI;
 
+import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
@@ -123,7 +124,7 @@ public interface Target {
      * @exception IllegalArgumentException if the supplied map is empty.
      * @exception NullPointerException if the parameter map or any of the names or values is null.
      */
-    public Target pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException, NullPointerException;
+    public Target pathParams(Map<String, Object> parameters) throws IllegalArgumentException, NullPointerException;
 
     /**
      * Create a new {@code Target} instance by appending a matrix parameter to
