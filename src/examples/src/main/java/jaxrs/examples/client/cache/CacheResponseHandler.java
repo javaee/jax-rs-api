@@ -72,10 +72,10 @@ public class CacheResponseHandler implements ResponseFilter {
         if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
             URI uri = ctx.getRequest().getUri();
             Response.ResponseBuilder responseBuilder = ctx.getResponseBuilder();
-            byte[] body = readFromStream(1024, responseBuilder.getEntityInputStream());
+            byte[] body = readFromStream(1024, ctx.getResponse().getEntity(InputStream.class));
             CacheEntry entry = new CacheEntry(responseBuilder.getHeaders().asMap(), body);
             cache.put(uri.toString(), entry);
-            responseBuilder.entityInputStream(new ByteArrayInputStream(body));
+            responseBuilder.entity(new ByteArrayInputStream(body));
         }
         return FilterAction.NEXT;
     }
