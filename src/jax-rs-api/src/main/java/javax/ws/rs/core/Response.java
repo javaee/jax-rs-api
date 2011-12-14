@@ -164,7 +164,7 @@ public abstract class Response {
 
     /**
      * Check if there is an entity available in the response. The method returns
-     * {@code true if the entity is present, returns {@code false} otherwise.
+     * {@code true} if the entity is present, returns {@code false} otherwise.
      * <p/>
      * In case the response contained an entity, but it was already consumed as an
      * input stream via {@code getEntity(InputStream.class)}, the method returns
@@ -650,7 +650,7 @@ public abstract class Response {
          * runtime can be passed. It is the callers responsibility to wrap the
          * actual entity with {@link GenericEntity} if preservation of its generic
          * type is required. Note that the entity can be also set as an
-         * {@link java.io.InputStream input stream).
+         * {@link java.io.InputStream input stream}.
          * <p />
          * A specific entity media type can be set using one of the {@code type(...)}
          * methods.
