@@ -45,7 +45,7 @@ import java.util.Map;
 
 /**
  * An injectable interface that provides access to HTTP header information.
- * All methods throw {@link java.lang.IllegalStateException} if called outside the 
+ * All methods throw {@link java.lang.IllegalStateException} if called outside the
  * scope of a request (e.g. from a provider constructor).
  *
  * @author Paul Sandoz
@@ -58,47 +58,61 @@ public interface HttpHeaders {
     /**
      * Get the values of a HTTP request header. The returned List is read-only.
      * This is a shortcut for <code>getRequestHeaders().get(name)</code>.
-     * @param name the header name, case insensitive
+     *
+     * @param name the header name, case insensitive.
      * @return a read-only list of header values.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @throws java.lang.IllegalStateException if called outside the scope of a request.
      */
     public List<String> getRequestHeader(String name);
 
     /**
      * Get the values of HTTP request headers. The returned Map is case-insensitive
-     * wrt keys and is read-only.
+     * wrt. keys and is read-only.
+     *
      * @return a read-only map of header names and values.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * @throws java.lang.IllegalStateException if called outside the scope of a request.
      */
     public MultivaluedMap<String, String> getRequestHeaders();
 
     /**
      * Get a list of media types that are acceptable for the response.
+     * <p/>
+     * If no acceptable media types are specified, a read-only list containing
+     * a single {@link javax.ws.rs.core.MediaType#WILDCARD_TYPE wildcard media type}
+     * instance is returned.
+     *
      * @return a read-only list of requested response media types sorted according
-     * to their q-value, with highest preference first.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     *     to their q-value, with highest preference first.
+     * @throws java.lang.IllegalStateException if called outside the scope of a request.
      */
     public List<MediaType> getAcceptableMediaTypes();
 
     /**
      * Get a list of languages that are acceptable for the response.
+     * <p/>
+     * If no acceptable languages are specified, a read-only list containing
+     * a single wildcard {@link java.util.Locale} instance (with language field
+     * set to "{@code *}") is returned.
+     *
      * @return a read-only list of acceptable languages sorted according
-     * to their q-value, with highest preference first.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     *     to their q-value, with highest preference first.
+     * @throws java.lang.IllegalStateException if called outside the scope of a request.
      */
     public List<Locale> getAcceptableLanguages();
 
     /**
-     * Get the media type of the request entity
-     * @return the media type or null if there is no request entity.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * Get the media type of the request entity.
+     *
+     * @return the media type or {@code null} if there is no request entity.
+     * @throws java.lang.IllegalStateException if called outside the scope of a request.
      */
     public MediaType getMediaType();
 
     /**
-     * Get the language of the request entity
-     * @return the language of the entity or null if not specified
-     * @throws java.lang.IllegalStateException if called outside the scope of a request
+     * Get the language of the request entity.
+     *
+     * @return the language of the entity or {@code null} if not specified.
+     * @throws java.lang.IllegalStateException if called outside the scope of a request.
      */
     public Locale getLanguage();
 

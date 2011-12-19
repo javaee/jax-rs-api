@@ -41,9 +41,12 @@ package javax.ws.rs.core;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import java.util.Set;
 import javax.ws.rs.ext.RuntimeDelegate;
 
 /**
@@ -57,10 +60,11 @@ import javax.ws.rs.ext.RuntimeDelegate;
  *
  * @author Paul Sandoz
  * @author Marc Hadley
+ * @author Marek Potociar
  * @see Response.ResponseBuilder
  * @since 1.0
  */
-public abstract class Response implements ResponseHeaders {
+public abstract class Response {
 
     /**
      * Protected constructor, use one of the static methods to obtain a
@@ -100,6 +104,17 @@ public abstract class Response implements ResponseHeaders {
     public abstract Status getStatusEnum();
 
     /**
+     * Get the response message headers. This method never returns {@code null}.
+     *
+     * @return response message headers. Returned headers may be empty but never
+     *     {@code null}.
+     * @see javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate
+     *
+     * @since 2.0
+     */
+    public abstract ResponseHeaders getHeaders();
+
+    /**
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
      * <p/>
@@ -116,11 +131,20 @@ public abstract class Response implements ResponseHeaders {
      * Get the message entity, returns {@code null} if the message does not
      * contain an entity body.
      *
+     * Entity can also be retrieved as an {@link java.io.InputStream}, in which
+     * case it will be fully consumed once the reading from input stream is finished.
+     * All subsequent calls to {@code getEntity(...)} on the same response instance
+     * will result in a {@link MessageProcessingException} being thrown. It is up
+     * to the consumer of the entity input stream to ensure that consuming the stream
+     * is properly mitigated (e.g. by substituting the consumed response instance
+     * with a new one etc.).
+     *
      * @param <T> entity type.
      * @param type the type of entity.
      * @return the message entity or {@code null}.
      * @throws MessageProcessingException if the content of the message
      *     cannot be mapped to an entity of the requested type.
+     * @see #hasEntity()
      * @since 2.0
      */
     public abstract <T> T getEntity(Class<T> type) throws MessageProcessingException;
@@ -139,9 +163,16 @@ public abstract class Response implements ResponseHeaders {
     public abstract <T> T getEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
 
     /**
-     * Check if there is an entity available in the response.
+     * Check if there is an entity available in the response. The method returns
+     * {@code true} if the entity is present, returns {@code false} otherwise.
+     * <p/>
+     * In case the response contained an entity, but it was already consumed as an
+     * input stream via {@code getEntity(InputStream.class)}, the method returns
+     * {@code false}.
      *
-     * @return {@code true} if there is an entity present in the response.
+     * @return {@code true} if there is an entity present in the response, {@code false}
+     *     otherwise.
+     * @see #getEntity(java.lang.Class)
      * @since 2.0
      */
     public abstract boolean hasEntity();
@@ -167,14 +198,6 @@ public abstract class Response implements ResponseHeaders {
     public abstract void close() throws MessageProcessingException;
 
     /**
-     * Get the response input stream.
-     *
-     * @return the input stream of the response.
-     * @since 2.0
-     */
-    public abstract InputStream getEntityInputStream();
-
-    /**
      * Get metadata associated with the response as a map. The returned map
      * may be subsequently modified by the JAX-RS runtime. Values will be
      * serialized using a {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate}
@@ -182,8 +205,9 @@ public abstract class Response implements ResponseHeaders {
      * {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
      * for the class of the value or using the values {@code toString} method if a
      * header delegate is not available.
-     *
-     * TODO introduce getHeaders() instead.
+     * <p/>
+     * This method is effectively a shortcut for
+     * {@link #getHeaders()}.{@link ResponseHeaders#asMap() asMap()}.
      *
      * @return response metadata as a map
      */
@@ -459,7 +483,7 @@ public abstract class Response implements ResponseHeaders {
      * {@code Response}.</p>
      *
      */
-    public static abstract class ResponseBuilder implements ResponseHeaders, ResponseHeaders.Builder<ResponseBuilder> {
+    public static abstract class ResponseBuilder {
 
         /**
          * Protected constructor, use one of the static methods of
@@ -526,6 +550,17 @@ public abstract class Response implements ResponseHeaders {
         public abstract Status getStatusEnum();
 
         /**
+         * Get the response message headers. This method never returns {@code null}.
+         *
+         * @return response message headers. Returned headers may be empty but never
+         *     {@code null}.
+         * @see javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate
+         *
+         * @since 2.0
+         */
+        public abstract ResponseHeaders getHeaders();
+
+        /**
          * Get the message entity, returns {@code null} if the message does not
          * contain an entity body.
          * <p/>
@@ -574,14 +609,6 @@ public abstract class Response implements ResponseHeaders {
         public abstract boolean hasEntity();
 
         /**
-         * Get the response input stream.
-         *
-         * @return the input stream of the response.
-         * @since 2.0
-         */
-        public abstract InputStream getEntityInputStream();
-
-        /**
          * Set the status on the ResponseBuilder.
          *
          * @param status the response status
@@ -617,23 +644,278 @@ public abstract class Response implements ResponseHeaders {
         }
 
         /**
-         * Set the input stream of the response.
+         * Set the response entity in the builder.
+         * <p />
+         * Any Java type instance for a response entity, that is supported by the
+         * runtime can be passed. It is the callers responsibility to wrap the
+         * actual entity with {@link GenericEntity} if preservation of its generic
+         * type is required. Note that the entity can be also set as an
+         * {@link java.io.InputStream input stream}.
+         * <p />
+         * A specific entity media type can be set using one of the {@code type(...)}
+         * methods.
          *
-         * @param entity the input stream of the response.
-         * @return the updated ResponseBuilder
-         * @since 2.0
-         */
-        public abstract ResponseBuilder entityInputStream(InputStream entity);
-
-        /**
-         * Set the entity on the ResponseBuilder. It is the
-         * callers responsibility to wrap the actual entity with
-         * {@link GenericEntity} if preservation of its generic type is required.
+         * @param entity the request entity.
+         * @return updated response builder instance.
          *
-         * @param entity the response entity
-         * @return the updated ResponseBuilder
+         * @see #type(javax.ws.rs.core.MediaType)
+         * @see #type(java.lang.String)
          */
         public abstract ResponseBuilder entity(Object entity);
+
+        // Headers
+        // General headers
+        /**
+         * Set the list of allowed methods for the resource. Any duplicate method
+         * names will be truncated to a single entry.
+         *
+         * @param methods the methods to be listed as allowed for the resource,
+         *     if {@code null} any existing allowed method list will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder allow(String... methods);
+
+        /**
+         * Set the list of allowed methods for the resource.
+         *
+         * @param methods the methods to be listed as allowed for the resource,
+         *     if {@code null} any existing allowed method list will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder allow(Set<String> methods);
+
+        /**
+         * Set the cache control data of the message.
+         *
+         * @param cacheControl the cache control directives, if {@code null}
+         *     any existing cache control directives will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder cacheControl(CacheControl cacheControl);
+
+        /**
+         * Set the message entity content encoding.
+         *
+         * @param encoding the content encoding of the message entity,
+         *     if {@code null} any existing value for content encoding will be
+         *     removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder encoding(String encoding);
+
+        /**
+         * Add an arbitrary header.
+         *
+         * @param name the name of the header
+         * @param value the value of the header, the header will be serialized
+         *     using a {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if
+         *     one is available via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
+         *     for the class of {@code value} or using its {@code toString} method
+         *     if a header delegate is not available. If {@code value} is {@code null}
+         *     then all current headers of the same name will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder header(String name, Object value);
+
+        /**
+         * Replaces all existing headers with the newly supplied headers.
+         *
+         * @param headers new headers to be set, if {@code null} all existing
+         *     headers will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder replaceAll(ResponseHeaders headers);
+
+        /**
+         * Set the message entity language.
+         *
+         * @param language the language of the message entity, if {@code null} any
+         *     existing value for language will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder language(String language);
+
+        /**
+         * Set the message entity language.
+         *
+         * @param language the language of the message entity, if {@code null} any
+         *     existing value for type will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder language(Locale language);
+
+        /**
+         * Set the message entity media type.
+         *
+         * @param type the media type of the message entity. If {@code null}, any
+         *     existing value for type will be removed
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder type(MediaType type);
+
+        /**
+         * Set the message entity media type.
+         *
+         * @param type the media type of the message entity. If {@code null}, any
+         *     existing value for type will be removed
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder type(String type);
+
+        /**
+         * Set message entity representation metadata.
+         * <p/>
+         * Equivalent to setting the values of content type, content language,
+         * and content encoding separately using the values of the variant properties.
+         *
+         * @param variant metadata of the message entity, a {@code null} value is
+         *     equivalent to a variant with all {@code null} properties.
+         * @return the updated response builder.
+         * @since 2.0
+         *
+         * @see #encoding(java.lang.String)
+         * @see #language(java.util.Locale)
+         * @see #type(javax.ws.rs.core.MediaType)
+         */
+        public abstract ResponseBuilder variant(Variant variant);
+
+        // Response-specific headers
+        /**
+         * Set the content location.
+         *
+         * @param location the content location. Relative or absolute URIs
+         *     may be used for the value of content location. If {@code null} any
+         *     existing value for content location will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder contentLocation(URI location);
+
+        /**
+         * Add cookies to the response message.
+         *
+         * @param cookies new cookies that will accompany the response. A {@code null}
+         *     value will remove all cookies, including those added via the
+         *     {@link #header(java.lang.String, java.lang.Object)} method.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder cookie(NewCookie... cookies);
+
+        /**
+         * Set the response expiration date.
+         *
+         * @param expires the expiration date, if {@code null} removes any existing
+         *     expires value.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder expires(Date expires);
+
+        /**
+         * Set the response entity last modification date.
+         *
+         * @param lastModified the last modified date, if {@code null} any existing
+         *     last modified value will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder lastModified(Date lastModified);
+
+        /**
+         * Set the location.
+         *
+         * @param location the location. If a relative URI is supplied it will be
+         *     converted into an absolute URI by resolving it relative to the
+         *     base URI of the application (see {@link UriInfo#getBaseUri}).
+         *     If {@code null} any existing value for location will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder location(URI location);
+
+        /**
+         * Set a response entity tag.
+         *
+         * @param tag the entity tag, if {@code null} any existing entity tag
+         *     value will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder tag(EntityTag tag);
+
+        /**
+         * Set a strong response entity tag.
+         * <p/>
+         * This is a shortcut for <code>tag(new EntityTag(<i>value</i>))</code>.
+         *
+         * @param tag the string content of a strong entity tag. The JAX-RS
+         *     runtime will quote the supplied value when creating the header.
+         *     If {@code null} any existing entity tag value will be removed.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder tag(String tag);
+
+        /**
+         * Add a Vary header that lists the available variants.
+         *
+         * @param variants a list of available representation variants, a {@code null}
+         *     value will remove an existing value for Vary header.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder variants(Variant... variants);
+
+        /**
+         * Add a Vary header that lists the available variants.
+         *
+         * @param variants a list of available representation variants, a {@code null}
+         *     value will remove an existing value for Vary header.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder variants(List<Variant> variants);
+
+        /**
+         * Add one or more link headers.
+         *
+         * @param links links to be added to the message as headers, a {@code null}
+         *     value will remove any existing Link headers.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder links(Link... links);
+
+        /**
+         * Add a link header.
+         *
+         * @param uri TODO.
+         * @param rel TODO.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder link(URI uri, String rel);
+
+        /**
+         * Add a link header.
+         *
+         * @param uri TODO.
+         * @param rel TODO.
+         * @return the updated response builder.
+         * @since 2.0
+         */
+        public abstract ResponseBuilder link(String uri, String rel);
     }
 
     /**

@@ -40,6 +40,7 @@
 package jaxrs.examples.client.webdav;
 
 import java.net.URI;
+import java.util.Map;
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.MediaType;
@@ -79,7 +80,7 @@ public class WebDavTarget implements Target {
     }
 
     @Override
-    public WebDavTarget pathParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException {
+    public WebDavTarget pathParams(Map<String, Object> parameters) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

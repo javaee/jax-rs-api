@@ -241,10 +241,12 @@ public interface Configuration {
 
     /**
      * Set the new configuration property, if already set, the existing value of
-     * the property will be updated.
+     * the property will be updated. Setting a {@code null} value into a property
+     * effectively removes the property from the property bag.
      *
      * @param name property name.
-     * @param value (new) property value.
+     * @param value (new) property value. {@code null} value removes the property
+     *     with the given name.
      * @return the updated configuration.
      * @see Configuration
      */
