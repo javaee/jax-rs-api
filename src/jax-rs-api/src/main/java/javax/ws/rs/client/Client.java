@@ -140,7 +140,36 @@ public interface Client {
      * @throws NullPointerException in case the supplied argument is null.
      */
     Target target(Link link) throws NullPointerException;
-    
-    Invocation invocation(Link link, Object... values) 
-            throws NullPointerException, IllegalArgumentException;
+
+    /**
+     * <p>Build an invocation from a link. The method and URI are obtained
+     * from the link. If the operation requires an entity, use the overloaded
+     * form of this method.</p>
+     *
+     * <p>This method will throw an {@link java.lang.IllegalArgumentException} if there
+     * is not enough information to build and invocation (e.g. no HTTP method or entity
+     * when required).</p>
+     *
+     * @param link link to build invocation from.
+     * @return newly created invocation.
+     * @throws NullPointerException in case argument is null.
+     * @throws IllegalArgumentException in case link is incomplete to build invocation.
+     */
+    Invocation invocation(Link link) throws NullPointerException, IllegalArgumentException;
+
+    /**
+     * <p>Build an invocation from a link. The method and URI are obtained
+     * from the link. If the operation does not require an entity, use the overloaded
+     * form of this method.</p>
+     *
+     * <p>This method will throw an {@link java.lang.IllegalArgumentException} if there
+     * is not enough information to build and invocation (e.g. no HTTP method).</p>
+     *
+     * @param link link to build invocation from.
+     * @return newly created invocation.
+     * @throws NullPointerException in case argument is null.
+     * @throws IllegalArgumentException in case link is incomplete to build invocation.
+     */
+    Invocation invocation(Link link, Entity<?> entity) throws NullPointerException, IllegalArgumentException;
+
 }

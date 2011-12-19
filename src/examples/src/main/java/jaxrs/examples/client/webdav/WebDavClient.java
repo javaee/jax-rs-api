@@ -42,6 +42,7 @@ package jaxrs.examples.client.webdav;
 import java.net.URI;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Configuration;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
@@ -83,7 +84,13 @@ public class WebDavClient implements Client {
     }
 
     @Override
-    public Invocation invocation(Link link, Object... values) throws NullPointerException, IllegalArgumentException {
+    public Invocation invocation(Link link) throws NullPointerException, IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public Invocation invocation(Link link, Entity<?> entity) throws NullPointerException, IllegalArgumentException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

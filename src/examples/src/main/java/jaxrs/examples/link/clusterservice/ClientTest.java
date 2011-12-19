@@ -2,6 +2,7 @@ package jaxrs.examples.link.clusterservice;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.ResponseHeaders;
 
@@ -28,7 +29,10 @@ public class ClientTest {
         Cluster c = rc.getEntity(Cluster.class);
         for (Machine m : c.getMachines()) {
             // Machine name is need for URI template in link
-            Response rm = client.invocation(rh.getLink("item"), m.getName()).invoke();
+            Link l = rh.getLinkBuilder("item").build(m.getName());
+
+            // Create invocation from link and call invoke()
+            Response rm = client.invocation(l).invoke();
             
             // Start machine if not started already
             if (rm.getHeaders().hasLink("starter")) {

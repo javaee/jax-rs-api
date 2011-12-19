@@ -46,21 +46,36 @@ import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 /**
- * Link class.
+ * Class representing hypermedia links. A hypermedia link may include additional
+ * parameters beyond its underlying URI. Parameters such as "rel" or "method"
+ * provide additional meta-data and can be used to easily create instances of
+ * {@link javax.ws.rs.client.Invocation} in order to follow links.
  *
  * @author Marek Potociar
  * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
- *
+ * @see javax.ws.rs.client.Client#invocation
  * @since 2.0
  */
 public final class Link {
 
+    /**
+     * This link's underlying URI.
+     */
     private URI uri;
 
+    /**
+     * The URI context for this link.
+     */
     private URI context;
 
+    /**
+     * A map for all the link's parameters such as "rel", "type", "method", etc.
+     */
     private MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
 
+    /**
+     * Underlying implementation delegate.
+     */
     private static final HeaderDelegate<Link> delegate = 
             RuntimeDelegate.getInstance().createHeaderDelegate(Link.class);
     
@@ -74,7 +89,7 @@ public final class Link {
     }
 
     /**
-     * Convenience method that returns a {@link UriBuilder}
+     * Convenience method that returns a {@link javax.ws.rs.core.UriBuilder}
      * initialized with this link's underlying URI.
      *
      * @return UriBuilder initialized using underlying URI
@@ -218,48 +233,109 @@ public final class Link {
         b.uri(uri);
         return b;
     }
-    
+
     public static LinkBuilder fromResourceMethod(Class<?> resource, String method) 
             throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported");
     }
 
+    /**
+     * Builder class for hypermedia links.
+     *
+     * @author Marek Potociar
+     * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
+     * @see Link
+     * @since 2.0
+     */
     public static class LinkBuilder {
 
+        /**
+         * Link being built by the builder.
+         */
         private Link link = new Link();
-        
+
+        /**
+         * Underlying builder for link's URI.
+         */
         private UriBuilder uriBuilder;
-        
+
+        /**
+         * Default "rel" value for this link.
+         */
         private String defaultRel;
 
+        /**
+         * No default "rel" constructor.
+         */
         protected LinkBuilder() {
             this.defaultRel = null;
         }
 
+        /**
+         * Constructor from default "rel" value.
+         * @param defaultRel default value for "rel"
+         */
         protected LinkBuilder(String defaultRel) {
             this.defaultRel = defaultRel;
         }
-        
-        public LinkBuilder uri(URI uri) throws IllegalArgumentException {
+
+        /**
+         * Set underlying URI for the link being constructed.
+         *
+         * @param uri underlying URI for link
+         * @return the updated builder
+         * @since 2.0
+         */
+        public LinkBuilder uri(URI uri) {
             uriBuilder = UriBuilder.fromUri(uri);
             return this;
         }
 
+        /**
+         * Set underlying string URI for the link being constructed.
+         *
+         * @param uri underlying URI for link
+         * @return the updated builder
+         * @throws IllegalArgumentException if string representation of URI is invalid
+         * @since 2.0
+         */
         public LinkBuilder uri(String uri) throws IllegalArgumentException {
             uriBuilder = UriBuilder.fromUri(uri);
             return this;
         }
         
-        public LinkBuilder uriBuilder(UriBuilder uriBuilder) throws IllegalArgumentException {
+        /**
+         * Set underlying URI using a {@link javax.ws.rs.core.UriBuilder}.
+         *
+         * @param uriBuilder underlying {@link javax.ws.rs.core.UriBuilder} for link
+         * @return the updated builder
+         * @since 2.0
+         */
+        public LinkBuilder uriBuilder(UriBuilder uriBuilder) {
             this.uriBuilder = uriBuilder;
             return this;
         }
 
-        public LinkBuilder context(URI context) throws IllegalArgumentException {
+        /**
+         * Set URI context for this link.
+         *
+         * @param context underlying context for link
+         * @return the updated builder
+         * @since 2.0
+         */
+        public LinkBuilder context(URI context) {
             link.context = context;
             return this;
         }
 
+        /**
+         * Set URI context for this link as a string.
+         *
+         * @param context underlying context for link
+         * @return the updated builder
+         * @throws IllegalArgumentException if string representation of URI is invalid
+         * @since 2.0
+         */
         public LinkBuilder context(String context) throws IllegalArgumentException {
             try {
                 link.context = new URI(context);
@@ -269,33 +345,73 @@ public final class Link {
             return this;
         }
 
-        public LinkBuilder rel(String name) throws IllegalArgumentException {
+        /**
+         * Convenience method to set a link relation.
+         *
+         * @param name relation name
+         * @return the updated builder
+         */
+        public LinkBuilder rel(String name) {
             link.map.add("rel", name);
             return this;
         }
 
-        public LinkBuilder title(String name) throws IllegalArgumentException {
-            link.map.add("title", name);
+        /**
+         * Convenience method to set a title on this link.
+         *
+         * @param title title parameter of this link
+         * @return the updated builder
+         */
+        public LinkBuilder title(String title) {
+            link.map.add("title", title);
             return this;
 
         }
 
-        public LinkBuilder type(String name) throws IllegalArgumentException {
-            link.map.add("type", name);
+        /**
+         * Convenience method to set a type on this link as a string.
+         * 
+         * @param type link type as string
+         * @return the updated builder
+         */
+        public LinkBuilder type(String type) {
+            link.map.add("type", type);
             return this;
 
         }
 
-        public LinkBuilder type(MediaType type) throws IllegalArgumentException {
+        /**
+         * Convenience method to set a type on this link.
+         *
+         * @param type link type
+         * @return the updated builder
+         */
+        public LinkBuilder type(MediaType type) {
             return type(type.toString());
 
         }
 
+        /**
+         * Set an arbitrary parameter on this link.
+         *
+         * @param name the name of the parameter
+         * @param value the value set for the parameter
+         * @return the updated builder
+         * @throws IllegalArgumentException if either the name or value are null
+         */
         public LinkBuilder param(String name, String value) throws IllegalArgumentException {
+            if (name == null || value == null) {
+                throw new IllegalArgumentException("Link parameter name or value is null");
+            }
             link.map.add(name, value);
             return this;
         }
 
+        /**
+         * Finish building this link and return the instance.
+         *
+         * @return newly built link.
+         */
         public Link build() {
             if (defaultRel != null && !link.map.containsKey("rel")) {
                 link.map.add("rel", defaultRel);
@@ -303,14 +419,20 @@ public final class Link {
             link.uri = uriBuilder.build();
             return link;
         }
-        
-        public Link build(Object... values) throws IllegalArgumentException, UriBuilderException {
+
+        /**
+         * Finish building this link using the supplied values as URI parameters.
+         *
+         * @param values parameters used to build underlying URI
+         * @return the updated builder
+         * @throws UriBuilderException
+         */
+        public Link build(Object... values) throws UriBuilderException {
             if (defaultRel != null && !link.map.containsKey("rel")) {
                 link.map.add("rel", defaultRel);
             }
             link.uri = uriBuilder.build(values);
             return link;
         }
-        
     }
 }
