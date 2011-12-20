@@ -48,7 +48,7 @@ import javax.ws.rs.core.UriBuilder;
 /**
  * LinkExamples class.
  *
- * @author Santiago Pericas-Geertsen
+ * @author Santiago Pericas-Geertsen (santiago.pericasgeertsen at oracle.com)
  */
 public class LinkExamples {
 
@@ -69,7 +69,8 @@ public class LinkExamples {
      * @return response.
      */
     public Response example2() {
-        Link link = Link.fromUri("http://foo.bar/employee/john").rel("manager").rel("friend").title("employee").type("application/xml").build();
+        Link link = Link.fromUri("http://foo.bar/employee/john").rel("manager").rel("friend")
+                .title("employee").type("application/xml").build();
         System.out.println("Link = " + link);
         return Response.ok().links(link).build();
     }

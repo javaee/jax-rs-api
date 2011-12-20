@@ -900,8 +900,8 @@ public abstract class Response {
         /**
          * Add a link header.
          *
-         * @param uri TODO.
-         * @param rel TODO.
+         * @param uri underlying URI for link header.
+         * @param rel value of "rel" parameter.
          * @return the updated response builder.
          * @since 2.0
          */
@@ -910,8 +910,8 @@ public abstract class Response {
         /**
          * Add a link header.
          *
-         * @param uri TODO.
-         * @param rel TODO.
+         * @param uri underlying URI for link header.
+         * @param rel value of "rel" parameter.
          * @return the updated response builder.
          * @since 2.0
          */

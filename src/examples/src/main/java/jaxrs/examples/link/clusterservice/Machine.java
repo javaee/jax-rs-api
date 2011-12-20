@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
+ * 
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- *
+ * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- *
+ * 
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- *
+ * 
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- *
+ * 
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- *
+ * 
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -37,60 +37,78 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.client.webdav;
 
-import java.net.URI;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Configuration;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.Link;
-import javax.ws.rs.core.UriBuilder;
+package jaxrs.examples.link.clusterservice;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Machine class.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Santiago.Pericas-Geertsen@oracle.com
  */
-public class WebDavClient implements Client {
-
-    @Override
-    public void close() {
-        throw new UnsupportedOperationException("Not supported yet.");
+@XmlRootElement
+public class Machine {
+    
+    public enum Status { STOPPED, STARTED, SUSPENDED };
+    
+    /**
+     * Machine's unique name.
+     */
+    private String name;
+    
+    /**
+     * Number of CPUs.
+     */
+    private int nOfCpus;
+    
+    /**
+     * Load, single number for all CPUs.
+     */
+    private double load;
+    
+    /**
+     * Machine's internal status.
+     */
+    private Status status = Status.STOPPED;
+    
+    public Machine() {
+    }
+    
+    public Machine(String name) {
+        this.name = name;
     }
 
-    @Override
-    public WebDavTarget target(String uri) throws IllegalArgumentException, NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public double getLoad() {
+        return load;
     }
 
-    @Override
-    public WebDavTarget target(URI uri) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setLoad(double load) {
+        this.load = load;
     }
 
-    @Override
-    public WebDavTarget target(UriBuilder uriBuilder) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public int getnOfCpus() {
+        return nOfCpus;
     }
 
-    @Override
-    public WebDavTarget target(Link link) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setnOfCpus(int nOfCpus) {
+        this.nOfCpus = nOfCpus;
     }
 
-    @Override
-    public Configuration configuration() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public Invocation invocation(Link link) throws NullPointerException, IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @Override
-    public Invocation invocation(Link link, Entity<?> entity) throws NullPointerException, IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Status getStatus() {
+        return status;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+    
 }

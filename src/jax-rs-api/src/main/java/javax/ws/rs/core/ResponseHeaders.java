@@ -236,6 +236,15 @@ public interface ResponseHeaders {
     public Set<Link> getLinks();
 
     /**
+     * Check if link for relation exists.
+     *
+     * @param relation link relation.
+     * @return outcome of boolean test.
+     * @since 2.0
+     */
+    boolean hasLink(String relation);
+
+    /**
      * Get the link for the relation.
      *
      * @param relation link relation.
@@ -243,4 +252,13 @@ public interface ResponseHeaders {
      * @since 2.0
      */
     public Link getLink(String relation);
+
+    /**
+     * Convenience method that returns a {@link Link.LinkBuilder} for the relation.
+     *
+     * @param relation link relation.
+     * @return the link builder for the relation, otherwise {@code null} if not present.
+     * @since 2.0
+     */
+    public Link.LinkBuilder getLinkBuilder(String relation);
 }

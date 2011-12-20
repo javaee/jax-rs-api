@@ -37,60 +37,62 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.client.webdav;
+package jaxrs.examples.link;
 
-import java.net.URI;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Configuration;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Link;
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.Link.LinkAdapter;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
+ * ResourceExample class.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Santiago Pericas-Geertsen (santiago.pericasgeertsen at oracle.com)
  */
-public class WebDavClient implements Client {
+@Path("/myresource")
+public class ResourceExample {
 
-    @Override
-    public void close() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @GET
+    @Produces({"application/xml", "application/json"})
+    public MyModel getIt() {
+        Link self = Link.fromResourceMethod(getClass(), "getIt", "self").build();
+        MyModel m = new MyModel();
+        m.setLink(self);
+        m.setAtomLink(self);
+        return m;
     }
 
-    @Override
-    public WebDavTarget target(String uri) throws IllegalArgumentException, NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    @XmlRootElement
+    public static class MyModel {
 
-    @Override
-    public WebDavTarget target(URI uri) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        private Link link;
+        private Link atomLink;
 
-    @Override
-    public WebDavTarget target(UriBuilder uriBuilder) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        public MyModel() {
+        }
 
-    @Override
-    public WebDavTarget target(Link link) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        @XmlElement(name = "link")
+        @XmlJavaTypeAdapter(LinkAdapter.class)
+        public Link getLink() {
+            return link;
+        }
 
-    @Override
-    public Configuration configuration() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        public void setLink(Link link) {
+            this.link = link;
+        }
 
-    @Override
-    public Invocation invocation(Link link) throws NullPointerException, IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        @XmlElement(namespace = "http://www.w3.org/2005/Atom", name = "link")
+        @XmlJavaTypeAdapter(LinkAdapter.class)
+        public Link getAtomLink() {
+            return atomLink;
+        }
 
-    @Override
-    public Invocation invocation(Link link, Entity<?> entity) throws NullPointerException, IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        public void setAtomLink(Link link) {
+            this.atomLink = link;
+        }
     }
-
 }

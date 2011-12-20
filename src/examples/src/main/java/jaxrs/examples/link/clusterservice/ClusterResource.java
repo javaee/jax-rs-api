@@ -1,8 +1,8 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
+ * 
  * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
- *
+ * 
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
@@ -11,20 +11,20 @@
  * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
- *
+ * 
  * When distributing the software, include this License Header Notice in each
  * file and include the License file at packager/legal/LICENSE.txt.
- *
+ * 
  * GPL Classpath Exception:
  * Oracle designates this particular file as subject to the "Classpath"
  * exception as provided by Oracle in the GPL Version 2 section of the License
  * file that accompanied this code.
- *
+ * 
  * Modifications:
  * If applicable, add the following below the License Header, with the fields
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyright [year] [name of copyright owner]"
- *
+ * 
  * Contributor(s):
  * If you wish your version of this file to be governed by only the CDDL or
  * only the GPL Version 2, indicate your decision by adding "[Contributor]
@@ -37,60 +37,58 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.client.webdav;
 
-import java.net.URI;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Configuration;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
+package jaxrs.examples.link.clusterservice;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Link;
-import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.Response;
+import jaxrs.examples.link.clusterservice.Cluster.Status;
 
 /**
+ * ClusterResource class.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Santiago.Pericas-Geertsen@oracle.com
  */
-public class WebDavClient implements Client {
+@Path("/cluster")
+public class ClusterResource {
 
-    @Override
-    public void close() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    private Cluster cluster = Model.getCluster();
+    
+    @GET
+    @Produces({"application/json"})
+    public Response self() {
+        return Response.ok(cluster).links(getTransitionalLinks()).build();
     }
-
-    @Override
-    public WebDavTarget target(String uri) throws IllegalArgumentException, NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    @POST
+    @Path("onliner")
+    @Produces({"application/json"})
+    public Response onliner() {
+        cluster.setStatus(Status.ONLINE);
+        return Response.ok(cluster).links(getTransitionalLinks()).build();
     }
-
-    @Override
-    public WebDavTarget target(URI uri) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    @POST
+    @Path("offliner")
+    @Produces({"application/json"})
+    public Response offliner() {
+        cluster.setStatus(Status.OFFLINE);
+        return Response.ok(cluster).links(getTransitionalLinks()).build();
     }
-
-    @Override
-    public WebDavTarget target(UriBuilder uriBuilder) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    private Link[] getTransitionalLinks() {
+        Link self = Link.fromResourceMethod(getClass(), "self").build();
+        Link item = Link.fromResourceMethod(MachineResource.class, "self").rel("item").build();
+        Link onliner = Link.fromResourceMethod(getClass(), "onliner").build();
+        Link offliner = Link.fromResourceMethod(getClass(), "offliner").build();
+        
+        return cluster.getStatus() == Status.ONLINE ? 
+                new Link[] { self, item, offliner } : 
+                new Link[] { self, item, onliner };
     }
-
-    @Override
-    public WebDavTarget target(Link link) throws NullPointerException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Configuration configuration() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Invocation invocation(Link link) throws NullPointerException, IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Invocation invocation(Link link, Entity<?> entity) throws NullPointerException, IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    
 }
