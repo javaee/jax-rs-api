@@ -39,11 +39,23 @@
  */
 package javax.ws.rs.core;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.Produces;
 import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
+import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.namespace.QName;
 
 /**
  * Class representing hypermedia links. A hypermedia link may include additional
@@ -57,6 +69,13 @@ import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
  * @since 2.0
  */
 public final class Link {
+
+    public static final String CONSUMES = "consumes";
+    public static final String METHOD   = "method";
+    public static final String PRODUCES = "produces";
+    public static final String TITLE    = "title";
+    public static final String REL      = "rel";
+    public static final String TYPE     = "type";
 
     /**
      * This link's underlying URI.
@@ -82,7 +101,7 @@ public final class Link {
     /**
      * Returns the underlying URI associated with this link.
      *
-     * @return Underlying URI
+     * @return underlying URI
      */
     public URI getUri() {
         return uri;
@@ -101,7 +120,7 @@ public final class Link {
     /**
      * Returns context URI for this link, if set.
      *
-     * @return Context URI or null if not set.
+     * @return context URI or null if not set.
      */
     public URI getContextUri() {
         return context;
@@ -112,30 +131,62 @@ public final class Link {
      * on this link via the "rel" parameter. If no relation types are
      * defined, this method returns an empty list.
      *
-     * @return List of relation types
+     * @return list of relation types
      */
-    public List<String> getRelationTypes() {
-        return map.get("rel");
+    public List<String> getRel() {
+        return map.get(REL);
     }
 
     /**
-     * Returns the value associated with the link param "title", or
-     * null if this param is not specified in this link.
+     * Returns the value associated with the link "title" param, or
+     * null if this param is not specified.
      *
-     * @return Value of "title" parameter
+     * @return value of "title" parameter or null
      */
     public String getTitle() {
-        return map.getFirst("title");
+        return map.getFirst(TITLE);
     }
 
     /**
-     * Returns the value associated with the link parm "type", or
-     * null if this param is not specified in this link.
+     * Returns the value associated with the link "type" param, or
+     * null if this param is not specified.
      *
-     * @return Value of "type" parameter
+     * @return value of "type" parameter or null
      */
-    public MediaType getMediaType() {
-        return MediaType.valueOf(map.getFirst("type"));
+    public String getType() {
+        return map.getFirst(TYPE);
+    }
+
+    /**
+     * Returns the value associated with the link "method" param, or
+     * null if this param is not specified.
+     *
+     * @return value of "method" parameter or null
+     */
+    public String getHttpMethod() {
+        return map.getFirst(METHOD);
+    }
+
+    /**
+     * Returns a list containing all the types defined on this link
+     * via the "produces" parameter. If no produces types are
+     * defined, this method returns an empty list.
+     * 
+     * @return list of produces types
+     */
+    public List<String> getProduces() {
+        return map.get(PRODUCES);
+    }
+
+    /**
+     * Returns a list containing all the types defined on this link
+     * via the "consumes" parameter. If no consumes types are
+     * defined, this method returns an empty list.
+     *
+     * @return list of consumes types
+     */
+    public List<String> getConsumes() {
+        return map.get(CONSUMES);
     }
 
     /**
@@ -145,7 +196,7 @@ public final class Link {
      *
      * @return Immutable map of link parameters
      */
-    public MultivaluedMap<String, String> getLinkParams() {
+    public MultivaluedMap<String, String> getParams() {
         return new MultivaluedHashMap<String, String>(map);
     }
 
@@ -234,9 +285,70 @@ public final class Link {
         return b;
     }
 
-    public static LinkBuilder fromResourceMethod(Class<?> resource, String method) 
-            throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported");
+    /**
+     * Generate a link by introspecting a resource method. Finds the first method
+     * of a given name and generates a link that includes parameters "method",
+     * "produces" (if available) and "consumes" (if available). The value of "rel"
+     * defaults to that of the method name.
+     *
+     * @param resource resource class
+     * @param method name of resource method
+     * @return link builder to further configure link
+     * @throws IllegalArgumentException if any argument is null or no method is found
+     */
+    public static LinkBuilder fromResourceMethod(Class<?> resource, String method)
+            throws IllegalArgumentException
+    {
+        return fromResourceMethod(resource, method, method);
+    }
+
+    /**
+     * Generate a link by introspecting a resource method. Finds the first method
+     * of a given name and generates a link that includes parameters "method",
+     * "produces" (if available) and "consumes" (if available). The value of "rel"
+     * must be specified as an argument.
+     * 
+     * @param resource resource class
+     * @param method name of resource method
+     * @param rel value of "rel" parameter
+     * @return link builder to further configure link
+     * @throws IllegalArgumentException if any argument is null or no method is found
+     */
+    public static LinkBuilder fromResourceMethod(Class<?> resource, String method, String rel)
+            throws IllegalArgumentException 
+    {
+        if (resource == null || method == null || rel == null) {
+            throw new IllegalArgumentException("All parameters must be non-null");
+        }
+
+        LinkBuilder lb = Link.fromUri(UriBuilder.fromResource(resource).build());
+        lb.rel(rel);
+        Method[] methods = resource.getMethods();
+        for (Method m : methods) {
+            if (m.getName().equals(method)) {
+                for (Annotation a : m.getAnnotations()) {
+                    Class<? extends Annotation> at = a.annotationType();
+                    HttpMethod hm = at.getAnnotation(HttpMethod.class);
+                    if (hm != null) {
+                        lb.httpMethod(at.getSimpleName());
+                    }
+                    if (at == Produces.class) {
+                        for (String p : ((Produces) a).value()) {
+                            lb.produces(p);
+                        }
+                    }
+                    Consumes cs = m.getAnnotation(Consumes.class);
+                    if (at == Consumes.class) {
+                        for (String p : ((Produces) a).value()) {
+                            lb.consumes(p);
+                        }
+                    }
+                }
+                return lb;
+            }
+        }
+        throw new IllegalArgumentException("Method '" + method + "' not found in class '"
+                + resource.getName() + "'");
     }
 
     /**
@@ -248,7 +360,7 @@ public final class Link {
      * @since 2.0
      */
     public static class LinkBuilder {
-
+        
         /**
          * Link being built by the builder.
          */
@@ -346,53 +458,83 @@ public final class Link {
         }
 
         /**
-         * Convenience method to set a link relation.
+         * Convenience method to set a link relation. More than one rel value can
+         * be specified using this method.
          *
          * @param name relation name
          * @return the updated builder
          */
         public LinkBuilder rel(String name) {
-            link.map.add("rel", name);
+            link.map.add(REL, name);
             return this;
         }
 
         /**
-         * Convenience method to set a title on this link.
+         * Convenience method to set a title on this link. If called more than once,
+         * the previous value of title is overwritten.
          *
          * @param title title parameter of this link
          * @return the updated builder
          */
         public LinkBuilder title(String title) {
-            link.map.add("title", title);
+            link.map.putSingle(TITLE, title);
             return this;
 
         }
 
         /**
-         * Convenience method to set a type on this link as a string.
+         * Convenience method to set a type on this link. More than one
+         * type value can be specified using this method.
          * 
          * @param type link type as string
          * @return the updated builder
          */
         public LinkBuilder type(String type) {
-            link.map.add("type", type);
+            link.map.add(TYPE, type);
             return this;
-
         }
 
         /**
-         * Convenience method to set a type on this link.
+         * Convenience method to set a type on this link. If called more than once,
+         * the previous value of method is overwritten.
          *
-         * @param type link type
+         * @param method HTTP method name
          * @return the updated builder
          */
-        public LinkBuilder type(MediaType type) {
-            return type(type.toString());
-
+        public LinkBuilder httpMethod(String method) {
+            link.map.putSingle(METHOD, method);
+            return this;
         }
 
         /**
-         * Set an arbitrary parameter on this link.
+         * Convenience method to set a produces type on this link. More than one
+         * type value can be specified using this method.
+         *
+         * @param type link type as string
+         * @return the updated builder
+         */
+        public LinkBuilder produces(String type) {
+            link.map.add(PRODUCES, type);
+            return this;
+        }
+
+        /**
+         * Convenience method to set a consumes type on this link. More than one
+         * type value can be specified using this method.
+         *
+         * @param type link type as string
+         * @return the updated builder
+         */
+        public LinkBuilder consumes(String type) {
+            link.map.add(CONSUMES, type);
+            return this;
+        }
+
+        /**
+         * Set an arbitrary parameter on this link. This method supports adding
+         * more than one parameter value for each parameter. It is recommended
+         * to use the more specific methods {@link #httpMethod} or {@link #title}
+         * when setting these single-valued parameters.
          *
          * @param name the name of the parameter
          * @param value the value set for the parameter
@@ -413,8 +555,8 @@ public final class Link {
          * @return newly built link.
          */
         public Link build() {
-            if (defaultRel != null && !link.map.containsKey("rel")) {
-                link.map.add("rel", defaultRel);
+            if (defaultRel != null && !link.map.containsKey(REL)) {
+                link.map.add(REL, defaultRel);
             }
             link.uri = uriBuilder.build();
             return link;
@@ -428,11 +570,105 @@ public final class Link {
          * @throws UriBuilderException
          */
         public Link build(Object... values) throws UriBuilderException {
-            if (defaultRel != null && !link.map.containsKey("rel")) {
-                link.map.add("rel", defaultRel);
+            if (defaultRel != null && !link.map.containsKey(REL)) {
+                link.map.add(REL, defaultRel);
             }
             link.uri = uriBuilder.build(values);
             return link;
+        }
+    }
+
+    /**
+     * Value type for {@link javax.ws.rs.core.Link} that can be marshalled and
+     * unmarshalled by JAXB.
+     *
+     * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
+     * @see javax.ws.rs.core.Link.LinkAdapter
+     * @since 2.0
+     */
+    public static class JaxbLink {
+
+        private URI uri;
+        private Map<QName, Object> params;
+
+        public JaxbLink() {
+        }
+
+        public JaxbLink(URI uri) {
+            this.uri = uri;
+        }
+
+        public JaxbLink(URI uri, Map<QName, Object> params) {
+            this.uri = uri;
+            this.params = params;
+        }
+
+        @XmlAttribute(name = "href")
+        public URI getUri() {
+            return uri;
+        }
+
+        @XmlAnyAttribute
+        public Map<QName, Object> getParams() {
+            if (params == null) {
+                params = new HashMap<QName, Object>();
+            }
+            return params;
+        }
+    }
+
+    /**
+     * <p>An implementation of JAXB {@link javax.xml.bind.annotation.adapters.XmlAdapter}
+     * that maps the JAX-RS {@link javax.ws.rs.core.Link} type to a value that can be
+     * marshalled and unmarshalled by JAXB.</p>
+     *
+     * <p>All link parameters are treated as multi valued except for "title" and "method".</p>
+     *
+     * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
+     * @see javax.ws.rs.core.Link.JaxbLink
+     * @since 2.0
+     */
+    public static class LinkAdapter extends XmlAdapter<JaxbLink, Link> {
+
+        @Override
+        public Link unmarshal(JaxbLink v) throws Exception {
+            Link.LinkBuilder lb = Link.fromUri(v.getUri());
+            for (Entry<QName, Object> e : v.getParams().entrySet()) {
+                final String name = e.getKey().getLocalPart();
+                if (TITLE.equals(name) || METHOD.equals(name)) {
+                    lb.param(name, e.getValue().toString());
+                } else {
+                    String[] values = e.getValue().toString().split(" ");
+                    for (String value : values) {
+                        lb.param(name, value);
+                    }
+                }
+            }
+            return lb.build();
+        }
+
+        @Override
+        public JaxbLink marshal(Link v) throws Exception {
+            JaxbLink jl = new JaxbLink(v.getUri());
+            for (Entry<String, List<String>> e : v.getParams().entrySet()) {
+                final String name = e.getKey();
+                if (TITLE.equals(name) || METHOD.equals(name)) {
+                    jl.getParams().put(new QName("", name), e.getValue().get(0));
+                } else {
+                    boolean first = true;
+                    StringBuilder sb = new StringBuilder();
+                    for (String value : e.getValue()) {
+                        if (first) {
+                            first = false;
+                        } else {
+                            sb.append(" ");
+                        }
+                        sb.append(value);
+                    }
+                    jl.getParams().put(new QName("", e.getKey()), sb.toString());
+                }
+            }
+            return jl;
         }
     }
 }
