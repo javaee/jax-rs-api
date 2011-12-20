@@ -43,6 +43,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,8 @@ public final class Link {
      * @return list of relation types
      */
     public List<String> getRel() {
-        return map.get(REL);
+        List<String> l = map.get(REL);
+        return l != null ? l : Collections.EMPTY_LIST;
     }
 
     /**
@@ -175,7 +177,8 @@ public final class Link {
      * @return list of produces types
      */
     public List<String> getProduces() {
-        return map.get(PRODUCES);
+        List<String> l = map.get(PRODUCES);
+        return l != null ? l : Collections.EMPTY_LIST;
     }
 
     /**
@@ -186,7 +189,8 @@ public final class Link {
      * @return list of consumes types
      */
     public List<String> getConsumes() {
-        return map.get(CONSUMES);
+        List<String> l = map.get(CONSUMES);
+        return l != null ? l : Collections.EMPTY_LIST;
     }
 
     /**
