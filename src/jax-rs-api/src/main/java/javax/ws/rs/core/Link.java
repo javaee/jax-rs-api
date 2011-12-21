@@ -125,7 +125,7 @@ public final class Link {
     }
 
     /**
-     * Returns a list containing all the relations types defined
+     * Returns an immutable list containing all the relation types defined
      * on this link via the "rel" parameter. If no relation types are
      * defined, this method returns an empty list.
      *
@@ -167,8 +167,8 @@ public final class Link {
     }
 
     /**
-     * Returns a list containing all the types defined on this link
-     * via the "produces" parameter. If no produces types are
+     * Returns an immutable list containing all the types defined on
+     * this link via the "produces" parameter. If no produces types are
      * defined, this method returns an empty list.
      *
      * @return list of produces types
@@ -179,8 +179,8 @@ public final class Link {
     }
 
     /**
-     * Returns a list containing all the types defined on this link
-     * via the "consumes" parameter. If no consumes types are
+     * Returns an immutable list containing all the types defined on
+     * this link via the "consumes" parameter. If no consumes types are
      * defined, this method returns an empty list.
      *
      * @return list of consumes types
@@ -287,15 +287,14 @@ public final class Link {
     }
 
     /**
-     * Generate a link by introspecting a resource method. Finds the first method
-     * of a given name and generates a link that includes parameters "method",
-     * "produces" (if available) and "consumes" (if available). The value of "rel"
-     * defaults to that of the method name.
+     * Generate a link by introspecting a resource method. This method is a shorthand
+     * for {@code fromResourceMethod(resource, method, method)}.
      *
      * @param resource resource class
      * @param method name of resource method
      * @return link builder to further configure link
      * @throws IllegalArgumentException if any argument is null or no method is found
+     * @see Link#fromResourceMethod(java.lang.Class, java.lang.String, java.lang.String) 
      */
     public static LinkBuilder fromResourceMethod(Class<?> resource, String method)
             throws IllegalArgumentException {
@@ -305,8 +304,11 @@ public final class Link {
     /**
      * Generate a link by introspecting a resource method. Finds the first method
      * of a given name and generates a link that includes parameters "method",
-     * "produces" (if available) and "consumes" (if available). The value of "rel"
-     * must be specified as an argument.
+     * "produces" and "consumes". If "produces" is not defined, 
+     * {@link javax.ws.rs.core.MediaType#WILDCARD} is used. Likewise, if "consumes"
+     * is not defined, {@link javax.ws.rs.core.MediaType#WILDCARD} is used but
+     * only when the HTTP method is POST or PUT. The value of "rel" must be specified
+     * as an argument.
      *
      * @param resource resource class
      * @param method name of resource method
@@ -325,22 +327,33 @@ public final class Link {
         Method[] methods = resource.getMethods();
         for (Method m : methods) {
             if (m.getName().equals(method)) {
+                String httpMethod = null;
                 for (Annotation a : m.getAnnotations()) {
                     Class<? extends Annotation> at = a.annotationType();
                     HttpMethod hm = at.getAnnotation(HttpMethod.class);
                     if (hm != null) {
-                        lb.httpMethod(at.getSimpleName());
+                        httpMethod = at.getSimpleName();
+                        lb.httpMethod(httpMethod);
+                        break;
                     }
-                    if (at == Produces.class) {
-                        for (String p : ((Produces) a).value()) {
-                            lb.produces(p);
-                        }
+                }
+                if (httpMethod == null) {
+                    throw new IllegalArgumentException("Unable to find HTTP method annotation in " + method);
+                }
+                Produces ps = m.getAnnotation(Produces.class);
+                if (ps == null) {
+                    lb.produces(MediaType.WILDCARD);
+                } else {
+                    for (String p : ps.value()) {
+                        lb.produces(p);
                     }
-                    Consumes cs = m.getAnnotation(Consumes.class);
-                    if (at == Consumes.class) {
-                        for (String p : ((Produces) a).value()) {
-                            lb.consumes(p);
-                        }
+                }
+                Consumes cs = m.getAnnotation(Consumes.class);
+                if (cs == null && (httpMethod.equals(HttpMethod.POST) || httpMethod.equals(HttpMethod.PUT))) {
+                    lb.consumes(MediaType.WILDCARD);
+                } else {
+                    for (String c : cs.value()) {
+                        lb.consumes(c);
                     }
                 }
                 return lb;

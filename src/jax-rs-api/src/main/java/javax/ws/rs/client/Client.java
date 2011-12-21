@@ -142,12 +142,13 @@ public interface Client {
     Target target(Link link) throws NullPointerException;
 
     /**
-     * <p>Build an invocation from a link. The method and URI are obtained
-     * from the link. If the operation requires an entity, use the overloaded
+     * <p>Build an invocation from a link. The method and URI are obtained from the
+     * link. The HTTP Accept header is initialized to the value of the "produces"
+     * parameter in the link. If the operation requires an entity, use the overloaded
      * form of this method.</p>
      *
      * <p>This method will throw an {@link java.lang.IllegalArgumentException} if there
-     * is not enough information to build and invocation (e.g. no HTTP method or entity
+     * is not enough information to build an invocation (e.g. no HTTP method or entity
      * when required).</p>
      *
      * @param link link to build invocation from.
@@ -158,9 +159,10 @@ public interface Client {
     Invocation invocation(Link link) throws NullPointerException, IllegalArgumentException;
 
     /**
-     * <p>Build an invocation from a link. The method and URI are obtained
-     * from the link. If the operation does not require an entity, use the overloaded
-     * form of this method.</p>
+     * <p>Build an invocation from a link. The method and URI are obtained from the
+     * link. The HTTP Accept header is initialized to the value of the "produces"
+     * parameter in the link.If the operation does not require an entity, use the
+     * overloaded form of this method.</p>
      *
      * <p>This method will throw an {@link java.lang.IllegalArgumentException} if there
      * is not enough information to build and invocation (e.g. no HTTP method).</p>
