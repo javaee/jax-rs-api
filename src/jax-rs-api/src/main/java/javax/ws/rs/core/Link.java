@@ -43,6 +43,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -72,33 +73,29 @@ import javax.xml.namespace.QName;
 public final class Link {
 
     public static final String CONSUMES = "consumes";
-    public static final String METHOD   = "method";
+    public static final String METHOD = "method";
     public static final String PRODUCES = "produces";
-    public static final String TITLE    = "title";
-    public static final String REL      = "rel";
-    public static final String TYPE     = "type";
-
+    public static final String TITLE = "title";
+    public static final String REL = "rel";
+    public static final String TYPE = "type";
     /**
      * This link's underlying URI.
      */
     private URI uri;
-
     /**
      * The URI context for this link.
      */
     private URI context;
-
     /**
      * A map for all the link's parameters such as "rel", "type", "method", etc.
      */
     private MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
-
     /**
      * Underlying implementation delegate.
      */
-    private static final HeaderDelegate<Link> delegate = 
+    private static final HeaderDelegate<Link> delegate =
             RuntimeDelegate.getInstance().createHeaderDelegate(Link.class);
-    
+
     /**
      * Returns the underlying URI associated with this link.
      *
@@ -136,7 +133,7 @@ public final class Link {
      */
     public List<String> getRel() {
         List<String> l = map.get(REL);
-        return l != null ? l : Collections.EMPTY_LIST;
+        return (l != null) ? new ArrayList<String>(l) : Collections.<String>emptyList();
     }
 
     /**
@@ -173,12 +170,12 @@ public final class Link {
      * Returns a list containing all the types defined on this link
      * via the "produces" parameter. If no produces types are
      * defined, this method returns an empty list.
-     * 
+     *
      * @return list of produces types
      */
     public List<String> getProduces() {
         List<String> l = map.get(PRODUCES);
-        return l != null ? l : Collections.EMPTY_LIST;
+        return (l != null) ? new ArrayList<String>(l) : Collections.<String>emptyList();
     }
 
     /**
@@ -190,7 +187,7 @@ public final class Link {
      */
     public List<String> getConsumes() {
         List<String> l = map.get(CONSUMES);
-        return l != null ? l : Collections.EMPTY_LIST;
+        return (l != null) ? new ArrayList<String>(l) : Collections.<String>emptyList();
     }
 
     /**
@@ -216,7 +213,7 @@ public final class Link {
         }
         if (other instanceof Link) {
             final Link olink = (Link) other;
-            return uri.equals(olink.uri) && map.equals(olink.map) 
+            return uri.equals(olink.uri) && map.equals(olink.map)
                     && (context == null || context.equals(olink.context));
         }
         return false;
@@ -234,37 +231,37 @@ public final class Link {
         hash = 89 * hash + (this.map != null ? this.map.hashCode() : 0);
         return hash;
     }
-    
+
     /**
      * Returns a simplified string representation for this link's value.
      * All link params are serialized as link-param="value" where value
      * is a list of space-separated tokens. For example,
      *
      * <http://foo.bar/employee/john>; title="employee"; rel="manager friend"
-     * 
+     *
      * @return String representation for this link
      */
     @Override
     public String toString() {
         return delegate.toString(this);
     }
-    
+
     /**
      * Simple parser to convert link string representations into links.
-     * 
+     *
      * link ::= '<' uri '>' (';' link-param)*
      * link-param ::= name '=' quoted-string
-     * 
+     *
      * The resulting language is similar to that defined in RFC 5988.
-     * 
+     *
      * @param value String representation
      * @return New link
-     * @throws IllegalArgumentException 
+     * @throws IllegalArgumentException
      */
     public static Link valueOf(String value) throws IllegalArgumentException {
         return delegate.fromString(value);
     }
-    
+
     /**
      * Create a new instance initialized from an existing URI.
      * @param uri a URI that will be used to initialize the LinkBuilder.
@@ -301,8 +298,7 @@ public final class Link {
      * @throws IllegalArgumentException if any argument is null or no method is found
      */
     public static LinkBuilder fromResourceMethod(Class<?> resource, String method)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         return fromResourceMethod(resource, method, method);
     }
 
@@ -311,7 +307,7 @@ public final class Link {
      * of a given name and generates a link that includes parameters "method",
      * "produces" (if available) and "consumes" (if available). The value of "rel"
      * must be specified as an argument.
-     * 
+     *
      * @param resource resource class
      * @param method name of resource method
      * @param rel value of "rel" parameter
@@ -319,8 +315,7 @@ public final class Link {
      * @throws IllegalArgumentException if any argument is null or no method is found
      */
     public static LinkBuilder fromResourceMethod(Class<?> resource, String method, String rel)
-            throws IllegalArgumentException 
-    {
+            throws IllegalArgumentException {
         if (resource == null || method == null || rel == null) {
             throw new IllegalArgumentException("All parameters must be non-null");
         }
@@ -364,17 +359,15 @@ public final class Link {
      * @since 2.0
      */
     public static class LinkBuilder {
-        
+
         /**
          * Link being built by the builder.
          */
         private Link link = new Link();
-
         /**
          * Underlying builder for link's URI.
          */
         private UriBuilder uriBuilder;
-
         /**
          * Default "rel" value for this link.
          */
@@ -419,7 +412,7 @@ public final class Link {
             uriBuilder = UriBuilder.fromUri(uri);
             return this;
         }
-        
+
         /**
          * Set underlying URI using a {@link javax.ws.rs.core.UriBuilder}.
          *
@@ -489,7 +482,7 @@ public final class Link {
         /**
          * Convenience method to set a type on this link. More than one
          * type value can be specified using this method.
-         * 
+         *
          * @param type link type as string
          * @return the updated builder
          */
