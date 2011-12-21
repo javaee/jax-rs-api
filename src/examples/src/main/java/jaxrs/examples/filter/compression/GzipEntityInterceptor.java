@@ -47,10 +47,10 @@ import java.util.zip.GZIPOutputStream;
 import javax.ws.rs.BindingPriority;
 
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.ReadFromHandler;
-import javax.ws.rs.ext.ReadFromHandlerContext;
-import javax.ws.rs.ext.WriteToHandler;
-import javax.ws.rs.ext.WriteToHandlerContext;
+import javax.ws.rs.ext.ReaderInterceptor;
+import javax.ws.rs.ext.ReaderInterceptorContext;
+import javax.ws.rs.ext.WriterInterceptor;
+import javax.ws.rs.ext.WriterInterceptorContext;
 
 /**
  * 
@@ -59,10 +59,10 @@ import javax.ws.rs.ext.WriteToHandlerContext;
 @Provider
 @Gzipped
 @BindingPriority(BindingPriority.DECODER)
-public class GzipHandler implements ReadFromHandler, WriteToHandler {
+public class GzipEntityInterceptor implements ReaderInterceptor, WriterInterceptor {
 
     @Override
-    public Object readFrom(ReadFromHandlerContext ctx) throws IOException {
+    public Object aroundReadFrom(ReaderInterceptorContext ctx) throws IOException {
         if (!gzipEncoded(ctx)) {
             return ctx.proceed();
         } else {
@@ -77,7 +77,7 @@ public class GzipHandler implements ReadFromHandler, WriteToHandler {
     }
 
     @Override
-    public void writeTo(WriteToHandlerContext ctx) throws IOException {
+    public void aroundWriteTo(WriterInterceptorContext ctx) throws IOException {
         if (!acceptsGzip(ctx)) {
             ctx.proceed();
         } else {
@@ -93,11 +93,11 @@ public class GzipHandler implements ReadFromHandler, WriteToHandler {
         }
     }
 
-    private boolean acceptsGzip(WriteToHandlerContext ctx) {
+    private boolean acceptsGzip(WriterInterceptorContext ctx) {
         return true;        // TODO
     }
 
-    private boolean gzipEncoded(ReadFromHandlerContext ctx) {
+    private boolean gzipEncoded(ReaderInterceptorContext ctx) {
         return true;        // TODO
     }
 }

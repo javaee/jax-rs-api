@@ -42,7 +42,7 @@ package jaxrs.examples.client.encoding;
 import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Target;
 
-import jaxrs.examples.filter.compression.GzipHandler;
+import jaxrs.examples.filter.compression.GzipEntityInterceptor;
 
 import static javax.ws.rs.client.Entity.*;
 
@@ -54,7 +54,7 @@ public class GzipExample {
 
     public void gzipExample() {
         Target target = ClientFactory.newClient().target("http://example.com/foo/bar.txt");
-        target.configuration().register(GzipHandler.class);
+        target.configuration().register(GzipEntityInterceptor.class);
 
         // getting a gzip encoded body
         String body = target.request("text/plain").get(String.class);
