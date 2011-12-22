@@ -42,7 +42,6 @@ package javax.ws.rs.core;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,10 +59,13 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
 /**
- * Class representing hypermedia links. A hypermedia link may include additional
+ * <p>Class representing hypermedia links. A hypermedia link may include additional
  * parameters beyond its underlying URI. Parameters such as "rel" or "method"
  * provide additional meta-data and can be used to easily create instances of
- * {@link javax.ws.rs.client.Invocation} in order to follow links.
+ * {@link javax.ws.rs.client.Invocation} in order to follow links.</p>
+ *
+ * <p>The methods {@link #toString} and {@link #valueOf} can be used to serialize
+ * and deserialize a link into a link header (RFC 5988).</p>
  *
  * @author Marek Potociar
  * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
@@ -78,20 +80,19 @@ public final class Link {
     public static final String TITLE = "title";
     public static final String REL = "rel";
     public static final String TYPE = "type";
+
     /**
      * This link's underlying URI.
      */
     private URI uri;
-    /**
-     * The URI context for this link.
-     */
-    private URI context;
+
     /**
      * A map for all the link's parameters such as "rel", "type", "method", etc.
      */
     private MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
+    
     /**
-     * Underlying implementation delegate.
+     * Underlying implementation delegate to serialize as link header.
      */
     private static final HeaderDelegate<Link> delegate =
             RuntimeDelegate.getInstance().createHeaderDelegate(Link.class);
@@ -113,15 +114,6 @@ public final class Link {
      */
     public UriBuilder getBuilder() {
         return UriBuilder.fromUri(uri);
-    }
-
-    /**
-     * Returns context URI for this link, if set.
-     *
-     * @return context URI or null if not set.
-     */
-    public URI getContextUri() {
-        return context;
     }
 
     /**
@@ -213,8 +205,7 @@ public final class Link {
         }
         if (other instanceof Link) {
             final Link olink = (Link) other;
-            return uri.equals(olink.uri) && map.equals(olink.map)
-                    && (context == null || context.equals(olink.context));
+            return uri.equals(olink.uri) && map.equals(olink.map);
         }
         return false;
     }
@@ -227,19 +218,18 @@ public final class Link {
     public int hashCode() {
         int hash = 3;
         hash = 89 * hash + (this.uri != null ? this.uri.hashCode() : 0);
-        hash = 89 * hash + (this.context != null ? this.context.hashCode() : 0);
         hash = 89 * hash + (this.map != null ? this.map.hashCode() : 0);
         return hash;
     }
 
     /**
-     * Returns a simplified string representation for this link's value.
+     * Returns a string representation as a link header (RFC 5988).
      * All link params are serialized as link-param="value" where value
      * is a list of space-separated tokens. For example,
      *
      * <http://foo.bar/employee/john>; title="employee"; rel="manager friend"
      *
-     * @return String representation for this link
+     * @return string link header representation for this link
      */
     @Override
     public String toString() {
@@ -247,7 +237,7 @@ public final class Link {
     }
 
     /**
-     * Simple parser to convert link string representations into links.
+     * Simple parser to convert link header string representations into a link.
      *
      * link ::= '<' uri '>' (';' link-param)*
      * link-param ::= name '=' quoted-string
@@ -255,8 +245,8 @@ public final class Link {
      * The resulting language is similar to that defined in RFC 5988.
      *
      * @param value String representation
-     * @return New link
-     * @throws IllegalArgumentException
+     * @return newly parsed link
+     * @throws IllegalArgumentException if a syntax error is found
      */
     public static Link valueOf(String value) throws IllegalArgumentException {
         return delegate.fromString(value);
@@ -372,35 +362,16 @@ public final class Link {
      * @since 2.0
      */
     public static class LinkBuilder {
-
         /**
          * Link being built by the builder.
          */
         private Link link = new Link();
+        
         /**
          * Underlying builder for link's URI.
          */
         private UriBuilder uriBuilder;
-        /**
-         * Default "rel" value for this link.
-         */
-        private String defaultRel;
-
-        /**
-         * No default "rel" constructor.
-         */
-        protected LinkBuilder() {
-            this.defaultRel = null;
-        }
-
-        /**
-         * Constructor from default "rel" value.
-         * @param defaultRel default value for "rel"
-         */
-        protected LinkBuilder(String defaultRel) {
-            this.defaultRel = defaultRel;
-        }
-
+        
         /**
          * Set underlying URI for the link being constructed.
          *
@@ -435,35 +406,6 @@ public final class Link {
          */
         public LinkBuilder uriBuilder(UriBuilder uriBuilder) {
             this.uriBuilder = uriBuilder;
-            return this;
-        }
-
-        /**
-         * Set URI context for this link.
-         *
-         * @param context underlying context for link
-         * @return the updated builder
-         * @since 2.0
-         */
-        public LinkBuilder context(URI context) {
-            link.context = context;
-            return this;
-        }
-
-        /**
-         * Set URI context for this link as a string.
-         *
-         * @param context underlying context for link
-         * @return the updated builder
-         * @throws IllegalArgumentException if string representation of URI is invalid
-         * @since 2.0
-         */
-        public LinkBuilder context(String context) throws IllegalArgumentException {
-            try {
-                link.context = new URI(context);
-            } catch (URISyntaxException ex) {
-                throw new IllegalArgumentException(ex);
-            }
             return this;
         }
 
@@ -565,9 +507,6 @@ public final class Link {
          * @return newly built link.
          */
         public Link build() {
-            if (defaultRel != null && !link.map.containsKey(REL)) {
-                link.map.add(REL, defaultRel);
-            }
             link.uri = uriBuilder.build();
             return link;
         }
@@ -577,12 +516,9 @@ public final class Link {
          *
          * @param values parameters used to build underlying URI
          * @return the updated builder
-         * @throws UriBuilderException
+         * @throws UriBuilderException maybe thrown when building underlying URI
          */
         public Link build(Object... values) throws UriBuilderException {
-            if (defaultRel != null && !link.map.containsKey(REL)) {
-                link.map.add(REL, defaultRel);
-            }
             link.uri = uriBuilder.build(values);
             return link;
         }
