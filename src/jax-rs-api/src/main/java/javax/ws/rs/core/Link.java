@@ -112,7 +112,7 @@ public final class Link {
      *
      * @return UriBuilder initialized using underlying URI
      */
-    public UriBuilder getBuilder() {
+    public UriBuilder getUriBuilder() {
         return UriBuilder.fromUri(uri);
     }
 
@@ -154,7 +154,7 @@ public final class Link {
      *
      * @return value of "method" parameter or null
      */
-    public String getHttpMethod() {
+    public String getMethod() {
         return map.getFirst(METHOD);
     }
 
@@ -195,6 +195,7 @@ public final class Link {
 
     /**
      * Equality test for links.
+     *
      * @param other Object to compare against
      * @return True if equal, false otherwise
      */
@@ -212,6 +213,7 @@ public final class Link {
 
     /**
      * Hash code computation for links.
+     *
      * @return Hash code for this link
      */
     @Override
@@ -254,25 +256,41 @@ public final class Link {
 
     /**
      * Create a new instance initialized from an existing URI.
-     * @param uri a URI that will be used to initialize the LinkBuilder.
-     * @return a new LinkBuilder
+     *
+     * @param uri a URI that will be used to initialize the Builder.
+     * @return a new builder
      * @throws IllegalArgumentException if uri is null
      */
-    public static LinkBuilder fromUri(URI uri) throws IllegalArgumentException {
-        LinkBuilder b = new LinkBuilder();
+    public static Builder fromUri(URI uri) throws IllegalArgumentException {
+        Builder b = new Builder();
         b.uri(uri);
         return b;
     }
 
     /**
      * Create a new instance initialized from an existing URI.
-     * @param uri a URI that will be used to initialize the LinkBuilder.
-     * @return a new LinkBuilder
+     * 
+     * @param uri a URI that will be used to initialize the Builder.
+     * @return a new builder
      * @throws IllegalArgumentException if uri is null
      */
-    public static LinkBuilder fromUri(String uri) throws IllegalArgumentException {
-        LinkBuilder b = new LinkBuilder();
+    public static Builder fromUri(String uri) throws IllegalArgumentException {
+        Builder b = new Builder();
         b.uri(uri);
+        return b;
+    }
+
+    /**
+     * Create a new instance initialized from another link.
+     *
+     * @param link other link used for initialization
+     * @return a new builder
+     * @since 2.0
+     */
+    public static Builder fromLink(Link link) {
+        Builder b = new Builder();
+        b.uri(link.uri);
+        b.link.map = new MultivaluedHashMap<String, String>(link.map);
         return b;
     }
 
@@ -286,7 +304,7 @@ public final class Link {
      * @throws IllegalArgumentException if any argument is null or no method is found
      * @see Link#fromResourceMethod(java.lang.Class, java.lang.String, java.lang.String) 
      */
-    public static LinkBuilder fromResourceMethod(Class<?> resource, String method)
+    public static Builder fromResourceMethod(Class<?> resource, String method)
             throws IllegalArgumentException {
         return fromResourceMethod(resource, method, method);
     }
@@ -306,13 +324,13 @@ public final class Link {
      * @return link builder to further configure link
      * @throws IllegalArgumentException if any argument is null or no method is found
      */
-    public static LinkBuilder fromResourceMethod(Class<?> resource, String method, String rel)
+    public static Builder fromResourceMethod(Class<?> resource, String method, String rel)
             throws IllegalArgumentException {
         if (resource == null || method == null || rel == null) {
             throw new IllegalArgumentException("All parameters must be non-null");
         }
 
-        LinkBuilder lb = Link.fromUri(UriBuilder.fromResource(resource).build());
+        Builder lb = Link.fromUri(UriBuilder.fromResource(resource).build());
         lb.rel(rel);
         Method[] methods = resource.getMethods();
         for (Method m : methods) {
@@ -323,7 +341,7 @@ public final class Link {
                     HttpMethod hm = at.getAnnotation(HttpMethod.class);
                     if (hm != null) {
                         httpMethod = at.getSimpleName();
-                        lb.httpMethod(httpMethod);
+                        lb.method(httpMethod);
                         break;
                     }
                 }
@@ -339,8 +357,10 @@ public final class Link {
                     }
                 }
                 Consumes cs = m.getAnnotation(Consumes.class);
-                if (cs == null && (httpMethod.equals(HttpMethod.POST) || httpMethod.equals(HttpMethod.PUT))) {
-                    lb.consumes(MediaType.WILDCARD);
+                if (cs == null) {
+                    if (httpMethod.equals(HttpMethod.POST) || httpMethod.equals(HttpMethod.PUT)) {
+                        lb.consumes(MediaType.WILDCARD);
+                    }
                 } else {
                     for (String c : cs.value()) {
                         lb.consumes(c);
@@ -361,7 +381,7 @@ public final class Link {
      * @see Link
      * @since 2.0
      */
-    public static class LinkBuilder {
+    public static class Builder {
         /**
          * Link being built by the builder.
          */
@@ -373,39 +393,28 @@ public final class Link {
         private UriBuilder uriBuilder;
         
         /**
-         * Set underlying URI for the link being constructed.
+         * Set underlying URI template for the link being constructed.
          *
          * @param uri underlying URI for link
          * @return the updated builder
          * @since 2.0
          */
-        public LinkBuilder uri(URI uri) {
+        public Builder uri(URI uri) {
             uriBuilder = UriBuilder.fromUri(uri);
             return this;
         }
 
         /**
-         * Set underlying string URI for the link being constructed.
+         * Set underlying string representing URI template for the link being
+         * constructed.
          *
          * @param uri underlying URI for link
          * @return the updated builder
          * @throws IllegalArgumentException if string representation of URI is invalid
          * @since 2.0
          */
-        public LinkBuilder uri(String uri) throws IllegalArgumentException {
+        public Builder uri(String uri) throws IllegalArgumentException {
             uriBuilder = UriBuilder.fromUri(uri);
-            return this;
-        }
-
-        /**
-         * Set underlying URI using a {@link javax.ws.rs.core.UriBuilder}.
-         *
-         * @param uriBuilder underlying {@link javax.ws.rs.core.UriBuilder} for link
-         * @return the updated builder
-         * @since 2.0
-         */
-        public LinkBuilder uriBuilder(UriBuilder uriBuilder) {
-            this.uriBuilder = uriBuilder;
             return this;
         }
 
@@ -416,7 +425,7 @@ public final class Link {
          * @param name relation name
          * @return the updated builder
          */
-        public LinkBuilder rel(String name) {
+        public Builder rel(String name) {
             link.map.add(REL, name);
             return this;
         }
@@ -428,7 +437,7 @@ public final class Link {
          * @param title title parameter of this link
          * @return the updated builder
          */
-        public LinkBuilder title(String title) {
+        public Builder title(String title) {
             link.map.putSingle(TITLE, title);
             return this;
 
@@ -441,7 +450,7 @@ public final class Link {
          * @param type link type as string
          * @return the updated builder
          */
-        public LinkBuilder type(String type) {
+        public Builder type(String type) {
             link.map.add(TYPE, type);
             return this;
         }
@@ -453,7 +462,7 @@ public final class Link {
          * @param method HTTP method name
          * @return the updated builder
          */
-        public LinkBuilder httpMethod(String method) {
+        public Builder method(String method) {
             link.map.putSingle(METHOD, method);
             return this;
         }
@@ -465,7 +474,7 @@ public final class Link {
          * @param type link type as string
          * @return the updated builder
          */
-        public LinkBuilder produces(String type) {
+        public Builder produces(String type) {
             link.map.add(PRODUCES, type);
             return this;
         }
@@ -477,7 +486,7 @@ public final class Link {
          * @param type link type as string
          * @return the updated builder
          */
-        public LinkBuilder consumes(String type) {
+        public Builder consumes(String type) {
             link.map.add(CONSUMES, type);
             return this;
         }
@@ -485,7 +494,7 @@ public final class Link {
         /**
          * Set an arbitrary parameter on this link. This method supports adding
          * more than one parameter value for each parameter. It is recommended
-         * to use the more specific methods {@link #httpMethod} or {@link #title}
+         * to use the more specific methods {@link #method} or {@link #title}
          * when setting these single-valued parameters.
          *
          * @param name the name of the parameter
@@ -493,7 +502,7 @@ public final class Link {
          * @return the updated builder
          * @throws IllegalArgumentException if either the name or value are null
          */
-        public LinkBuilder param(String name, String value) throws IllegalArgumentException {
+        public Builder param(String name, String value) throws IllegalArgumentException {
             if (name == null || value == null) {
                 throw new IllegalArgumentException("Link parameter name or value is null");
             }
@@ -529,7 +538,7 @@ public final class Link {
      * unmarshalled by JAXB.
      *
      * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
-     * @see javax.ws.rs.core.Link.LinkAdapter
+     * @see javax.ws.rs.core.Link.XmlAdapter
      * @since 2.0
      */
     public static class JaxbLink {
@@ -574,11 +583,11 @@ public final class Link {
      * @see javax.ws.rs.core.Link.JaxbLink
      * @since 2.0
      */
-    public static class LinkAdapter extends XmlAdapter<JaxbLink, Link> {
+    public static class JaxbAdapter extends XmlAdapter<JaxbLink, Link> {
 
         @Override
         public Link unmarshal(JaxbLink v) throws Exception {
-            Link.LinkBuilder lb = Link.fromUri(v.getUri());
+            Link.Builder lb = Link.fromUri(v.getUri());
             for (Entry<QName, Object> e : v.getParams().entrySet()) {
                 final String name = e.getKey().getLocalPart();
                 if (TITLE.equals(name) || METHOD.equals(name)) {

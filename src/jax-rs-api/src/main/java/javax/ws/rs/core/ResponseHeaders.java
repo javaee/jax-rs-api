@@ -254,11 +254,11 @@ public interface ResponseHeaders {
     public Link getLink(String relation);
 
     /**
-     * Convenience method that returns a {@link Link.LinkBuilder} for the relation.
+     * Convenience method that returns a {@link Link.Builder} for the relation.
      *
      * @param relation link relation.
      * @return the link builder for the relation, otherwise {@code null} if not present.
      * @since 2.0
      */
-    public Link.LinkBuilder getLinkBuilder(String relation);
+    public Link.Builder getLinkBuilder(String relation);
 }

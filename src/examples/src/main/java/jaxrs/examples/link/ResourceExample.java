@@ -43,7 +43,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Link;
-import javax.ws.rs.core.Link.LinkAdapter;
+import javax.ws.rs.core.Link.JaxbAdapter;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -76,7 +76,7 @@ public class ResourceExample {
         }
 
         @XmlElement(name = "link")
-        @XmlJavaTypeAdapter(LinkAdapter.class)
+        @XmlJavaTypeAdapter(JaxbAdapter.class)
         public Link getLink() {
             return link;
         }
@@ -86,7 +86,7 @@ public class ResourceExample {
         }
 
         @XmlElement(namespace = "http://www.w3.org/2005/Atom", name = "link")
-        @XmlJavaTypeAdapter(LinkAdapter.class)
+        @XmlJavaTypeAdapter(JaxbAdapter.class)
         public Link getAtomLink() {
             return atomLink;
         }
