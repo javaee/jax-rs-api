@@ -396,8 +396,6 @@ public interface Request {
      * is computed from the supplied list and automatically added to the
      * response.
      *
-     * TODO fix the above sentence about vary header?
-     *
      * @param variants a list of Variant that describe all of the
      * available representation variants.
      * @return the variant that best matches the request.
