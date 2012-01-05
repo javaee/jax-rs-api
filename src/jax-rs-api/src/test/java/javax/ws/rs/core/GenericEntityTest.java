@@ -1,14 +1,14 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -37,7 +37,6 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package javax.ws.rs.core;
 
 import java.lang.reflect.GenericArrayType;
@@ -60,36 +59,38 @@ public class GenericEntityTest {
     public void testListOfString() {
         System.out.println("testListOfString");
         List<String> list = new ArrayList<String>();
-        GenericEntity<List<String>> listOfString = new GenericEntity<List<String>>(list) {};
+        GenericEntity<List<String>> listOfString = new GenericEntity<List<String>>(list) {
+        };
         Class<?> rawType = listOfString.getRawType();
         assertEquals(rawType, ArrayList.class);
         Type type = listOfString.getType();
         assertTrue(type instanceof ParameterizedType);
-        ParameterizedType pType = (ParameterizedType)type;
+        ParameterizedType pType = (ParameterizedType) type;
         Type typeArgs[] = pType.getActualTypeArguments();
         assertEquals(1, typeArgs.length);
         assertTrue(typeArgs[0] instanceof Class<?>);
-        Class<?> typeArgType = (Class<?>)typeArgs[0];
+        Class<?> typeArgType = (Class<?>) typeArgs[0];
         assertEquals(typeArgType, String.class);
     }
 
     @Test
     public void testMapOfStringInteger() {
         System.out.println("testMapOfStringInteger");
-        Map<String,Integer> map = new HashMap<String,Integer>();
-        GenericEntity<Map<String,Integer>> mapOfString = new GenericEntity<Map<String,Integer>>(map) {};
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        GenericEntity<Map<String, Integer>> mapOfString = new GenericEntity<Map<String, Integer>>(map) {
+        };
         Class<?> rawType = mapOfString.getRawType();
         assertEquals(rawType, HashMap.class);
         Type type = mapOfString.getType();
         assertTrue(type instanceof ParameterizedType);
-        ParameterizedType pType = (ParameterizedType)type;
+        ParameterizedType pType = (ParameterizedType) type;
         Type typeArgs[] = pType.getActualTypeArguments();
         assertEquals(2, typeArgs.length);
         assertTrue(typeArgs[0] instanceof Class<?>);
-        Class<?> typeArgType = (Class<?>)typeArgs[0];
+        Class<?> typeArgType = (Class<?>) typeArgs[0];
         assertEquals(typeArgType, String.class);
         assertTrue(typeArgs[1] instanceof Class<?>);
-        typeArgType = (Class<?>)typeArgs[1];
+        typeArgType = (Class<?>) typeArgs[1];
         assertEquals(typeArgType, Integer.class);
     }
 
@@ -98,18 +99,19 @@ public class GenericEntityTest {
     public void testArrayOfListOfString() {
         System.out.println("testArrayOfListOfString");
         List<String> array[] = new List[1];
-        GenericEntity<List<String>[]> arrayOfListOfString = new GenericEntity<List<String>[]>(array) {};
+        GenericEntity<List<String>[]> arrayOfListOfString = new GenericEntity<List<String>[]>(array) {
+        };
         Class<?> rawType = arrayOfListOfString.getRawType();
         assertTrue(rawType.isArray());
         Type type = arrayOfListOfString.getType();
         assertTrue(type instanceof GenericArrayType);
-        type = ((GenericArrayType)type).getGenericComponentType();
+        type = ((GenericArrayType) type).getGenericComponentType();
         assertTrue(type instanceof ParameterizedType);
-        ParameterizedType pType = (ParameterizedType)type;
+        ParameterizedType pType = (ParameterizedType) type;
         Type typeArgs[] = pType.getActualTypeArguments();
         assertEquals(1, typeArgs.length);
         assertTrue(typeArgs[0] instanceof Class<?>);
-        Class<?> typeArgType = (Class<?>)typeArgs[0];
+        Class<?> typeArgType = (Class<?>) typeArgs[0];
         assertEquals(typeArgType, String.class);
     }
 
@@ -117,12 +119,13 @@ public class GenericEntityTest {
     public void testNumber() {
         System.out.println("testNumber");
         Number n = new Integer(0);
-        GenericEntity<Number> number = new GenericEntity<Number>(n) {};
+        GenericEntity<Number> number = new GenericEntity<Number>(n) {
+        };
         Class<?> rawType = number.getRawType();
         assertEquals(rawType, Integer.class);
         Type type = number.getType();
         assertTrue(type instanceof Class);
-        Class<?> genericType = (Class<?>)type;
+        Class<?> genericType = (Class<?>) type;
         assertEquals(genericType, Number.class);
     }
 
@@ -137,19 +140,19 @@ public class GenericEntityTest {
             GenericEntity ge = new GenericEntity(1, rt);
             // check GenericEntity(String, Number) fails
             try {
-                ge = new GenericEntity("foo",rt);
+                ge = new GenericEntity("foo", rt);
                 fail("Expected IllegalArgumentException");
             } catch (IllegalArgumentException e) {
             }
             // check GenericEntity(Integer[], Number[]) works
             Method getNumbers = this.getClass().getDeclaredMethod("getNumbers");
             rt = getNumbers.getGenericReturnType();
-            Integer ints[] = {1,2};
+            Integer ints[] = {1, 2};
             ge = new GenericEntity(ints, rt);
             // check GenericEntity(String[], Number[]) fails
             try {
-                String strings[] = {"foo","bar"};
-                ge = new GenericEntity(strings,rt);
+                String strings[] = {"foo", "bar"};
+                ge = new GenericEntity(strings, rt);
                 fail("Expected IllegalArgumentException");
             } catch (IllegalArgumentException e) {
             }
@@ -191,8 +194,19 @@ public class GenericEntityTest {
         }
     }
 
-    private Number getNumber() {return null;}
-    private Number[] getNumbers() {return null;}
-    private List<String> getList() {return null;}
-    private List<String>[] getLists() {return null;}
+    private Number getNumber() {
+        return null;
+    }
+
+    private Number[] getNumbers() {
+        return null;
+    }
+
+    private List<String> getList() {
+        return null;
+    }
+
+    private List<String>[] getLists() {
+        return null;
+    }
 }

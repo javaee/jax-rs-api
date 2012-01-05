@@ -3,14 +3,14 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
     and Distribution License("CDDL") (collectively, the "License").  You
     may not use this file except in compliance with the License.  You can
     obtain a copy of the License at
-    https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+    http://glassfish.java.net/public/CDDL+GPL_1_1.html
     or packager/legal/LICENSE.txt.  See the License for the specific
     language governing permissions and limitations under the License.
 
@@ -41,20 +41,27 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>net.java</groupId>
+        <artifactId>jvnet-parent</artifactId>
+        <version>1</version>
+    </parent>
 
     <groupId>javax.ws.rs</groupId>
     <artifactId>javax.ws.rs-api</artifactId>
     <version>2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>javax.ws.rs-api</name>
+
     <url>http://jax-rs-spec.java.net</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-  
+
     <organization>
         <name>Oracle Corporation</name>
         <url>http://www.oracle.com/</url>
@@ -89,6 +96,65 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git://java.net/jax-rs-spec~git</connection>
+        <developerConnection>scm:ssh://git.java.net/jax-rs-spec~git</developerConnection>
+        <url>http://java.net/projects/jax-rs-spec/sources/git/show</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <email>m_potociar@java.net</email>
+            <id>Marek</id>
+            <name>Marek Potociar</name>
+            <organization>Oracle</organization>
+            <organizationUrl>http://jax-rs-spec.java.net</organizationUrl>
+            <roles>
+                <role>JAX-RS 2.0 Spec Lead</role>
+            </roles>
+            <timezone>CET</timezone>
+            <url>http://marek.potociar.net/topics/web-services/rest/</url>
+        </developer>
+        <developer>
+            <email>spericas@java.net</email>
+            <id>Santiago</id>
+            <name>Santiago Pericas-Geertsen</name>
+            <organization>Oracle</organization>
+            <organizationUrl>http://jax-rs-spec.java.net</organizationUrl>
+            <roles>
+                <role>JAX-RS 2.0 Spec Lead</role>
+            </roles>
+            <timezone>EST</timezone>
+            <url>http://www.java.net/blogs/spericas/</url>
+        </developer>
+    </developers>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.7</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -96,88 +162,53 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>2.3.2</version>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.3.1</version>
+                    <version>2.3.2</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Specification-Title>Java API for RESTful Web Services (JAX-RS)</Specification-Title>
+                                <Specification-Version>${project.version}</Specification-Version>
+                                <Specification-Vendor>Oracle Corporation</Specification-Vendor>
+                                <Extension-Name>javax.ws.rs</Extension-Name>
+                                <Build-Id>${buildNumber}</Build-Id>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>buildnumber-maven-plugin</artifactId>
                     <version>1.0-beta-3</version>
+                    <configuration>
+                        <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
+                        <items>
+                            <item>timestamp</item>
+                        </items>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>create</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.8</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.1.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jxr-plugin</artifactId>
-                    <version>2.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.6</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Specification-Title>Java API for RESTful Web Services (JAX-RS)</Specification-Title>
-                            <Specification-Version>${project.version}</Specification-Version>
-                            <Specification-Vendor>Oracle Corporation</Specification-Vendor>
-                            <Extension-Name>javax.ws.rs</Extension-Name>
-                            <Build-Id>${buildNumber}</Build-Id>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <configuration>
-                    <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
-                    <items>
-                        <item>timestamp</item>
-                    </items>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8</version>                
-                <configuration>
-                    <doctitle>JAX-RS ${project.version} API Specification</doctitle>
-                    <bottom>Copyright &#169; 2007-2011 Oracle Corporation. All Rights Reserved. Use is subject to license terms.</bottom>
+                    <configuration>
+                        <doctitle>JAX-RS ${project.version} API Specification</doctitle>
+                        <bottom>Copyright &#169; 2007-2012 Oracle Corporation. All Rights Reserved. Use is subject to license terms.</bottom>
                     <!--javaApiLinks>
                         <property>
                             <name>api_1.3</name>
@@ -196,69 +227,135 @@
                             <value>http://download.oracle.com/javase/6/docs/api/</value>
                         </property>
                     </javaApiLinks-->
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.2</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>2.3</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>jxr</goal>
+                            </goals>
+                            <phase>validate</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>2.8</version>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/checkstyle</outputDirectory>
+                        <outputFile>${project.build.directory}/checkstyle/checkstyle-result.xml</outputFile>
+                        <configLocation>${basedir}/../etc/config/checkstyle.xml</configLocation>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>checkstyle</goal>
+                            </goals>
+                            <phase>validate</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.2.2</version>
+                    <configuration>
+                        <mavenExecutorId>forked-path</mavenExecutorId>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <arguments>${release.arguments}</arguments>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>1.28</version>
+                    <configuration>
+                        <excludeFile>${basedir}/../etc/config/copyright-exclude</excludeFile>
+                        <!--svn|mercurial|git - defaults to svn-->
+                        <scm>git</scm>
+                        <!-- turn on/off debugging -->
+                        <debug>false</debug>
+                        <!-- skip files not under SCM-->
+                        <scmOnly>true</scmOnly>
+                        <!-- turn off warnings -->
+                        <warn>true</warn>
+                        <!-- for use with repair -->
+                        <update>false</update>
+                        <!--- check that year is correct -->
+                        <ignoreYear>false</ignoreYear>
+                        <templateFile>${basedir}/../etc/config/copyright.txt</templateFile>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jxr</goal>
-                        </goals>
-                        <phase>validate</phase>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/checkstyle</outputDirectory>
-                    <outputFile>${project.build.directory}/checkstyle/checkstyle-result.xml</outputFile>
-                    <configLocation>etc/config/checkstyle.xml</configLocation>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>checkstyle</goal>
-                        </goals>
-                        <phase>validate</phase>
-                    </execution>
-                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.copyright</groupId>
+                <artifactId>glassfish-copyright-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>java.net.m2</id>
-            <url>http://download.java.net/maven/2</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
-  	
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

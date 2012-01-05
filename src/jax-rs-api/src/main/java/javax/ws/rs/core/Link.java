@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -68,7 +68,7 @@ import javax.xml.namespace.QName;
  * and deserialize a link into a link header (RFC 5988).</p>
  *
  * @author Marek Potociar
- * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
+ * @author Santiago Pericas-Geertsen
  * @see javax.ws.rs.client.Client#invocation
  * @since 2.0
  */
@@ -90,7 +90,7 @@ public final class Link {
      * A map for all the link's parameters such as "rel", "type", "method", etc.
      */
     private MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
-    
+
     /**
      * Underlying implementation delegate to serialize as link header.
      */
@@ -269,7 +269,7 @@ public final class Link {
 
     /**
      * Create a new instance initialized from an existing URI.
-     * 
+     *
      * @param uri a URI that will be used to initialize the Builder.
      * @return a new builder
      * @throws IllegalArgumentException if uri is null
@@ -302,7 +302,7 @@ public final class Link {
      * @param method name of resource method
      * @return link builder to further configure link
      * @throws IllegalArgumentException if any argument is null or no method is found
-     * @see Link#fromResourceMethod(java.lang.Class, java.lang.String, java.lang.String) 
+     * @see Link#fromResourceMethod(java.lang.Class, java.lang.String, java.lang.String)
      */
     public static Builder fromResourceMethod(Class<?> resource, String method)
             throws IllegalArgumentException {
@@ -312,7 +312,7 @@ public final class Link {
     /**
      * Generate a link by introspecting a resource method. Finds the first method
      * of a given name and generates a link that includes parameters "method",
-     * "produces" and "consumes". If "produces" is not defined, 
+     * "produces" and "consumes". If "produces" is not defined,
      * {@link javax.ws.rs.core.MediaType#WILDCARD} is used. Likewise, if "consumes"
      * is not defined, {@link javax.ws.rs.core.MediaType#WILDCARD} is used but
      * only when the HTTP method is POST or PUT. The value of "rel" must be specified
@@ -386,12 +386,12 @@ public final class Link {
          * Link being built by the builder.
          */
         private Link link = new Link();
-        
+
         /**
          * Underlying builder for link's URI.
          */
         private UriBuilder uriBuilder;
-        
+
         /**
          * Set underlying URI template for the link being constructed.
          *
@@ -537,8 +537,8 @@ public final class Link {
      * Value type for {@link javax.ws.rs.core.Link} that can be marshalled and
      * unmarshalled by JAXB.
      *
-     * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
-     * @see javax.ws.rs.core.Link.XmlAdapter
+     * @author Santiago Pericas-Geertsen
+     * @see javax.ws.rs.core.Link.JaxbAdapter
      * @since 2.0
      */
     public static class JaxbLink {
@@ -579,7 +579,7 @@ public final class Link {
      *
      * <p>All link parameters are treated as multi valued except for "title" and "method".</p>
      *
-     * @author Santiago Pericas-Geertsen (Santiago.PericasGeertsen at oracle.com)
+     * @author Santiago Pericas-Geertsen
      * @see javax.ws.rs.core.Link.JaxbLink
      * @since 2.0
      */

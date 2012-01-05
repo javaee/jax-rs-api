@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2010-2011 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -44,7 +44,7 @@
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <!--
   This file is based on maven-checkstyle-plugin config/sun_checks.xml file.
-  
+
   Checkstyle configuration that checks the coding conventions based on:
 
     - the Java Language Specification at
@@ -179,13 +179,13 @@
         <module name="TypecastParenPad"/>
         <module name="WhitespaceAfter"/>
         <module name="WhitespaceAround">
-            <property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR, 
-                BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, 
-                DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT, 
-                LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, 
-                LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, 
-                LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, 
-                MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, SL, 
+            <property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR,
+                BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV,
+                DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT,
+                LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY,
+                LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED,
+                LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD,
+                MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, SL,
                 SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN,
                 TYPE_EXTENSION_AND, GENERIC_START, GENERIC_END" /> <!-- RCURLY removed -->
         </module>
@@ -218,7 +218,7 @@
         </module>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <!-- 
+        <!--
             Unable to use MagicNumber until maven plugin supports Checkstyle 5.3
             or, at least, until Checkstyle 5.3 is available in a maven repository
         <module name="MagicNumber">
