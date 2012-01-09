@@ -167,8 +167,8 @@ public interface Configuration {
     Configuration register(Class<?> providerClass);
 
     /**
-     * Register one or more provider ("singleton") instances to be used in the
-     * scope of the configured instance.
+     * Register a provider ("singleton") instance to be used in the scope of the
+     * configured instance.
      * <p/>
      * As opposed to the providers registered by the
      * {@link #register(java.lang.Class) provider classes}, provider instances
@@ -178,12 +178,12 @@ public interface Configuration {
      * class, the registered provider instance takes precedence and the registered
      * provider class will not be instantiated in such case.
      *
-     * @param providers one or more provider instances to be used in the scope of
-     *     the configured instance.
+     * @param provider a provider instance to be used in the scope of the configured
+     *     instance.
      * @return the updated configuration.
      * @see #getProviderInstances()
      */
-    Configuration register(Object... providers);
+    Configuration register(Object provider);
 
     /**
      * Enable a feature using the feature class.

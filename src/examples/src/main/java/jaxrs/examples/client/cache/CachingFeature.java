@@ -58,7 +58,9 @@ public class CachingFeature implements Feature {
 
         final HashMap<String, CacheEntry> cache = new HashMap<String, CacheEntry>();
         final AtomicBoolean flag = new AtomicBoolean(true);
-        configuration.register(new CacheEntryLocator(cache, flag), new CacheResponseHandler(cache, flag));
+        configuration
+                .register(new CacheEntryLocator(cache, flag))
+                .register(new CacheResponseHandler(cache, flag));
     }
 
     @Override
