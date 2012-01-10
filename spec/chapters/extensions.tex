@@ -18,7 +18,7 @@ public Response clientSideRequestProcessor(Request req) {
     res = fc.getResponse();
 
     if (res == null) {
-        // Execute WriteTo handler chain
+        // Execute WriteTo interceptor chain
         WriteToHandlerContext whc = newWriteToHandlerContext(req);
         getFirstWriterToHandler(req).writeTo(whc);
 
@@ -50,7 +50,7 @@ public Response serverSideRequestProcessor(Request req, Method m) {
     res = fc.getResponse();
 
     if (res == null) {
-        // Execute Read handler chain
+        // Execute Read interceptor chain
         ReadFromHandlerContext rfc = newReadFromHandlerContext(req, m);
         getFirstReadFromHandler(m).readFrom(rfc);
 
@@ -66,7 +66,7 @@ public Response serverSideRequestProcessor(Request req, Method m) {
     }
     res = fc.getResponse();       
 
-    // Execute Write handler chain
+    // Execute Write interceptor chain
     WriteToHandlerContext whc = newWriteToHandlerContext(req, res, m);
     getFirstWriteToHandler(m).write(whc);
 

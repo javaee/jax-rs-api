@@ -1,11 +1,12 @@
-\chapter{Filters and Handlers}
-\label{filters_and_handlers}
+\chapter{Filters and Interceptors}
+\label{filters_and_interceptors}
 
-Filters and handlers can be registered for execution at well-defined extension points in \jaxrs\ implementations. They are used to extend an implementation in order to provide capabilities such as logging, security, entity compression, etc. 
+Filters and entity interceptors can be registered for execution at well-defined extension points in \jaxrs\ implementations. They are used to extend an implementation in order to provide capabilities such as logging, confidentiality, authentication, entity compression, etc. 
 
 \section{Introduction}
 \label{introduction_filters}
-Handlers wrap around a method invocation at a specific extension point. Filters execute code at an extension point but without wrapping a method invocation. There are two extension points for filters: Pre and Post. There are two extension points for handlers: ReadFrom and WriteTo.  For each of these extension points, there is a corresponding interface:
+Entity interceptors wrap around a method invocation at a specific extension point. 
+Filters execute code at an extension point but without wrapping a method invocation.  There are three extension points for filters: Pre, PreMatch and Post. There are two extension points for entity interceptors: ReadFrom and WriteTo.  For each of these extension points, there is a corresponding interface:
 
 \begin{listing}{1}
 public interface RequestFilter {
@@ -14,30 +15,37 @@ public interface RequestFilter {
 public interface ResponseFilter {
     FilterAction postFilter(FilterContext ctx) throws IOException;
 }
+public interface PreMatchRequestFilter {
+    FilterAction preMatchFilter(FilterContext ctx) throws IOException;
+}
 \end{listing}
 
 \begin{listing}{1}
-public interface ReadFromHandler<T> {
-    T readFrom(ReadFromHandlerContext<T> context) throws IOException;
+public interface ReaderInterceptor<T> {
+    T aroundReadFrom(ReaderInterceptorContext<T> context) 
+        throws IOException, WebApplicationException;
 }
-public interface WriteToHandler<T> {
-    void writeTo(WriteToHandlerContext<T> context) throws IOException;
+public interface WriterInterceptor<T> {
+    void aroundWriteTo(WriterInterceptorContext<T> context) 
+        throws IOException, WebApplicationException;
 }
 \end{listing}
 
-A filter is a class that implements \RequestFilter\ or \ResponseFilter\ (or both) and is annotated by \Provider. A handler is a class that implements \ReadFromHandler\ or \WriteToHandler\ (or both) and is annotated with \Provider. 
+A filter is a class that implements \RequestFilter, \PreMatchRequestFilter\ or \ResponseFilter\ (or any combination thereof) and is annotated by \Provider. An entity interceptor is a class that implements \ReaderInterceptor\ or \WriterInterceptor\ (or both) and is annotated with \Provider. 
 
-In the Client API, filters implementing \RequestFilter\ MUST be executed \emph{before} the invocation and \emph{before} all handlers implementing \WriteToHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the invocation and \emph{before} all handlers implementing \ReadFromHandler. 
-In the Server API, filters implementing \RequestFilter\ MUST be executed \emph{before} the resource method is called and \emph{before} all handlers implementing \ReadFromHandler; filters implementing \ResponseFilter\ MUST be executed \emph{after} the resource method returns and \emph{before} all handlers implementing \WriteToHandler. In summary, the general rule is: in the {\em direction of flow} filters are always executed before handlers.
+In the Client API, a \RequestFilter\ is executed as part of the invocation pipeline, before the HTTP request is delivered to the network; still in the Client API, a \ResponseFilter\ is executed upon receiving a server response, before control is returned to the application. 
+In the Server API, a \RequestFilter\ is executed upon receiving a request from a client, before the resource method is called (but after it has been matched); still in the Server API, a \ResponseFilter\ is executed as part of the response pipeline, before the HTTP response is delivered to the network.
 
-A handler implementing \ReadFromHandler\ wraps around calls to \code{MessageBodyReader.readFrom}. A handler implementing \WriteToHandler\ wraps around calls to \code{MessageBodyWrite.writeTo} \footnote{In this sense, handlers are similar to {\em interceptors} that are defined on methods known a priori.}. \jaxrs\ implementations are REQUIRED to call registered handlers when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
+Filters that implement \PreMatchRequestFilter\ are supported only as part of the Server API and are executed upon receiving a client request but {\em before} a resource method is matched. Thus, a pre-match filter has the ability to modify the input to the matching algorithm (see Section~\ref{request_matching}) and, consequently, alter its outcome. For example, a pre-match filter can update a request's HTTP method or accept header.
+
+An entity interceptor implementing \ReaderInterceptor\ wraps around calls to \code{MessageBodyReader} method \code{readFrom}. An entity interceptor implementing \WriterInterceptor\ wraps around calls to \code{MessageBodyWriter} method \code{writeTo}. \jaxrs\ implementations are REQUIRED to call registered interceptors when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
 
 \section{Filters}
 \label{filters}
 
-As stated above, a filter implements interface \RequestFilter\ or \ResponseFilter\ or both. Multiple filters are grouped in \emph{filter chains}. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
+A filter implements one or more of the following interfaces:  \RequestFilter, \PreMatchRequestFilter\ and \ResponseFilter. There is a \emph{filter chain} for each kind of filter. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
-A call to a filter's \code{preFilter} or \code{postFilter} methods returns a \code{FilterAction} which is an enumeration of two values: \code{STOP} and \code{NEXT}. If a filter returns \code{NEXT}, implementations are REQUIRED to proceed with the rest of the filter chain; if a filter returns \code{STOP}, implementations are REQUIRED to abort execution of the filter chain. 
+A call to a filter's \code{preFilter}, \code{preMatchFilter} or \code{postFilter} method returns a \code{FilterAction} which is an enumeration of two values: \code{STOP} and \code{NEXT}. If a filter returns \code{NEXT}, implementations are REQUIRED to proceed with the rest of the filter chain; if a filter returns \code{STOP}, implementations are REQUIRED to abort execution of the filter chain. 
 
 The following example shows an implementation of a logging filter: each method simply logs the message and returns \code{NEXT} to continue with the remainder of the filter chain.
 
@@ -60,22 +68,28 @@ class LoggingFilter implements RequestFilter, ResponseFilter {
 }
 \end{listing}
 
-A \FilterContext\ provides access to the request, the response (if available) as well as the ability to create and set new responses. Once the execution of a filter chain is completed, either by reaching the end of the chain or due to a filter returning \code{STOP}, \jaxrs\ implementations MUST get the response returned by \code{FilterContext.getResponse}. If this method returns null, normal execution is resumed; otherwise, the response returned is used and the invocation (Client API) or the resource method invocation (Server API) is omitted.  See Appendix \ref{extension_points} for more information.
+A \FilterContext\ provides access to the request, the response (if available) as well as the ability to create and set new responses. Once the execution of a filter chain is completed, either by reaching the end of the chain or due to a filter returning \code{STOP}, \jaxrs\ implementations MUST get the response returned by \code{FilterContext.getResponse}. If this method returns null, normal execution is resumed; otherwise, the response returned is used and the invocation (Client API) or the resource method call (Server API) is omitted. 
+%See Appendix \ref{extension_points} for more information.
 
-\section{Handlers}
+\begin{ednote}
+Need sample of PreMatchRequestFilter.
+\end{ednote}
 
-A handler implements interface \ReadFromHandler\ or \WriteToHandler\ or both. Multiple handlers are grouped in \emph{handler chains}. Handlers in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
+\section{Entity Interceptors}
 
-Handlers wrap calls to the methods \code{MessageBodyReader.readFrom} or \code{MessageBodyWrite.writeTo}. Handlers SHOULD explicitly call the context method \code{proceed}  to continue the execution of the chain. Because of their wrapping nature, failure to call this method will prevent execution of the wrapped method in the corresponding message body reader or message body writer.
+An entity interceptor implements interface \ReaderInterceptor\ or \WriterInterceptor\ or both. There is an \emph{interceptor chain} for each kind of entity interceptor. Entity interceptors in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
-The following example shows an implementation of a GZIP handler that provides deflate and inflate capabilities~\footnote{This class is not intended to be a complete implementation of a GZIP handler.}
+Entity interceptors wrap calls to the methods \code{readFrom} in classes implementing \code{MessageBodyReader} and \code{writeTo} in classes implementing \code{MessageBodyWriter}. An implementation of an interceptor SHOULD explicitly call the context method \code{proceed} to continue the execution of the chain. Because of their wrapping nature, failure to call this method will prevent execution of the wrapped method in the corresponding message body reader or message body writer.
+
+The following example shows an implementation of a GZIP entity interceptor that provides deflate and inflate capabilities~\footnote{This class is not intended to be a complete implementation of this interceptor.}.
 
 \begin{listing}{1}
 @Provider
-class GzipHandler implements ReadFromHandler, WriteToHandler {
+class GzipWidgetInterceptor implements 
+    ReaderInterceptor<Widget>, WriterInterceptor<Widget> {
 
     @Override
-    public Object readFrom(ReadFromHandlerContext ctx) throws IOException {
+    Widget aroundReadFrom(ReaderInterceptorContext<Widget> ctx) ... {
         InputStream old = ctx.getInputStream();
         ctx.setInputStream(new GZIPInputStream(old));
         try {
@@ -86,7 +100,7 @@ class GzipHandler implements ReadFromHandler, WriteToHandler {
     }
 
     @Override
-    public void writeTo(WriteToHandlerContext ctx) throws IOException {
+    void aroundWriteTo(WriterInterceptorContext<Widget> context) ... {
         OutputStream old = ctx.getOutputStream();
         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(old);
         ctx.setOutputStream(gzipOutputStream);
@@ -101,20 +115,24 @@ class GzipHandler implements ReadFromHandler, WriteToHandler {
 }
 \end{listing}
 
-The context types, \ReadFromHandlerContext\ and \WriteToHandlerContext, provide read and write access to the parameters of the corresponding wrapped methods. In the example shown above, the input and output streams are wrapped and updated in the context object before proceeding. \jaxrs\ implementations MUST use the last parameter values set in the context object when calling the wrapped methods \code{MessageBodyReader.readFrom} and \code{MessageBodyWrite.writeTo}.
+The context types, \ReaderInterceptorContext\ and \WriterInterceptorContext, provide read and write access to the parameters of the corresponding wrapped methods. In the example shown above, the input and output streams are wrapped and updated in the context object before proceeding. \jaxrs\ implementations MUST use the last parameter values set in the context object when calling the wrapped methods \code{MessageBodyReader.readFrom} and \code{MessageBodyWrite.writeTo}.
 
 \section{Lifecycle}
 
-By default, just like all the other providers, a single instance of each filter or handler is instantiated for each \jaxrs\ application. First the constructor is called, then any requested dependencies are injected, then the appropriate methods are called (simultaneously) as needed. Implementations MAY offer alternative lifecycle options beyond the default one. See Section \ref{lifecycle_and_environment} for additional information.
+By default, just like all the other providers, a single instance of each filter or entity interceptor is instantiated for each \jaxrs\ application. First the constructor is called, then any requested dependencies are injected, then the appropriate methods are called (simultaneously) as needed. Implementations MAY offer alternative lifecycle options beyond the default one. See Section \ref{lifecycle_and_environment} for additional information.
 
 \section{Binding}
 
-Binding is the process by which a handler or filter is associated with a resource class or method (Server API) or an invocation (Client API). The forms of binding presented in the next sections are only supported as part of the Server API. See Section \ref{binding_in_client_api} for binding in the Client API.
+Binding is the process by which a filter or interceptor is associated with a resource class or method (Server API) or an invocation (Client API). The forms of binding presented in the next sections are only supported as part of the Server API. See Section \ref{binding_in_client_api} for binding in the Client API.
+
+\subsection{Global Binding}
+
+Global binding is the default type of binding. A filter or interceptor that is only annotated by \Provider\ is bound globally, i.e.~it applies to all resource methods in an application. For example, the \code{LoggingFilter} defined in Section \ref{filters} is bound globally. If this filter is part of an application, requests and responses will be logged for all resource methods. 
 
 \subsection{Name Binding}
 \label{Name_Binding}
 
-A handler or filter can be associated with a resource class or method by declaring a new \emph{binding} annotation \`{a} la CDI~\cite{jsr299}. These annotations are declared using the \jaxrs\ meta-annotation \NameBinding\ and are used to decorate both the filter (or handler) and the resource method (or class). For example, the \code{LoggingFilter} defined in Section \ref{filters} can be bound to the method \code{hello} in \code{MyResourceClass} as follows:
+An filter or interceptor can be associated with a resource class or method by declaring a new \emph{binding} annotation \`{a} la CDI~\cite{jsr299}. These annotations are declared using the \jaxrs\ meta-annotation \NameBinding\ and are used to decorate both the filter (or interceptor) and the resource method (or class). For example, the \code{LoggingFilter} defined in Section \ref{filters} can be bound to the method \code{hello} in \code{MyResourceClass}, instead of globally, as follows:
 
 \begin{listing}{1}
 @Provider
@@ -146,33 +164,16 @@ According to the semantics of \code{LoggingFilter}, the request will be logged b
 public @interface Logged { }
 \end{listing}
 
-Binding annotations that decorate resource classes apply to all the resource methods defined in them. A filter or handler class can be decorated with multiple binding annotations. Similarly, a resource method can be decorated with multiple binding annotations.  Each binding annotation instance in a resource method denotes a set of filters and handlers whose class definitions are decorated with that annotation (possibly among others). The final set of (static) filters and handlers is the union of all these sets \footnote{By definition of {\em set}, any duplicate filters or handlers in each individual set or the final set are eliminated.}; this set must be sorted based on priorities as explained in Section \ref{priorities}. 
-
-\subsection{Global Binding}
-
-Name binding is a form of {\em local} binding in which filters or handlers are bound to specific methods or classes. Occasionally, it is useful to declare a handler or filter as being bound to all the resource classes in an application. This can be accomplished by using the \GlobalBinding\ annotation directly on the handler or filter class without the need to declare a new binding annotation. For example, the \code{LoggingFilter} defined in Section \ref{filters} can be defined as follows:
-
-\begin{listing}{1}
-@Provider
-@GlobalBinding
-class LoggingFilter implements RequestFilter, ResponseFilter {
-    ...
-}
-\end{listing}
-
-If this filter is registered as part of an application, requests and responses will be logged for all resource methods. 
-
-A filter or handler whose class is decorated with \GlobalBinding\ cannot be associated with a resource class or method using name binding. Implementations are REQUIRED to report an error if a filter or handler is annotated with both \GlobalBinding\ and any other annotation derived from \NameBinding.
+Binding annotations that decorate resource classes apply to all the resource methods defined in them. A filter or interceptor class can be decorated with multiple binding annotations. Similarly, a resource method can be decorated with multiple binding annotations.  Each binding annotation instance in a resource method denotes a set of filters and interceptors whose class definitions are decorated with that annotation (possibly among others). The final set of (static) filters and interceptors is the union of all these sets \footnote{By definition of {\em set}, any duplicate filters or interceptors in each individual set or the final set are eliminated.}; this set must be sorted based on priorities as explained in Section \ref{priorities}. 
 
 \subsection{Dynamic Binding}
 
-The annotation-based forms of binding presented thus far are {\em static}.  By having a filter or handler implement the \DynamicBinding\ interface, {\em dynamic} variants of name binding and global binding are possible. In these cases, binding is determined based on (i) the filter or handler being associated to a resource method globally or by name and (ii) the value returned by the \code{isBound} method in \DynamicBinding. 
+The annotation-based forms of binding presented thus far are {\em static}.  By having a filter or interceptor implement the \DynamicBinding\ interface, {\em dynamic} variants of name binding and global binding are possible. In these cases, binding is determined based on (i) the filter or interceptor being associated to a resource method globally or by name and (ii) the value returned by the \code{isBound} method in \DynamicBinding. 
 
 The following example defines a global \code{LoggingFilter} that is bound dynamically to all resource methods in \code{MyResourceClass} that are annotated with \code{@GET}.
 
 \begin{listing}{1}
 @Provider
-@GlobalBinding
 class LoggingFilter implements RequestFilter, DynamicBinding {
 
     public boolean isBound(Class<?> type, Method method) {
@@ -183,7 +184,7 @@ class LoggingFilter implements RequestFilter, DynamicBinding {
 }
 \end{listing}
 
-
+\jaxrs\ implementations SHOULD resolve dynamic binding filters and interceptors at most once for each resource method (typically at deployment time).
 
 \subsection{Binding in Client API}
 \label{binding_in_client_api}
@@ -193,10 +194,11 @@ Binding in the Client API is accomplished via API calls instead of annotations. 
 \section{Priorities}
 \label{priorities}
 
-The order in which handlers and filters are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
-Priorities are represented by integer numbers: the \emph{lower} the number, the \emph{higher} the priority. The default priority for all handlers and filters---when an instance of \BindingPriority\ is absent or is present but without any value---is \code{BindingPriority.USER}. 
+The order in which filters or interceptors are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
+Priorities are represented by integer numbers. All execution chains except
+for the Post chain are sorted in ascending order; the lower the number the higher the priority. The Post filter chain is sorted in descending order to ensure that response filters are executed in {\em reverse order}.
 
-The \code{BindingPriority} class defines additional built-in priorities for security, header decorators, decoders and encoders. For example, the priority of an authentication filter can be set as follows:
+The \code{BindingPriority} class defines a set of built-in priorities for security, header decorators, decoders and encoders. The default binding priority is \code{BindingPriority.USER}. For example, the priority of an authentication filter can be set as follows:
 
 \begin{listing}{1}
 @Provider
@@ -207,14 +209,14 @@ public class AuthenticationFilter implements RequestFilter {
 }
 \end{listing}
 
-Note that even though, as explained in Section \ref{binding_in_client_api}, annotations are not used for binding in the Client API, they are still used to define priorities. Therefore, if a priority other than the default is required, the \BindingPriority\ annotation must be used for a filter or handler registered using the Client API. 
+Note that even though, as explained in Section \ref{binding_in_client_api}, annotations are not used for binding in the Client API, they are still used to define priorities. Therefore, if a priority other than the default is required, the \BindingPriority\ annotation must be used for a filter or interceptor registered using the Client API. 
 
-Implementations are REQUIRED to sort filters and handlers according to \code{BindingPriority.value()}, using \code{BindingPriority.USER} as the default if the annotation is absent. The order in which filters or handlers that belong to the same priority class are executed is implementation dependent.
+The order in which filters and interceptors that belong to the same priority class are executed is implementation dependent.
 
 \section{Exceptions}
-\label{exceptions_filters_and_handlers}
+\label{exceptions_filters_and_interceptors}
 
-When a filter or handler method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping.
+When a filter or interceptor method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping.
 
 
 

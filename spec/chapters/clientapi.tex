@@ -135,10 +135,10 @@ The following Client API types are configurable: \Client, \Invocation, \Invocati
 
 A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Target\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Target\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached (deep copied) from its parent configuration and changes to the parent and child configurations are not be visible to each other.
 
-\subsection{Filters and Handlers}
-\label{filters_handlers_client}
+\subsection{Filters and Entity Interceptors}
+\label{filters_interceptors_client}
 
-As explained in Chapter \ref{filters_and_handlers}, filters and handlers are defined as JAX-RS providers. Therefore, they can be registered in any of the configurable types listed in the previous section. The following example shows how to register filters and handlers on instances of \Client, \Target\ and \Invocation:
+As explained in Chapter \ref{filters_and_interceptors}, filters and interceptors are defined as JAX-RS providers. Therefore, they can be registered in any of the configurable types listed in the previous section. The following example shows how to register filters and interceptors on instances of \Client, \Target\ and \Invocation:
 
 \begin{listing}{1}
 // Create client and register logging filter
@@ -150,14 +150,14 @@ Target t = client.target("http://examples.org/customers/123");
 t.configuration().register(CachingFilter.class);
 Customer c = t.request("application/xml").get(Customer.class);
 
-// Executes logging filter from client and gzip handler from invocation
+// Executes logging filter from client and gzip interceptor from invocation
 Invocation i = client.target("http://examples.org/gold-customers/")
     .request().buildPost(xml(c));
-i.configuration().register(GzipHandler.class);
+i.configuration().register(GzipInterceptor.class);
 String newId = i.invoke(String.class);
 \end{listing}
 
-In this example, \code{LoggingFilter} is inherited by each instance of \Target\ created from \code{client}; the providers \code{CachingFilter} and \code{GzipHandler} are defined on a \Target\ and an \Invocation, respectively.
+In this example, \code{LoggingFilter} is inherited by each instance of \Target\ created from \code{client}; the providers \code{CachingFilter} and \code{GzipInterceptor} are defined on a \Target\ and an \Invocation, respectively.
 
 
 

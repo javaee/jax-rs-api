@@ -113,8 +113,8 @@ This is a note.
 \item[Sub-resource locator] A method of a {\em resource class} that is used to locate sub-resources of the corresponding resource, see Section \ref{sub_resources}.
 \item[Sub-resource method] A method of a {\em resource class} that is used to handle requests on a sub-resource of the corresponding resource, see Section \ref{sub_resources}.
 \item[Provider] An implementation of a \jaxrs\ extension interface. Providers extend the capabilities of a \jaxrs\ runtime and are described in Chapter \ref{providers}.
-\item[Filter] A class that implements \code{RequestFilter} or \code{ResponseFilter} (or both) and is registered as a provider.
-\item[Handler] A class that implements \code{ReadFromHandler} or \code{WriteFromHandler} (or both) and is registered as a provider.
+\item[Filter] A class that implements \code{RequestFilter}, \code{PreMatchRequestFilter} or \code{ResponseFilter} (or any combination thereof) and is registered as a provider.
+\item[Entity Interceptor] A class that implements \code{ReaderInterceptor} or \code{WriterInterceptor} (or both) and is registered as a provider.
 \item[Invocation] A Client API object that can be configured to issue an HTTP request.
 \item[Target] The recipient of an Invocation, identified by a URI.
 \item[Link] A URI with additional meta-data such as a media type, a relation, a title, etc.
