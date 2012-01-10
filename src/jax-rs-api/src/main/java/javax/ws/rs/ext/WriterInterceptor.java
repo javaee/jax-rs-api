@@ -63,7 +63,7 @@ public interface WriterInterceptor<T> {
      * of the wrapped method called are available from <code>context</code>.
      * Implementations of this method SHOULD explicitly call
      * {@link javax.ws.rs.ext.WriterInterceptorContext#proceed} to invoke
-     * the next handler in the chain, and ultimately the wrapped method.
+     * the next interceptor in the chain, and ultimately the wrapped method.
      *
      * @param context invocation context
      * @throws IOException if an IO error arises

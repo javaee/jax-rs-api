@@ -152,7 +152,7 @@ public interface Configuration {
      * configured instance.
      * <p/>
      * As opposed to the providers registered by the
-     * {@link #register(java.lang.Object[]) provider instances}, providers
+     * {@link #register(java.lang.Object) provider instances}, providers
      * registered using this method are instantiated and properly injected
      * by the JAX-RS implementation provider. In case of a conflict between
      * a registered provider instance and instantiated registered provider class,

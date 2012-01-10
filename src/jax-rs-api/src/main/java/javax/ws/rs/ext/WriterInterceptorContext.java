@@ -60,9 +60,9 @@ import javax.ws.rs.core.MultivaluedMap;
 public interface WriterInterceptorContext<T> extends InterceptorContext<T> {
 
     /**
-     * Proceed to the next handler in the chain. Handlers MUST explicitly
+     * Proceed to the next interceptor in the chain. Interceptors MUST explicitly
      * call this method to continue the execution chain; the call to this
-     * method in the last handler of the chain will invoke
+     * method in the last interceptor of the chain will invoke
      * {@link javax.ws.rs.ext.MessageBodyWriter#writeTo} method.
      *
      * @throws IOException if an IO exception arises

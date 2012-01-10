@@ -60,13 +60,13 @@ import javax.ws.rs.core.MultivaluedMap;
 public interface ReaderInterceptorContext<T> extends InterceptorContext<T> {
 
     /**
-     * Proceed to the next handler in the chain. Return the result of the 
-     * next handler invoked. Handlers MUST explicitly call this method
+     * Proceed to the next interceptor in the chain. Return the result of the 
+     * next interceptor invoked. Interceptors MUST explicitly call this method
      * to continue the execution chain; the call to this method in the 
-     * last handler of the chain will invoke
+     * last interceptor of the chain will invoke
      * {@link javax.ws.rs.ext.MessageBodyReader#readFrom}.
      * 
-     * @return result of next handler invoked
+     * @return result of next interceptor invoked
      * @throws IOException if an IO error arises
      */
     T proceed() throws IOException;

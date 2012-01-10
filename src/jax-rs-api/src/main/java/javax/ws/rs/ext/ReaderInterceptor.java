@@ -63,11 +63,11 @@ public interface ReaderInterceptor<T> {
      * of the wrapped method called are available from <code>context</code>.
      * Implementations of this method SHOULD explicitly call 
      * {@link javax.ws.rs.ext.ReaderInterceptorContext#proceed} to invoke
-     * the next handler in the chain, and ultimately the wrapped method.
+     * the next interceptor in the chain, and ultimately the wrapped method.
      *
      * @param context invocation context
-     * @return result of next handler invoked or the wrapped method if
-     *         last handler in chain
+     * @return result of next interceptor invoked or the wrapped method if
+     *         last interceptor in chain
      * @throws IOException if an IO error arises
      * @throws WebApplicationException thrown by wrapped method
      */
