@@ -218,7 +218,19 @@ The order in which filters and interceptors that belong to the same priority cla
 
 When a filter or interceptor method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping.
 
+\section{Relationship between Filters and Interceptors}
 
+As stated above, filters and entity interceptors are used to extend an implementation in order to provide capabilities such as logging, security, etc. Filters have access to the complete message and can be used for multiple purposes. However, any task that involves transforming a message entity is likely better suited for an entity interceptor. 
 
+It is worth mentioning that an interceptor may be triggered by a filter that reads (or writes) an entity. This is 
+because filters may trigger message body readers (or writers) and these may, in turn, be wrapped by reader (or writer) interceptors. Figure \ref{jaxrs_pipeline} depicts this relationship. 
 
+Figure \ref{jaxrs_pipeline} also shows the relationship between pre-match filters and entity interceptors: namely, given that these type of filters are executed before matching, only global interceptors wrap calls to the message body readers and writers in this case.
+
+\begin{figure}[H]
+\label{jaxrs_pipeline}
+\centering
+\includegraphics{chapters/jaxrs_pipeline.pdf}
+\caption{JAX-RS Server Processing Pipeline.}
+\end{figure}
 
