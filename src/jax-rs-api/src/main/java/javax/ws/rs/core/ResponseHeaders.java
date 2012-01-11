@@ -88,6 +88,7 @@ import java.util.Set;
  * via its {@link Response#getHeaders() getHeaders()} method.
  *
  * @author Marek Potociar
+ * @see Context
  * @since 2.0
  */
 public interface ResponseHeaders {
