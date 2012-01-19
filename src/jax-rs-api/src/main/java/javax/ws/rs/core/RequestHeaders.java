@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * general-header =
@@ -98,6 +97,7 @@ import java.util.Set;
  * via its {@link Request#getHeaders() getHeaders()} method.
  *
  * @author Marek Potociar
+ * @see Context
  * @since 2.0
  */
 public interface RequestHeaders {
