@@ -55,13 +55,6 @@ import javax.ws.rs.core.Response;
 public interface FilterContext {
 
     /**
-     * Enumeration to control how the filter chain is processed.
-     * A filter can return {@link #NEXT} to continue the filter chain 
-     * or {@link #STOP} to abort it.
-     */
-    public enum FilterAction { STOP, NEXT };
-
-    /**
      * Get a mutable map of properties that can be used for
      * communication between interceptors and between filters. In
      * the Client API, this property map is initialized by calling
@@ -104,9 +97,10 @@ public interface FilterContext {
 
     /**
      * Set the response object in the context. A caching filter
-     * could set a response by calling this method and returning
-     * {@link javax.ws.rs.ext.FilterContext.FilterAction#STOP} to
-     * stop the filter chain.
+     * that implements {@link RequestFilter} or {@link PreMatchRequestFilter}
+     * could set a response by calling this method. See 
+     * {@link RequestFilter#preFilter} and {@link PreMatchRequestFilter#preMatchFilter}
+     * for more information.
      * 
      * @param res response object to be set
      */

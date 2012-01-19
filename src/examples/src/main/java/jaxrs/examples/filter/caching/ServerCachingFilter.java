@@ -44,12 +44,12 @@ import java.io.IOException;
 import javax.ws.rs.BindingPriority;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.RequestFilter;
 
 /**
- *
+ * ServerCachingFilter class.
+ * 
  * @author Santiago Pericas-Geertsen
  */
 @Provider
@@ -57,13 +57,11 @@ import javax.ws.rs.ext.RequestFilter;
 public class ServerCachingFilter implements RequestFilter {
 
     @Override
-    public FilterAction preFilter(FilterContext ctx) throws IOException {
+    public void preFilter(FilterContext ctx) throws IOException {
         Response.ResponseBuilder res = getCachedResponse(ctx);
         if (res != null) {
-            ctx.setResponse(res.build());
-            return FilterAction.STOP;     // break filter chain
+            ctx.setResponse(res.build());   // stops filter chain
         }
-        return FilterAction.NEXT;
     }
 
     private Response.ResponseBuilder getCachedResponse(FilterContext ctx) {

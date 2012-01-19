@@ -45,7 +45,6 @@ import javax.ws.rs.BindingPriority;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.RequestFilter;
 import javax.ws.rs.ext.ResponseFilter;
@@ -60,15 +59,13 @@ import javax.ws.rs.ext.ResponseFilter;
 public class LoggingFilter implements RequestFilter, ResponseFilter {
 
     @Override
-    public FilterAction preFilter(FilterContext ctx) throws IOException {
+    public void preFilter(FilterContext ctx) throws IOException {
         logRequest(ctx.getRequest());
-        return FilterAction.NEXT;
     }
 
     @Override
-    public FilterAction postFilter(FilterContext ctx) throws IOException {
+    public void postFilter(FilterContext ctx) throws IOException {
         logResponse(ctx.getResponse());
-        return FilterAction.NEXT;
     }
 
     private void logRequest(Request req) {

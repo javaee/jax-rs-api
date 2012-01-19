@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.FilterContext.FilterAction;
 import javax.ws.rs.ext.ResponseFilter;
 
 /**
@@ -68,7 +67,7 @@ public class CacheResponseHandler implements ResponseFilter {
     }
 
     @Override
-    public FilterAction postFilter(FilterContext ctx) throws IOException {
+    public void postFilter(FilterContext ctx) throws IOException {
         if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
             URI uri = ctx.getRequest().getUri();
             Response.ResponseBuilder responseBuilder = ctx.getResponseBuilder();
@@ -77,7 +76,6 @@ public class CacheResponseHandler implements ResponseFilter {
             cache.put(uri.toString(), entry);
             responseBuilder.entity(new ByteArrayInputStream(body));
         }
-        return FilterAction.NEXT;
     }
 
     public static byte[] readFromStream(int bufferSize, InputStream entityStream) {
