@@ -10,13 +10,13 @@ Filters execute code at an extension point but without wrapping a method invocat
 
 \begin{listing}{1}
 public interface RequestFilter {
-    FilterAction preFilter(FilterContext ctx) throws IOException;
+    void preFilter(FilterContext ctx) throws IOException;
 }
 public interface ResponseFilter {
-    FilterAction postFilter(FilterContext ctx) throws IOException;
+    void postFilter(FilterContext ctx) throws IOException;
 }
 public interface PreMatchRequestFilter {
-    FilterAction preMatchFilter(FilterContext ctx) throws IOException;
+    void preMatchFilter(FilterContext ctx) throws IOException;
 }
 \end{listing}
 
@@ -31,12 +31,10 @@ public interface WriterInterceptor<T> {
 }
 \end{listing}
 
-A filter is a class that implements \RequestFilter, \PreMatchRequestFilter\ or \ResponseFilter\ (or any combination thereof) and is annotated by \Provider. An entity interceptor is a class that implements \ReaderInterceptor\ or \WriterInterceptor\ (or both) and is annotated with \Provider. 
+A filter is a class that implements \RequestFilter, \PreMatchRequestFilter\ or \ResponseFilter\ (or any combination thereof) and is annotated with \Provider. An entity interceptor is a class that implements \ReaderInterceptor\ or \WriterInterceptor\ (or both) and is annotated with \Provider. 
 
 In the Client API, a \RequestFilter\ is executed as part of the invocation pipeline, before the HTTP request is delivered to the network; still in the Client API, a \ResponseFilter\ is executed upon receiving a server response, before control is returned to the application. 
 In the Server API, a \RequestFilter\ is executed upon receiving a request from a client, before the resource method is called (but after it has been matched); still in the Server API, a \ResponseFilter\ is executed as part of the response pipeline, before the HTTP response is delivered to the network.
-
-Filters that implement \PreMatchRequestFilter\ are supported only as part of the Server API and are executed upon receiving a client request but {\em before} a resource method is matched. Thus, a pre-match filter has the ability to modify the input to the matching algorithm (see Section~\ref{request_matching}) and, consequently, alter its outcome. For example, a pre-match filter can update a request's HTTP method or accept header.
 
 An entity interceptor implementing \ReaderInterceptor\ wraps around calls to \code{MessageBodyReader} method \code{readFrom}. An entity interceptor implementing \WriterInterceptor\ wraps around calls to \code{MessageBodyWriter} method \code{writeTo}. \jaxrs\ implementations are REQUIRED to call registered interceptors when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
 
@@ -45,35 +43,52 @@ An entity interceptor implementing \ReaderInterceptor\ wraps around calls to \co
 
 A filter implements one or more of the following interfaces:  \RequestFilter, \PreMatchRequestFilter\ and \ResponseFilter. There is a \emph{filter chain} for each kind of filter. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
-A call to a filter's \code{preFilter}, \code{preMatchFilter} or \code{postFilter} method returns a \code{FilterAction} which is an enumeration of two values: \code{STOP} and \code{NEXT}. If a filter returns \code{NEXT}, implementations are REQUIRED to proceed with the rest of the filter chain; if a filter returns \code{STOP}, implementations are REQUIRED to abort execution of the filter chain. 
 
-The following example shows an implementation of a logging filter: each method simply logs the message and returns \code{NEXT} to continue with the remainder of the filter chain.
+The following example shows an implementation of a logging filter: each method simply logs the message and returns.
 
 \begin{listing}{1}
 @Provider
 class LoggingFilter implements RequestFilter, ResponseFilter {
 
     @Override
-    public FilterAction preFilter(FilterContext ctx) throws IOException {
+    public void preFilter(FilterContext ctx) throws IOException {
         logRequest(ctx.getRequest());
-        return FilterAction.NEXT;
     }
 
     @Override
-    public FilterAction postFilter(FilterContext ctx) throws IOException {
+    public void postFilter(FilterContext ctx) throws IOException {
         logResponse(ctx.getResponse());
-        return FilterAction.NEXT;
     }
     ...
 }
 \end{listing}
 
-A \FilterContext\ provides access to the request, the response (if available) as well as the ability to create and set new responses. Once the execution of a filter chain is completed, either by reaching the end of the chain or due to a filter returning \code{STOP}, \jaxrs\ implementations MUST get the response returned by \code{FilterContext.getResponse}. If this method returns null, normal execution is resumed; otherwise, the response returned is used and the invocation (Client API) or the resource method call (Server API) is omitted. 
-%See Appendix \ref{extension_points} for more information.
+A \FilterContext\ provides access to the request, the response (in response filters) as well as the ability to create and set new responses.
 
-\begin{ednote}
-Need sample of PreMatchRequestFilter.
-\end{ednote}
+Request filters implementing \RequestFilter\ or \PreMatchRequestFilter\ can implicitly stop the execution of their corresponding chains by setting a response in their associated context. If a response is set by a filter of this type, implementations are REQUIRED to abort execution of the chain and treat the response object as if produced by calling a resource method (Server API) or by executing an HTTP invocation (Client API). For example, a client {\em caching} filter may set a response object in the context on a cache hit to optimize network access.
+
+Filters that implement \PreMatchRequestFilter\ are supported only as part of the Server API and are executed upon receiving a client request but {\em before} a resource method is matched. Thus, a pre-match filter has the ability to modify the input to the matching algorithm (see Section~\ref{request_matching}) and, consequently, alter its outcome. 
+
+The following example uses a pre-match filter in order to tunnel requests via POST by using the X-HTTP-Method-Override header to overwrite the HTTP method prior to resource matching.
+
+\begin{listing}{1}
+@Provider
+class PostMethodOverrideFilter implements PreMatchRequestFilter {
+
+  @Override
+  public void preMatchFilter(FilterContext context) throws IOException {
+    Request request = context.getRequest();
+        
+    if (request.getMethod().equalsIgnoreCase("POST")) {
+      String m = request.getHeaders().getHeader("X-HTTP-Method-Override");
+      if (m != null) {
+        request = context.getRequestBuilder().method(m).build();
+        context.setRequest(request);
+      }
+    }
+  }
+}
+\end{listing}
 
 \section{Entity Interceptors}
 
@@ -126,8 +141,9 @@ By default, just like all the other providers, a single instance of each filter 
 Binding is the process by which a filter or interceptor is associated with a resource class or method (Server API) or an invocation (Client API). The forms of binding presented in the next sections are only supported as part of the Server API. See Section \ref{binding_in_client_api} for binding in the Client API.
 
 \subsection{Global Binding}
+\label{global_binding}
 
-Global binding is the default type of binding. A filter or interceptor that is only annotated by \Provider\ is bound globally, i.e.~it applies to all resource methods in an application. For example, the \code{LoggingFilter} defined in Section \ref{filters} is bound globally. If this filter is part of an application, requests and responses will be logged for all resource methods. 
+Global binding is the default type of binding. A filter or interceptor that is only annotated with \Provider\ is bound globally, i.e.~it applies to all resource methods in an application. For example, the \code{LoggingFilter} defined in Section \ref{filters} is bound globally. If this filter is part of an application, requests and responses will be logged for all resource methods. 
 
 \subsection{Name Binding}
 \label{Name_Binding}
@@ -225,7 +241,7 @@ As stated above, filters and entity interceptors are used to extend an implement
 It is worth mentioning that an interceptor may be triggered by a filter that reads (or writes) an entity. This is 
 because filters may trigger message body readers (or writers) and these may, in turn, be wrapped by reader (or writer) interceptors. Figure \ref{jaxrs_pipeline} depicts this relationship. 
 
-Figure \ref{jaxrs_pipeline} also shows the relationship between pre-match filters and entity interceptors: namely, given that these type of filters are executed before matching, only global interceptors wrap calls to the message body readers and writers in this case.
+Figure \ref{jaxrs_pipeline} also shows the relationship between pre-match filters and entity interceptors: namely, given that these type of filters are executed before matching, only interceptors bound globally wrap calls to the message body readers and writers in this case.
 
 \begin{figure}[H]
 \label{jaxrs_pipeline}
