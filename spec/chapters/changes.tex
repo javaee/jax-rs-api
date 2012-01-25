@@ -3,46 +3,57 @@
 \section{Changes Since 2.0 Early Draft}
 
 \begin{itemize}
-\item Section \ref{exceptions_providers}: new section that describes exception handling for all providers. Related changes to reference this new section.
-\item Section \ref{exceptions_filters_and_interceptors}: new section for filter and interceptor exceptions. Related changes to reference this new section.
-\item Section \ref{request_matching} updated step 2a so that it only goes to step 3 when $M \neq \{\}$. 
+\item Section \ref{expert_group}: Updated 2.0 expert group member list.
+\item Section \ref{acks}: Updated acknowledgements for 2.0 version.
+\item Section \ref{exceptions_providers}: New section that describes exception handling for all providers. Related changes to reference this new section.
+\item Section \ref{exceptions_filters_and_interceptors}: New section for filter and interceptor exceptions. Related changes to reference this new section.
+\item Section \ref{request_matching}: Updated step 2a so that it only goes to step 3 when $M \neq \{\}$. 
+\item Chapter \ref{filters_and_interceptors}: New extension point for pre-match filters that are executed before resource matching.
+\item Chapter \ref{filters_and_interceptors}: Filter methods no longer return a next action; the execution of a request filter chain is stopped by setting a response in the associated context.
+\item Chapter \ref{filters_and_interceptors}: Handlers renamed to entity interceptors for clarity (in this log included).
+\item Section \ref{global_binding}: Global binding is now the default for filters and entity interceptors. The annotation \code{@GlobalBinding} has been dropped.
+\item Section \ref{priorities}: Clarified reverse ordering of the response filter chain based on binding priorities.
+\item Appendix C: Removed from this version after changes to Chapter \ref{filters_and_interceptors}.
+\item Chapter \ref{validation}: Moved to an instantiate-then-validate strategy in which validation of constructor parameters and setters is no longer supported.
+\item Section \ref{validation_phases_and_error_reporting}: Simplified validation process to better align with Bean Validation 1.1 \cite{bv11}. In particular, validation of resource classes, fields and property getters are all carried out in a single step.
+
 \end{itemize}
 
 \section{Changes Since 1.1 Release}
 
 \begin{itemize}
-\item Section \ref{status}: updated URLs to JSR pages, etc.
-\item Section \ref{non_goals}: removed Client APIs as non-goal.
-\item Section \ref{terminology}: added new terminology.
-\item Section \ref{expert_group}: listed 2.0 expert group members.
-\item Section \ref{acks}: acknowledgments for 2.0 version.
-\item Chapter \ref{applications}: somewhat generic section on validation removed to avoid confusion with the type of validation defined in Chapter \ref{validation}.
-\item Section \ref{servlet}: clarified used of Servlet 3 framework pluggability. Added sample web.xml files and a table summarizing all cases.
-\item Section \ref{entity_parameters}: clarified notion of entity parameter as a parameter not annotated with any JAX-RS annotation.
-\item Section \ref{declaring_method_capabilities}: explained use of quality factor q. Introduced server-side quality factor qs and included example.
-\item Section \ref{annotationinheritance}: added sentence about conflicting annotations and recommendation to repeat annotations for consistency with other Java EE specifications.
-\item Section \ref{reqpreproc}: highlighted input and output for each step in algorithm. Minor edits to simplify presentation.
-\item Section \ref{determine_response_type}: updated algorithm to support server-side quality factor qs.
-\item Chapter \ref{client_api}: new chapter Client API.
-\item Chapter \ref{filters_and_interceptors}: new chapter Filters and Interceptors.
-\item Chapter \ref{validation}: new chapter Validation.
-\item Chapter \ref{asynchronous_processing}: new chapter Asynchronous Processing.
-\item Appendix \ref{annotation_table}: new section for 2.0 annotations.
-%\item Appendix \ref{extension_points}: new appendix describing filter and interceptor extension points.
+\item Section \ref{status}: Updated URLs to JSR pages, etc.
+\item Section \ref{non_goals}: Removed Client APIs as non-goal.
+\item Section \ref{terminology}: Added new terminology.
+\item Section \ref{expert_group}: List 2.0 expert group members.
+\item Section \ref{acks}: acknowledgements for 2.0 version.
+\item Chapter \ref{applications}: Somewhat generic section on validation removed to avoid confusion with the type of validation defined in Chapter \ref{validation}.
+\item Section \ref{servlet}: Clarified used of Servlet 3 framework pluggability. Added sample web.xml files and a table summarizing all cases.
+\item Section \ref{entity_parameters}: Clarified notion of entity parameter as a parameter not annotated with any JAX-RS annotation.
+\item Section \ref{declaring_method_capabilities}: Explained use of quality factor q. Introduced server-side quality factor qs and included example.
+\item Section \ref{annotationinheritance}: Added sentence about conflicting annotations and recommendation to repeat annotations for consistency with other Java EE specifications.
+\item Section \ref{reqpreproc}: Highlighted input and output for each step in algorithm. Minor edits to simplify presentation.
+\item Section \ref{determine_response_type}: Updated algorithm to support server-side quality factor qs.
+\item Chapter \ref{client_api}: New chapter Client API.
+\item Chapter \ref{filters_and_interceptors}: New chapter Filters and Interceptors.
+\item Chapter \ref{validation}: New chapter Validation.
+\item Chapter \ref{asynchronous_processing}: New chapter Asynchronous Processing.
+\item Appendix \ref{annotation_table}: New section for 2.0 annotations.
+\item Appendix C: New appendix describing filter and interceptor extension points.
 \end{itemize}
 
 \section{Changes Since 1.0 Release}
 
 \begin{itemize}
-\item Section \ref{servlet}: new requirements for Servlet 3 containers.
-\item Section \ref{javaee}: requirements for Java EE 6 containers.
-\item Section \ref{standard_entity_providers}: requirements on standard entity providers when presented with an empty request entity.
-\item Section \ref{message_body_writer}: add closeness of generic type as secondary sort key.
-\item Section \ref{message_body_reader}: default to application/octet-stream if a request does not contain a content-type header.
-\item Section \ref{resource_field}: add support for static fromString method.
-\item Section \ref{annotationinheritance}: clarify annotation inheritance.
-\item Section \ref{security_context}: fix typo.
-\item Section \ref{servlet_container}: additional considerations related to filters consuming request bodies.
+\item Section \ref{servlet}: New requirements for Servlet 3 containers.
+\item Section \ref{javaee}: Requirements for Java EE 6 containers.
+\item Section \ref{standard_entity_providers}: Requirements on standard entity providers when presented with an empty request entity.
+\item Section \ref{message_body_writer}: Add closeness of generic type as secondary sort key.
+\item Section \ref{message_body_reader}: Default to application/octet-stream if a request does not contain a content-type header.
+\item Section \ref{resource_field}: Add support for static fromString method.
+\item Section \ref{annotationinheritance}: Clarify annotation inheritance.
+\item Section \ref{security_context}: Fix typo.
+\item Section \ref{servlet_container}: Additional considerations related to filters consuming request bodies.
 \end{itemize}
 
 \section{Changes Since Proposed Final Draft}
