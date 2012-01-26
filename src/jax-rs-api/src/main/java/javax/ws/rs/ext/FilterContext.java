@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -45,9 +45,9 @@ import javax.ws.rs.core.Response;
 
 /**
  * Context class used by filters implementing
- * {@link javax.ws.rs.ext.RequestFilter} or 
- * {@link javax.ws.rs.ext.ResponseFilter} (or both). 
- * 
+ * {@link javax.ws.rs.ext.RequestFilter} or
+ * {@link javax.ws.rs.ext.ResponseFilter} (or both).
+ *
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
@@ -69,28 +69,28 @@ public interface FilterContext {
      * @see javax.ws.rs.client.Configuration
      */
     Map<String, Object> getProperties();
-    
+
     /**
      * Get the request object.
-     * 
+     *
      * @return request object being filtered
      */
     Request getRequest();
 
     /**
-     * Get the response object. May return null if a 
+     * Get the response object. May return null if a
      * response is not available, e.g. in a
      * {@link javax.ws.rs.ext.RequestFilter}, and has not been
      * set by calling
      * {@link #setResponse(javax.ws.rs.core.Response)}.
-     * 
+     *
      * @return response object being filtered or null
      */
     Response getResponse();
 
     /**
-     * Set the request object in the context. 
-     * 
+     * Set the request object in the context.
+     *
      * @param req request object to be set
      */
     void setRequest(Request req);
@@ -98,41 +98,41 @@ public interface FilterContext {
     /**
      * Set the response object in the context. A caching filter
      * that implements {@link RequestFilter} or {@link PreMatchRequestFilter}
-     * could set a response by calling this method. See 
+     * could set a response by calling this method. See
      * {@link RequestFilter#preFilter} and {@link PreMatchRequestFilter#preMatchFilter}
      * for more information.
-     * 
+     *
      * @param res response object to be set
      */
     void setResponse(Response res);
-    
+
     /**
      * Get a builder for the request object. A newly built request can
      * be set by calling {@link #setRequest(javax.ws.rs.core.Request)}.
-     * 
-     * @return request builder object 
+     *
+     * @return request builder object
      */
     Request.RequestBuilder getRequestBuilder();
-    
+
     /**
-     * Get a builder for the response object. May return null if a 
+     * Get a builder for the response object. May return null if a
      * response is not available, e.g. in a
-     * {@link javax.ws.rs.ext.RequestFilter}, and has not been set. 
-     * A newly built response can be set by calling 
+     * {@link javax.ws.rs.ext.RequestFilter}, and has not been set.
+     * A newly built response can be set by calling
      * {@link #setResponse(javax.ws.rs.core.Response)}.
-     * 
+     *
      * @return response builder object or null
      */
     Response.ResponseBuilder getResponseBuilder();
-            
+
     /**
      * Create a fresh response builder instance. A caching filter
      * could call this method to get a response builder and
      * initialize it from a cache. This method does not update
      * the state of the context object.
-     * 
+     *
      * @return newly created response builder
-     * @see #setResponse(javax.ws.rs.core.Response) 
+     * @see #setResponse(javax.ws.rs.core.Response)
      */
     Response.ResponseBuilder createResponse();
 }

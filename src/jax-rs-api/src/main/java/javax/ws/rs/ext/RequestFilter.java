@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,16 +42,16 @@ package javax.ws.rs.ext;
 import java.io.IOException;
 
 /**
- * <p>Interface implemented by filters invoked at the <emph>Pre</emph> 
- * extension point. Filters implementing this interface MUST be 
+ * <p>Interface implemented by filters invoked at the <emph>Pre</emph>
+ * extension point. Filters implementing this interface MUST be
  * annotated with {@link javax.ws.rs.ext.Provider}.</p>
- * 
- * <p>As part of the client API, these filters are executed before 
+ *
+ * <p>As part of the client API, these filters are executed before
  * the HTTP invocation. As part of the server API, these filters are
  * executed before the resource method is called but after it has been
  * matched. If processing is required before resource matching,
  * a {@link PreMatchRequestFilter} should be used instead.</p>
- * 
+ *
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0

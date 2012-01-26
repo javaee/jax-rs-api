@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,14 +44,14 @@ import java.io.IOException;
 /**
  * <p>Interface implemented by filters invoked at the <emph>PreMatch</emph>
  * extension point. Use a filter of this type to update the input to the
- * JAX-RS matching algorithm, e.g., the HTTP method, Accept header, etc. 
+ * JAX-RS matching algorithm, e.g., the HTTP method, Accept header, etc.
  * Otherwise, the use of a filter invoked at the <emph>Pre</emph> extension
  * point (after resource matching) is recommended.</p>
- * 
+ *
  * <p>Filters implementing
  * this interface MUST be annotated with {@link javax.ws.rs.ext.Provider}.
  * This type of filters is supported only as part of the Server API.</p>
- * 
+ *
  * @author Santiago Pericas-Geertsen
  * @since 2.0
  * @see RequestFilter
