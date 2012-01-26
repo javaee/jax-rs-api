@@ -6,6 +6,7 @@
 \usepackage{tabularx}
 \usepackage{moreverb}
 \usepackage[pdftex]{graphicx}
+\usepackage{amssymb}
 \usepackage{float}
 \usepackage[dvips,
   pdftitle={JAX-RS: Java API for RESTful Web Services},
@@ -77,6 +78,9 @@
 
 \setcounter{secnumdepth}{4}
 
+\newcommand{\footnoteremember}[2]{\footnote{#2}\newcounter{#1}\setcounter{#1}{\value{footnote}}}
+\newcommand{\footnoterecall}[1]{\footnotemark[\value{#1}]}
+
 \include{chapters/intro}
 \include{chapters/applications}
 \include{chapters/resources}
@@ -96,7 +100,6 @@
 
 \include{chapters/annotations}
 \include{chapters/headers}
-%\include{chapters/extensions}
 \include{chapters/changes}
 
 \backmatter
