@@ -65,7 +65,7 @@ public class ClientTest {
         }
 
         // Start all machines in cluster
-        Cluster c = rc.getEntity(Cluster.class);
+        Cluster c = rc.readEntity(Cluster.class);
         for (Machine m : c.getMachines()) {
             // Machine name is need for URI template in link
             Link l = rh.getLinkBuilder("item").build(m.getName());

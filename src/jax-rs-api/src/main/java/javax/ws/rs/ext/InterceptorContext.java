@@ -70,9 +70,7 @@ public interface InterceptorContext<T> {
      * a same property map instance is shared by the following methods:
      * <ul>
      *     <li>{@link javax.ws.rs.core.Request#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.core.Request.RequestBuilder#getProperties() }</li>
      *     <li>{@link javax.ws.rs.core.Response#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.core.Response.ResponseBuilder#getProperties() }</li>
      *     <li>{@link javax.ws.rs.ext.FilterContext#getProperties() }</li>
      *     <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
      * </ul>

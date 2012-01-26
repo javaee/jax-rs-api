@@ -89,7 +89,7 @@ public interface Request {
      *
      * @since 2.0
      */
-    public static interface RequestBuilder extends Request, Cloneable {
+    public static interface RequestBuilder extends Cloneable {
 
         // Headers
         // General headers
@@ -333,60 +333,118 @@ public interface Request {
     public UriBuilder getUriBuilder();
 
     /**
-     * Get the message entity, returns {@code null} if the message does not
-     * contain an entity body.
+     * Get the message entity Java instance. Returns {@code null} if the message
+     * does not contain an entity body.
      *
-     * @return the message entity or {@code null}.
-     * @since 2.0
+     * @return the message entity or {@code null} if message does not contain an
+     *     entity body.
+     * @throws IllegalStateException in case the existing message entity is not
+     *     available as a Java type. This is typically the case when the entity
+     *     input stream has not been converted into a Java type using one of the
+     *     {@code readEntity(...)} methods yet (server side).
+     * @throws MessageProcessingException if the entity was previously fully consumed
+     *     as an {@link InputStream input stream}.
+     *
+     * @see #hasEntity()
+     * @see #readEntity(java.lang.Class)
+     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see javax.ws.rs.ext.MessageBodyWriter
      */
     public Object getEntity();
 
     /**
-     * Get the message entity, returns {@code null} if the message does not
-     * contain an entity body.
-     * <p/>
-     * Entity can also be retrieved as an {@link java.io.InputStream}, in which
-     * case it will be fully consumed once the reading from input stream is finished.
-     * All subsequent calls to {@code getEntity(...)} on the same request instance
-     * will result in a {@link MessageProcessingException} being thrown. It is up
-     * to the consumer of the entity input stream to ensure that consuming the stream
-     * is properly mitigated (e.g. by substituting the consumed request instance
-     * with a new one etc.).
+     * Read the message entity as an instance of specified Java type using
+     * a {@link javax.ws.rs.ext.MessageBodyReader} that supports mapping the
+     * message entity stream onto the requested type. Returns {@code null} if
+     * the message does not contain an entity body.
+     * <p />
+     * A non-null message instance returned from this method will be cached for
+     * subsequent retrievals via {@link #getEntity()}.
+     * If the message has previously been read as an instance of a different Java type,
+     * invoking this method will cause the cached entity instance to be serialized
+     * into an input stream using a compatible {@link javax.ws.rs.ext.MessageBodyWriter}
+     * and then read again from the stream. This operation is thus potentially
+     * expensive and should be used with care.
+     * <p />
+     * Note that a message entity can also be read as a raw entity
+     * {@link java.io.InputStream input stream}, in which case it will be fully
+     * consumed once the reading from the entity input stream is finished.
+     * Once the entity is read as an input stream, any subsequent calls to
+     * one of the {@code readEntity(...)} methods or {@link #getEntity()} method
+     * on the same message instance will result in a {@link MessageProcessingException}
+     * being thrown. It is up to the consumer of the entity input stream to ensure
+     * that consuming the stream is properly mitigated (e.g. by substituting the
+     * consumed response instance with a new one etc.).
      *
-     * @param <T> entity type.
+     * @param <T> entity instance Java type.
      * @param type the type of entity.
-     * @return the message entity or {@code null}.
-     * @throws MessageProcessingException if the content of the message
-     *     cannot be mapped to an entity of the requested type.
+     * @return the message entity or {@code null} if message does not contain an
+     *     entity body.
+     * @throws MessageProcessingException if the content of the message cannot be
+     *     mapped to an entity of the requested type or if the entity input stream
+     *     was previously directly consumed by invoking {@code readEntity(InputStream.class)}.
      * @see #hasEntity()
+     * @see #getEntity()
+     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see javax.ws.rs.ext.MessageBodyWriter
+     * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
-    public <T> T getEntity(Class<T> type) throws MessageProcessingException;
+    public <T> T readEntity(Class<T> type) throws MessageProcessingException;
 
     /**
-     * Get the message entity, returns {@code null} if the message does not
-     * contain an entity body.
+     * Read the message entity as an instance of specified (generic) Java type using
+     * a {@link javax.ws.rs.ext.MessageBodyReader} that supports mapping the
+     * message entity stream onto the requested type. Returns {@code null} if
+     * the message does not contain an entity body.
+     * <p />
+     * A non-null message instance returned from this method will be cached for
+     * subsequent retrievals via {@link #getEntity()}.
+     * If the message has previously been read as an instance of a different Java type,
+     * invoking this method will cause the cached entity instance to be serialized
+     * into an input stream using a compatible {@link javax.ws.rs.ext.MessageBodyWriter}
+     * and then read again from the stream. This operation is thus potentially
+     * expensive and should be used with care.
+     * <p />
+     * Note that a message entity can also be read as a raw entity
+     * {@link java.io.InputStream input stream}, in which case it will be fully
+     * consumed once the reading from the entity input stream is finished.
+     * Once the entity is read as an input stream, any subsequent calls to
+     * one of the {@code readEntity(...)} methods or {@link #getEntity()} method
+     * on the same message instance will result in a {@link MessageProcessingException}
+     * being thrown. It is up to the consumer of the entity input stream to ensure
+     * that consuming the stream is properly mitigated (e.g. by substituting the
+     * consumed response instance with a new one etc.).
      *
-     * @param <T> entity type.
-     * @param entityType the generic type of the entity.
-     * @return the message entity or {@code null}.
-     * @throws MessageProcessingException if the content of the message
-     *     cannot be mapped to an entity of the requested type.
+     * @param <T> entity instance Java type.
+     * @param entityType the type of entity; may be generic.
+     * @return the message entity or {@code null} if message does not contain an
+     *     entity body.
+     * @throws MessageProcessingException if the content of the message cannot be
+     *     mapped to an entity of the requested type or if the entity input stream
+     *     was previously directly consumed by invoking {@code readEntity(InputStream.class)}.
+     * @see #hasEntity()
+     * @see #getEntity()
+     * @see #readEntity(java.lang.Class)
+     * @see javax.ws.rs.ext.MessageBodyWriter
+     * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
-    public <T> T getEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
+    public <T> T readEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
 
     /**
      * Check if there is an entity available in the request. The method returns
      * {@code true} if the entity is present, returns {@code false} otherwise.
      * <p/>
      * In case the request contained an entity, but it was already consumed as an
-     * input stream via {@code getEntity(InputStream.class)}, the method returns
+     * input stream via {@code readEntity(InputStream.class)}, the method returns
      * {@code false}.
      *
      * @return {@code true} if there is an entity present in the request, {@code false}
      *     otherwise.
-     * @see #getEntity(java.lang.Class)
+     * @see #getEntity()
+     * @see #readEntity(java.lang.Class)
+     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
      * @since 2.0
      */
     public boolean hasEntity();
@@ -398,9 +456,7 @@ public interface Request {
      * a same property map instance is shared by the following methods:
      * <ul>
      *     <li>{@link javax.ws.rs.core.Request#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.core.Request.RequestBuilder#getProperties() }</li>
      *     <li>{@link javax.ws.rs.core.Response#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.core.Response.ResponseBuilder#getProperties() }</li>
      *     <li>{@link javax.ws.rs.ext.FilterContext#getProperties() }</li>
      *     <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
      * </ul>
