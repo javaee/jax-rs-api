@@ -84,7 +84,7 @@ public interface Providers {
      *     be the annotations on that parameter returned by
      *     {@code Class.getParameterAnnotations}.
      * @param mediaType the media type of the data that will be read.
-     * @return a MessageBodyReader that matches the supplied criteria or {@link null}
+     * @return a MessageBodyReader that matches the supplied criteria or {@code null}
      *     if none is found.
      */
     <T> MessageBodyReader<T> getMessageBodyReader(Class<T> type,
@@ -115,7 +115,7 @@ public interface Providers {
      *     the annotations on that field returned by
      *     {@code Field.getDeclaredAnnotations}.
      * @param mediaType the media type of the data that will be written.
-     * @return a MessageBodyReader that matches the supplied criteria or {@link null}
+     * @return a MessageBodyReader that matches the supplied criteria or {@code null}
      *     if none is found.
      */
     <T> MessageBodyWriter<T> getMessageBodyWriter(Class<T> type,
@@ -128,7 +128,7 @@ public interface Providers {
      *
      * @param <T> type of the exception handled by the exception mapping provider.
      * @param type the class of exception.
-     * @return an {@link ExceptionMapper} for the supplied type or {@link null}
+     * @return an {@link ExceptionMapper} for the supplied type or {@code null}
      *     if none is found.
      */
     <T extends Throwable> ExceptionMapper<T> getExceptionMapper(Class<T> type);
@@ -151,7 +151,7 @@ public interface Providers {
      * @param <T> type of the context.
      * @param contextType the class of context desired.
      * @param mediaType the media type of data for which a context is required.
-     * @return a matching context resolver instance or {@link null} if no matching
+     * @return a matching context resolver instance or {@code null} if no matching
      *     context providers are found.
      */
     <T> ContextResolver<T> getContextResolver(Class<T> contextType,
