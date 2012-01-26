@@ -8,76 +8,73 @@ Validation is the process of verifying that some data obeys one or more pre-defi
 
 The Server API provides support for extracting request values and mapping them into Java fields, properties and parameters using annotations such as \code{@HeaderParam}, \code{@QueryParam}, etc. It also supports mapping of request entity bodies into Java objects via non-annotated parameters (i.e., parameters without any JAX-RS annotations). See Chapter \ref{resources} for additional information.
 
-In earlier versions of JAX-RS, any additional validation of these values would need to be performed programmatically. This version of JAX-RS introduces support for declarative validation based on the Bean Validation specification \cite{bv11}. For example, consider the following resource class augmented with \emph{constraint} annotations:
+In earlier versions of JAX-RS, any additional validation of these values would need to be performed programmatically. This version of JAX-RS introduces support for declarative validation based on the Bean Validation specification \cite{bv11}. 
+
+The Bean Validation specification \cite{bv11} supports the use of \emph{constraint annotations} as a way of declaratively validating beans, method parameters and method returned values. For example, consider the following resource class augmented with constraint annotations:
 
 \begin{listing}{1}
 @Path("/")
 class MyResourceClass {
 
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void registerUser(
-        @NotNull @FormParam("firstName") String firstName,
-        @NotNull @FormParam("lastName") String lastName,
-        @Email @FormParam("email") String email) {
-        ...
-    }
-}
-\end{listing}
-
-The annotations \NotNull\ and \Email\ impose additional constraints on the form parameters \code{firstName}, \code{lastName} and \code{email}. The \NotNull\ constraint is built-in to the Bean Validation API; the \Email\ constraint is assumed to be user defined in the example above. These constraint annotations are not restricted to method parameters, they can be used in any location in which the JAX-RS binding annotations are allowed, with the exception of property setters as we shall explain shortly. Rather than using method parameters, the \code{MyResourceClass} shown above could have been written as follows:
-
-\begin{listing}{1}
-@Path("/")
-class MyResourceClass {
-
-    @NotNull @FormParam("firstName")
-    private String firstName;
-
-    @NotNull @FormParam("lastName")
-    private String lastName;
-
-    private String email;
-
-    @FormParam("email")
-    public void setEmail(@Email String email) {
-        this.email = email;
-    }
-
+  @POST
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+  public void registerUser(
+    @NotNull @FormParam("firstName") String firstName,
+    @NotNull @FormParam("lastName") String lastName,
+    @Email @FormParam("email") String email) {
     ...
+  }
 }
 \end{listing}
 
-Note that in this version, \code{firstName} and \code{lastName} are fields and \code{email} is a resource class property. Constraint annotations on property setters MUST be specified in the parameter instead of the method as seen in the example. This is the only case in which a JAX-RS binding annotation is not adjacent to a constraint annotation. 
+The annotations \NotNull\ and \Email\ impose additional constraints on the form parameters \code{firstName}, \code{lastName} and \code{email}. The \NotNull\ constraint is built-in to the Bean Validation API; the \Email\ constraint is assumed to be user defined in the example above. These constraint annotations are not restricted to method parameters, they can be used in any location in which the JAX-RS binding annotations are allowed with the exception of constructors and property setters. Rather than using method parameters, the \code{MyResourceClass} shown above could have been written as follows:
 
-\begin{ednote}
-Should JAX-RS 2.0 allow binding annotations on setter parameters in addition to setter methods to lift this restriction while maintaining backward compatibility?. In hindsight, JAX 1.X should have annotated the parameter instead of the setter method.
-\end{ednote}
+\begin{listing}{1}
+@Path("/")
+class MyResourceClass {
 
-Constraint annotations are also allowed on resource classes. In addition to annotating fields and properties, an annotation can be defined for the entire class. Let us assume that \code{@NonEmptyNames} validates that either of the two \emph{name} fields in \code{MyResourceClass} is  not empty. Using such an annotation, the example above can be written follows:
+  @NotNull @FormParam("firstName")
+  private String firstName;
+
+  @NotNull @FormParam("lastName")
+  private String lastName;
+
+  private String email;
+
+  @FormParam("email")
+  public void setEmail(String email) {
+    this.email = email;
+  }
+  
+  @Email
+  public String getEmail() {
+    return email;
+  }
+  ...
+}
+\end{listing}
+
+Note that in this version, \code{firstName} and \code{lastName} are fields initialized via injection and \code{email} is a resource class property. Constraint annotations on properties are specified in their corresponding getters.
+
+Constraint annotations are also allowed on resource classes. In addition to annotating fields and properties, an annotation can be defined for the entire class. Let us assume that \code{@NonEmptyNames} validates that one of the two \emph{name} fields in \code{MyResourceClass} is provided. Using such an annotation, the example above can be extended as follows:
 
 \begin{listing}{1}
 @Path("/")
 @NonEmptyNames
 class MyResourceClass {
 
-    @NotNull @FormParam("firstName")
-    private String firstName;
+  @NotNull @FormParam("firstName")
+  private String firstName;
 
-    @NotNull @FormParam("lastName")
-    private String lastName;
-
-    private String email;
-
-    @FormParam("email")
-    public void setEmail(@Email String email) {
-        this.email = email;
-    }
-    ...
+  @NotNull @FormParam("lastName")
+  private String lastName;
+  
+  private String email;
+  ...
 }
 \end{listing}
 
-Constraint annotations on resource classes are useful for defining cross-field and cross-property constraints. The order in which these validation steps take place is explained in Section~\ref{validation_phases_and_error_reporting}.
+Constraint annotations on resource classes are useful for defining cross-field and cross-property constraints. 
 
 \section{Annotations and Validators}
 
@@ -88,23 +85,23 @@ Annotation constraints and validators are defined in accordance with the Bean Va
 @Retention(RUNTIME)
 @Constraint(validatedBy = EmailValidator.class)
 public @interface Email {
-    String message() default "{com.example.validation.constraints.email}"; 
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+  String message() default "{com.example.validation.constraints.email}"; 
+  Class<?>[] groups() default {};
+  Class<? extends Payload>[] payload() default {};
 }
 \end{listing}
 
-The \Constraint\ annotation must include a reference to the validator class that is used to validate values decorated with the constraint annotation being defined. The \code{EmailValidator} class must implement \code{ConstraintValidator<Email, T>} where \code{T} is the type of values being validated. For example, 
+The \Constraint\ annotation must include a reference to the validator class that will be used to validate decorated values. The \code{EmailValidator} class must implement \code{ConstraintValidator<Email, T>} where \code{T} is the type of values being validated. For example, 
 
 \begin{listing}{1}
 public class EmailValidator implements ConstraintValidator<Email, String> {
-    public void initialize(Email email) { 
-        ...
-    }
+  public void initialize(Email email) { 
+    ...
+  }
 
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        ...
-    }
+  public boolean isValid(String value, ConstraintValidatorContext context) {
+   ...
+  }
 }
 \end{listing}
 
@@ -121,11 +118,11 @@ class User { ... }
 @Path("/")
 class MyResourceClass {
 
-    @POST
-    @Consumes("application/xml")
-    public void registerUser(@Valid User user) {
-        ...
-    }
+  @POST
+  @Consumes("application/xml")
+  public void registerUser(@Valid User user) {
+    ...
+  }
 }
 \end{listing}
 
@@ -135,11 +132,11 @@ In this case, the validator associated with \code{@CheckUser1} will be called to
 @Path("/")
 class MyResourceClass {
 
-    @POST
-    @Consumes("application/xml")
-    public void registerUser(@CheckUser2 User user) {
-        ...
-    }
+  @POST
+  @Consumes("application/xml")
+  public void registerUser(@CheckUser2 User user) {
+    ...
+  }
 }
 \end{listing}
 
@@ -151,19 +148,19 @@ Response entity bodies returned from resource methods can be validated in a simi
 @Path("/")
 class MyResourceClass {
 
-    @GET
-    @Path("{id}")
-    @Produces("application/xml")
-    @Valid @CheckUser2
-    public User getUser(@PathParam("id") String id) {
-        User u = findUser(id);
-        return u;
-    }
-    ...
+  @GET
+  @Path("{id}")
+  @Produces("application/xml")
+  @Valid @CheckUser2
+  public User getUser(@PathParam("id") String id) {
+    User u = findUser(id);
+    return u;
+  }
+  ...
 }
 \end{listing}
 
-Note that \code{@CheckUser2} is explicitly listed and \code{@CheckUser1} is triggered by the presense of the \Valid\ annotation ---see definition of \code{User} class earlier in this section.
+Note that \code{@CheckUser2} is explicitly listed and \code{@CheckUser1} is triggered by the presence of the \Valid\ annotation ---see definition of \code{User} class earlier in this section.
 
 \section{Annotation Inheritance}
 
@@ -171,49 +168,53 @@ The rule for inheritance of constraint annotations is the same as that for all t
 
 \begin{listing}{1}
 interface MyInterface {
-    @GET
-    @Path("{id}")
-    @Produces("application/xml")
-    @CheckUser1
-    public User getUser(@Pattern("[0-9]+") @PathParam("id") String id);
+  @GET
+  @Path("{id}")
+  @Produces("application/xml")
+  @CheckUser1
+  public User getUser(@Pattern("[0-9]+") @PathParam("id") String id);
 }
 
 @Path("/")
 class MyResourceClass implements MyInterface {
 
-    public User getUser(String id) {
-        User u = findUser(id);
-        return u;
-    }
-    ...
+  public User getUser(String id) {
+    User u = findUser(id);
+    return u;
+  }
+  ...
 }
 \end{listing}
 
-In the example above, the constraint annotations \code{@CheckUser1} and \code{@Pattern} will be inherited by the \code{getUser} method in \code{MyResourceClass}. If the \code{getUser} method in \code{MyResourceClass} is decorated with any annotations, constraint or otherwise, all of the annotations in the interface \code{MyInterface} will be ignored. Naturally, since fields in super-classes that are visible in subclasses cannot be overridden, all their annotations (including their constraint annotations) are inherited.
+In the example above, the constraint annotations \code{@CheckUser1} and \code{@Pattern} will be inherited by the \code{getUser} method in \code{MyResourceClass}. If the \code{getUser} method in \code{MyResourceClass} is decorated with any annotations, constraint or otherwise, all of the annotations in the interface \code{MyInterface} will be ignored. Naturally, since fields in super-classes cannot be overridden, all their annotations (including their constraint annotations) are inherited.
 
 \section{Validation Phases and Error Reporting}
 \label{validation_phases_and_error_reporting}
 
-Constraint annotations are allowed in the same locations as the following annotations: \MatrixParam, \QueryParam, \PathParam, \CookieParam, \HeaderParam\ and \Context. Namely, in public constructor parameters, method parameters, fields and bean properties. In addition, they can also decorate resource classes, entity parameters and resource methods. Constraint annotations on bean properties are only allowed on setter parameters and are checked exactly once when the resource class is instantiated.
+Constraint annotations are allowed in the same locations as the following annotations: \MatrixParam, \QueryParam, \PathParam, \CookieParam, \HeaderParam\ and \Context, except for in constructors and property setters. Namely, in resource method parameters, fields and property getters. In addition, they can also decorate resource classes, entity parameters and resource methods (return values). 
 
-In sub-resource classes, whose instances are returned by sub-resource locators, constraint annotations follow the same restrictions as other annotations. Namely, as stated in Section \ref{resource_field}, instances returned by sub-resource locators are expected to be initialized by their creator and field and bean properties are not modified by the JAX-RS implementation. As a general rule, JAX-RS implementations are only REQUIRED to check validation constraints on the values that they modify. It follows that constraint annotations are \emph{not} supported on sub-resource classes fields, properties and constructors, but only in methods.
+The default resource class instance lifecycle is per-request in JAX-RS. Implementations MAY support other lifecycles; the same caveats related to the use of other JAX-RS annotations in resource classes apply to constraint annotations. For example, a constraint validation annotating a constructor parameter in a resource class whose lifecycle is singleton will only be executed once.
 
-The default resource class instance lifecycle is per-request in JAX-RS. Implementations MAY support other lifecycles; the same caveats related to the use of other annotations in resource class apply to constraint annotations. For example, a constraint validation annotating a constructor parameter in a resource class whose lifecycle is singleton (per application) will only be executed once.
-
-When processing a request, is it often desirable to collect and return as many violations as possible rather than abort execution after the first violation is encountered. JAX-RS implementations are REQUIRED to use the following process to validate root resource class instances in the per-request lifecycle:
+When processing a request, is it desirable to collect and return as many violations as possible rather than to abort execution after the first violation is encountered. JAX-RS implementations are REQUIRED to use the following process to validate resource class instances after they have been instantiated:
 
 \begin{description}
-\item[Phase 1] Validate annotations on parameters passed to the resource class constructor.
-\item[Phase 2] Validate annotations on field injections and property setters as they are initialized and invoked, respectively.
-\item[Phase 3] Validate annotations on resource classes.
-\item[Phase 4] Validate annotations on parameters passed to the resource method selected for invocation.
+\item[Phase 1] Inject field values and initialize bean properties as described in Section \ref{resource_field}.
+\item[Phase 2] Validate annotations on resource classes, fields and property getters. The order in which these validations are executed is implementation dependent.
+\item[Phase 3] Validate annotations on parameters passed to the resource method matched. Note that @Valid is supported for method parameters.
+\item[Phase 4] If no constraint violations found thus far, invoke resource method and validate returned value.
 \end{description}
 
-The set of constraint violations is cumulative from phase 1 to phase 4. If after phase 4 the set of constraint violations is non-empty, implementations MUST not invoke the resource method but instead return a response with a status code 400 (Bad Request) and an entity that includes a description of all the violations encountered; the actual representation of such an entity is implementation dependent. 
+The set of constraint violations is cumulative. If at the beginning of phase 4, the set of constraint violations is non-empty, implementations MUST throw a \WebAppExc\ with a status code 400 (Bad Request) and an entity that includes a description of all the violations encountered. If after phase 5, the set of constraint violations is non-empty, implementations MUST throw a \WebAppExc\ with a status code 500 (Internal Server Error) and an entity that includes a description of all the violations encountered. The actual representation of entities returned in these cases is implementation dependent.
 
-%If during any of these phases, an exception of type \code{java.lang.RuntimeException} is thrown, implementations MUST abort the validation %process and return a response with a status code 400 (Bad Request) and an entity that includes a description of all the violations collected up to %that point.
+\begin{ednote}
+Should we require constructor parameter validation for beans that are not managed beans, CDI beans or EJBs? I.e., for beans directly managed by the JAX-RS implementation?
+\end{ednote}
 
- In summary, implementations must collect as many violations as possible until all phases are completed or an unrecoverable error is detected. Note that in order to accumulate as many violations as possible, constructors and property setters may be called and fields may be initialized even if the values passed as parameters or used as initializers are invalid.
+\begin{ednote}
+Should we defined a new type of exception extending \WebAppExc\ to handle these cases? This would enable users to write mappers for them if it takes a Set of ConstraintViolation. However, this would also introduce an API dependency with BV 1.1.
+\end{ednote}
+
+Instances returned by sub-resource locators are validated in the same manner but excluding phase 1 (see Section \ref{resource_field} for more information). Note that sub-resource locators can return instances containing other sub-resource locators: only the instance that is matched on step 3 in Section \ref{request_matching} is validated. This is the instance on which a resource method, as opposed to an intermediate resource locator, is matched.
 
 \section{Exceptions}
 \label{exceptions_validators}
