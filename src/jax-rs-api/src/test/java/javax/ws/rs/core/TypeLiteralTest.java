@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,46 +37,67 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.link.clusterservice;
+package javax.ws.rs.core;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.core.Link;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.ResponseHeaders;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
- * ClientTest class.
+ * Type literal construction unit tests.
  *
- * @author Santiago.Pericas-Geertsen@oracle.com
+ * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public class ClientTest {
+public class TypeLiteralTest {
 
-    public void test() {
-        Client client = ClientFactory.newClient();
+    private static final Type arrayListOfStringsType = new ArrayList<String>() {
 
-        // Get cluster representation -- entry point
-        Response rc = client.target("/cluster").request("application/json").get();
+            private static final long serialVersionUID = 3109256773218160485L;
+        }.getClass().getGenericSuperclass();
 
-        // Ensure cluster is online
-        ResponseHeaders rh = rc.getHeaders();
-        if (rh.hasLink("onliner")) {
-            client.invocation(rh.getLink("onliner")).invoke();
-        }
 
-        // Start all machines in cluster
-        Cluster c = rc.readEntity(Cluster.class);
-        for (Machine m : c.getMachines()) {
-            // Machine name is need for URI template in link
-            Link l = rh.getLinkBuilder("item").build(m.getName());
+    public TypeLiteralTest() {
+    }
 
-            // Create invocation from link and call invoke()
-            Response rm = client.invocation(l).invoke();
+    @Test
+    public void testStaticConstruction() {
 
-            // Start machine if not started already
-            if (rm.getHeaders().hasLink("starter")) {
-                client.invocation(rm.getHeaders().getLink("starter")).invoke();
+        TypeLiteral<ArrayList<String>> tl = TypeLiteral.<ArrayList<String>>of(ArrayList.class, new ParameterizedType() {
+
+            @Override
+            public Type[] getActualTypeArguments() {
+                return new Type[]{String.class};
             }
-        }
+
+            @Override
+            public Type getRawType() {
+                return ArrayList.class;
+            }
+
+            @Override
+            public Type getOwnerType() {
+                return null;
+            }
+        });
+        assertEquals(ArrayList.class, tl.getRawType());
+        assertEquals(arrayListOfStringsType, tl.getType());
+        final Type[] parameterTypes = tl.getParameterTypes();
+
+        assertEquals(1, parameterTypes.length);
+        assertEquals(String.class, parameterTypes[0]);
+    }
+
+    @Test
+    public void testAnnonymousConstruction() {
+        TypeLiteral<ArrayList<String>> tl = new TypeLiteral<ArrayList<String>>() {
+        };
+        assertEquals(ArrayList.class, tl.getRawType());
+        assertEquals(arrayListOfStringsType, tl.getType());
+        final Type[] parameterTypes = tl.getParameterTypes();
+
+        assertEquals(1, parameterTypes.length);
+        assertEquals(String.class, parameterTypes[0]);
     }
 }

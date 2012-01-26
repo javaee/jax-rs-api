@@ -51,7 +51,7 @@ import javax.ws.rs.core.Response;
  * <p />
  * This exception is typically thrown by the HTTP invocation methods on an {@link Invocation}
  * or a {@link Client} instance. Additionally, the exception is also thrown by
- * {@link Response} {@code getEntity(...)} methods in case the returned response is
+ * {@link Response} {@code readEntity(...)} methods in case the returned response is
  * HTTP 204 (No Content).
  * <p />
  * Whenever the exception is thrown in the context of an existing {@link Response response},

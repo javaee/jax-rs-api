@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -70,11 +70,11 @@ public class CacheResponseHandler implements ResponseFilter {
     public void postFilter(FilterContext ctx) throws IOException {
         if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
             URI uri = ctx.getRequest().getUri();
-            Response.ResponseBuilder responseBuilder = ctx.getResponseBuilder();
-            byte[] body = readFromStream(1024, ctx.getResponse().getEntity(InputStream.class));
-            CacheEntry entry = new CacheEntry(responseBuilder.getHeaders().asMap(), body);
+            final Response response = ctx.getResponse();
+            byte[] body = readFromStream(1024, response.readEntity(InputStream.class));
+            CacheEntry entry = new CacheEntry(response.getHeaders().asMap(), body);
             cache.put(uri.toString(), entry);
-            responseBuilder.entity(new ByteArrayInputStream(body));
+            ctx.getResponseBuilder().entity(new ByteArrayInputStream(body));
         }
     }
 

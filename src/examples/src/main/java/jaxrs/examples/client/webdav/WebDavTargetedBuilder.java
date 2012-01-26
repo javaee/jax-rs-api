@@ -203,16 +203,6 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public <T> T head(Class<T> responseType) throws InvocationException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public <T> T head(TypeLiteral<T> responseType) throws InvocationException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Response options() throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

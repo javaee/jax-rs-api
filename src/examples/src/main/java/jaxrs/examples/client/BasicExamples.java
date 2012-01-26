@@ -139,7 +139,7 @@ public class BasicExamples {
         final Target customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
         response = customersUri.path("{id}").pathParam("id", 123).request().get();
-        customer = response.getEntity(Customer.class);
+        customer = response.readEntity(Customer.class);
         assert customer != null;
 
         response = customersUri.request().post(xml(new Customer("Marek")));
@@ -180,7 +180,7 @@ public class BasicExamples {
         Future<Response> future = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).request().async().get();
 
         Response response = future.get();
-        Customer customer = response.getEntity(Customer.class);
+        Customer customer = response.readEntity(Customer.class);
         assert customer != null;
     }
 
