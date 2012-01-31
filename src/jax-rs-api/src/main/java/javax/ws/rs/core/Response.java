@@ -159,13 +159,15 @@ public abstract class Response {
      * Read the message entity as an instance of specified Java type using
      * a {@link javax.ws.rs.ext.MessageBodyReader} that supports mapping the
      * message entity stream onto the requested type. Returns {@code null} if
-     * the message does not contain an entity body.
+     * the message does not contain an entity body. Unless the requested entity
+     * type is an {@link java.io.InputStream input stream}, this method automatically
+     * {@link #close() closes} the consumed response entity stream (if open).
      * <p />
      * A non-null message instance returned from this method will be cached for
      * subsequent retrievals via {@link #getEntity()}.
      * If the message has previously been read as an instance of a different Java type,
      * invoking this method will cause the cached entity instance to be serialized
-     * into an input stream using a compatible {@link javax.ws.rs.ext.MessageBodyWriter}
+     * into a temporary input stream using a compatible {@link javax.ws.rs.ext.MessageBodyWriter}
      * and then read again from the stream. This operation is thus potentially
      * expensive and should be used with care.
      * <p />
@@ -189,6 +191,7 @@ public abstract class Response {
      * @see #hasEntity()
      * @see #getEntity()
      * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #close()
      * @see javax.ws.rs.ext.MessageBodyWriter
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
@@ -199,13 +202,15 @@ public abstract class Response {
      * Read the message entity as an instance of specified (generic) Java type using
      * a {@link javax.ws.rs.ext.MessageBodyReader} that supports mapping the
      * message entity stream onto the requested type. Returns {@code null} if
-     * the message does not contain an entity body.
+     * the message does not contain an entity body. Unless the requested entity
+     * type is an {@link java.io.InputStream input stream}, this method automatically
+     * {@link #close() closes} the consumed response entity stream (if open).
      * <p />
      * A non-null message instance returned from this method will be cached for
      * subsequent retrievals via {@link #getEntity()}.
      * If the message has previously been read as an instance of a different Java type,
      * invoking this method will cause the cached entity instance to be serialized
-     * into an input stream using a compatible {@link javax.ws.rs.ext.MessageBodyWriter}
+     * into a temporary input stream using a compatible {@link javax.ws.rs.ext.MessageBodyWriter}
      * and then read again from the stream. This operation is thus potentially
      * expensive and should be used with care.
      * <p />
@@ -229,6 +234,7 @@ public abstract class Response {
      * @see #hasEntity()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
+     * @see #close()
      * @see javax.ws.rs.ext.MessageBodyWriter
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
@@ -264,10 +270,24 @@ public abstract class Response {
     public abstract void bufferEntity() throws MessageProcessingException;
 
     /**
-     * Close the response and all resources associated with the response.
-     * As part of the operation, if open, the entity input stream is closed.
+     * Close the response entity input stream (if available and open) as well as
+     * any other resources associated with the response.
+     * This operation is idempotent, i.e. it can be invoked multiple times with the
+     * same effect which also means that calling the {@code close()} method on an
+     * already closed response instance is legal and has no further effect.
+     * <p/>
+     * The {@code close()} method should be invoked on all response instances that
+     * contain an un-consumed entity input stream to ensure the resources associated
+     * with the instance are properly cleaned-up and prevent potential memory leaks.
+     * This is typical for client-side scenarios where application layer code
+     * processes only the response headers and ignores the response entity.
+     * <p/>
+     * Closing a response that has already been consumed has no effect. Similarly,
+     * closing a response with no entity has not effect.
      *
      * @throws MessageProcessingException if there is an error closing the response.
+     * @see #readEntity(java.lang.Class)
+     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
      * @since 2.0
      */
     public abstract void close() throws MessageProcessingException;
