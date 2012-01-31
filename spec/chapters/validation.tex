@@ -191,7 +191,7 @@ In the example above, the constraint annotations \code{@CheckUser1} and \code{@P
 \section{Validation Phases and Error Reporting}
 \label{validation_phases_and_error_reporting}
 
-Constraint annotations are allowed in the same locations as the following annotations: \MatrixParam, \QueryParam, \PathParam, \CookieParam, \HeaderParam\ and \Context, except for in constructors and property setters. Therefore, they are allowed in resource method parameters, fields and property getters as well as resource classes, entity parameters and resource methods (return values). 
+Constraint annotations are allowed in the same locations as the following annotations: \MatrixParam, \QueryParam, \PathParam, \CookieParam, \HeaderParam\ and \Context, {\em except} in class constructors and property setters. Specifically, they are allowed in resource method parameters, fields and property getters as well as resource classes, entity parameters and resource methods (return values). 
 
 The default resource class instance lifecycle is per-request in JAX-RS. Implementations MAY support other lifecycles; the same caveats related to the use of other JAX-RS annotations in resource classes apply to constraint annotations. For example, a constraint validation annotating a constructor parameter in a resource class whose lifecycle is singleton will only be executed once.
 

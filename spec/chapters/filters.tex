@@ -65,7 +65,7 @@ class LoggingFilter implements RequestFilter, ResponseFilter {
 
 A \FilterContext\ provides access to the request, the response (in response filters) as well as the ability to create and set new responses.
 
-Request filters implementing \RequestFilter\ or \PreMatchRequestFilter\ can implicitly stop the execution of their corresponding chains by setting a response in their associated context. If a response is set by a filter of this type, implementations are REQUIRED to abort execution of the chain and treat the response object as if produced by calling a resource method (Server API) or by executing an HTTP invocation (Client API). For example, a client {\em caching} filter may set a response object in the context on a cache hit to optimize network access.
+Request filters implementing \RequestFilter\ or \PreMatchRequestFilter\ can implicitly stop the execution of their corresponding chains by setting a response in their associated context. If a response is set by a filter of this type, implementations are REQUIRED to abort execution of the chain and treat the response object as if produced by calling the resource method (Server API) or by executing the HTTP invocation (Client API). For example, upon a cache hit, a client {\em caching} filter may set a response object in the context to optimize network access.
 
 Filters that implement \PreMatchRequestFilter\ are supported only as part of the Server API and are executed upon receiving a client request but {\em before} a resource method is matched. Thus, a pre-match filter has the ability to modify the input to the matching algorithm (see Section~\ref{request_matching}) and, consequently, alter its outcome. 
 
@@ -143,12 +143,12 @@ Binding is the process by which a filter or interceptor is associated with a res
 \subsection{Global Binding}
 \label{global_binding}
 
-Global binding is the default type of binding. A filter or interceptor that is only annotated with \Provider\ is bound globally, i.e.~it applies to all resource methods in an application. For example, the \code{LoggingFilter} defined in Section \ref{filters} is bound globally. If this filter is part of an application, requests and responses will be logged for all resource methods. 
+Global binding is the default type of binding. A filter or interceptor that is only annotated with \Provider\ is bound globally, i.e.~its applicability is all the resource methods in an application. For example, the \code{LoggingFilter} defined in Section \ref{filters} is bound globally. If this filter is part of an application, requests and responses will be logged for all resource methods. 
 
 \subsection{Name Binding}
 \label{Name_Binding}
 
-An filter or interceptor can be associated with a resource class or method by declaring a new \emph{binding} annotation \`{a} la CDI~\cite{jsr299}. These annotations are declared using the \jaxrs\ meta-annotation \NameBinding\ and are used to decorate both the filter (or interceptor) and the resource method (or class). For example, the \code{LoggingFilter} defined in Section \ref{filters} can be bound to the method \code{hello} in \code{MyResourceClass}, instead of globally, as follows:
+A filter or interceptor can be associated with a resource class or method by declaring a new \emph{binding} annotation \`{a} la CDI~\cite{jsr299}. These annotations are declared using the \jaxrs\ meta-annotation \NameBinding\ and are used to decorate both the filter (or interceptor) and the resource method or resource class. For example, the \code{LoggingFilter} defined in Section \ref{filters} can be bound to the method \code{hello} in \code{MyResourceClass}, instead of globally, as follows:
 
 \begin{listing}{1}
 @Provider
