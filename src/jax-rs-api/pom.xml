@@ -313,7 +313,7 @@
                         <warn>true</warn>
                         <!-- for use with repair -->
                         <update>false</update>
-                        <!--- check that year is correct -->
+                        <!-- check that year is correct -->
                         <ignoreYear>false</ignoreYear>
                         <templateFile>${basedir}/../etc/config/copyright.txt</templateFile>
                     </configuration>
