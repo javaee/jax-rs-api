@@ -96,6 +96,39 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git://java.net/jax-rs-spec~git</connection>
+        <developerConnection>scm:git:ssh://git.java.net/jax-rs-spec~git</developerConnection>
+        <url>http://java.net/projects/jax-rs-spec/sources/git/show</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <email>m_potociar@java.net</email>
+            <id>Marek</id>
+            <name>Marek Potociar</name>
+            <organization>Oracle</organization>
+            <organizationUrl>http://jax-rs-spec.java.net</organizationUrl>
+            <roles>
+                <role>JAX-RS 2.0 Spec Lead</role>
+            </roles>
+            <timezone>CET</timezone>
+            <url>http://marek.potociar.net/topics/web-services/rest/</url>
+        </developer>
+        <developer>
+            <email>spericas@java.net</email>
+            <id>Santiago</id>
+            <name>Santiago Pericas-Geertsen</name>
+            <organization>Oracle</organization>
+            <organizationUrl>http://jax-rs-spec.java.net</organizationUrl>
+            <roles>
+                <role>JAX-RS 2.0 Spec Lead</role>
+            </roles>
+            <timezone>EST</timezone>
+            <url>http://www.java.net/blogs/spericas/</url>
+        </developer>
+    </developers>
+
     <build>
         <pluginManagement>
             <plugins>
