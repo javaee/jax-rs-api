@@ -201,10 +201,10 @@ When processing a request, is it desirable to collect and return as many violati
 \item[Phase 1] Inject field values and initialize bean properties as described in Section \ref{resource_field}.
 \item[Phase 2] Validate annotations on resource classes, fields and property getters. The order in which these validations are executed is implementation dependent.
 \item[Phase 3] Validate annotations on parameters passed to the resource method matched. Note that @Valid is supported for method parameters.
-\item[Phase 4] If no constraint violations found thus far, invoke resource method and validate returned value.
+\item[Phase 4] If no constraint violations found thus far, invoke resource method and validate returned value. Note that just like for method parameters, @Valid is supported for returned values.
 \end{description}
 
-The set of constraint violations is cumulative. If at the beginning of phase 4, the set of constraint violations is non-empty, implementations MUST throw a \code{ViolationException} (as subclass of \WebAppExc) with a status code 400 (Bad Request) and a list of all the violations encountered. If after phase 5, the set of constraint violations is non-empty, implementations MUST throw a \code{ViolationException} with a status code 500 (Internal Server Error) and a list of all the violations encountered. As described in Section~\ref{exceptionmapper}, an exception mapper can be defined for \code{ViolationException}; it is RECOMMENDED that JAX-RS implementations provide a default exception mapper for this type of exception.
+The set of constraint violations is cumulative. If at the beginning of phase 4, the set of constraint violations is non-empty, implementations MUST throw a \code{ViolationException} (as subclass of \WebAppExc) with a status code 400 (Bad Request) and a list of all the violations encountered. If after phase 4, the set of constraint violations is non-empty, implementations MUST throw a \code{ViolationException} with a status code 500 (Internal Server Error) and a list of all the violations encountered. As described in Section~\ref{exceptionmapper}, an exception mapper can be defined for \code{ViolationException}; it is RECOMMENDED that JAX-RS implementations provide a default exception mapper for this type of exception.
 
 \begin{ednote}
 Should we require constructor parameter validation for beans that are not managed beans, CDI beans or EJBs? I.e., for beans directly managed by the JAX-RS implementation?
