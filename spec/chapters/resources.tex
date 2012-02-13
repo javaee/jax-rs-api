@@ -439,17 +439,46 @@ $$M = \{\mbox{subresource methods of }O \mbox{ where } R(T_{\mbox{method}}) = R_
 \item The media type of the request entity body (if any) is a supported input data format (see Section \ref{declaring_method_capabilities}). If no methods support the media type of the request entity body an implementation MUST generate a \WebAppExc\ with an unsupported media type response (HTTP 415 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
 \item At least one of the acceptable response entity body media types is a supported output data format (see Section \ref{declaring_method_capabilities}). If no methods support one of the acceptable response entity body media types an implementation MUST generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
 \end{itemize} 
-\item Sort $M$ in descending order as follows:
+
+%\item Sort $M$ in descending order as follows:
+%\begin{itemize}
+%\item The primary key is the media type of input data. Methods whose \Consumes\ value is the best match for the %media type of the request are sorted first.
+%\item The secondary key is the \Produces\ value. Methods whose value of \Produces\ best matches the value of the %request accept header are sorted first.
+%\end{itemize}
+%
+%Determining the best matching media types follows the general rule: $\mbox{n/m} > %\mbox{n/*} > \mbox{*/*}$, i.e. a method that explicitly consumes the request media %type or produces one of the requested media types is sorted before a method that %consumes or produces */*. Quality parameter values in the accept header are also %considered such that methods that produce media types with a higher acceptable %q-%value are sorted ahead of those with a lower acceptable q-value 
+%(i.e. n/m;q=1.0 $>$ n/m;q=0.7) - see section 14.1 of \cite{http11} for more %details.
+
+\newcommand{\bottom}{\perp}
+
+\item If $M$ has more than one element, sort it in descending order. Let a {\em client} media type be of the form $\mbox{$n$/$m$;q=$v_1$}$, a {\em server} media type be of the form $\mbox{$n$/$m$;qs=$v_2$}$ and a {\em combined} media type of the form $\mbox{$n$/$m$;q=$v_1$;qs=$v_2$;d=$v_3$}$, where the distance factor $d$ is defined below. For any of these types, $m$ could be $*$, or $m$ and $n$ could be $*$ and the values of q and qs are assumed to be $1.0$ if absent. 
+
+Let $S(p_1, p_2)$ be defined over a client media type $p_1$ and a server media type $p_2$ as the function that returns the {\em most} specific combined type with a distance factor if $p_1$ and $p_2$ are compatible and $\bottom$ otherwise. For example: 
 \begin{itemize}
-\item The primary key is the media type of input data. Methods whose \Consumes\ value is the best match for the media type of the request are sorted first.
-\item The secondary key is the \Produces\ value. Methods whose value of \Produces\ best matches the value of the request accept header are sorted first.
+\item $S(\mbox{text/html;q=1}, \mbox{text/html;qs=1}) = \mbox{text/html;q=1;qs=1;d=0}$,
+\item $S(\mbox{text/*;q=0.5}, \mbox{text/html;qs=0.8}) = \mbox{text/html;q=0.5;qs=0.8;d=1}$,
+\item $S(\mbox{*/*;q=0.2}, \mbox{text/*;qs=0.9}) = \mbox{text/*;q=0.2;qs=0.9;d=1}$,
+\item $S(\mbox{text/*;q=0.4}, \mbox{application/*;qs=0.3}) = \bottom$.
+\end{itemize}
+where the $d$ factor corresponds to the number of wildcards matched with a concrete type or subtype.
+Note that q and qs are not matched, but simply combined in the resulting media type. A total ordering can be defined over combined media types as follows. 
+
+We write $\mbox{$n_1$/$m_1$;q=$v_1$;qs=$v_1'$;d=$v_1''$} \ge \mbox{$n_2$/$m_2$;q=$v_2$;qs=$v_2'$;d=$v_2''$}$ if one of these ordered conditions holds:
+\begin{enumerate}
+\item $\mbox{$n_1$/$m_1$} \succ \mbox{$n_2$/$m_2$}$ where the partial order $\succ$ is defined as $\mbox{$n$/$m$} \succ \mbox{$n$/*} \succ \mbox{*/*}$, 
+\item $\mbox{$n_2$/$m_2$} \nsucc \mbox{$n_1$/$m_1$}$ and $v_1 > v_2$, 
+\item $\mbox{$n_2$/$m_2$} \nsucc \mbox{$n_1$/$m_1$}$ and $v_1 = v_2$ and $v_1' > v_2'$.
+\item $\mbox{$n_2$/$m_2$} \nsucc \mbox{$n_1$/$m_1$}$ and $v_1 = v_2$ and $v_1' = v_2'$ and $v_1'' \le v_2''$.
+\end{enumerate}
+Note that $\ge$ is a total order even though $\succ$ is a partial order. For example, the following holds $\mbox{text/html;q=1.0;qs=0.7;d=0} \ge \mbox{application/xml;q=1.0;qs=0.2;d=0}$ even though $\mbox{text/html}$ is incomparable to $\mbox{application/xml}$ according to $\succ$. Additionally, it is possible under $\ge$ for two types to be equal even though they are not identical~\footnoteremember{equality}{E.g.,  $\mbox{text/html;q=1.0;qs=0.7;d=0} \ge \mbox{application/xml;q=1.0;qs=0.7;d=0}$ and $\mbox{application/xml;q=1.0;qs=0.7;d=0} \ge \mbox{text/html;q=1.0;qs=0.7;d=0}$.}. For convenience, we defined $p \ge \bottom$ for every media type $p$.
+
+Given these definitions, we can now sort $M$ in descending order based on $\ge$ as follows\footnote{If any of these types or sets of types are unspecified, $\mbox{*/*}$ and $\mbox{\{*/*\}}$ are assumed.}:
+\begin{itemize}
+\item Let $t$ be the request content type and $C_M$ a resource method's \Consumes\ set of server media types, we use the media type $\max_\ge \{ S(t,c)  \, | \, (t, c) \in \{t\} \times C_M\}$ as primary key. 
+\item Let $A$ be the request accept header set of client media types and $P_M$ a resource method's \Produces\ set of server media types, we use the media type $\max_\ge \{ S(a,p) \, | \, (a,p) \in A \times P_M\}$ as secondary key. If there is more than one maximum element \footnoterecall{equality}, implementations SHOULD report a warning and select one of these types in an implementation dependent manner.
 \end{itemize}
 
-Determining the best matching media types follows the general rule: $\mbox{n/m} > \mbox{n/*} > \mbox{*/*}$, i.e. a method that explicitly consumes the request media type or produces one of the requested media types is sorted before a method that consumes or produces */*. 
-
-Quality parameter values (q-value) in the accept header are also considered such that methods that produce media types with a higher acceptable q-value are sorted ahead of those with a lower acceptable q-value (i.e. n/m;q=1.0 $>$ n/m;q=0.7) - see section 14.1 of \cite{http11} for more details. Likewise, server quality parameter values (qs-value) in \Produces\ values are considered during matching, but only after client quality parameter values (i.e. n/m;qs=1.0 $>$ n/m;qs=0.7).
-
-\item \label{dispatch_method} The request is dispatched to the first resource method $m$ in the set $M$\footnote{Step \ref{filter_methods} ensures the set contains at least one member.}.
+\item \label{dispatch_method} The request is dispatched to the first resource method $m$ in the set $M$\footnote{Step \ref{filter_methods} ensures the set contains at least one member.}. If after sorting, there is more than one maximum element in $M$, implementations SHOULD report a warning and select one of these methods in an implementation dependent manner.
 \end{enumerate}
 
 \end{enumerate}
