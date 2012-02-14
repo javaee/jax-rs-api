@@ -207,6 +207,10 @@ public interface HttpHeaders {
      */
     public static final String LOCATION = "Location";
     /**
+     * See {@link <a href="http://tools.ietf.org/html/rfc5988#page-6">Web Linking (IETF RFC-5988) documentation</a>}.
+     */
+    public static final String LINK = "Link";
+    /**
      * See {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.43">HTTP/1.1 documentation</a>}.
      */
     public static final String USER_AGENT = "User-Agent";
