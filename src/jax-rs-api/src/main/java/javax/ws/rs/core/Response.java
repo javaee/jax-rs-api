@@ -380,7 +380,7 @@ public abstract class Response {
      * @param response a Response from which the status code, entity
      *     (if {@link #isEntityRetrievable() retrievable}) and response headers
      *     will be copied.
-     * @return a new ReponseBuilder
+     * @return a new ReponseBuilder.
      */
     public static ResponseBuilder fromResponse(Response response) {
         ResponseBuilder b = status(response.getStatus());
