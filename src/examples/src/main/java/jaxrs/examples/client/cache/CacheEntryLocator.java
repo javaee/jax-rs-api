@@ -41,10 +41,11 @@ package jaxrs.examples.client.cache;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.RequestFilter;
@@ -55,6 +56,7 @@ import javax.ws.rs.ext.RequestFilter;
  * @author Santiago Pericas-Geertsen
  */
 public class CacheEntryLocator implements RequestFilter {
+
     private Map<String, CacheEntry> cache;
     AtomicBoolean enabledFlag;
 
@@ -65,15 +67,28 @@ public class CacheEntryLocator implements RequestFilter {
 
     @Override
     public void preFilter(FilterContext ctx) throws IOException {
-        if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
-            URI uri = ctx.getRequest().getUri();
-            CacheEntry entry = cache.get(uri.toString());
+        if (enabledFlag.get()) {
+            load(ctx);
+        }
+    }
 
-            if (entry != null) {
+    private void load(FilterContext ctx) {
+        final Request request = ctx.getRequest();
+        if (request.getMethod().equalsIgnoreCase("GET")) {
+            CacheEntry cacheEntry = cache.get(request.getUri().toString());
+
+            if (cacheEntry != null) {
                 Response.ResponseBuilder responseBuilder = ctx.createResponse();
-                // TODO: response.getHeaders().putAll(entry.getHeaders());
-                responseBuilder.entity(new ByteArrayInputStream(entry.getBody())).status(200);
-                ctx.setResponse(responseBuilder.build());      // stops filter chain
+
+                responseBuilder.status(cacheEntry.getStatus()).entity(new ByteArrayInputStream(cacheEntry.getBody()));
+
+                for (Map.Entry<String, List<String>> mapEntry : cacheEntry.getHeaders().entrySet()) {
+                    for (String value : mapEntry.getValue()) {
+                        responseBuilder.header(mapEntry.getKey(), value);
+                    }
+                }
+
+                ctx.setResponse(responseBuilder.build());  // stops filter chain & returns response
             }
         }
     }

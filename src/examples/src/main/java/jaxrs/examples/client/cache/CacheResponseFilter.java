@@ -43,10 +43,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Map;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.ResponseFilter;
@@ -56,29 +57,42 @@ import javax.ws.rs.ext.ResponseFilter;
  * @author Marek Potociar
  * @author Santiago Pericas-Geertsen
  */
-public class CacheResponseHandler implements ResponseFilter {
+public class CacheResponseFilter implements ResponseFilter {
 
-    private Map<String, CacheEntry> cache;
+    private Map<String, CacheEntry> cacheStore;
     AtomicBoolean enabledFlag;
 
-    public CacheResponseHandler(Map<String, CacheEntry> cache, AtomicBoolean enabled) {
-        this.cache = cache;
+    public CacheResponseFilter(Map<String, CacheEntry> store, AtomicBoolean enabled) {
+        this.cacheStore = store;
         this.enabledFlag = enabled;
     }
 
     @Override
     public void postFilter(FilterContext ctx) throws IOException {
-        if (enabledFlag.get() && ctx.getRequest().getMethod().equalsIgnoreCase("GET")) {
-            URI uri = ctx.getRequest().getUri();
-            final Response response = ctx.getResponse();
-            byte[] body = readFromStream(1024, response.readEntity(InputStream.class));
-            CacheEntry entry = new CacheEntry(response.getHeaders().asMap(), body);
-            cache.put(uri.toString(), entry);
-            ctx.getResponseBuilder().entity(new ByteArrayInputStream(body));
+        if (enabledFlag.get()) {
+            store(ctx);
         }
     }
 
-    public static byte[] readFromStream(int bufferSize, InputStream entityStream) {
+    private void store(FilterContext ctx) {
+        final Request request = ctx.getRequest();
+        if (request.getMethod().equalsIgnoreCase("GET")) {
+            final Response response = ctx.getResponse();
+
+            final byte[] body = readFromStream(1024, response.readEntity(InputStream.class));
+
+            CacheEntry entry = new CacheEntry(
+                    response.getStatus(),
+                    new MultivaluedHashMap<String, String>(response.getHeaders().asMap()),
+                    body);
+            cacheStore.put(request.getUri().toString(), entry);
+
+            Response copy = ctx.getResponseBuilder().entity(new ByteArrayInputStream(body)).build();
+            ctx.setResponse(copy);
+        }
+    }
+
+    private static byte[] readFromStream(int bufferSize, InputStream entityStream) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         byte[] buffer = new byte[bufferSize];
