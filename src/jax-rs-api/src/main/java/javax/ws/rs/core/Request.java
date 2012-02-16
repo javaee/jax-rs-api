@@ -358,6 +358,7 @@ public interface Request {
      * @see #readEntity(javax.ws.rs.core.TypeLiteral)
      * @see #bufferEntity()
      * @see javax.ws.rs.ext.MessageBodyWriter
+     * @since 2.0
      */
     public Object getEntity();
 
