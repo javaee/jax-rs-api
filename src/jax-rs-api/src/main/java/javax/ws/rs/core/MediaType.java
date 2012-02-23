@@ -244,17 +244,24 @@ public class MediaType {
      * values is dependent on the semantics of the parameter name, see
      * {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">HTTP/1.1</a>}.
      * This method assumes that values are case-sensitive.
-     * @param obj the object to compare to
+     * <p/>
+     * Note that the {@link MediaType.equals()} implementation does not perform
+     * a class equality check ({@code this.getClass() == obj.getClass()}). Therefore
+     * any class that extends from {@code MediaType} class and needs to override
+     * one of the {@link #equals(Object)} and {@link #hashCode()} methods must
+     * always override both methods to ensure the contract between
+     * {@link Object#equals(java.lang.Object)} and {@link Object#hashCode()} does
+     * not break.
+     *
+     * @param obj the object to compare to.
      * @return true if the two media types are the same, false otherwise.
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (!(obj instanceof MediaType)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+
         MediaType other = (MediaType) obj;
         return (this.type.equalsIgnoreCase(other.type)
                 && this.subtype.equalsIgnoreCase(other.subtype)
@@ -262,8 +269,17 @@ public class MediaType {
     }
 
     /**
-     * Generate a hashcode from the type, subtype and parameters.
-     * @return a hashcode
+     * Generate a hash code from the type, subtype and parameters.
+     * <p/>
+     * Note that the {@link MediaType.equals()} implementation does not perform
+     * a class equality check ({@code this.getClass() == obj.getClass()}). Therefore
+     * any class that extends from {@code MediaType} class and needs to override
+     * one of the {@link #equals(Object)} and {@link #hashCode()} methods must
+     * always override both methods to ensure the contract between
+     * {@link Object#equals(java.lang.Object)} and {@link Object#hashCode()} does
+     * not break.
+     *
+     * @return a generated hash code.
      */
     @Override
     public int hashCode() {
@@ -273,7 +289,8 @@ public class MediaType {
     /**
      * Convert the media type to a string suitable for use as the value of a
      * corresponding HTTP header.
-     * @return a stringified media type
+     *
+     * @return a string version of the media type.
      */
     @Override
     public String toString() {
