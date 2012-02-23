@@ -252,7 +252,7 @@ public class MediaType {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof MediaType)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         MediaType other = (MediaType) obj;
