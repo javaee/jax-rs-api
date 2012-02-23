@@ -47,7 +47,6 @@ import java.lang.annotation.Target;
 /**
  * Defines the default value of request metadata that is bound using one of the
  * following annotations:
- * {@link javax.ws.rs.PathParam},
  * {@link javax.ws.rs.QueryParam},
  * {@link javax.ws.rs.MatrixParam},
  * {@link javax.ws.rs.CookieParam},
@@ -68,7 +67,6 @@ import java.lang.annotation.Target;
  *
  * @author Paul Sandoz
  * @author Marc Hadley
- * @see PathParam
  * @see QueryParam
  * @see FormParam
  * @see HeaderParam
