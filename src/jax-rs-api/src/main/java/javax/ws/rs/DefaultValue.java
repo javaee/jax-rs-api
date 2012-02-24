@@ -56,9 +56,9 @@ import java.lang.annotation.Target;
  * The default value is used if the corresponding meta-data is not present in the
  * request.
  * <p/ >
- * If the type of the annotated parameter is {@link List}, {@link Set} or
- * {@link SortedSet} then the resulting collection will have a single entry mapped
- * from the supplied default value.
+ * If the type of the annotated parameter is {@link java.util.List},
+ * {@link java.util.Set} or {@link java.util.SortedSet} then the resulting collection
+ * will have a single entry mapped from the supplied default value.
  * <p />
  * If this annotation is not used and the corresponding meta-data is not
  * present in the request, the value will be an empty collection for

@@ -239,13 +239,13 @@ public class MediaType {
     }
 
     /**
-     * Compares obj to this media type to see if they are the same by comparing
+     * Compares {@code obj} to this media type to see if they are the same by comparing
      * type, subtype and parameters. Note that the case-sensitivity of parameter
      * values is dependent on the semantics of the parameter name, see
      * {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">HTTP/1.1</a>}.
      * This method assumes that values are case-sensitive.
      * <p/>
-     * Note that the {@link MediaType.equals()} implementation does not perform
+     * Note that the {@link #equals(java.lang.Object)} implementation does not perform
      * a class equality check ({@code this.getClass() == obj.getClass()}). Therefore
      * any class that extends from {@code MediaType} class and needs to override
      * one of the {@link #equals(Object)} and {@link #hashCode()} methods must
@@ -271,7 +271,7 @@ public class MediaType {
     /**
      * Generate a hash code from the type, subtype and parameters.
      * <p/>
-     * Note that the {@link MediaType.equals()} implementation does not perform
+     * Note that the {@link #equals(java.lang.Object)} implementation does not perform
      * a class equality check ({@code this.getClass() == obj.getClass()}). Therefore
      * any class that extends from {@code MediaType} class and needs to override
      * one of the {@link #equals(Object)} and {@link #hashCode()} methods must
