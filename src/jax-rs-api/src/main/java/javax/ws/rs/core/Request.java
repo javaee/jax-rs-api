@@ -357,14 +357,6 @@ public interface Request {
     public URI getUri();
 
     /**
-     * Get the absolute request URI in the form of a {@link UriBuilder}.
-     *
-     * @return a {@code UriBuilder} initialized with the absolute request URI.
-     * @since 2.0
-     */
-    public UriBuilder getUriBuilder();
-
-    /**
      * Get the message entity Java instance. Returns {@code null} if the message
      * does not contain an entity body.
      *
