@@ -490,7 +490,7 @@ The function $R(A)$ converts a URI path template annotation $A$ into a regular e
 \begin{enumerate}
 \item URI encode the template, ignoring URI template variable specifications.
 \item Escape any regular expression characters in the URI template, again ignoring URI template variable specifications.
-\item Replace each URI template variable with a capturing group containing the specified regular expression or \lq([\^{ }/]+?)\rq\ if no regular expression is specified.
+\item Replace each URI template variable with a capturing group containing the specified regular expression or \lq([\^{ }/]+?)\rq\ if no regular expression is specified\footnote{Note that the syntax +? denotes a reluctant quantifier as defined in the java.util.regex.Pattern class.}.
 \item If the resulting string ends with \lq/\rq\ then remove the final character.
 \item Append \lq(/.*)?\rq\ to the result.
 \end{enumerate}
