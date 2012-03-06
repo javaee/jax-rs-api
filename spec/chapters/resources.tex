@@ -197,6 +197,25 @@ public class Widget {
 
 In the above example the \code{Widget} resource class will be matched for any request whose path starts with \code{widgets} and contains at least one more path segment; the value of the \code{path} parameter will be the request path following \code{widgets}. E.g. given the request path \code{widgets/small/a} the value of \code{path} would be \code{small/a}.
 
+The value of a URI path parameter is available for injection via \PathParam\ on a field, property or method parameter. Note that if a URI template is used on a method, a path parameter injected in a field or property may not be available (set to \code{null}). The following example illustrates this scenario:
+
+\begin{listing}{1}
+@Path("widgets")
+public class WidgetsResource {
+  @PathParam("id") String id;
+  
+  @GET
+  public WidgetList getWidgets() {
+    ...     // id is null here
+  }
+  
+  @GET
+  @Path("{id}")
+  public Widget findWidget() {
+    return new WidgetResource(id);
+  }
+}\end{listing}
+
 \subsection{Sub Resources}
 \label{sub_resources}
 
@@ -480,6 +499,58 @@ Given these definitions, we can now sort $M$ in descending order based on $\ge$ 
 
 \item \label{dispatch_method} The request is dispatched to the first resource method $m$ in the set $M$\footnote{Step \ref{filter_methods} ensures the set contains at least one member.}. If after sorting, there is more than one maximum element in $M$, implementations SHOULD report a warning and select one of these methods in an implementation dependent manner.
 \end{enumerate}
+
+Consider the following example and assume the request to be \code{GET} \code{widgets/1}:
+
+\begin{listing}{1}
+@Path("widget")
+public class WidgetResource {
+    private String id;
+
+    public WidgetResource() {
+        this("0");
+    }
+
+    public WidgetResource(String id) {
+        this.id = id;
+    }
+
+    @GET
+    public Widget findWidget() {
+        return Widget.findWidgetById(id);
+    }
+}
+
+@Path("widgets")
+public class WidgetsResource {
+
+    @Path("{id}")
+    public WidgetResource getWidget(@PathParam("id") String id) {
+        return new WidgetResource(id);
+    }
+}
+\end{listing}
+
+The input and output values for each of the 3 steps in the matching algorithm are as follows:
+\begin{description}
+\item[Step 1] Match root resource class using $R(\mbox{widgets}) = \mbox{widgets(/.*)?}$ and $R(\mbox{widget}) = \mbox{widget(/.*)?}$
+\begin{description}
+\item[Input] $U = \mbox{widgets/1}$ and $C = \{\mbox{WidgetResource}, \mbox{WidgetsResource}\}$
+\item[Output] $U = \mbox{/1}$ and $O = \mbox{WidgetsResource instance}$
+\end{description}
+\item[Step 2] Match resource class instance using $R(\{\mbox{id}\}) = \mbox{([\^{ }/]+?)(/.*)?}$
+\begin{description}
+\item[Input] $U = \mbox{/1}$ and $O = \mbox{WidgetsResource instance}$
+\item[Output] $O = \mbox{WidgetResource instance}$ and $M = \{\mbox{findWidget}\}$
+\end{description}
+\item[Step 3] Match resource class method
+\begin{description}
+\item[Input] $O = \mbox{WidgetResource instance}$ and $M = \{\mbox{findWidget}\}$
+ \item[Output] $O = \mbox{WidgetResource instance}$ and $m = \mbox{findWidget}$
+\end{description}
+\end{description}
+
+Note that the algorithm matches a single root resource class (WidgetsResource) and, consequently, the \code{@Path} annotation on WidgetResource is ignored for the request \code{GET} \code{widgets/1}.
 
 \end{enumerate}
 
