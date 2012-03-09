@@ -186,32 +186,11 @@ public interface Configuration {
     Configuration register(Object provider);
 
     /**
-     * Enable a feature using the feature class.
+     * Enable a feature.
      * <p/>
-     * As opposed to the features enabled via
-     * {@link #enable(javax.ws.rs.client.Feature) feature instances}, features
-     * enabled using this method are instantiated and properly injected
-     * by the JAX-RS implementation provider before executing the
-     * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method.
-     * <p/>
-     * An attempt to enable an already enabled feature results in an {@code
-     * IllegalStateException} being raised.
-     *
-     * @param feature class of the feature to be enabled.
-     * @return the updated configuration.
-     * @throws IllegalStateException in case the feature has already been enabled.
-     * @see Configuration
-     */
-    Configuration enable(Class<? extends Feature> feature);
-
-    /**
-     * Enable a feature using a feature instance.
-     * <p/>
-     * As opposed to the features enabled via
-     * {@link #enable(java.lang.Class) feature classes}, features
-     * enabled using this method are not managed or injected
-     * by the JAX-RS implementation provider. The JAX-RS runtime merely invokes
-     * the {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method.
+     * The {@code Configuration} instance invokes the
+     * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method and
+     * lets the feature update it's internal configuration state.
      * <p/>
      * An attempt to enable an already enabled feature results in an {@code
      * IllegalStateException} being raised.

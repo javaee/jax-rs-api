@@ -310,10 +310,11 @@ public class BasicExamples {
         client.target("http://examples.jaxrs.com/").path("123").request(MediaType.APPLICATION_JSON).post(form(formData));
 
         // Configuration
-        client.configuration().enable(TestFeature.class);
-        client.target("http://examples.jaxrs.com/").configuration().enable(TestFeature.class);
-        client.target("http://examples.jaxrs.com/").request("text/plain").configuration().enable(TestFeature.class);
-        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().configuration().enable(TestFeature.class);
+        TestFeature testFeature = new TestFeature();
+        client.configuration().enable(testFeature);
+        client.target("http://examples.jaxrs.com/").configuration().enable(testFeature);
+        client.target("http://examples.jaxrs.com/").request("text/plain").configuration().enable(testFeature);
+        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().configuration().enable(testFeature);
     }
 
     public void invocationFlexibility() {

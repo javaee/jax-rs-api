@@ -68,12 +68,14 @@ public class WebDavClientTest {
 
     public void fluentUseCases() {
         WebDavClient client = createClient();
-        client.configuration().enable(TestFeature.class);
+
+        TestFeature testFeature = new TestFeature();
+        client.configuration().enable(testFeature);
 
         client.target("http://examples.jaxrs.com/webdav/");
-        client.target("http://examples.jaxrs.com/webdav/").configuration().enable(TestFeature.class);
-        client.target("http://examples.jaxrs.com/webdav/").request().configuration().enable(TestFeature.class);
-        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().configuration().enable(TestFeature.class);
+        client.target("http://examples.jaxrs.com/webdav/").configuration().enable(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").request().configuration().enable(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().configuration().enable(testFeature);
 
         // HTTP
         client.target("http://examples.jaxrs.com/webdav/").request().get();
