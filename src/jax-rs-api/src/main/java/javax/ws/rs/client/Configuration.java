@@ -194,11 +194,12 @@ public interface Configuration {
      * by the JAX-RS implementation provider before executing the
      * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method.
      * <p/>
-     * Trying to enable an already enabled feature has no effect and the method
-     * call is ignored.
+     * An attempt to enable an already enabled feature results in an {@code
+     * IllegalStateException} being raised.
      *
      * @param feature class of the feature to be enabled.
      * @return the updated configuration.
+     * @throws IllegalStateException in case the feature has already been enabled.
      * @see Configuration
      */
     Configuration enable(Class<? extends Feature> feature);
@@ -212,20 +213,25 @@ public interface Configuration {
      * by the JAX-RS implementation provider. The JAX-RS runtime merely invokes
      * the {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method.
      * <p/>
-     * Trying to enable an already enabled feature has no effect and the method
-     * call is ignored.
+     * An attempt to enable an already enabled feature results in an {@code
+     * IllegalStateException} being raised.
      *
      * @param feature instance of the feature to be enabled.
      * @return the updated configuration.
+     * @throws IllegalStateException in case the feature has already been enabled.
      * @see Configuration
      */
     Configuration enable(Feature feature);
 
     /**
      * Disable a feature for the configurable instance using a feature class.
+     * <p />
+     * An attempt to disable a feature that is not enabled results in an {@code
+     * IllegalStateException} being raised.
      *
      * @param feature class of the feature to be disabled.
      * @return the updated configuration.
+     * @throws IllegalStateException in case no such feature is enabled at present.
      * @see Configuration
      */
     Configuration disable(Class<? extends Feature> feature);
