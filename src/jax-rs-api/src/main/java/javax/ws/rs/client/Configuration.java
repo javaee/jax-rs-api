@@ -194,7 +194,8 @@ public interface Configuration {
      * by the JAX-RS implementation provider before executing the
      * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method.
      * <p/>
-     * TODO specify repeated feature enabling behavior.
+     * Trying to enable an already enabled feature has no effect and the method
+     * call is ignored.
      *
      * @param feature class of the feature to be enabled.
      * @return the updated configuration.
@@ -211,7 +212,8 @@ public interface Configuration {
      * by the JAX-RS implementation provider. The JAX-RS runtime merely invokes
      * the {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method.
      * <p/>
-     * TODO specify repeated feature enabling behavior.
+     * Trying to enable an already enabled feature has no effect and the method
+     * call is ignored.
      *
      * @param feature instance of the feature to be enabled.
      * @return the updated configuration.
