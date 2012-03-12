@@ -72,6 +72,36 @@ JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with
 
 Overloaded versions of the method \code{suspend} in \ExecutionContext\ also accept a timeout value and a unit, thus providing the same functionality as the \Suspend\ annotation. 
 
+\section{EJB Resource Classes}
+\label{async_ejbs}
+
+As stated in Section~\ref{javaee}, JAX-RS implementations in products that
+support EJB must also support the use of stateless and singleton session beans
+as root resource classes. When an EJB method is annotated with \code{@Asynchronous}, the 
+EJB container automatically allocates the necessary resources for its execution. 
+Thus, in this scenario, the use of an \code{Executor} is unnecessary to generate
+an asynchronous response.
+
+Consider the following example:
+
+\begin{listing}{1}
+@Stateless 
+@Path("/")
+class EJBResource {
+
+    @GET @Suspend @Asynchronous
+    public void longRunningOp(@Context ExecutionContext ctx) {
+        executeLongRunningOp();
+        ctx.resume("Hello async world!");
+    }
+}
+\end{listing}
+
+Note that no explicit thread management is needed in this case since that is
+under the control of the EJB container. Just like the other examples in this chapter,
+the response is produced by calling \code{resume} on \code{ExecutionContext}. Hence,
+the return type of \code{longRunningOp} is simply \code{void}.
+
 \section{Client API}
 \label{client_api_async}
 
