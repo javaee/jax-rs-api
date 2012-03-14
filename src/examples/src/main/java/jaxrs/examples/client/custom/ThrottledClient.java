@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -50,7 +50,6 @@ import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.ext.ClientBuilderFactory;
 
 /**
  *
@@ -58,42 +57,16 @@ import javax.ws.rs.ext.ClientBuilderFactory;
  */
 public final class ThrottledClient implements Client {
 
-    public static class Builder implements Client.Builder<ThrottledClient> {
-
-        private static final int DEFAULT_QUEUE_SIZE = 3;
-
-        public static class Factory implements ClientBuilderFactory<ThrottledClient.Builder> {
-
-            @Override
-            public ThrottledClient.Builder newBuilder() {
-                return new ThrottledClient.Builder();
-            }
-        }
-        private int requestQueueCapacity = DEFAULT_QUEUE_SIZE;
-
-        @Override
-        public ThrottledClient build() {
-            return new ThrottledClient(requestQueueCapacity);
-        }
-
-        @Override
-        public ThrottledClient build(Configuration configuration) {
-            return new ThrottledClient(configuration, requestQueueCapacity);
-        }
-
-        public Builder requestQueueCapacity(int capacity) {
-            this.requestQueueCapacity = capacity;
-
-            return this;
-        }
-    }
     private final BlockingQueue<Request.RequestBuilder> requestQueue;
 
-    private ThrottledClient(int queueCapacity) {
+    public ThrottledClient() {
+        this(10);
+    }
+    public ThrottledClient(int queueCapacity) {
         this.requestQueue = new ArrayBlockingQueue<Request.RequestBuilder>(queueCapacity);
     }
 
-    private ThrottledClient(Configuration configuration, int queueCapacity) {
+    public ThrottledClient(Configuration configuration, int queueCapacity) {
         this(queueCapacity);
 
         configuration().update(configuration);
@@ -138,5 +111,4 @@ public final class ThrottledClient implements Client {
     public Invocation invocation(Link link, Entity<?> entity) throws NullPointerException, IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

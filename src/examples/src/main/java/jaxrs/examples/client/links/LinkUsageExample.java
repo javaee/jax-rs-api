@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,23 +40,23 @@
 package jaxrs.examples.client.links;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ClientFactory;
 
 /**
  *
  * @author Marek Potociar
  */
 public class LinkUsageExample {
+
     public void testCLientSideLinks() {
         Client client = ClientFactory.newClient();
 
         Response current = client.target("http://examples.jax-rs-spec.com/current")
-                .request(MediaType.APPLICATION_XML)
-                .get();
+                .request(MediaType.APPLICATION_XML).get();
 
-        Response next = client.target(current.getHeaders().getLink("next")).request(MediaType.APPLICATION_XML).get();
-
+        Response next = client.target(current.getHeaders().getLink("next"))
+                .request(MediaType.APPLICATION_XML).get();
     }
 }

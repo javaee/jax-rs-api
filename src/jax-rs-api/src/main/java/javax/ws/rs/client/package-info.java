@@ -54,7 +54,7 @@
  * by defining multiple extension points.
  *
  * <h2>Client API Bootstrapping and Configuration</h2>
- * The main entry point to the API is a {@link javax.ws.rs.client.ClientFactory}
+ * The main entry point to the API is a {@link javax.ws.rs.ext.ClientFactory}
  * that is used to bootstrap {@link javax.ws.rs.client.Client} instances -
  * {@link javax.ws.rs.client.Configuration configurable}, heavy-weight objects
  * that manage the underlying communication infrastructure and serve as the root
@@ -67,13 +67,6 @@
  *       .setProperty("MyProperty", "MyValue")
  *       .register(MyProvider.class)
  *       .enable(MyFeature.class);
- * </pre>
- * Custom {@code Client} extensions are possible via {@link javax.ws.rs.ext.ClientBuilderFactory}
- * SPI. Providing a custom client builder factory implementation at client bootstrapping
- * allows for a type-safe instantiation of the custom clients:
- * <pre>
- *   MyClient myClient = ClientFactory.newClientBy(MyClientBuilderFactory.class).build();
- *   myClient.enableCaching(true);
  * </pre>
  *
  * <h2>Accessing Web Resources</h2>

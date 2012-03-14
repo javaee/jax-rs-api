@@ -39,29 +39,28 @@
  */
 package jaxrs.examples.client;
 
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.Form;
 import java.util.List;
 import java.util.concurrent.Future;
-import jaxrs.examples.client.custom.ThrottledClient;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Feature;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.TypeLiteral;
+import javax.ws.rs.ext.ClientFactory;
+import static javax.ws.rs.client.Entity.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
-
-import static javax.ws.rs.client.Entity.*;
+import jaxrs.examples.client.custom.ThrottledClient;
 
 /**
  * @author Bill Burke
@@ -84,25 +83,24 @@ public class BasicExamples {
     }
 
     public void clientBootstrapping() {
-        // Default newClient instantiation using default configuration
+        // Default client instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
         defaultClient.configuration().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
         assert defaultClient != null;
 
-        // Default newClient instantiation using custom configuration
+        // Default client instantiation using custom configuration
 
         Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.configuration());
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
 
-        // Custom newClient instantiation using default configuration
-        ThrottledClient myClient = ClientFactory.newClientBy(ThrottledClient.Builder.Factory.class).build();
+        // Custom client instantiation examples
+        ThrottledClient myClient = new ThrottledClient();
         assert myClient != null;
 
-        ThrottledClient myConfiguredClient = ClientFactory.newClientBy(ThrottledClient.Builder.Factory.class).requestQueueCapacity(10).build();
+        ThrottledClient myConfiguredClient = new ThrottledClient(10);
         assert myConfiguredClient != null;
-
     }
 
     public void creatingResourceAndSubResourceUris() {
@@ -147,12 +145,16 @@ public class BasicExamples {
     }
 
     public void typedResponse() {
-        Customer customer = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).request().get(Customer.class);
+        Customer customer = ClientFactory.newClient()
+                .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
+                .pathParam("id", 123).request().get(Customer.class);
         assert customer != null;
     }
 
     public void typedGenericResponse() {
-        List<Customer> customers = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers").request().get(new TypeLiteral<List<Customer>>() {
+        List<Customer> customers = ClientFactory.newClient()
+                .target("http://jaxrs.examples.org/jaxrsApplication/customers")
+                .request().get(new TypeLiteral<List<Customer>>() {
         });
         assert customers != null;
     }
@@ -177,7 +179,9 @@ public class BasicExamples {
     }
 
     public void asyncResponse() throws Exception {
-        Future<Response> future = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).request().async().get();
+        Future<Response> future = ClientFactory.newClient()
+                .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
+                .pathParam("id", 123).request().async().get();
 
         Response response = future.get();
         Customer customer = response.readEntity(Customer.class);
@@ -185,7 +189,9 @@ public class BasicExamples {
     }
 
     public void typedAsyncResponse() throws Exception {
-        Future<Customer> customer = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}").pathParam("id", 123).request().async().get(Customer.class);
+        Future<Customer> customer = ClientFactory.newClient()
+                .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
+                .pathParam("id", 123).request().async().get(Customer.class);
         assert customer.get() != null;
     }
 
@@ -257,7 +263,8 @@ public class BasicExamples {
         });
 
         // invoke one more request using newClient
-        Future<Response> response = anyCustomerUri.pathParam("id", 789).request().cookie(new Cookie("fooName", "XYZ")).async().get();
+        Future<Response> response = anyCustomerUri.pathParam("id", 789)
+                .request().cookie(new Cookie("fooName", "XYZ")).async().get();
         assert response.get() != null;
     }
 
@@ -319,20 +326,12 @@ public class BasicExamples {
 
     public void invocationFlexibility() {
         // For users who really need it...
-       Invocation i = ClientFactory.newClient().target("http://examples.jaxrs.com/greeting")
-               .request("text/plain")
-               .header("custom-name", "custom_value")
-               .buildPut(text("Hi"));
+        Invocation i = ClientFactory.newClient()
+                .target("http://examples.jaxrs.com/greeting")
+                .request("text/plain")
+                .header("custom-name", "custom_value")
+                .buildPut(text("Hi"));
 
-       /*
-       i.asRequestBuilder()
-               .accept("text/html")                             // Actually it's HTML I want to receive back
-               .method("POST")                                  // ...and it turns out, the service does not support PUT
-               .type(MediaType.APPLICATION_FORM_URLENCODED)     // ...and the data must be form-urlencoded
-               .entity("Dear Sir or Madam")                     // ...and we are not close friends after all
-               .redirect("http://jaxrs.org/examples/greeting"); // ...oops, I almost forgot that the service was moved last month and the old domain is down!
-        */
-
-       i.invoke();                                              // Ok, now I can send the updated request
+        i.invoke();                                              // Ok, now I can send the updated request
     }
 }

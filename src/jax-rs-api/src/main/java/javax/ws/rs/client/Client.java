@@ -62,29 +62,6 @@ import javax.ws.rs.core.UriBuilder;
 public interface Client {
 
     /**
-     * Client instance builder. Provided by {@link javax.ws.rs.ext.ClientBuilderFactory}.
-     *
-     * @param <C> client type.
-     */
-    interface Builder<C extends Client> {
-
-        /**
-         * Build a client instance of a specific type.
-         *
-         * @return new client instance.
-         */
-        C build();
-
-        /**
-         * Build a client instance using an initial configuration.
-         *
-         * @param configuration configures the built client instance.
-         * @return new configured client instance.
-         */
-        C build(Configuration configuration);
-    }
-
-    /**
      * Close client instance and all it's associated resources. Subsequent calls
      * have no effect and are ignored. Once the client is closed, invoking any
      * other method on the client instance would result in an {@link IllegalStateException}

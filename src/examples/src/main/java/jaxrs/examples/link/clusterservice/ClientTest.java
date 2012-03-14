@@ -40,10 +40,10 @@
 package jaxrs.examples.link.clusterservice;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.ResponseHeaders;
+import javax.ws.rs.ext.ClientFactory;
 
 /**
  * ClientTest class.

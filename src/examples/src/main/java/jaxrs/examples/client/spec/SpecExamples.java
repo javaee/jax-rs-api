@@ -40,19 +40,18 @@
 package jaxrs.examples.client.spec;
 
 import java.util.concurrent.Future;
-import javax.ws.rs.client.AsyncInvoker;
 import jaxrs.examples.client.custom.ThrottledClient;
 
+import javax.ws.rs.client.AsyncInvoker;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.client.Target;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ClientFactory;
+import static javax.ws.rs.client.Entity.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
-
-import static javax.ws.rs.client.Entity.*;
 
 /**
  * @author Bill Burke
@@ -75,23 +74,23 @@ public class SpecExamples {
     }
 
     public void clientBootstrapping() {
-        // Default newClient instantiation using default configuration
+        // Default client instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
         defaultClient.configuration().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
         assert defaultClient != null;
 
-        // Default newClient instantiation using custom configuration
+        // Default client instantiation using custom configuration
 
         Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.configuration());
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
 
-        // Custom newClient instantiation using default configuration
-        ThrottledClient myClient = ClientFactory.newClientBy(ThrottledClient.Builder.Factory.class).build();
+        // Custom client instantiation examples
+        ThrottledClient myClient = new ThrottledClient();
         assert myClient != null;
 
-        ThrottledClient myConfiguredClient = ClientFactory.newClientBy(ThrottledClient.Builder.Factory.class).requestQueueCapacity(10).build();
+        ThrottledClient myConfiguredClient = new ThrottledClient(10);
         assert myConfiguredClient != null;
     }
 
@@ -118,7 +117,7 @@ public class SpecExamples {
 
         Response r1 = builder.get();
         Response r2 = syncInvoker.get();
-        Response r3= inv.invoke();
+        Response r3 = inv.invoke();
 
         Future<Response> fr1 = asyncInvoker.get();
         Future<Response> fr2 = inv.submit();
@@ -146,5 +145,4 @@ public class SpecExamples {
                 .request("application/xml").async().get(Customer.class);
         Customer c = fc.get();
     }
-
 }

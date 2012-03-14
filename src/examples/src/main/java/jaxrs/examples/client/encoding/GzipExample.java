@@ -39,11 +39,10 @@
  */
 package jaxrs.examples.client.encoding;
 
-import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.client.Target;
-
 import jaxrs.examples.filter.compression.GzipEntityInterceptor;
 
+import javax.ws.rs.client.Target;
+import javax.ws.rs.ext.ClientFactory;
 import static javax.ws.rs.client.Entity.*;
 
 /**

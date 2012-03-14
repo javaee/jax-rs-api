@@ -40,8 +40,8 @@
 package jaxrs.examples.client.cache;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Target;
+import javax.ws.rs.ext.ClientFactory;
 
 /**
  * @author Bill Burke

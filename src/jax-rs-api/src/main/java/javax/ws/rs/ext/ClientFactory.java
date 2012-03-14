@@ -37,13 +37,11 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.client;
+package javax.ws.rs.ext;
 
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.ws.rs.client.Client.Builder;
-import javax.ws.rs.ext.ClientBuilderFactory;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Configuration;
 
 /**
  * Main entry point to the client API used to bootstrap {@link javax.ws.rs.client.Client}
@@ -52,37 +50,23 @@ import javax.ws.rs.ext.ClientBuilderFactory;
  * @author Marek Potociar
  * @since 2.0
  */
-public class ClientFactory {
+public abstract class ClientFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
     /**
      * Name of the property identifying the {@link javax.ws.rs.ext.RuntimeDelegate} implementation
      * to be returned from {@link javax.ws.rs.ext.RuntimeDelegate#getInstance()}.
      */
-    public static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY_PROPERTY = "javax.ws.rs.ext.ClientBuilderFactory";
-    private static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY = "org.glassfish.jersey.client.Client$Builder$Factory";
+    public static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY_PROPERTY = "javax.ws.rs.ext.ClientFactory";
+    //
+    private static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY = "org.glassfish.jersey.client.JerseyClientFactory";
 
-    private static <FACTORY extends ClientBuilderFactory<?>> FACTORY getFactory(Class<FACTORY> builderFactoryClass) {
-        try {
-            return builderFactoryClass.newInstance(); // TODO instance caching(?), injecting, setup, etc.
-        } catch (InstantiationException ex) {
-            LOGGER.log(Level.SEVERE, "Unable to instantiate client builder factory.", ex);
-        } catch (IllegalAccessException ex) {
-            LOGGER.log(Level.SEVERE, "Unable to instantiate client builder factory.", ex);
-        }
-
-        return null;
-    }
-
-    // todo make generic
-    @SuppressWarnings("unchecked")
-    private static ClientBuilderFactory<? extends Builder<Client>> getDefaultFactory() {
+    private static ClientFactory getFactory() {
         try {
             Object delegate =
                     FactoryFinder.find(JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY_PROPERTY,
                     JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY);
-            if (!(delegate instanceof ClientBuilderFactory)) {
-                Class pClass = ClientBuilderFactory.class;
+            if (!(delegate instanceof ClientFactory)) {
+                Class pClass = ClientFactory.class;
                 String classnameAsResource = pClass.getName().replace('.', '/') + ".class";
                 ClassLoader loader = pClass.getClassLoader();
                 if (loader == null) {
@@ -93,21 +77,10 @@ public class ClientFactory {
                         + delegate.getClass().getClassLoader().getResource(classnameAsResource)
                         + "to" + targetTypeURL.toString());
             }
-            return (ClientBuilderFactory<? extends Builder<Client>>) delegate;
+            return (ClientFactory) delegate;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    /**
-     * Create client instance using a custom client builder factory.
-     *
-     * @param <B> client builder type.
-     * @param builderFactoryClass client builder factory class.
-     * @return client builder produced by the provided client builder factory,
-     */
-    public static <B extends Builder> B newClientBy(Class<? extends ClientBuilderFactory<B>> builderFactoryClass) {
-        return getFactory(builderFactoryClass).newBuilder();
     }
 
     /**
@@ -117,7 +90,7 @@ public class ClientFactory {
      * @return new client instance.
      */
     public static Client newClient() {
-        return getDefaultFactory().newBuilder().build();
+        return getFactory().getClient();
     }
 
     /**
@@ -129,12 +102,22 @@ public class ClientFactory {
      * @return new configured client instance.
      */
     public static Client newClient(Configuration configuration) {
-        return getDefaultFactory().newBuilder().build(configuration);
+        return getFactory().getClient(configuration);
     }
 
     /**
-     * Prevents instantiation.
+     * Get a new client instance.
+     *
+     * @return a new client instance.
      */
-    private ClientFactory() {
-    }
+    protected abstract Client getClient();
+
+    /**
+     * Get a new pre-configured client instance.
+     *
+     * @param configuration data used to provide initial configuration for
+     *     the new client instance.
+     * @return a new client instance.
+     */
+    protected abstract Client getClient(Configuration configuration);
 }
