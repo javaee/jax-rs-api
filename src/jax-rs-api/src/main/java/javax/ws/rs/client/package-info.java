@@ -82,7 +82,7 @@
  * <ol>
  *   <li>obtain an {@link javax.ws.rs.client.Client} instance</li>
  *   <li>create a resource {@link javax.ws.rs.client.Target Target}</li>
- *   <li>{@link javax.ws.rs.client.Invocation.Builder configure} a request invocation</li>
+ *   <li>{@link javax.ws.rs.client.Invocation.Builder build} a request invocation</li>
  *   <li>submit a request to directly retrieve a response or get a prepared
  *       {@link javax.ws.rs.client.Invocation} for later submission</li>
  * </ol>

@@ -69,10 +69,10 @@ public class LoggingFilter implements RequestFilter, ResponseFilter {
     }
 
     private void logRequest(Request req) {
-        // TODO
+        // implementation goes here
     }
 
     private void logResponse(Response res) {
-        // TODO
+        // implementation goes here
     }
 }

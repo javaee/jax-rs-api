@@ -49,7 +49,7 @@ import javax.ws.rs.client.Feature;
 public class WebDavClientTest {
 
     private WebDavClient createClient() {
-        WebDavClient wdc = null; // TODO
+        WebDavClient wdc = new WebDavClient();
         return wdc;
     }
 

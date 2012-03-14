@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -62,10 +62,6 @@ public interface Invocation {
     public static interface Builder extends SyncInvoker {
 
         // Invocation builder methods
-        // TODO: document that the request instance needs to be cloned so that the
-        // data used in the invocation processing chain are decoupled from the original
-        // request data that were used to initiate the invocation to prevent accidental
-        // issues caused by mutable nature of the request
         /**
          * Build a request invocation using an arbitrary request method name.
          *

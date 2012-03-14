@@ -52,13 +52,14 @@ import javax.ws.rs.WebApplicationException;
  *   <li>suspend the request processing (with a defined timeout)</li>
  *   <li>set a default time-out response</li>
  *   <li>resume the request processing suspended either using this execution
- *       context instance or via {@link javax.ws.rs.Suspend @Suspend} annotation</li>
+ *       context instance or via {@code @Suspend} annotation</li>
  *   <li>cancel the suspended request</li>
  * </ul>
- * TODO example.
+ * For an example usage of {@code ExecutionContext} kindly consult the
+ * {@link javax.ws.rs.Suspend &#64;Suspend} annotation API documentation.
  *
  * @author Marek Potociar
- * @see javax.ws.rs.Suspend @Suspend
+ * @see javax.ws.rs.Suspend &#64;Suspend
  * @since 2.0
  */
 public interface ExecutionContext {

@@ -65,6 +65,7 @@ public class ServerCachingFilter implements RequestFilter {
     }
 
     private Response.ResponseBuilder getCachedResponse(FilterContext ctx) {
-        return null;    // TODO
+        // implemetation goes here
+        return null;
     }
 }
