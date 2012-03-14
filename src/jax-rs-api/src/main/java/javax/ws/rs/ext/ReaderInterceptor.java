@@ -39,9 +39,6 @@
  */
 package javax.ws.rs.ext;
 
-import java.io.IOException;
-import javax.ws.rs.WebApplicationException;
-
 /**
  * Interface for message body reader interceptors that wrap around calls
  * to {@link javax.ws.rs.ext.MessageBodyReader#readFrom}. Message body
@@ -65,11 +62,12 @@ public interface ReaderInterceptor<T> {
      * {@link javax.ws.rs.ext.ReaderInterceptorContext#proceed} to invoke
      * the next interceptor in the chain, and ultimately the wrapped method.
      *
-     * @param context invocation context
+     * @param context invocation context.
      * @return result of next interceptor invoked or the wrapped method if
-     *         last interceptor in chain
-     * @throws IOException if an IO error arises
-     * @throws WebApplicationException thrown by wrapped method
+     *         last interceptor in chain.
+     * @throws java.io.IOException if an IO error arises.
+     * @throws javax.ws.rs.WebApplicationException thrown by wrapped method.
      */
-    T aroundReadFrom(ReaderInterceptorContext<T> context) throws IOException, WebApplicationException;
+    T aroundReadFrom(ReaderInterceptorContext<T> context)
+            throws java.io.IOException, javax.ws.rs.WebApplicationException;
 }

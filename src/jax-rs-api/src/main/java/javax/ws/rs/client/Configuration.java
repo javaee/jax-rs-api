@@ -208,7 +208,7 @@ public interface Configuration {
      * @throws IllegalStateException in case the feature has already been enabled.
      * @see Configuration
      */
-    Configuration enable(Feature feature);
+    Configuration enable(Feature feature) throws IllegalStateException;
 
     /**
      * Disable a feature for the configurable instance using a feature class.
@@ -221,7 +221,7 @@ public interface Configuration {
      * @throws IllegalStateException in case no such feature is enabled at present.
      * @see Configuration
      */
-    Configuration disable(Class<? extends Feature> feature);
+    Configuration disable(Class<? extends Feature> feature) throws IllegalStateException;
 
     /**
      * Set new configuration properties replacing all previously set properties.

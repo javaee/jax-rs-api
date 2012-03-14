@@ -42,10 +42,10 @@ package javax.ws.rs.ext;
 import java.io.IOException;
 
 /**
- * <p>Interface implemented by filters invoked at the <emph>PreMatch</emph>
+ * <p>Interface implemented by filters invoked at the <i>PreMatch</i>
  * extension point. Use a filter of this type to update the input to the
  * JAX-RS matching algorithm, e.g., the HTTP method, Accept header, etc.
- * Otherwise, the use of a filter invoked at the <emph>Pre</emph> extension
+ * Otherwise, the use of a filter invoked at the <i>Pre</i> extension
  * point (after resource matching) is recommended.</p>
  *
  * <p>Filters implementing
@@ -59,7 +59,7 @@ import java.io.IOException;
 public interface PreMatchRequestFilter {
 
     /**
-     * <p>Filter method called at the <emph>PreMatch</emph> extension point.
+     * <p>Filter method called at the <i>PreMatch</i> extension point.
      * I.e., before resource matching as part of the Server API. This type
      * of filters are not supported in the Client API.</p>
      *
@@ -72,8 +72,8 @@ public interface PreMatchRequestFilter {
      * Note that responses produced in this manner are still processed by
      * the response filter chain.</p>
      *
-     * @param context invocation context
-     * @throws IOException if an I/O exception occurs
+     * @param context invocation context.
+     * @throws IOException if an I/O exception occurs.
      */
     void preMatchFilter(FilterContext context) throws IOException;
 }

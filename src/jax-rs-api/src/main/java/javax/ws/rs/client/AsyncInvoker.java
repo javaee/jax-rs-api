@@ -88,7 +88,6 @@ public interface AsyncInvoker {
      * @param <T> generic response entity type.
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     <T> Future<T> get(InvocationCallback<T> callback);
 
@@ -132,7 +131,6 @@ public interface AsyncInvoker {
      * @param entity request entity.
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     <T> Future<T> put(Entity<?> entity, InvocationCallback<T> callback);
 
@@ -176,7 +174,6 @@ public interface AsyncInvoker {
      * @param entity request entity.
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     <T> Future<T> post(Entity<?> entity, InvocationCallback<T> callback);
 
@@ -216,7 +213,6 @@ public interface AsyncInvoker {
      * @param <T> generic response entity type.
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     <T> Future<T> delete(InvocationCallback<T> callback);
 
@@ -234,7 +230,6 @@ public interface AsyncInvoker {
      *
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     Future<Response> head(InvocationCallback<Response> callback);
 
@@ -274,7 +269,6 @@ public interface AsyncInvoker {
      * @param <T> generic response entity type.
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     <T> Future<T> options(InvocationCallback<T> callback);
 
@@ -318,7 +312,6 @@ public interface AsyncInvoker {
      * @param entity request entity.
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     <T> Future<T> trace(Entity<?> entity, InvocationCallback<T> callback);
 
@@ -362,7 +355,6 @@ public interface AsyncInvoker {
      * @param name method name.
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     <T> Future<T> method(String name, InvocationCallback<T> callback);
 
@@ -409,7 +401,6 @@ public interface AsyncInvoker {
      * @param entity request entity.
      * @param callback asynchronous invocation callback.
      * @return invocation response {@link Future future}.
-     * @throws InvocationException in case the invocation failed.
      */
     <T> Future<T> method(String name, Entity<?> entity, InvocationCallback<T> callback);
 }

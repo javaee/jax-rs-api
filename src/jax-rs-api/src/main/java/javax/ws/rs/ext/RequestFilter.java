@@ -42,7 +42,7 @@ package javax.ws.rs.ext;
 import java.io.IOException;
 
 /**
- * <p>Interface implemented by filters invoked at the <emph>Pre</emph>
+ * <p>Interface implemented by filters invoked at the <i>Pre</i>
  * extension point. Filters implementing this interface MUST be
  * annotated with {@link javax.ws.rs.ext.Provider}.</p>
  *
@@ -60,7 +60,7 @@ import java.io.IOException;
 public interface RequestFilter {
 
     /**
-     * <p>Filter method called at the <emph>Pre</emph> extension point.
+     * <p>Filter method called at the <i>Pre</i> extension point.
      * I.e., before the HTTP invocation in the client and before the
      * resource method invocation (but after resource matching) in the
      * server.</p>

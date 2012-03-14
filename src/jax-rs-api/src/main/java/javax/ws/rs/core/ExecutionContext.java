@@ -40,7 +40,6 @@
 package javax.ws.rs.core;
 
 import java.util.concurrent.TimeUnit;
-import javax.ws.rs.WebApplicationException;
 
 /**
  * An injectable interface that provides access to asynchronous server side
@@ -80,7 +79,7 @@ public interface ExecutionContext {
      *
      * @see #resume(java.lang.Exception)
      */
-    public void resume(Object response);
+    public void resume(Object response) throws IllegalStateException;
 
     /**
      * Resume processing of the request bound to the execution context using
@@ -97,7 +96,7 @@ public interface ExecutionContext {
      *
      * @see #resume(java.lang.Object)
      */
-    public void resume(Exception response);
+    public void resume(Exception response) throws IllegalStateException;
 
     /**
      * Programmatically suspend a request processing without explicitly specifying
@@ -126,7 +125,7 @@ public interface ExecutionContext {
      * @see #setSuspendTimeout(long, TimeUnit)
      * @see #setResponse(java.lang.Object)
      */
-    public void suspend();
+    public void suspend() throws IllegalStateException;
 
     /**
      * Programmatically suspend a request processing with explicitly specified
@@ -150,10 +149,10 @@ public interface ExecutionContext {
      * provided the request processing was not explicitly resumed before the
      * suspend operation has timed-out. A timed-out request processing will be
      * resumed using response returned by {@link #getResponse()} method. Should
-     * the {@code getResponse()} return {@code null}, {@link WebApplicationException}
-     * is raised with a HTTP&nbsp;503 error status (Service unavailable). Use
-     * {@link #setResponse(java.lang.Object)} method to customize the default
-     * timeout response.
+     * the {@code getResponse()} return {@code null},
+     * {@link javax.ws.rs.WebApplicationException} is raised with a HTTP&nbsp;503
+     * error status (Service unavailable). Use {@link #setResponse(java.lang.Object)}
+     * method to customize the default timeout response.
      * <p />
      * Note that in some concurrent scenarios a call to {@code resume(...)} may
      * occur before the call to {@code suspend(...)}. In which case the call to
@@ -170,7 +169,7 @@ public interface ExecutionContext {
      * @see #setSuspendTimeout(long, TimeUnit)
      * @see #setResponse(java.lang.Object)
      */
-    public void suspend(long millis);
+    public void suspend(long millis) throws IllegalStateException;
 
     /**
      * Programmatically suspend a request processing with explicitly specified
@@ -194,10 +193,10 @@ public interface ExecutionContext {
      * provided the request processing was not explicitly resumed before the
      * suspend operation has timed-out. A timed-out request processing will be
      * resumed using response returned by {@link #getResponse()} method. Should
-     * the {@code getResponse()} return {@code null}, {@link WebApplicationException}
-     * is raised with a HTTP&nbsp;503 error status (Service unavailable). Use
-     * {@link #setResponse(java.lang.Object)} method to customize the default
-     * timeout response.
+     * the {@code getResponse()} return {@code null},
+     * {@link javax.ws.rs.WebApplicationException} is raised with a HTTP&nbsp;503
+     * error status (Service unavailable). Use {@link #setResponse(java.lang.Object)}
+     * method to customize the default timeout response.
      * <p />
      * Note that in some concurrent scenarios a call to {@code resume(...)} may
      * occur before the call to {@code suspend(...)}. In which case the call to
@@ -215,7 +214,7 @@ public interface ExecutionContext {
      * @see #setSuspendTimeout(long, TimeUnit)
      * @see #setResponse(java.lang.Object)
      */
-    public void suspend(long time, TimeUnit unit);
+    public void suspend(long time, TimeUnit unit) throws IllegalStateException;
 
     /**
      * Set the new suspend timeout.
@@ -230,7 +229,7 @@ public interface ExecutionContext {
      * @param unit suspend timeout value time unit.
      * @throws IllegalStateException in case the context has not been suspended.
      */
-    public void setSuspendTimeout(long time, TimeUnit unit);
+    public void setSuspendTimeout(long time, TimeUnit unit) throws IllegalStateException;
 
     /**
      * Cancel the request processing.

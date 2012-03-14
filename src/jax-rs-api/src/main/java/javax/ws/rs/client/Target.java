@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -111,7 +111,8 @@ public interface Target {
      * @exception IllegalArgumentException if there is no such path parameter.
      * @exception NullPointerException if name or value is null.
      */
-    public Target pathParam(String name, Object value) throws IllegalArgumentException, NullPointerException;
+    public Target pathParam(String name, Object value)
+            throws IllegalArgumentException, NullPointerException;
 
     /**
      * Create a new {@code Target} instance by replacing one or more existing path parameters
@@ -126,7 +127,8 @@ public interface Target {
      * @exception IllegalArgumentException if the supplied map is empty.
      * @exception NullPointerException if the parameter map or any of the names or values is null.
      */
-    public Target pathParams(Map<String, Object> parameters) throws IllegalArgumentException, NullPointerException;
+    public Target pathParams(Map<String, Object> parameters)
+            throws IllegalArgumentException, NullPointerException;
 
     /**
      * Create a new {@code Target} instance by appending a matrix parameter to
@@ -149,7 +151,8 @@ public interface Target {
      * @exception NullPointerException if the name or any of the values is null.
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
-    public Target matrixParam(String name, Object... values) throws NullPointerException;
+    public Target matrixParam(String name, Object... values)
+            throws NullPointerException;
 
     /**
      *
@@ -168,7 +171,8 @@ public interface Target {
      * @return a new target instance.
      * @exception NullPointerException if name or any of the values is {@code null}.
      */
-    public Target queryParam(String name, Object... values) throws NullPointerException;
+    public Target queryParam(String name, Object... values)
+            throws NullPointerException;
 
     /**
      * Create a new {@code Target} instance by adding one or more query parameters and
@@ -183,7 +187,8 @@ public interface Target {
      * @exception IllegalArgumentException if the supplied map is empty.
      * @exception NullPointerException if the parameter map or any of the names or values is null.
      */
-    public Target queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException, NullPointerException;
+    public Target queryParams(MultivaluedMap<String, Object> parameters)
+            throws IllegalArgumentException, NullPointerException;
 
     /**
      * Start building a request to the targeted web resource.

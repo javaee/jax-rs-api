@@ -39,9 +39,6 @@
  */
 package javax.ws.rs.ext;
 
-import java.io.IOException;
-import javax.ws.rs.WebApplicationException;
-
 /**
  * Interface for message body writer interceptors that wrap around calls
  * to {@link javax.ws.rs.ext.MessageBodyWriter#writeTo}. Message body
@@ -65,9 +62,10 @@ public interface WriterInterceptor<T> {
      * {@link javax.ws.rs.ext.WriterInterceptorContext#proceed} to invoke
      * the next interceptor in the chain, and ultimately the wrapped method.
      *
-     * @param context invocation context
-     * @throws IOException if an IO error arises
-     * @throws WebApplicationException thrown by wrapped method
+     * @param context invocation context.
+     * @throws java.io.IOException if an IO error arises.
+     * @throws javax.ws.rs.WebApplicationException thrown by wrapped method.
      */
-    void aroundWriteTo(WriterInterceptorContext<T> context) throws IOException, WebApplicationException;
+    void aroundWriteTo(WriterInterceptorContext<T> context)
+            throws java.io.IOException, javax.ws.rs.WebApplicationException;
 }

@@ -56,15 +56,19 @@ public abstract class ClientFactory {
      * Name of the property identifying the {@link javax.ws.rs.ext.RuntimeDelegate} implementation
      * to be returned from {@link javax.ws.rs.ext.RuntimeDelegate#getInstance()}.
      */
-    public static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY_PROPERTY = "javax.ws.rs.ext.ClientFactory";
-    //
-    private static final String JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY = "org.glassfish.jersey.client.JerseyClientFactory";
+    public static final String JAXRS_DEFAULT_CLIENT_FACTORY_PROPERTY =
+            "javax.ws.rs.ext.ClientFactory";
+    /**
+     * Default client factory implementation class name.
+     */
+    private static final String JAXRS_DEFAULT_CLIENT_FACTORY =
+            "org.glassfish.jersey.client.JerseyClientFactory";
 
     private static ClientFactory getFactory() {
         try {
             Object delegate =
-                    FactoryFinder.find(JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY_PROPERTY,
-                    JAXRS_DEFAULT_CLIENT_BUILDER_FACTORY);
+                    FactoryFinder.find(JAXRS_DEFAULT_CLIENT_FACTORY_PROPERTY,
+                    JAXRS_DEFAULT_CLIENT_FACTORY);
             if (!(delegate instanceof ClientFactory)) {
                 Class pClass = ClientFactory.class;
                 String classnameAsResource = pClass.getName().replace('.', '/') + ".class";
@@ -101,7 +105,7 @@ public abstract class ClientFactory {
      *     client instance.
      * @return new configured client instance.
      */
-    public static Client newClient(Configuration configuration) {
+    public static Client newClient(final Configuration configuration) {
         return getFactory().getClient(configuration);
     }
 
@@ -119,5 +123,5 @@ public abstract class ClientFactory {
      *     the new client instance.
      * @return a new client instance.
      */
-    protected abstract Client getClient(Configuration configuration);
+    protected abstract Client getClient(final Configuration configuration);
 }

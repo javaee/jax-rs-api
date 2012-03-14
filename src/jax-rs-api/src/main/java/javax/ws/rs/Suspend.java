@@ -45,7 +45,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
-import javax.ws.rs.core.ExecutionContext;
 
 /**
  * Automatically suspend the request processing {@link javax.ws.rs.core.ExecutionContext
@@ -58,7 +57,8 @@ import javax.ws.rs.core.ExecutionContext;
  * <pre>
  * &#64;Path("/messages/next")
  * public class SimpleAsyncEventResource {
- *     private static final BlockingQueue&lt;ExecutionContext&gt; suspended = new ArrayBlockingQueue&lt;ExecutionContext&gt;(5);
+ *     private static final BlockingQueue&lt;ExecutionContext&gt; suspended =
+ *             new ArrayBlockingQueue&lt;ExecutionContext&gt;(5);
  *     &#64;Context ExecutionContext ctx;
  *
  *     &#64;GET
@@ -104,7 +104,8 @@ import javax.ws.rs.core.ExecutionContext;
  * By default there is {@link #NEVER no suspend timeout set} and request processing is
  * suspended indefinitely. The suspend timeout can be specified using the annotation
  * values. Declaratively specified timeout can be further programmatically overridden
- * using the {@link ExecutionContext#setSuspendTimeout(long, TimeUnit)} method.
+ * using the {@link javax.ws.rs.core.ExecutionContext#setSuspendTimeout(long, TimeUnit)}
+ * method.
  * <p/>
  * If the request processing was suspended with a positive timeout value, and has
  * not been explicitly resumed before the timeout has expired, the processing

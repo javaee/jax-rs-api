@@ -42,7 +42,7 @@ package javax.ws.rs.ext;
 import java.io.IOException;
 
 /**
- * <p>Interface implemented by filters invoked at the <emph>Post</emph>
+ * <p>Interface implemented by filters invoked at the <i>Post</i>
  * extension point. Filters implementing this interface MUST be
  * annotated with {@link javax.ws.rs.ext.Provider}.</p>
  *
@@ -57,7 +57,7 @@ import java.io.IOException;
 public interface ResponseFilter {
 
     /**
-     * Filter method called at the <emph>Post</emph> extension point.
+     * Filter method called at the <i>Post</i> extension point.
      * I.e., after the invocation returns in the client API and after the
      * resource method returns in the server API. Filters in a chain are
      * ordered according to their binding priority (see
