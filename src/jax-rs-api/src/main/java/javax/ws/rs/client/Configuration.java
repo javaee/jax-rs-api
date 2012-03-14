@@ -64,9 +64,17 @@ import java.util.Set;
  * Once the child instance is created, it's configuration can be further customized
  * using the provided set of instance configuration mutator methods. A change
  * made in the configuration of a child instance does not affect the configuration
- * of its parent.
- * <p />
- * TODO example.
+ * of its parent, for example:
+ * <pre>
+ *   Client client = ClientFactory.newClient();
+ *   client.configuration().setProperty("FOO_PROPERTY", "FOO_VALUE");
+ *
+ *   // inherits the configured "FOO_PROPERTY" from the client instance
+ *   Target resourceTarget = client.target("http://examples.jaxrs.com/");
+ *
+ *   // does not modify the client instance configuration
+ *   target.configuration().enable(new BarFeature());
+ * </pre>
  *
  * @author Marek Potociar
  * @since 2.0

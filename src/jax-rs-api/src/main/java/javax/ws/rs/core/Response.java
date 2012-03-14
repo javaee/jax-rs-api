@@ -155,7 +155,7 @@ public abstract class Response {
      * @see #hasEntity()
      * @see #isEntityRetrievable()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @see #bufferEntity()
      * @see javax.ws.rs.ext.MessageBodyWriter
      */
@@ -199,8 +199,8 @@ public abstract class Response {
      * @see #isEntityRetrievable()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class, java.lang.annotation.Annotation[])
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral, java.lang.annotation.Annotation[])
+     * @see #readEntity(javax.ws.rs.core.GenericType)
+     * @see #readEntity(javax.ws.rs.core.GenericType, java.lang.annotation.Annotation[])
      * @see #bufferEntity()
      * @see #close()
      * @see javax.ws.rs.ext.MessageBodyWriter
@@ -246,7 +246,7 @@ public abstract class Response {
      * @see #hasEntity()
      * @see #isEntityRetrievable()
      * @see #getEntity()
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral, java.lang.annotation.Annotation[])
+     * @see #readEntity(javax.ws.rs.core.GenericType, java.lang.annotation.Annotation[])
      * @see #readEntity(java.lang.Class)
      * @see #readEntity(java.lang.Class, java.lang.annotation.Annotation[])
      * @see #bufferEntity()
@@ -255,7 +255,7 @@ public abstract class Response {
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
-    public abstract <T> T readEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
+    public abstract <T> T readEntity(GenericType<T> entityType) throws MessageProcessingException;
 
     /**
      * Read the message entity as an instance of specified Java type using
@@ -296,8 +296,8 @@ public abstract class Response {
      * @see #isEntityRetrievable()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral, java.lang.annotation.Annotation[])
+     * @see #readEntity(javax.ws.rs.core.GenericType)
+     * @see #readEntity(javax.ws.rs.core.GenericType, java.lang.annotation.Annotation[])
      * @see #bufferEntity()
      * @see #close()
      * @see javax.ws.rs.ext.MessageBodyWriter
@@ -344,7 +344,7 @@ public abstract class Response {
      * @see #hasEntity()
      * @see #isEntityRetrievable()
      * @see #getEntity()
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @see #readEntity(java.lang.Class)
      * @see #readEntity(java.lang.Class, java.lang.annotation.Annotation[])
      * @see #bufferEntity()
@@ -353,7 +353,7 @@ public abstract class Response {
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
-    public abstract <T> T readEntity(TypeLiteral<T> entityType, Annotation[] annotations) throws MessageProcessingException;
+    public abstract <T> T readEntity(GenericType<T> entityType, Annotation[] annotations) throws MessageProcessingException;
 
     /**
      * Check if there is an entity available in the response. The method returns
@@ -369,8 +369,8 @@ public abstract class Response {
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
      * @see #readEntity(java.lang.Class, java.lang.annotation.Annotation[])
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral, java.lang.annotation.Annotation[]) 
+     * @see #readEntity(javax.ws.rs.core.GenericType)
+     * @see #readEntity(javax.ws.rs.core.GenericType, java.lang.annotation.Annotation[])
      * @since 2.0
      */
     public abstract boolean hasEntity();
@@ -395,7 +395,7 @@ public abstract class Response {
      * @see #hasEntity()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @see #bufferEntity()
      * @since 2.0
      */
@@ -425,7 +425,7 @@ public abstract class Response {
      * @see #isEntityRetrievable()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @see #close()
      * @since 2.0
      */
@@ -453,7 +453,7 @@ public abstract class Response {
      *
      * @throws MessageProcessingException if there is an error closing the response.
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @since 2.0
      */
     public abstract void close() throws MessageProcessingException;

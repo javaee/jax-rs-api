@@ -50,21 +50,20 @@ import static org.junit.Assert.*;
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public class TypeLiteralTest {
+public class GenericTypeTest {
 
     private static final Type arrayListOfStringsType = new ArrayList<String>() {
 
-            private static final long serialVersionUID = 3109256773218160485L;
-        }.getClass().getGenericSuperclass();
+        private static final long serialVersionUID = 3109256773218160485L;
+    }.getClass().getGenericSuperclass();
 
-
-    public TypeLiteralTest() {
+    public GenericTypeTest() {
     }
 
     @Test
     public void testStaticConstruction() {
 
-        TypeLiteral<ArrayList<String>> tl = TypeLiteral.<ArrayList<String>>of(ArrayList.class, new ParameterizedType() {
+        GenericType<ArrayList<String>> type = GenericType.<ArrayList<String>>of(ArrayList.class, new ParameterizedType() {
 
             @Override
             public Type[] getActualTypeArguments() {
@@ -81,9 +80,9 @@ public class TypeLiteralTest {
                 return null;
             }
         });
-        assertEquals(ArrayList.class, tl.getRawType());
-        assertEquals(arrayListOfStringsType, tl.getType());
-        final Type[] parameterTypes = tl.getParameterTypes();
+        assertEquals(ArrayList.class, type.getRawType());
+        assertEquals(arrayListOfStringsType, type.getType());
+        final Type[] parameterTypes = type.getParameterTypes();
 
         assertEquals(1, parameterTypes.length);
         assertEquals(String.class, parameterTypes[0]);
@@ -91,7 +90,7 @@ public class TypeLiteralTest {
 
     @Test
     public void testAnnonymousConstruction() {
-        TypeLiteral<ArrayList<String>> tl = new TypeLiteral<ArrayList<String>>() {
+        GenericType<ArrayList<String>> tl = new GenericType<ArrayList<String>>() {
         };
         assertEquals(ArrayList.class, tl.getRawType());
         assertEquals(arrayListOfStringsType, tl.getType());

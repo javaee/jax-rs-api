@@ -373,7 +373,7 @@ public interface Request {
      * @see #hasEntity()
      * @see #isEntityRetrievable()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @see #bufferEntity()
      * @see javax.ws.rs.ext.MessageBodyWriter
      * @since 2.0
@@ -418,8 +418,8 @@ public interface Request {
      * @see #isEntityRetrievable()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class, java.lang.annotation.Annotation[])
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral, java.lang.annotation.Annotation[])
+     * @see #readEntity(javax.ws.rs.core.GenericType)
+     * @see #readEntity(javax.ws.rs.core.GenericType, java.lang.annotation.Annotation[])
      * @see #bufferEntity()
      * @see #close()
      * @see javax.ws.rs.ext.MessageBodyWriter
@@ -465,7 +465,7 @@ public interface Request {
      * @see #hasEntity()
      * @see #isEntityRetrievable()
      * @see #getEntity()
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral, java.lang.annotation.Annotation[])
+     * @see #readEntity(javax.ws.rs.core.GenericType, java.lang.annotation.Annotation[])
      * @see #readEntity(java.lang.Class)
      * @see #readEntity(java.lang.Class, java.lang.annotation.Annotation[])
      * @see #bufferEntity()
@@ -474,7 +474,7 @@ public interface Request {
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
-    public <T> T readEntity(TypeLiteral<T> entityType) throws MessageProcessingException;
+    public <T> T readEntity(GenericType<T> entityType) throws MessageProcessingException;
 
     /**
      * Read the message entity as an instance of specified Java type using
@@ -515,8 +515,8 @@ public interface Request {
      * @see #isEntityRetrievable()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral, java.lang.annotation.Annotation[])
+     * @see #readEntity(javax.ws.rs.core.GenericType)
+     * @see #readEntity(javax.ws.rs.core.GenericType, java.lang.annotation.Annotation[])
      * @see #bufferEntity()
      * @see #close()
      * @see javax.ws.rs.ext.MessageBodyWriter
@@ -563,7 +563,7 @@ public interface Request {
      * @see #hasEntity()
      * @see #isEntityRetrievable()
      * @see #getEntity()
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @see #readEntity(java.lang.Class)
      * @see #readEntity(java.lang.Class, java.lang.annotation.Annotation[])
      * @see #bufferEntity()
@@ -572,7 +572,7 @@ public interface Request {
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
-    public <T> T readEntity(TypeLiteral<T> entityType, Annotation[] annotations) throws MessageProcessingException;
+    public <T> T readEntity(GenericType<T> entityType, Annotation[] annotations) throws MessageProcessingException;
 
     /**
      * Check if there is an entity available in the request. The method returns
@@ -587,7 +587,7 @@ public interface Request {
      * @see #isEntityRetrievable()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @since 2.0
      */
     public boolean hasEntity();
@@ -612,7 +612,7 @@ public interface Request {
      * @see #hasEntity()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @see #bufferEntity()
      * @since 2.0
      */
@@ -642,7 +642,7 @@ public interface Request {
      * @see #isEntityRetrievable()
      * @see #getEntity()
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @see #close()
      * @since 2.0
      */
@@ -664,7 +664,7 @@ public interface Request {
      *
      * @throws MessageProcessingException if there is an error closing the response.
      * @see #readEntity(java.lang.Class)
-     * @see #readEntity(javax.ws.rs.core.TypeLiteral)
+     * @see #readEntity(javax.ws.rs.core.GenericType)
      * @since 2.0
      */
     public abstract void close() throws MessageProcessingException;

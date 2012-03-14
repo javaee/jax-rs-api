@@ -55,7 +55,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.TypeLiteral;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.ext.ClientFactory;
 import static javax.ws.rs.client.Entity.*;
 
@@ -154,7 +154,7 @@ public class BasicExamples {
     public void typedGenericResponse() {
         List<Customer> customers = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers")
-                .request().get(new TypeLiteral<List<Customer>>() {
+                .request().get(new GenericType<List<Customer>>() {
         });
         assert customers != null;
     }

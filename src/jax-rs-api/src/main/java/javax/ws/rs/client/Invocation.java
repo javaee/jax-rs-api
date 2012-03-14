@@ -47,17 +47,64 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.RequestHeaders;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.TypeLiteral;
+import javax.ws.rs.core.GenericType;
 
 /**
- * TODO javadoc.
+ * A client request invocation.
+ *
+ * An invocation is a request that has been prepared and is ready for execution.
+ * Invocations provide a generic (command) interface that enables a separation of
+ * concerns between the creator and the submitter. In particular, the submitter
+ * does not need to know how the invocation was prepared, but only how it should
+ * be executed (synchronously or asynchronously) and when.
  *
  * @author Marek Potociar
+ * @see Invocation.Builder Invocation.Builder
  */
 public interface Invocation {
 
     /**
-     * TODO javadoc.
+     * A client request invocation builder.
+     *
+     * The builder, obtained via a call to one of the {@code request(...)}
+     * methods on a {@link Target resource target}, provides methods for
+     * preparing a client request invocation. Once the request is prepared
+     * the invocation builder can be either used to build an {@link Invocation}
+     * with a generic execution interface:
+     * <pre>
+     *   Client client = ClientFactory.newClient();
+     *   Target resourceTarget = client.target("http://examples.jaxrs.com/");
+     *
+     *   // Build a HTTP GET request that accepts "text/plain" response type
+     *   // and contains a custom HTTP header entry "Foo: bar".
+     *   Invocation invocation = resourceTarget.request("text/plain")
+     *           .header("Foo", "bar").buildGet();
+     *
+     *   // Invoke the request using generic interface
+     *   String response = invocation.invoke(String.class);
+     * </pre>
+     * Alternatively, one of the inherited {@link SyncInvoker synchronous invocation
+     * methods} can be used to invoke the prepared request and return the server
+     * response in a single step, e.g.:
+     * <pre>
+     *   Client client = ClientFactory.newClient();
+     *   Target resourceTarget = client.target("http://examples.jaxrs.com/");
+     *
+     *   // Build and invoke the get request in a single step
+     *   String response = resourceTarget.request("text/plain")
+     *           .header("Foo", "bar").get(String.class);
+     * </pre>
+     * Once the request is fully prepared for invoking, switching to an
+     * {@link AsyncInvoker asynchronous invocation} mode is possible by
+     * calling the {@link #async() } method on the builder, e.g.:
+     * <pre>
+     *   Client client = ClientFactory.newClient();
+     *   Target resourceTarget = client.target("http://examples.jaxrs.com/");
+     *
+     *   // Build and invoke the get request asynchroneously in a single step
+     *   Future<String> response = resourceTarget.request("text/plain")
+     *           .header("Foo", "bar").async().get(String.class);
+     * </pre>
      */
     public static interface Builder extends SyncInvoker {
 
@@ -204,63 +251,78 @@ public interface Invocation {
     /**
      * Synchronously invoke the request and receive a response back.
      *
-     * @return {@link Response response} object as a result of the request invocation.
+     * @return {@link Response response} object as a result of the request
+     *     invocation.
      * @throws InvocationException in case the invocation failed.
      */
     public Response invoke() throws InvocationException;
 
     /**
-     * Synchronously invoke the request and receive a response of the specified type back.
+     * Synchronously invoke the request and receive a response of the specified
+     * type back.
      *
      * @param <T> response type
      * @param responseType Java type the response should be converted into.
-     * @return response object of the specified type as a result of the request invocation.
+     * @return response object of the specified type as a result of the request
+     *     invocation.
      * @throws InvocationException in case the invocation failed.
      */
     public <T> T invoke(Class<T> responseType) throws InvocationException;
 
     /**
-     * Synchronously invoke the request and receive a response of the specified generic type back.
+     * Synchronously invoke the request and receive a response of the specified
+     * generic type back.
      *
      * @param <T> generic response type
-     * @param responseType type literal representing a generic Java type the response should be converted into.
-     * @return response object of the specified generic type as a result of the request invocation.
+     * @param responseType type literal representing a generic Java type the
+     *     response should be converted into.
+     * @return response object of the specified generic type as a result of the
+     *     request invocation.
      * @throws InvocationException in case the invocation failed.
      */
-    public <T> T invoke(TypeLiteral<T> responseType) throws InvocationException;
+    public <T> T invoke(GenericType<T> responseType) throws InvocationException;
 
     /**
-     * Submit the request for an asynchronous invocation and receive a future response back.
+     * Submit the request for an asynchronous invocation and receive a future
+     * response back.
      *
-     * @return future {@link Response response} object as a result of the request invocation.
+     * @return future {@link Response response} object as a result of the request
+     *     invocation.
      */
     public Future<Response> submit();
 
     /**
-     * Submit the request for an asynchronous invocation and receive a future response of the specified type back.
+     * Submit the request for an asynchronous invocation and receive a future
+     * response of the specified type back.
      *
      * @param <T> response type
      * @param responseType Java type the response should be converted into.
-     * @return future response object of the specified type as a result of the request invocation.
+     * @return future response object of the specified type as a result of the
+     *     request invocation.
      */
     public <T> Future<T> submit(Class<T> responseType);
 
     /**
-     * Submit the request for an asynchronous invocation and receive a future response of the specified generic type back.
+     * Submit the request for an asynchronous invocation and receive a future
+     * response of the specified generic type back.
      *
      * @param <T> generic response type
-     * @param responseType type literal representing a generic Java type the response should be converted into.
-     * @return future response object of the specified generic type as a result of the request invocation.
+     * @param responseType type literal representing a generic Java type the
+     *     response should be converted into.
+     * @return future response object of the specified generic type as a result
+     *     of the request invocation.
      */
-    public <T> Future<T> submit(TypeLiteral<T> responseType);
+    public <T> Future<T> submit(GenericType<T> responseType);
 
     /**
-     * Submit the request for an asynchronous invocation and register an {@link InvocationCallback}
-     * to process the future result of the invocation.
+     * Submit the request for an asynchronous invocation and register an
+     * {@link InvocationCallback} to process the future result of the invocation.
      *
      * @param <T> response type
-     * @param callback invocation callback for asynchronous processing of the request invocation result.
-     * @return future response object of the specified type as a result of the request invocation.
+     * @param callback invocation callback for asynchronous processing of the
+     *     request invocation result.
+     * @return future response object of the specified type as a result of the
+     *     request invocation.
      */
     public <T> Future<T> submit(InvocationCallback<T> callback);
 
