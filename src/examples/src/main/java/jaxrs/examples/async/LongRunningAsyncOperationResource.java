@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -41,20 +41,18 @@ package jaxrs.examples.async;
 
 import java.util.Random;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static java.util.concurrent.TimeUnit.*;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Suspend;
-import javax.ws.rs.core.ExecutionContext;
 import javax.ws.rs.core.Context;
-
-import static java.util.concurrent.TimeUnit.*;
+import javax.ws.rs.core.ExecutionContext;
 
 /**
  *
@@ -80,7 +78,7 @@ public class LongRunningAsyncOperationResource {
 
     @GET
     @Suspend(timeOut = 15, timeUnit = SECONDS)
-    @Path("suspendViaAnnotation")
+    @Path("suspendViaAnnotationFieldInjectedCtx")
     public void suspendViaAnnotationExample() {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
@@ -100,7 +98,7 @@ public class LongRunningAsyncOperationResource {
 
     @GET
     @Suspend(timeOut = 15, timeUnit = SECONDS)
-    @Path("suspendViaAnnotation")
+    @Path("suspendViaAnnotationMethodInjectedCtx")
     public void suspendViaAnnotationExample2(@Context final ExecutionContext ctx2) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
@@ -116,8 +114,8 @@ public class LongRunningAsyncOperationResource {
         });
 
         // default suspend;
-    }    
-    
+    }
+
     @GET
     @Path("suspendViaContext")
     public String suspendViaContextExample(@QueryParam("query") final String query) {
@@ -147,25 +145,6 @@ public class LongRunningAsyncOperationResource {
     }
 
     @GET
-    @Path("timeoutPropagated")
-    @Suspend(timeOut = 15000) // default time unit is milliseconds
-    public void timeoutValueConflict_PropagationExample() {
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
-                }
-                ctx.resume("Hello async world!");
-            }
-        });
-        ctx.suspend(); // time-out values propagated from the @Suspend annotation; the call is redundant
-    }
-
-    @GET
     @Path("timeoutOverriden")
     @Suspend(timeOut = 15000) // default time unit is milliseconds
     public void timeoutValueConflict_OverridingExample(@QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit) {
@@ -182,7 +161,7 @@ public class LongRunningAsyncOperationResource {
             }
         });
         if (timeOut != null && timeUnit != null) {
-            ctx.suspend(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overriden
+            ctx.setSuspendTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overriden
         } else {
             // suspend using annotation values
         }
@@ -204,13 +183,13 @@ public class LongRunningAsyncOperationResource {
             }
         });
 
-        final Future<?> handle = ctx.suspend(); // retrieving a handle to monitor the suspended request state
+        ctx.suspend();
 
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
             public void run() {
-                while (!handle.isDone()) {
+                while (!ctx.isDone()) {
                 }
                 Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.INFO, "Context resumed with a response!");
             }
