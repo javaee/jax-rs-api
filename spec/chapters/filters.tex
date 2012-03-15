@@ -244,9 +244,9 @@ because filters may trigger message body readers (or writers) and these may, in 
 Figure \ref{jaxrs_pipeline} also shows the relationship between pre-match filters and entity interceptors: namely, given that these type of filters are executed before matching, only interceptors bound globally wrap calls to the message body readers and writers in this case.
 
 \begin{figure}[H]
-\label{jaxrs_pipeline}
 \centering
 \includegraphics{chapters/jaxrs_pipeline.pdf}
 \caption{JAX-RS Server Processing Pipeline.}
+\label{jaxrs_pipeline}
 \end{figure}
 
