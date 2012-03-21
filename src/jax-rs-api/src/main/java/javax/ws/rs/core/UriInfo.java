@@ -129,7 +129,7 @@ public interface UriInfo {
      * Get the absolute path of the request. This includes everything preceding
      * the path (host, port etc) but excludes query parameters.
      * This is a shortcut for
-     * {@code uriInfo.getBase().resolve(uriInfo.getPath()).}
+     * {@code uriInfo.getBaseUri().resolve(uriInfo.getPath()).}
      *
      * @return the absolute path of the request.
      * @throws java.lang.IllegalStateException if called outside the scope of a
