@@ -17,15 +17,102 @@ Servlet filters may trigger consumption of a request body by accessing request p
 \section{Java EE Container}
 \label{javaee}
 
-This section describes the additional requirements that apply to a \jaxrs\ implementation when combined in a product that supports these other Java specifications:
+This section describes the additional requirements that apply to a \jaxrs\ implementation when combined in a product that supports the following specifications. 
 
-\begin{itemize}
-\item In a product that also supports the Servlet specification, implementations MUST support \jaxrs\ applications that are packaged as a web application. Implementations MUST behave as if built using the Servlet 3 pluggability mechanism, see Section \ref{servlet}.
-\item In a product that also supports Managed Beans, implementations MUST support use of Managed Beans as root resource classes, providers and \code{Application} subclasses. In a product that also supports JSR 299, implementations MUST similarly support use of JSR299-style managed beans. Providers and \code{Application} subclasses MUST be singletons or use application scope.
-\item In a product that also supports EJB, an implementation MUST support use of stateless and singleton session beans as root resource classes, providers and \code{Application} subclasses. \jaxrs\ annotations MAY be applied to a bean's local interface or directly to a no-interface bean. If an \code{Exception\-Mapper} for a \code{EJBException} or subclass is not included with an application then exceptions thrown by an EJB resource class or provider method MUST be unwrapped and processed as described in Section \ref{method_exc}.
-\end{itemize}
+\subsection{Servlets}
+\label{servlets}
 
-The following additional requirements apply when using Managed Beans, JSR299-style Managed Beans or EJBs as resource classes, providers or \code{Application} subclasses:
+In a product that also supports the Servlet specification, implementations MUST support \jaxrs\ applications that are packaged as a web application. Implementations MUST behave as if built using the Servlet 3 pluggability mechanism, see Section \ref{servlet}. As explained in Section \ref{servlet_container}, the \Context\ annotation can be used to inject a few Servlet-defined types.
+
+\subsection{Managed Beans}
+\label{managed_beans}
+
+In a product that supports Managed Beans, implementations MUST support the use of Managed Beans as root resource classes, providers and \code{Application} subclasses. 
+
+For example, a bean that uses a managed-bean interceptor can be defined as a \jaxrs\ resource as follows:
+
+\begin{listing}{1}
+@ManagedBean
+@Path("/managedbean")
+public class ManagedBeanResource {
+
+    public static class MyInterceptor {
+        @AroundInvoke
+        public String around(InvocationContext ctx) throws Exception {
+            System.out.println("around() called");
+            return (String) ctx.proceed();
+        }
+    }
+
+    @GET
+    @Produces("text/plain")
+    @Interceptors(MyInterceptor.class)
+    public String getIt() {
+        return "Hi managedbean!";
+    }
+}
+\end{listing}
+
+The example above uses a managed-bean interceptor to intercept calls to the resource method \code{getIt}. See Section \ref{additional_reqs} for additional requirements on Managed Beans.
+
+\subsection{Context and Dependency Injection (CDI)}
+\label{cdi}
+In a product that supports CDI, implementations MUST support the use of CDI-style Beans as root resource classes, providers and \code{Application} subclasses. Providers and \code{Application} subclasses MUST be singletons or use application scope. 
+
+For example, assuming CDI is enabled via the inclusion of a \code{beans.xml} file, a CDI-style bean that can be defined as a \jaxrs\ resource as follows:
+
+\begin{listing}{1}
+@Path("/cdibean")
+public class CdiBeanResource {
+
+	@Inject MyOtherCdiBean bean;		// CDI injected bean
+
+    @GET
+    @Produces("text/plain")
+    public String getIt() {
+        return bean.getIt();
+    }
+}
+\end{listing}
+
+The example above takes advantage of the type-safe dependency injection provided in CDI by using another bean, of type \code{MyOtherCdiBean}, in order to return a resource representation. See Section \ref{additional_reqs} for additional requirements on CDI-style Beans.
+
+\subsection{Enterprise Java Beans (EJBs)}
+\label{ejbs}
+
+In a product that supports EJBs, an implementation MUST support the use of stateless and singleton session beans as root resource classes, providers and \code{Application} subclasses. \jaxrs\ annotations MAY be applied to a bean's local interface or directly to a no-interface bean. 
+
+For example, a stateless EJB that implements a local interface can be defined as a \jaxrs\ resource class as follows:
+
+\begin{listing}{1}
+@Local
+public interface LocalEjb {
+
+    @GET
+    @Produces("text/plain")
+    public String getIt();
+}
+
+@Stateless
+@Path("/stateless")
+public class StatelessEjbResource implements LocalEjb {
+
+    @Override
+    public String getIt() {
+        return "Hi stateless!";
+    }
+}
+\end{listing}
+
+See Section \ref{annotationinheritance} for more information on annotation inheritance in \jaxrs.
+If an \code{Exception\-Mapper} for a \code{EJBException} or subclass is not included with an application then exceptions thrown by an EJB resource class or provider method MUST be unwrapped and processed as described in Section \ref{method_exc}. 
+
+See Section \ref{async_ejbs} for more information on asynchronous EJB methods and Section \ref{additional_reqs} for additional requirements on EJBs.
+
+\subsection{Additional Requirements}
+\label{additional_reqs}
+
+The following additional requirements apply when using Managed Beans, CDI-style Beans or EJBs as resource classes, providers or \code{Application} subclasses:
 
 \begin{itemize}
 \item Field and property injection of \jaxrs\ resources MUST be performed prior to the container invoking any \code{@PostConstruct} annotated method.
