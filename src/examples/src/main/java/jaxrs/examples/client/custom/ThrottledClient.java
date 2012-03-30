@@ -42,13 +42,14 @@ package jaxrs.examples.client.custom;
 import java.net.URI;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.Target;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Link;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -57,13 +58,14 @@ import javax.ws.rs.core.UriBuilder;
  */
 public final class ThrottledClient implements Client {
 
-    private final BlockingQueue<Request.RequestBuilder> requestQueue;
+    private final BlockingQueue<ClientRequestContext> requestQueue;
 
     public ThrottledClient() {
         this(10);
     }
+
     public ThrottledClient(int queueCapacity) {
-        this.requestQueue = new ArrayBlockingQueue<Request.RequestBuilder>(queueCapacity);
+        this.requestQueue = new ArrayBlockingQueue<ClientRequestContext>(queueCapacity);
     }
 
     public ThrottledClient(Configuration configuration, int queueCapacity) {
@@ -78,22 +80,22 @@ public final class ThrottledClient implements Client {
     }
 
     @Override
-    public Target target(String uri) throws IllegalArgumentException, NullPointerException {
+    public WebTarget target(String uri) throws IllegalArgumentException, NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Target target(URI uri) throws NullPointerException {
+    public WebTarget target(URI uri) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Target target(UriBuilder uriBuilder) throws NullPointerException {
+    public WebTarget target(UriBuilder uriBuilder) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Target target(Link link) throws NullPointerException {
+    public WebTarget target(Link link) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

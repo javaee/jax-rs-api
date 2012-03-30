@@ -44,20 +44,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.ResponseFilter;
 
 /**
  * @author Bill Burke
  * @author Marek Potociar
  * @author Santiago Pericas-Geertsen
  */
-public class CacheResponseFilter implements ResponseFilter {
+public class CacheResponseFilter implements ClientResponseFilter {
 
     private Map<String, CacheEntry> cacheStore;
     AtomicBoolean enabledFlag;
@@ -68,27 +67,24 @@ public class CacheResponseFilter implements ResponseFilter {
     }
 
     @Override
-    public void postFilter(FilterContext ctx) throws IOException {
+    public void filter(ClientRequestContext request, ClientResponseContext response) throws IOException {
         if (enabledFlag.get()) {
-            store(ctx);
+            store(request, response);
         }
     }
 
-    private void store(FilterContext ctx) {
-        final Request request = ctx.getRequest();
+    private void store(ClientRequestContext request, ClientResponseContext response) {
         if (request.getMethod().equalsIgnoreCase("GET")) {
-            final Response response = ctx.getResponse();
 
-            final byte[] body = readFromStream(1024, response.readEntity(InputStream.class));
+            final byte[] body = readFromStream(1024, response.getEntityStream());
 
-            CacheEntry entry = new CacheEntry(
-                    response.getStatus(),
-                    new MultivaluedHashMap<String, String>(response.getHeaders().asMap()),
+            CacheEntry cacheEntry = new CacheEntry(
+                    response.getStatusCode(),
+                    new MultivaluedHashMap<String, String>(response.getHeaders()),
                     body);
-            cacheStore.put(request.getUri().toString(), entry);
+            cacheStore.put(request.getUri().toString(), cacheEntry);
 
-            Response copy = ctx.getResponseBuilder().entity(new ByteArrayInputStream(body)).build();
-            ctx.setResponse(copy);
+            response.setEntityStream(new ByteArrayInputStream(cacheEntry.getBody()));
         }
     }
 

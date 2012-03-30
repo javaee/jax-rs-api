@@ -67,7 +67,7 @@ public interface Client {
      * other method on the client instance would result in an {@link IllegalStateException}
      * being thrown.
      * <p/>
-     * Calling this method effectively invalidates all {@link Target resource targets}
+     * Calling this method effectively invalidates all {@link WebTarget resource targets}
      * produced by the client instance. Invoking any method on such targets once the client
      * is closed would result in an {@link IllegalStateException} being thrown.
      */
@@ -89,7 +89,7 @@ public interface Client {
      * @throws IllegalArgumentException in case the supplied string is not a valid URI.
      * @throws NullPointerException in case the supplied argument is null.
      */
-    Target target(String uri) throws IllegalArgumentException, NullPointerException;
+    WebTarget target(String uri) throws IllegalArgumentException, NullPointerException;
 
     /**
      * Build a new web resource target.
@@ -98,7 +98,7 @@ public interface Client {
      * @return web resource target bound to the provided URI.
      * @throws NullPointerException in case the supplied argument is null.
      */
-    Target target(URI uri) throws NullPointerException;
+    WebTarget target(URI uri) throws NullPointerException;
 
     /**
      * Build a new web resource target.
@@ -107,7 +107,7 @@ public interface Client {
      * @return web resource target bound to the provided URI.
      * @throws NullPointerException in case the supplied argument is null.
      */
-    Target target(UriBuilder uriBuilder) throws NullPointerException;
+    WebTarget target(UriBuilder uriBuilder) throws NullPointerException;
 
     /**
      * Build a new web resource target.
@@ -116,7 +116,7 @@ public interface Client {
      * @return web resource target bound to the linked web resource.
      * @throws NullPointerException in case the supplied argument is null.
      */
-    Target target(Link link) throws NullPointerException;
+    WebTarget target(Link link) throws NullPointerException;
 
     /**
      * <p>Build an invocation from a link. The method and URI are obtained from the

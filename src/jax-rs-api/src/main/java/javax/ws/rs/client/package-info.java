@@ -54,7 +54,7 @@
  * by defining multiple extension points.
  *
  * <h2>Client API Bootstrapping and Configuration</h2>
- * The main entry point to the API is a {@link javax.ws.rs.ext.ClientFactory}
+ * The main entry point to the API is a {@link javax.ws.rs.client.ClientFactory}
  * that is used to bootstrap {@link javax.ws.rs.client.Client} instances -
  * {@link javax.ws.rs.client.Configuration configurable}, heavy-weight objects
  * that manage the underlying communication infrastructure and serve as the root
@@ -81,14 +81,14 @@
  * Conceptually, the steps required to submit a request are the following:
  * <ol>
  *   <li>obtain an {@link javax.ws.rs.client.Client} instance</li>
- *   <li>create a resource {@link javax.ws.rs.client.Target Target}</li>
+ *   <li>create a resource {@link javax.ws.rs.client.WebTarget WebTarget}</li>
  *   <li>{@link javax.ws.rs.client.Invocation.Builder build} a request invocation</li>
  *   <li>submit a request to directly retrieve a response or get a prepared
  *       {@link javax.ws.rs.client.Invocation} for later submission</li>
  * </ol>
  *
  * As illustrated above, individual Web resources are in the JAX-RS Client API
- * represented as resource targets. Each {@code Target} instance is bound to a
+ * represented as resource targets. Each {@code WebTarget} instance is bound to a
  * concrete URI, e.g. {@code "http://example,org/messages/123"},
  * or a URI template, e.g. {@code "http://example,org/messages/{id}"}.
  * That way a single target can either point at a particular resource or represent
@@ -96,10 +96,10 @@
  * concrete resources can be later derived:
  * <pre>
  *   // Parent target for all messages
- *   Target messages = client.target("http://example.org/messages/{id}");
+ *   WebTarget messages = client.target("http://example.org/messages/{id}");
  *
- *   Target msg123 = messages.path("id", 123); // New target for http://example,org/messages/123
- *   Target msg456 = messages.path("id", 456); // New target for http://example,org/messages/456
+ *   WebTarget msg123 = messages.path("id", 123); // New target for http://example,org/messages/123
+ *   WebTarget msg456 = messages.path("id", 456); // New target for http://example,org/messages/456
  * </pre>
  *
  *<h2>Generic Invocations</h2>

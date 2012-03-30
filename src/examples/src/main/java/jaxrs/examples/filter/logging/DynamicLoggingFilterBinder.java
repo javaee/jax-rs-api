@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,36 +37,33 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext;
+package jaxrs.examples.filter.logging;
 
-import java.lang.reflect.Method;
+import javax.ws.rs.GET;
+import javax.ws.rs.container.DynamicBinder;
+import javax.ws.rs.container.PostMatching;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.ext.Provider;
 
 /**
- * An injectable class to access the resource class and resource method
- * matched by the current request. Methods in this class MAY return
- * <code>null</code> if a resource class and method have not been matched.
- * E.g., in a {@link PreMatchRequestFilter}.
+ * Dynamic binder for a logging request/response {@link PostMatching post-matching}
+ * filter that dynamically decides to bind the logging filter only to GET processing
+ * resource methods on all subclasses of {@link MyResourceClass} and the
+ * {@code MyResourceClass} itself.
  *
  * @author Santiago Pericas-Geertsen
- * @since 2.0
+ * @author Marek Potociar
  */
-public interface ResourceInfo {
+@Provider
+public class DynamicLoggingFilterBinder implements DynamicBinder<LoggingFilter> {
 
-    /**
-     * Get the resource method that is the target of a request,
-     * or <code>null</code> if this information is not available.
-     *
-     * @return resource method instance or null
-     * @see #getResourceClass()
-     */
-    Method getResourceMethod();
+    @Override
+    public LoggingFilter getBoundInstance(ResourceInfo resourceInfo) {
+        if (MyResourceClass.class.isAssignableFrom(resourceInfo.getResourceClass())
+                && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
+            return new LoggingFilter();
+        }
 
-    /**
-     * Get the resource class that is the target of a request,
-     * or <code>null</code> if this information is not available.
-     *
-     * @return resource class instance or null
-     * @see #getResourceMethod()
-     */
-    Class<?> getResourceClass();
+        return null;
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,7 +42,7 @@ package jaxrs.examples.client.webdav;
 import java.net.URI;
 import java.util.Map;
 import javax.ws.rs.client.Configuration;
-import javax.ws.rs.client.Target;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
@@ -51,11 +51,11 @@ import javax.ws.rs.core.UriBuilder;
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public class WebDavTarget implements Target {
+public class WebDavTarget implements WebTarget {
 
-    private final Target target;
+    private final WebTarget target;
 
-    public WebDavTarget(Target target) {
+    public WebDavTarget(WebTarget target) {
         this.target = target;
     }
 

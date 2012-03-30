@@ -37,43 +37,51 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext;
-
-import java.io.IOException;
+package javax.ws.rs;
 
 /**
- * <p>Interface implemented by filters invoked at the <i>PreMatch</i>
- * extension point. Use a filter of this type to update the input to the
- * JAX-RS matching algorithm, e.g., the HTTP method, Accept header, etc.
- * Otherwise, the use of a filter invoked at the <i>Pre</i> extension
- * point (after resource matching) is recommended.</p>
+ * The exception thrown by JAX-RS runtime in case the processing of a message
+ * entity failed in a request or response filter.
  *
- * <p>Filters implementing
- * this interface MUST be annotated with {@link javax.ws.rs.ext.Provider}.
- * This type of filters is supported only as part of the Server API.</p>
- *
- * @author Santiago Pericas-Geertsen
+ * @author Marek Potociar
  * @since 2.0
- * @see RequestFilter
  */
-public interface PreMatchRequestFilter {
+public class MessageProcessingException extends RuntimeException {
+    private static final long serialVersionUID = 1867031673462562629L;
 
     /**
-     * <p>Filter method called at the <i>PreMatch</i> extension point.
-     * I.e., before resource matching as part of the Server API. This type
-     * of filters are not supported in the Client API.</p>
+     * Constructs a new message processing exception with the specified cause and
+     * a detail message of {@code (cause==null ? null : cause.toString())}.
      *
-     * <p>Filters in a chain are ordered according to their binding
-     * priority (see {@link javax.ws.rs.BindingPriority}). If a pre-match
-     * request filter produces a response by calling
-     * {@link FilterContext#setResponse}, the execution of the pre-match request
-     * chain is stopped and the response is returned without matching a resource
-     * method. For example, a caching filter may produce a response in this way.
-     * Note that responses produced in this manner are still processed by
-     * the response filter chain.</p>
-     *
-     * @param context invocation context.
-     * @throws IOException if an I/O exception occurs.
+     * @param  cause the cause (which is saved for later retrieval by the
+     *     {@link #getCause()} method).  (A {@code null} value is permitted, and
+     *     indicates that the cause is nonexistent or unknown.)
      */
-    void preMatchFilter(FilterContext context) throws IOException;
+    public MessageProcessingException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructs a new message processing exception with the specified cause and
+     * a detail message.
+     *
+     * @param message detailed exception message.
+     * @param  cause the cause (which is saved for later retrieval by the
+     *     {@link #getCause()} method).  (A {@code null} value is permitted, and
+     *     indicates that the cause is nonexistent or unknown.)
+     */
+    public MessageProcessingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Constructs a new message processing exception with a specified detail
+     * message.
+     *
+     * @param message detailed exception message.
+     */
+    public MessageProcessingException(String message) {
+        super(message);
+    }
+
 }

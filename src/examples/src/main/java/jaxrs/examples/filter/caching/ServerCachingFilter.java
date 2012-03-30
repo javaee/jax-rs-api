@@ -42,10 +42,11 @@ package jaxrs.examples.filter.caching;
 import java.io.IOException;
 
 import javax.ws.rs.BindingPriority;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.FilterContext;
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.RequestFilter;
 
 /**
  * ServerCachingFilter class.
@@ -54,17 +55,18 @@ import javax.ws.rs.ext.RequestFilter;
  */
 @Provider
 @BindingPriority(BindingPriority.USER)
-public class ServerCachingFilter implements RequestFilter {
+public class ServerCachingFilter implements ContainerRequestFilter {
 
     @Override
-    public void preFilter(FilterContext ctx) throws IOException {
-        Response.ResponseBuilder res = getCachedResponse(ctx);
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+        Response.ResponseBuilder res = getCachedResponse(requestContext);
         if (res != null) {
-            ctx.setResponse(res.build());   // stops filter chain
+            // stop the filter chain
+            throw new WebApplicationException(res.build());
         }
     }
 
-    private Response.ResponseBuilder getCachedResponse(FilterContext ctx) {
+    private Response.ResponseBuilder getCachedResponse(ContainerRequestContext requestContext) {
         // implemetation goes here
         return null;
     }

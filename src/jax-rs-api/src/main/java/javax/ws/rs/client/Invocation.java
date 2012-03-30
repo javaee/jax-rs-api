@@ -45,9 +45,9 @@ import java.util.concurrent.Future;
 
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.RequestHeaders;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 /**
  * A client request invocation.
@@ -67,13 +67,13 @@ public interface Invocation {
      * A client request invocation builder.
      *
      * The builder, obtained via a call to one of the {@code request(...)}
-     * methods on a {@link Target resource target}, provides methods for
+     * methods on a {@link WebTarget resource target}, provides methods for
      * preparing a client request invocation. Once the request is prepared
      * the invocation builder can be either used to build an {@link Invocation}
      * with a generic execution interface:
      * <pre>
      *   Client client = ClientFactory.newClient();
-     *   Target resourceTarget = client.target("http://examples.jaxrs.com/");
+     *   WebTarget resourceTarget = client.target("http://examples.jaxrs.com/");
      *
      *   // Build a HTTP GET request that accepts "text/plain" response type
      *   // and contains a custom HTTP header entry "Foo: bar".
@@ -88,7 +88,7 @@ public interface Invocation {
      * response in a single step, e.g.:
      * <pre>
      *   Client client = ClientFactory.newClient();
-     *   Target resourceTarget = client.target("http://examples.jaxrs.com/");
+     *   WebTarget resourceTarget = client.target("http://examples.jaxrs.com/");
      *
      *   // Build and invoke the get request in a single step
      *   String response = resourceTarget.request("text/plain")
@@ -99,7 +99,7 @@ public interface Invocation {
      * calling the {@link #async() } method on the builder, e.g.:
      * <pre>
      *   Client client = ClientFactory.newClient();
-     *   Target resourceTarget = client.target("http://examples.jaxrs.com/");
+     *   WebTarget resourceTarget = client.target("http://examples.jaxrs.com/");
      *
      *   // Build and invoke the get request asynchroneously in a single step
      *   Future<String> response = resourceTarget.request("text/plain")
@@ -238,7 +238,7 @@ public interface Invocation {
          *     headers will be removed.
          * @return the updated builder.
          */
-        public Builder headers(RequestHeaders headers);
+        public Builder headers(MultivaluedMap<String, Object> headers);
 
         /**
          * Get access to the underlying {@link Configuration configuration}.

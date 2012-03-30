@@ -63,18 +63,23 @@ public interface InterceptorContext {
 
     /**
      * Get a mutable map of request-scoped properties that can be used for communication
-     * between different request/response processing components. May be empty, but
-     * MUST never be {@code null}. In the scope of a single request/response processing,
-     * a same property map instance is shared by the following methods:
+     * between different request/response processing components.
+     *
+     * May be empty, but MUST never be {@code null}. In the scope of a single
+     * request/response processing a same property map instance is shared by the
+     * following methods:
      * <ul>
-     *     <li>{@link javax.ws.rs.core.Request#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.core.Response#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.ext.FilterContext#getProperties() }</li>
+     *     <li>{@link javax.ws.rs.container.ContainerRequestContext#getProperties() }</li>
+     *     <li>{@link javax.ws.rs.container.ContainerResponseContext#getProperties() }</li>
+     *     <li>{@link javax.ws.rs.client.ClientRequestContext#getProperties() }</li>
+     *     <li>{@link javax.ws.rs.client.ClientResponseContext#getProperties() }</li>
      *     <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
      * </ul>
+     *
      * A request-scoped property is an application-defined property that may be
-     * added, removed or modified by any of the components (user, filter, interceptor etc.)
-     * that participate in a given request/response processing flow.
+     * added, removed or modified by any of the components (user, filter,
+     * interceptor etc.) that participate in a given request/response processing
+     * flow.
      * <p />
      * On the client side, this property map is initialized by calling
      * {@link javax.ws.rs.client.Configuration#setProperties(java.util.Map) } or

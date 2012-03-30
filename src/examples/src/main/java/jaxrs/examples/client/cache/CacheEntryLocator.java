@@ -45,17 +45,16 @@ import java.util.List;
 import java.util.Map;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.ws.rs.core.Request;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.RequestFilter;
 
 /**
  * @author Bill Burke
  * @author Marek Potociar
  * @author Santiago Pericas-Geertsen
  */
-public class CacheEntryLocator implements RequestFilter {
+public class CacheEntryLocator implements ClientRequestFilter {
 
     private Map<String, CacheEntry> cache;
     AtomicBoolean enabledFlag;
@@ -66,21 +65,19 @@ public class CacheEntryLocator implements RequestFilter {
     }
 
     @Override
-    public void preFilter(FilterContext ctx) throws IOException {
+    public void filter(ClientRequestContext request) throws IOException {
         if (enabledFlag.get()) {
-            load(ctx);
+            load(request);
         }
     }
 
-    private void load(FilterContext ctx) {
-        final Request request = ctx.getRequest();
+    private void load(ClientRequestContext request) {
         if (request.getMethod().equalsIgnoreCase("GET")) {
             CacheEntry cacheEntry = cache.get(request.getUri().toString());
 
             if (cacheEntry != null) {
-                Response.ResponseBuilder responseBuilder = ctx.createResponse();
-
-                responseBuilder.status(cacheEntry.getStatus()).entity(new ByteArrayInputStream(cacheEntry.getBody()));
+                Response.ResponseBuilder responseBuilder =
+                        Response.status(cacheEntry.getStatus()).entity(new ByteArrayInputStream(cacheEntry.getBody()));
 
                 for (Map.Entry<String, List<String>> mapEntry : cacheEntry.getHeaders().entrySet()) {
                     for (String value : mapEntry.getValue()) {
@@ -88,7 +85,8 @@ public class CacheEntryLocator implements RequestFilter {
                     }
                 }
 
-                ctx.setResponse(responseBuilder.build());  // stops filter chain & returns response
+                // stops filter chain & returns response
+                request.abortWith(responseBuilder.build());
             }
         }
     }

@@ -101,9 +101,9 @@ public interface MessageBodyWriter<T> {
             MediaType mediaType);
 
     /**
-     * Write a type to an HTTP response. The response header map is mutable
+     * Write a type to an HTTP message. The message header map is mutable
      * but any changes must be made before writing to the output stream since
-     * the headers will be flushed prior to writing the response body.
+     * the headers will be flushed prior to writing the message body.
      *
      * @param t the instance to write.
      * @param type the class of object that is to be written.
@@ -114,13 +114,13 @@ public interface MessageBodyWriter<T> {
      * @param annotations an array of the annotations on the resource
      *     method that returns the object.
      * @param mediaType the media type of the HTTP entity.
-     * @param httpHeaders a mutable map of the HTTP response headers.
+     * @param httpHeaders a mutable map of the HTTP message headers.
      * @param entityStream the {@link OutputStream} for the HTTP entity. The
      *     implementation should not close the output stream.
      * @throws java.io.IOException if an IO error arises
      * @throws javax.ws.rs.WebApplicationException if a specific
      *     HTTP error response needs to be produced. Only effective if thrown
-     *     prior to the response being committed.
+     *     prior to the message being committed.
      */
     void writeTo(T t, Class<?> type, Type genericType, Annotation[] annotations,
             MediaType mediaType,

@@ -40,39 +40,40 @@
 package jaxrs.examples.filter.logging;
 
 import java.io.IOException;
-import javax.ws.rs.BindingPriority;
 
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.FilterContext;
+import javax.ws.rs.BindingPriority;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.RequestFilter;
-import javax.ws.rs.ext.ResponseFilter;
 
 /**
+ * Example of a logging resource filter (server-side).
  *
  * @author Santiago Pericas-Geertsen
+ * @author Marek Potociar (marek.potociar at oracle.com)
  */
 @Provider
-@Logged
+@Logged // name-bound => resource filter
 @BindingPriority(BindingPriority.USER)
-public class LoggingFilter implements RequestFilter, ResponseFilter {
+public class LoggingFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     @Override
-    public void preFilter(FilterContext ctx) throws IOException {
-        logRequest(ctx.getRequest());
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+        log(requestContext);
     }
 
     @Override
-    public void postFilter(FilterContext ctx) throws IOException {
-        logResponse(ctx.getResponse());
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+        log(responseContext);
     }
 
-    private void logRequest(Request req) {
+    private static void log(ContainerRequestContext context) {
         // implementation goes here
     }
 
-    private void logResponse(Response res) {
+    private static void log(ContainerResponseContext context) {
         // implementation goes here
     }
 }

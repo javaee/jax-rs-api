@@ -46,9 +46,9 @@ import javax.ws.rs.client.AsyncInvoker;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.SyncInvoker;
-import javax.ws.rs.client.Target;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ClientFactory;
+import javax.ws.rs.client.ClientFactory;
 import static javax.ws.rs.client.Entity.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -108,7 +108,7 @@ public class SpecExamples {
 
     public void typeRelationships() {
         Client client = ClientFactory.newClient();
-        Target uri = client.target("");
+        WebTarget uri = client.target("");
         Invocation.Builder builder = uri.request("text/plain");
 
         SyncInvoker syncInvoker = builder;
@@ -125,9 +125,9 @@ public class SpecExamples {
 
     public void benefitsOfResourceUri() {
         Client client = ClientFactory.newClient();
-        Target base = client.target("http://example.org/");
-        Target hello = base.path("hello").path("{whom}");
-        final Target whomToGreet = hello.pathParam("whom", "world");
+        WebTarget base = client.target("http://example.org/");
+        WebTarget hello = base.path("hello").path("{whom}");
+        final WebTarget whomToGreet = hello.pathParam("whom", "world");
         Response res = whomToGreet.request().get();
     }
 

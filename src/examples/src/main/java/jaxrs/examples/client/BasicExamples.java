@@ -48,7 +48,7 @@ import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.InvocationException;
-import javax.ws.rs.client.Target;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
@@ -56,7 +56,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.ext.ClientFactory;
+import javax.ws.rs.client.ClientFactory;
 import static javax.ws.rs.client.Entity.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -105,11 +105,11 @@ public class BasicExamples {
 
     public void creatingResourceAndSubResourceUris() {
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/ )
-        Target customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
+        WebTarget customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/{id}/ )
-        Target anyCustomerUri = customersUri.path("{id}");
+        WebTarget anyCustomerUri = customersUri.path("{id}");
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/123/ )
-        Target customer123 = anyCustomerUri.pathParam("id", 123);
+        WebTarget customer123 = anyCustomerUri.pathParam("id", 123);
 
         assert customer123 != null;
     }
@@ -123,7 +123,7 @@ public class BasicExamples {
 
     public void creatingResourceUriRequestsAndInvocations() {
         final Client client = ClientFactory.newClient();
-        final Target customersUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers");
+        final WebTarget customersUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
         // Create target request, customize it and invoke using newClient
         Response response = customersUri.request(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
@@ -134,7 +134,7 @@ public class BasicExamples {
         Customer customer;
         Response response;
 
-        final Target customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
+        final WebTarget customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
         response = customersUri.path("{id}").pathParam("id", 123).request().get();
         customer = response.readEntity(Customer.class);
@@ -160,8 +160,8 @@ public class BasicExamples {
     }
 
     public void responseUsingSubResourceClient() {
-        Target customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
-        Target customer = customersUri.path("{id}");
+        WebTarget customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
+        WebTarget customer = customersUri.path("{id}");
 
         // Create a customer
         Response response = customersUri.request().post(xml(new Customer("Bill")));
@@ -197,7 +197,7 @@ public class BasicExamples {
 
     public void asyncCallback() {
         final Client client = ClientFactory.newClient();
-        Target target = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
+        WebTarget target = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
         target.pathParam("id", 123).request().async().get(new InvocationCallback<Customer>() {
 
             @Override
@@ -229,7 +229,7 @@ public class BasicExamples {
 
     public void asyncCallbackUsingSubResourceClient() throws Exception {
         final Client client = ClientFactory.newClient();
-        Target anyCustomerUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
+        WebTarget anyCustomerUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
 
         // invoke a request in background
         Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // Target

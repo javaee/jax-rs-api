@@ -37,11 +37,9 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext;
+package javax.ws.rs.client;
 
 import java.net.URL;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Configuration;
 
 /**
  * Main entry point to the client API used to bootstrap {@link javax.ws.rs.client.Client}

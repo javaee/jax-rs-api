@@ -47,14 +47,14 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Injects a {@link javax.ws.rs.client.Target resource target} pointing at
+ * Injects a {@link javax.ws.rs.client.WebTarget resource target} pointing at
  * a resource identified by the resolved URI into a method parameter,
  * class field or a bean property.
  * <p/>
- * Injected variable must be of type {@link javax.ws.rs.client.Target}.
+ * Injected variable must be of type {@link javax.ws.rs.client.WebTarget}.
  *
  * @author Marek Potociar
- * @see javax.ws.rs.client.Target
+ * @see javax.ws.rs.client.WebTarget
  *
  * @since 2.0
  */
@@ -64,18 +64,20 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Uri {
 
     /**
-     * Specifies the URI of the injected {@link javax.ws.rs.client.Target resource target}.
+     * Specifies the URI of the injected {@link javax.ws.rs.client.WebTarget
+     * resource target}.
+     *
      * The value must be in the form of absolute URI if not used from inside of
      * a JAX-RS component class. For example:
      * <pre>
      *
      *public class AuditingFilter implements RequestFilter {
      *    &#64;Uri("users/{name}/orders")
-     *    Target userOrders;
+     *    WebTarget userOrders;
      *
      *    // An external resource target
      *    &#64;Uri("http://mail.acme.com/accounts/{name}")
-     *    Target userEmailAccount;
+     *    WebTarget userEmailAccount;
      *
      *    ...
      *}
@@ -89,10 +91,10 @@ public @interface Uri {
      *
      *public class AuditingFilter implements RequestFilter {
      *    &#64;Uri("audit/logs")
-     *    Target applicationLogs;
+     *    WebTarget applicationLogs;
      *
      *    &#64;Uri("http://sales.acme.com/audit/logs")
-     *    Target domainLogs;
+     *    WebTarget domainLogs;
      *
      *    ...
      *}
@@ -108,16 +110,16 @@ public @interface Uri {
      *&#64;Path("users/{name}")
      *public class MyResource {
      *    &#64;Uri("users/{name}/orders")
-     *    Target userOrders;
+     *    WebTarget userOrders;
      *
      *    &#64;Uri("http://mail.acme.com/accounts/{name}")
-     *    Target userEmailAccount;
+     *    WebTarget userEmailAccount;
      *
      *    ...
      *}
      * </pre>
      *
-     * @see javax.ws.rs.client.Target
+     * @see javax.ws.rs.client.WebTarget
      * @see javax.ws.rs.Path
      */
     String value();

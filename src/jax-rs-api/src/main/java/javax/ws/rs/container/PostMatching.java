@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,34 +37,33 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.ext;
+package javax.ws.rs.container;
 
-import java.io.IOException;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.ws.rs.NameBinding;
 
 /**
- * <p>Interface implemented by filters invoked at the <i>Post</i>
- * extension point. Filters implementing this interface MUST be
- * annotated with {@link javax.ws.rs.ext.Provider}.</p>
+ * Global binding annotation that can be applied to a {@link ContainerRequestFilter
+ * container request filter} or a {@link ContainerResponseFilter container response
+ * filter} to indicate that such filter should be applied globally on all resources
+ * in the application but depends on a matched resource information being available.
+ * <p />
+ * The JAX-RS runtime will apply the filters marked with the {@code @PostMatching}
+ * annotation globally to all resources, but only in case the incoming request
+ * has been matched to a particular resource method. In case the request has not
+ * been matched, the filter implementations annotated with the {@code @PostMatching}
+ * annotation will not be applied.
  *
- * <p>As part of the client API, these filters are executed after the
- * HTTP invocation returns. As part of the server API, these filters are
- * executed after the resource method returns.</p>
- *
- * @author Santiago Pericas-Geertsen
- * @author Bill Burke
- * @since 2.0
+ * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public interface ResponseFilter {
-
-    /**
-     * Filter method called at the <i>Post</i> extension point.
-     * I.e., after the invocation returns in the client API and after the
-     * resource method returns in the server API. Filters in a chain are
-     * ordered according to their binding priority (see
-     * {@link javax.ws.rs.BindingPriority}).
-     *
-     * @param context invocation context
-     * @throws IOException if an I/O exception occurs
-     */
-    void postFilter(FilterContext context) throws IOException;
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@NameBinding
+public @interface PostMatching {
 }

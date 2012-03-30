@@ -37,28 +37,37 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.client.cache;
+package javax.ws.rs.container;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.client.ClientFactory;
+import java.lang.reflect.Method;
 
 /**
- * @author Bill Burke
- * @author Marek Potociar
+ * An injectable class to access the resource class and resource method
+ * matched by the current request. Methods in this class MAY return
+ * <code>null</code> if a resource class and method have not been matched,
+ * e.g. in a standalone, pre-matching {@link ContainerRequestFilter} that was
+ * not provided by a post-matching {@link PostMatching}.
+ *
+ * @author Santiago Pericas-Geertsen
+ * @since 2.0
  */
-public class CacheExample {
+public interface ResourceInfo {
 
-    public void cacheExample() {
-        Client client = ClientFactory.newClient();
-        client.configuration().register(CachingFeature.class);
+    /**
+     * Get the resource method that is the target of a request,
+     * or <code>null</code> if this information is not available.
+     *
+     * @return resource method instance or null
+     * @see #getResourceClass()
+     */
+    Method getResourceMethod();
 
-        WebTarget resource = client.target("http://example.com/foo/bar.txt");
-
-        String text = resource.request("text/plain").get(String.class);
-        String second = resource.request("text/plain").get(String.class);
-
-        System.out.println(text);
-        System.out.println(second);
-    }
+    /**
+     * Get the resource class that is the target of a request,
+     * or <code>null</code> if this information is not available.
+     *
+     * @return resource class instance or null
+     * @see #getResourceMethod()
+     */
+    Class<?> getResourceClass();
 }

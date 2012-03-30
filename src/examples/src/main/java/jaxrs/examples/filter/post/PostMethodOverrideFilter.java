@@ -40,9 +40,8 @@
 package jaxrs.examples.filter.post;
 
 import java.io.IOException;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.ext.FilterContext;
-import javax.ws.rs.ext.PreMatchRequestFilter;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.ext.Provider;
 
 /**
@@ -51,17 +50,14 @@ import javax.ws.rs.ext.Provider;
  * @author Santiago.Pericas-Geertsen at oracle.com
  */
 @Provider
-public class PostMethodOverrideFilter implements PreMatchRequestFilter {
+public class PostMethodOverrideFilter implements ContainerRequestFilter {
 
     @Override
-    public void preMatchFilter(FilterContext context) throws IOException {
-        Request request = context.getRequest();
-
-        if (request.getMethod().equalsIgnoreCase("POST")) {
-            String override = request.getHeaders().getHeader("X-HTTP-Method-Override");
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+        if (requestContext.getMethod().equalsIgnoreCase("POST")) {
+            String override = requestContext.getHeaders().getFirst("X-HTTP-Method-Override");
             if (override != null) {
-                request = context.getRequestBuilder().method(override).build();
-                context.setRequest(request);
+                requestContext.setMethod(override);
             }
         }
     }

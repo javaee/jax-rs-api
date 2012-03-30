@@ -44,11 +44,11 @@ import java.util.Set;
 
 /**
  * Represents inheritable configuration of the main client-side JAX-RS components,
- * such as {@link Client}, {@link Target}, {@link Invocation.Builder Invocation Builder}
+ * such as {@link Client}, {@link WebTarget}, {@link Invocation.Builder Invocation Builder}
  * or {@link Invocation}.
  * <p />
  * Configuration is inherited from a parent component to a child component.
- * When creating new {@link Target resource targets} using a {@link Client} instance,
+ * When creating new {@link WebTarget resource targets} using a {@link Client} instance,
  * the configuration of the {@code Client} instance is inherited by the child target
  * instances being created. Similarly, when creating new
  * {@code Invocation.Builder invocation builders} or derived resource targets
@@ -70,10 +70,10 @@ import java.util.Set;
  *   client.configuration().setProperty("FOO_PROPERTY", "FOO_VALUE");
  *
  *   // inherits the configured "FOO_PROPERTY" from the client instance
- *   Target resourceTarget = client.target("http://examples.jaxrs.com/");
+ *   WebTarget resourceTarget = client.target("http://examples.jaxrs.com/");
  *
  *   // does not modify the client instance configuration
- *   target.configuration().enable(new BarFeature());
+ *   resourceTarget.configuration().enable(new BarFeature());
  * </pre>
  *
  * @author Marek Potociar

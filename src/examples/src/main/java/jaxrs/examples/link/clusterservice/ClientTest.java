@@ -42,8 +42,7 @@ package jaxrs.examples.link.clusterservice;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.ResponseHeaders;
-import javax.ws.rs.ext.ClientFactory;
+import javax.ws.rs.client.ClientFactory;
 
 /**
  * ClientTest class.
@@ -59,23 +58,22 @@ public class ClientTest {
         Response rc = client.target("/cluster").request("application/json").get();
 
         // Ensure cluster is online
-        ResponseHeaders rh = rc.getHeaders();
-        if (rh.hasLink("onliner")) {
-            client.invocation(rh.getLink("onliner")).invoke();
+        if (rc.hasLink("onliner")) {
+            client.invocation(rc.getLink("onliner")).invoke();
         }
 
         // Start all machines in cluster
         Cluster c = rc.readEntity(Cluster.class);
         for (Machine m : c.getMachines()) {
             // Machine name is need for URI template in link
-            Link l = rh.getLinkBuilder("item").build(m.getName());
+            Link l = rc.getLinkBuilder("item").build(m.getName());
 
             // Create invocation from link and call invoke()
             Response rm = client.invocation(l).invoke();
 
             // Start machine if not started already
-            if (rm.getHeaders().hasLink("starter")) {
-                client.invocation(rm.getHeaders().getLink("starter")).invoke();
+            if (rm.hasLink("starter")) {
+                client.invocation(rm.getLink("starter")).invoke();
             }
         }
     }
