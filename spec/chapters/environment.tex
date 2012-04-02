@@ -108,6 +108,7 @@ public class StatelessEjbResource implements LocalEjb {
 }
 \end{listing}
 
+\jaxrs\ implementations are REQUIRED to discover EJBs by inspecting annotations on classes and local interfaces; they are not REQUIRED to read EJB deployment descriptors (ejb-jar.xml). Therefore, any information in an EJB deployment descriptor for the purpose of overriding EJB annotations or providing additional meta-data will likely result in a non-portable \jaxrs\ application. 
 
 If an \code{Exception\-Mapper} for a \code{EJBException} or subclass is not included with an application then exceptions thrown by an EJB resource class or provider method MUST be unwrapped and processed as described in Section \ref{method_exc}. 
 
