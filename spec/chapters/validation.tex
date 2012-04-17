@@ -164,29 +164,9 @@ Note that \code{@PremiumUser} is explicitly listed and \code{@StandardUser} is t
 
 \section{Annotation Inheritance}
 
-The rule for inheritance of constraint annotations is the same as that for all the other JAX-RS annotations (see Section \ref{annotationinheritance}). Namely, constraint annotations on methods and method parameters are inherited from interfaces and super-classes, with the latter taking precedence over the former when sharing common methods. For example:
+The rules for inheritance of constraint annotation are defined in \cite{bv11}. It is worth noting that these rules are incompatible with those defined in Section \ref{annotationinheritance}. Generally speaking, constraint annotations in \cite{bv11} are cumulative (can be strengthen) across a given type hierarchy while \jaxrs\ annotations are inherited or, overridden and ignored.
 
-\begin{listing}{1}
-interface MyInterface {
-  @GET
-  @Path("{id}")
-  @Produces("application/xml")
-  @StandardUser
-  public User getUser(@Pattern("[0-9]+") @PathParam("id") String id);
-}
-
-@Path("/")
-class MyResourceClass implements MyInterface {
-
-  public User getUser(String id) {
-    User u = findUser(id);
-    return u;
-  }
-  ...
-}
-\end{listing}
-
-In the example above, the constraint annotations \code{@StandardUser} and \code{@Pattern} will be inherited by the \code{getUser} method in \code{MyResourceClass}. If the \code{getUser} method in \code{MyResourceClass} is decorated with any annotations, constraint or otherwise, all of the annotations in the interface \code{MyInterface} will be ignored. Naturally, since fields in super-classes cannot be overridden, all their annotations (including their constraint annotations) are inherited.
+The goal of this specification is to enable validation of \jaxrs\ resources by leveraging existing bean validation implementations. Therefore, \jaxrs\ implementations MUST follow the constraint annotation rules defined in \cite{bv11}.
 
 \section{Validation Phases and Error Reporting}
 \label{validation_phases_and_error_reporting}
