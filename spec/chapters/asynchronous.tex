@@ -70,7 +70,7 @@ public void longRunningOp() {
 
 JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set in \ExecutionContext. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set in \ExecutionContext, via the method \code{setResponse}, JAX-RS implementations are REQUIRED to return the fallback response without generating a \WebApplicationException\ when the timeout is reached.
 
-Overloaded versions of the method \code{suspend} in \ExecutionContext\ also accept a timeout value and a unit, thus providing the same functionality as the \Suspend\ annotation. 
+Overloaded versions of the method \code{suspend} in \ExecutionContext\ also accept a timeout value and a unit, thus providing the same functionality as the \Suspend\ annotation. Note that it is forbidden to call \code{suspend} more than once or to call it from within a method that is already annotated with \Suspend.
 
 \section{EJB Resource Classes}
 \label{async_ejbs}
@@ -97,9 +97,9 @@ class EJBResource {
 }
 \end{listing}
 
-Note that no explicit thread management is needed in this case since that is
+There is no explicit thread management is needed in this case since that is
 under the control of the EJB container. Just like the other examples in this chapter,
-the response is produced by calling \code{resume} on \code{ExecutionContext}. Hence,
+the response is produced by calling \code{resume} on the \code{ExecutionContext}. Hence,
 the return type of \code{longRunningOp} is simply \code{void}.
 
 \section{Client API}
