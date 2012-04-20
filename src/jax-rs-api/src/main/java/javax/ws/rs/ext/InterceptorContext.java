@@ -51,8 +51,6 @@ import javax.ws.rs.core.MediaType;
  * setters in this context class correspond to the parameters in
  * the aforementioned methods.
  *
- * @param <T> Java type supported by corresponding message body provider
- *
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @since 2.0
@@ -61,7 +59,7 @@ import javax.ws.rs.core.MediaType;
  * @see ReaderInterceptorContext
  * @see WriterInterceptorContext
  */
-public interface InterceptorContext<T> {
+public interface InterceptorContext {
 
     /**
      * Get a mutable map of request-scoped properties that can be used for communication
@@ -118,14 +116,14 @@ public interface InterceptorContext<T> {
      *
      * @return java type supported by provider
      */
-    Class<T> getType();
+    Class<?> getType();
 
     /**
      * Update Java type before calling message body provider.
      *
      * @param type java type for provider
      */
-    void setType(Class<T> type);
+    void setType(Class<?> type);
 
     /**
      * Get the type of the object to be produced or written.
