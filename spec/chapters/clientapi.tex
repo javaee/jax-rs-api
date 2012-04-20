@@ -130,7 +130,7 @@ The following Client API types are configurable: \Client, \Invocation, \Invocati
 \begin{description}
 \item [Features] Instances of classes that implement \code{Feature} and can be enabled or disabled in order to configure a \jaxrs\ implementation.
 \item [Properties] Name-value pairs for additional configuration of features or other components of a \jaxrs\ implementation.
-\item [Providers] Classes or instances of classes annotated by \Provider. A provider can be a message body reader, a filter, a context resolver, etc. See Chapter \ref{providers} for more information.
+\item [Providers] Classes or instances of classes annotated with \Provider. A provider can be a message body reader, a filter, a context resolver, etc. See Chapter \ref{providers} for more information.
 \end{description}
 
 A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \Target\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \Target\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached (deep copied) from its parent configuration and changes to the parent and child configurations are not be visible to each other.
