@@ -6,6 +6,7 @@ target
 profile
 
 #IntelliJ Idea noise
+.idea
 *.iws
 *.ipr
 *.iml
