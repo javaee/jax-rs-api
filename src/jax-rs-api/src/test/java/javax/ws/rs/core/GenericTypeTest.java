@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.core;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class GenericTypeTest {
     @Test
     public void testStaticConstruction() {
 
-        GenericType<ArrayList<String>> type = GenericType.<ArrayList<String>>of(ArrayList.class, new ParameterizedType() {
+        GenericType<ArrayList<String>> type = GenericType.of(ArrayList.class, new ParameterizedType() {
 
             @Override
             public Type[] getActualTypeArguments() {
@@ -89,7 +90,18 @@ public class GenericTypeTest {
     }
 
     @Test
-    public void testAnnonymousConstruction() {
+    public void testStaticConstructionForAGenericTypeVariable() throws NoSuchMethodException {
+        ArrayList<String> al = new ArrayList<String>();
+        Method addMethod = al.getClass().getMethod("add", Object.class);
+        final Type type = addMethod.getGenericParameterTypes()[0];
+        GenericType<String> genericType = GenericType.of(String.class, type);
+
+        assertEquals(String.class, genericType.getRawType());
+        assertEquals(type, genericType.getType());
+    }
+
+    @Test
+    public void testAnonymousConstruction() {
         GenericType<ArrayList<String>> tl = new GenericType<ArrayList<String>>() {
         };
         assertEquals(ArrayList.class, tl.getRawType());
