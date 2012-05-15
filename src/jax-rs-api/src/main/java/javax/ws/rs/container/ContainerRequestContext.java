@@ -56,7 +56,6 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.MessageBodyWriter;
 
 /**
  * Container request filter context.
@@ -79,9 +78,9 @@ public interface ContainerRequestContext {
      * request/response processing a same property map instance is shared by the
      * following methods:
      * <ul>
-     *     <li>{@link javax.ws.rs.container.ContainerRequestContext#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.container.ContainerResponseContext#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
+     * <li>{@link javax.ws.rs.container.ContainerRequestContext#getProperties() }</li>
+     * <li>{@link javax.ws.rs.container.ContainerResponseContext#getProperties() }</li>
+     * <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
      * </ul>
      *
      * A request-scoped property is an application-defined property that may be
@@ -121,7 +120,6 @@ public interface ContainerRequestContext {
      * resolve the application-specific request URI part.
      *
      * @param requestUri new URI of the request.
-     *
      * @see #setRequestUri(java.net.URI, java.net.URI)
      */
     public void setRequestUri(URI requestUri);
@@ -130,10 +128,9 @@ public interface ContainerRequestContext {
      * Set a new request URI using a new base URI to resolve the application-specific
      * request URI part.
      *
-     * @param baseUri base URI that will be used to resolve the application-specific
-     *     part of the request URI.
+     * @param baseUri    base URI that will be used to resolve the application-specific
+     *                   part of the request URI.
      * @param requestUri new URI of the request.
-     *
      * @see #setRequestUri(java.net.URI, java.net.URI)
      */
     public void setRequestUri(URI baseUri, URI requestUri);
@@ -149,7 +146,6 @@ public interface ContainerRequestContext {
      * Get the request method.
      *
      * @return the request method.
-     *
      * @see javax.ws.rs.HttpMethod
      */
     public String getMethod();
@@ -158,7 +154,6 @@ public interface ContainerRequestContext {
      * Set the request method.
      *
      * @param method new request method.
-     *
      * @see javax.ws.rs.HttpMethod
      */
     public void setMethod(String method);
@@ -188,7 +183,7 @@ public interface ContainerRequestContext {
      * Get Content-Length value.
      *
      * @return Content-Length as integer if present and valid number. In other
-     *     cases returns {@code -1}.
+     *         cases returns {@code -1}.
      */
     public int getLength();
 
@@ -196,7 +191,7 @@ public interface ContainerRequestContext {
      * Get the media type of the entity.
      *
      * @return the media type or {@code null} if not specified (e.g. there's no
-     *     request entity).
+     *         request entity).
      */
     public MediaType getMediaType();
 
@@ -204,7 +199,7 @@ public interface ContainerRequestContext {
      * Get a list of media types that are acceptable for the response.
      *
      * @return a read-only list of requested response media types sorted according
-     *     to their q-value, with highest preference first.
+     *         to their q-value, with highest preference first.
      */
     public List<MediaType> getAcceptableMediaTypes();
 
@@ -212,7 +207,7 @@ public interface ContainerRequestContext {
      * Get a list of languages that are acceptable for the response.
      *
      * @return a read-only list of acceptable languages sorted according
-     *     to their q-value, with highest preference first.
+     *         to their q-value, with highest preference first.
      */
     public List<Locale> getAcceptableLanguages();
 
@@ -235,52 +230,9 @@ public interface ContainerRequestContext {
      * {@code writeEntity(...)} methods, the {@code hasEntity()} returns {@code false}.
      *
      * @return {@code true} if there is an entity present in the message,
-     *     {@code false} otherwise.
+     *         {@code false} otherwise.
      */
     public boolean hasEntity();
-
-    /**
-     * Write a new message entity. Effectively replaces the existing entity with
-     * a new one.
-     *
-     * The method finds and invokes the proper {@link MessageBodyWriter} to
-     * serialize the entity into an input stream from which it can be read again.
-     *
-     * @param <T> entity type.
-     * @param entity the instance to write.
-     * @param type the class of object that is to be written.
-     * @param mediaType the entity media type.
-     * @param annotations an array of the annotations attached to the entity.
-     * @throws MessageProcessingException if there was en error writing
-     *     the entity.
-     */
-    public <T> void writeEntity(
-            final T entity,
-            final Class<T> type,
-            final MediaType mediaType,
-            final Annotation annotations[]) throws MessageProcessingException;
-
-    /**
-     * Write a new message entity. Effectively replaces the existing entity with
-     * a new one.
-     *
-     * The method finds and invokes the proper {@link MessageBodyWriter} to
-     * serialize the entity into an input stream from which it can be read again.
-     *
-     * @param <T> entity type.
-     * @param entity the instance to write.
-     * @param genericType the generic type information of object that is to be
-     *     written.
-     * @param mediaType the entity media type.
-     * @param annotations an array of the annotations attached to the entity.
-     * @throws MessageProcessingException if there was en error writing
-     *     the entity.
-     */
-    public <T> void writeEntity(
-            final GenericType<T> genericType,
-            final Annotation annotations[],
-            final MediaType mediaType,
-            final T entity);
 
     /**
      * Read the message entity as an instance of specified Java type using
@@ -294,12 +246,12 @@ public interface ContainerRequestContext {
      * In case the entity was {@link #bufferEntity() bufferd} previously,
      * the buffered input stream is reset so that the entity is readable again.
      *
-     * @param <T> entity instance Java type.
+     * @param <T>  entity instance Java type.
      * @param type the requested type of the entity.
      * @return the message entity or {@code null} if message does not contain an
-     *     entity body.
+     *         entity body.
      * @throws MessageProcessingException if the content of the message cannot be
-     *     mapped to an entity of the requested type.
+     *                                    mapped to an entity of the requested type.
      * @see javax.ws.rs.ext.MessageBodyWriter
      * @see javax.ws.rs.ext.MessageBodyReader
      */
@@ -317,12 +269,12 @@ public interface ContainerRequestContext {
      * In case the entity was {@link #bufferEntity() bufferd} previously,
      * the buffered input stream is reset so that the entity is readable again.
      *
-     * @param <T> entity instance Java type.
+     * @param <T>  entity instance Java type.
      * @param type the requested generic type of the entity.
      * @return the message entity or {@code null} if message does not contain an
-     *     entity body.
+     *         entity body.
      * @throws MessageProcessingException if the content of the message cannot be
-     *     mapped to an entity of the requested type.
+     *                                    mapped to an entity of the requested type.
      * @see javax.ws.rs.ext.MessageBodyWriter
      * @see javax.ws.rs.ext.MessageBodyReader
      */
@@ -340,13 +292,13 @@ public interface ContainerRequestContext {
      * In case the entity was {@link #bufferEntity() bufferd} previously,
      * the buffered input stream is reset so that the entity is readable again.
      *
-     * @param <T> entity instance Java type.
-     * @param type the requested type of the entity.
+     * @param <T>         entity instance Java type.
+     * @param type        the requested type of the entity.
      * @param annotations annotations attached to the entity.
      * @return the message entity or {@code null} if message does not contain an
-     *     entity body.
+     *         entity body.
      * @throws MessageProcessingException if the content of the message cannot be
-     *     mapped to an entity of the requested type.
+     *                                    mapped to an entity of the requested type.
      * @see javax.ws.rs.ext.MessageBodyWriter
      * @see javax.ws.rs.ext.MessageBodyReader
      */
@@ -364,13 +316,13 @@ public interface ContainerRequestContext {
      * In case the entity was {@link #bufferEntity() bufferd} previously,
      * the buffered input stream is reset so that the entity is readable again.
      *
-     * @param <T> entity instance Java type.
-     * @param type the requested generic type of the entity.
+     * @param <T>         entity instance Java type.
+     * @param type        the requested generic type of the entity.
      * @param annotations annotations attached to the entity.
      * @return the message entity or {@code null} if message does not contain an
-     *     entity body.
+     *         entity body.
      * @throws MessageProcessingException if the content of the message cannot be
-     *     mapped to an entity of the requested type.
+     *                                    mapped to an entity of the requested type.
      * @see javax.ws.rs.ext.MessageBodyWriter
      * @see javax.ws.rs.ext.MessageBodyReader
      */
@@ -393,7 +345,7 @@ public interface ContainerRequestContext {
      * already and a subsequent call to {@code bufferEntity()} has no effect.
      *
      * @throws MessageProcessingException if there is an error buffering the
-     *     message entity.
+     *                                    message entity.
      * @since 2.0
      */
     public void bufferEntity() throws MessageProcessingException;

@@ -67,14 +67,14 @@ public interface ReaderInterceptorContext extends InterceptorContext {
      * @return result of next interceptor invoked
      * @throws IOException if an IO error arises
      */
-    Object proceed() throws IOException;
+    public Object proceed() throws IOException;
 
     /**
      * Get the input stream of the object to be read.
      *
      * @return input stream of the object to be read
      */
-    InputStream getInputStream();
+    public InputStream getInputStream();
 
     /**
      * Update the input stream of the object to be read.
@@ -82,12 +82,12 @@ public interface ReaderInterceptorContext extends InterceptorContext {
      *
      * @param is new input stream
      */
-    void setInputStream(InputStream is);
+    public void setInputStream(InputStream is);
 
     /**
      * Get mutable map of HTTP headers.
      *
      * @return map of HTTP headers
      */
-    MultivaluedMap<String, String> getHeaders();
+    public MultivaluedMap<String, String> getHeaders();
 }

@@ -78,7 +78,7 @@ public interface MessageBodyWriter<T> {
      * @param mediaType the media type of the HTTP entity.
      * @return true if the type is supported, otherwise false.
      */
-    boolean isWriteable(Class<?> type, Type genericType,
+    public boolean isWriteable(Class<?> type, Type genericType,
             Annotation[] annotations, MediaType mediaType);
 
     /**
@@ -97,7 +97,7 @@ public interface MessageBodyWriter<T> {
      * @return length in bytes or -1 if the length cannot be determined in
      * advance
      */
-    long getSize(T t, Class<?> type, Type genericType, Annotation[] annotations,
+    public long getSize(T t, Class<?> type, Type genericType, Annotation[] annotations,
             MediaType mediaType);
 
     /**
@@ -122,7 +122,7 @@ public interface MessageBodyWriter<T> {
      *     HTTP error response needs to be produced. Only effective if thrown
      *     prior to the message being committed.
      */
-    void writeTo(T t, Class<?> type, Type genericType, Annotation[] annotations,
+    public void writeTo(T t, Class<?> type, Type genericType, Annotation[] annotations,
             MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders,
             OutputStream entityStream)

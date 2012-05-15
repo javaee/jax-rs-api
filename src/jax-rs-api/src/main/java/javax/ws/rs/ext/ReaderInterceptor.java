@@ -72,6 +72,6 @@ public interface ReaderInterceptor {
      * @throws java.io.IOException if an IO error arises.
      * @throws javax.ws.rs.WebApplicationException thrown by wrapped method.
      */
-    Object aroundReadFrom(ReaderInterceptorContext context)
+    public Object aroundReadFrom(ReaderInterceptorContext context)
             throws java.io.IOException, javax.ws.rs.WebApplicationException;
 }

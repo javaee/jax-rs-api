@@ -45,11 +45,15 @@ import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 
 /**
- * Supports in-line instantiation of objects that represent parameterized
- * types with actual type parameters.
+ * Represents a generic message entity type {@code T}.
  *
- * An object that represents any parameterized type may be obtained by
- * sub-classing {@code GenericType}.
+ * Supports in-line instantiation of objects that represent generic types with
+ * actual type parameters. An object that represents any parameterized type may
+ * be obtained by sub-classing {@code GenericType}. Alternatively, an object
+ * representing a concrete parameterized type can be created using a
+ * {@link #of(Class, java.lang.reflect.Type) factory method} and manually specifying
+ * the {@link #getRawType() raw class type} and the {@link #getType() actual
+ * (parameterized) type}.
  *
  * <pre>
  *  GenericType&lt;List&lt;String>> stringListType = new GenericType&lt;List&lt;String>>() {};

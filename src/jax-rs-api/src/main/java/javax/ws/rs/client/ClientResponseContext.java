@@ -55,7 +55,6 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.ext.MessageBodyWriter;
 
 /**
  * Client response filter context.
@@ -241,49 +240,6 @@ public interface ClientResponseContext {
      *     {@code false} otherwise.
      */
     public boolean hasEntity();
-
-    /**
-     * Write a new message entity. Effectively replaces the existing entity with
-     * a new one.
-     *
-     * The method finds and invokes the proper {@link MessageBodyWriter} to
-     * serialize the entity into an input stream from which it can be read again.
-     *
-     * @param <T> entity type.
-     * @param entity the instance to write.
-     * @param type the class of object that is to be written.
-     * @param mediaType the entity media type.
-     * @param annotations an array of the annotations attached to the entity.
-     * @throws MessageProcessingException if there was en error writing
-     *     the entity.
-     */
-    public <T> void writeEntity(
-            final Class<T> type,
-            final Annotation annotations[],
-            final MediaType mediaType,
-            final T entity);
-
-    /**
-     * Write a new message entity. Effectively replaces the existing entity with
-     * a new one.
-     *
-     * The method finds and invokes the proper {@link MessageBodyWriter} to
-     * serialize the entity into an input stream from which it can be read again.
-     *
-     * @param <T> entity type.
-     * @param entity the instance to write.
-     * @param genericType the generic type information of object that is to be
-     *     written.
-     * @param mediaType the entity media type.
-     * @param annotations an array of the annotations attached to the entity.
-     * @throws MessageProcessingException if there was en error writing
-     *     the entity.
-     */
-    public <T> void writeEntity(
-            final GenericType<T> genericType,
-            final Annotation annotations[],
-            final MediaType mediaType,
-            final T entity);
 
     /**
      * Read the message entity as an instance of specified Java type using
