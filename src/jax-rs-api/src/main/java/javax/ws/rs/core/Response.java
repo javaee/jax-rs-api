@@ -1295,7 +1295,7 @@ public abstract class Response {
          *
          * @since 2.0
          */
-        REQUESTED_RANGE_NOT_SATIFIABLE(416, "Requested Range Not Satisfiable"),
+        REQUESTED_RANGE_NOT_SATISFIABLE(416, "Requested Range Not Satisfiable"),
         /**
          * 417 Expectation Failed, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.18">HTTP/1.1 documentation</a>}.
          *
