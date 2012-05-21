@@ -339,7 +339,7 @@ public abstract class UriBuilder {
      *               of the current URI path.
      * @return the updated UriBuilder.
      * @throws IllegalArgumentException if matrix cannot be parsed.
-     * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>.
+     * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
     public abstract UriBuilder replaceMatrix(String matrix) throws IllegalArgumentException;
 
