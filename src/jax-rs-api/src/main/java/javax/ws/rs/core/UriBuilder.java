@@ -160,6 +160,26 @@ public abstract class UriBuilder {
     }
 
     /**
+     * Create a new instance representing a relative URI initialized from a
+     * {@link javax.ws.rs.Path}-annotated method.
+     *
+     * This method can only be used in cases where there is a single method with the
+     * specified name that is annotated with {@link javax.ws.rs.Path}.
+     *
+     * @param resource the resource containing the method.
+     * @param method   the name of the method whose {@link javax.ws.rs.Path} value will be
+     *                 used to obtain the path to append.
+     * @return the updated UriBuilder.
+     * @throws IllegalArgumentException if resource or method is {@code null},
+     *                                  or there is more than or less than one variant of the method annotated with
+     *                                  {@link javax.ws.rs.Path}.
+     * @since 2.0
+     */
+    public static UriBuilder fromMethod(Class<?> resource, String method) throws IllegalArgumentException {
+        return newInstance().path(resource, method);
+    }
+
+    /**
      * Create a copy of the UriBuilder preserving its state. This is a more
      * efficient means of creating a copy than constructing a new UriBuilder
      * from a URI returned by the {@link #build(Object...)} method.
