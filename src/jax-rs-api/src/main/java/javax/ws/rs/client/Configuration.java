@@ -108,15 +108,6 @@ public interface Configuration {
     Set<Feature> getFeatures();
 
     /**
-     * Determine if a certain feature is enabled or not.
-     *
-     * @param feature the feature class.
-     * @return {@code true} if the feature is enabled, otherwise {@code false}.
-     * @see Configuration
-     */
-    boolean isEnabled(Class<? extends Feature> feature);
-
-    /**
      * Get the immutable set of registered provider classes to be instantiated,
      * injected and utilized in the scope of the configured instance.
      * <p />
@@ -195,33 +186,31 @@ public interface Configuration {
 
     /**
      * Enable a feature.
-     * <p/>
+     * <p>
      * The {@code Configuration} instance invokes the
      * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method and
      * lets the feature update it's internal configuration state.
-     * <p/>
-     * An attempt to enable an already enabled feature results in an {@code
-     * IllegalStateException} being raised.
+     * </p>
      *
      * @param feature instance of the feature to be enabled.
      * @return the updated configuration.
-     * @throws IllegalStateException in case the feature has already been enabled.
      * @see Configuration
      */
-    Configuration enable(Feature feature) throws IllegalStateException;
+    Configuration enable(Feature feature);
 
     /**
-     * Disable a feature for the configurable instance using a feature class.
-     * <p />
-     * An attempt to disable a feature that is not enabled results in an {@code
-     * IllegalStateException} being raised.
+     * Enable a feature using a new instance of a feature class.
+     * <p>
+     * The {@code Configuration} instance instantiates and invokes the
+     * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method and
+     * lets the feature update it's internal configuration state.
+     * </p>
      *
-     * @param feature class of the feature to be disabled.
+     * @param feature class of the feature to be enabled.
      * @return the updated configuration.
-     * @throws IllegalStateException in case no such feature is enabled at present.
      * @see Configuration
      */
-    Configuration disable(Class<? extends Feature> feature) throws IllegalStateException;
+    Configuration enable(Class<? extends Feature> feature);
 
     /**
      * Set new configuration properties replacing all previously set properties.

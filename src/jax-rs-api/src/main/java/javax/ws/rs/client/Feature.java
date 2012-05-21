@@ -56,12 +56,4 @@ public interface Feature {
      * @param configuration configuration where the feature should be enabled.
      */
     public void onEnable(Configuration configuration);
-
-    /**
-     * Called when the feature is disabled. The responsibility of the feature is
-     * to properly update the supplied configuration.
-     *
-     * @param configuration configuration where the feature should be disabled.
-     */
-    public void onDisable(Configuration configuration);
 }
