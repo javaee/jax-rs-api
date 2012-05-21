@@ -274,11 +274,6 @@ public class BasicExamples {
         public void onEnable(Configuration configuration) {
             // do nothing
         }
-
-        @Override
-        public void onDisable(Configuration configuration) {
-            // do nothing
-        }
     }
 
     public void commonFluentUseCases() {

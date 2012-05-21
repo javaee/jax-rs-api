@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.Response;
@@ -57,18 +56,14 @@ import javax.ws.rs.core.Response;
 public class CacheEntryLocator implements ClientRequestFilter {
 
     private Map<String, CacheEntry> cache;
-    AtomicBoolean enabledFlag;
 
-    public CacheEntryLocator(Map<String, CacheEntry> cache, AtomicBoolean enabled) {
+    public CacheEntryLocator(Map<String, CacheEntry> cache) {
         this.cache = cache;
-        this.enabledFlag = enabled;
     }
 
     @Override
     public void filter(ClientRequestContext request) throws IOException {
-        if (enabledFlag.get()) {
-            load(request);
-        }
+        load(request);
     }
 
     private void load(ClientRequestContext request) {

@@ -59,11 +59,6 @@ public class WebDavClientTest {
         public void onEnable(Configuration configurable) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
-
-        @Override
-        public void onDisable(Configuration configurable) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
     }
 
     public void fluentUseCases() {

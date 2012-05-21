@@ -44,7 +44,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
@@ -59,18 +58,14 @@ import javax.ws.rs.core.MultivaluedHashMap;
 public class CacheResponseFilter implements ClientResponseFilter {
 
     private Map<String, CacheEntry> cacheStore;
-    AtomicBoolean enabledFlag;
 
-    public CacheResponseFilter(Map<String, CacheEntry> store, AtomicBoolean enabled) {
+    public CacheResponseFilter(Map<String, CacheEntry> store) {
         this.cacheStore = store;
-        this.enabledFlag = enabled;
     }
 
     @Override
     public void filter(ClientRequestContext request, ClientResponseContext response) throws IOException {
-        if (enabledFlag.get()) {
-            store(request, response);
-        }
+        store(request, response);
     }
 
     private void store(ClientRequestContext request, ClientResponseContext response) {
