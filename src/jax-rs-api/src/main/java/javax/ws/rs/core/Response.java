@@ -616,6 +616,32 @@ public abstract class Response {
     }
 
     /**
+     * Create a new ResponseBuilder with an ACCEPTED status.
+     *
+     * @return a new ResponseBuilder.
+     * @since 2.0
+     */
+    public static ResponseBuilder accepted() {
+        ResponseBuilder b = status(Status.ACCEPTED);
+        return b;
+    }
+
+    /**
+     * Create a new ResponseBuilder with an ACCEPTED status that contains
+     * a representation. It is the callers responsibility to wrap the actual entity with
+     * {@link GenericEntity} if preservation of its generic type is required.
+     *
+     * @param entity the representation entity data.
+     * @return a new ResponseBuilder.
+     * @since 2.0
+     */
+    public static ResponseBuilder accepted(Object entity) {
+        ResponseBuilder b = accepted();
+        b.entity(entity);
+        return b;
+    }
+
+    /**
      * Create a new ResponseBuilder for an empty response.
      *
      * @return a new ResponseBuilder
