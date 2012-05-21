@@ -126,6 +126,7 @@ public abstract class UriBuilder {
      *             its URI is used.
      * @return a new UriBuilder
      * @throws IllegalArgumentException if link is {@code null}
+     * @since 2.0
      */
     public static UriBuilder fromLink(Link link) throws IllegalArgumentException {
         return UriBuilder.fromUri(link.getUri());
@@ -187,6 +188,7 @@ public abstract class UriBuilder {
      * @return the updated UriBuilder.
      * @throws IllegalArgumentException if {@code uriTemplate} is not a valid URI template or
      *                                  is {@code null}.
+     * @since 2.0
      */
     public abstract UriBuilder uri(String uriTemplate) throws IllegalArgumentException;
 
@@ -276,7 +278,7 @@ public abstract class UriBuilder {
      * @throws IllegalArgumentException if resource is {@code null}, or
      *                                  if resource is not annotated with {@link javax.ws.rs.Path}.
      */
-    public abstract UriBuilder path(Class resource) throws IllegalArgumentException;
+    public abstract UriBuilder path(Class<?> resource) throws IllegalArgumentException;
 
     /**
      * Append the path from a Path-annotated method to the
@@ -295,7 +297,7 @@ public abstract class UriBuilder {
      *                                  or there is more than or less than one variant of the method annotated with
      *                                  {@link javax.ws.rs.Path}.
      */
-    public abstract UriBuilder path(Class resource, String method) throws IllegalArgumentException;
+    public abstract UriBuilder path(Class<?> resource, String method) throws IllegalArgumentException;
 
     /**
      * Append the path from a {@link javax.ws.rs.Path}-annotated method to the
