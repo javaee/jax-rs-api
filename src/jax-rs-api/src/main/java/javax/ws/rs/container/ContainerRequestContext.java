@@ -115,22 +115,35 @@ public interface ContainerRequestContext {
     /**
      * Set a new request URI using the current base URI of the application to
      * resolve the application-specific request URI part.
+     * <p>
+     * Note that the method is usable only in pre-matching filters, prior to the resource
+     * matching occurs. Trying to invoke the method in a filter bound to a resource method
+     * results in an {@link IllegalStateException} being thrown.
+     * </p>
      *
      * @param requestUri new URI of the request.
+     * @throws IllegalStateException in case the method is invoked from a (post-matching)
      * @see #setRequestUri(java.net.URI, java.net.URI)
      */
-    public void setRequestUri(URI requestUri);
+    public void setRequestUri(URI requestUri) throws IllegalStateException;
 
     /**
      * Set a new request URI using a new base URI to resolve the application-specific
      * request URI part.
+     * <p>
+     * Note that the method is usable only in pre-matching filters, prior to the resource
+     * matching occurs. Trying to invoke the method in a filter bound to a resource method
+     * results in an {@link IllegalStateException} being thrown.
+     * </p>
      *
      * @param baseUri    base URI that will be used to resolve the application-specific
      *                   part of the request URI.
      * @param requestUri new URI of the request.
+     * @throws IllegalStateException in case the method is invoked from a (post-matching)
+     *                               resource filter.
      * @see #setRequestUri(java.net.URI, java.net.URI)
      */
-    public void setRequestUri(URI baseUri, URI requestUri);
+    public void setRequestUri(URI baseUri, URI requestUri) throws IllegalStateException;
 
     /**
      * Get the injectable request information.
@@ -149,11 +162,18 @@ public interface ContainerRequestContext {
 
     /**
      * Set the request method.
+     * <p>
+     * Note that the method is usable only in pre-matching filters, prior to the resource
+     * matching occurs. Trying to invoke the method in a filter bound to a resource method
+     * results in an {@link IllegalStateException} being thrown.
+     * </p>
      *
      * @param method new request method.
+     * @throws IllegalStateException in case the method is invoked from a (post-matching)
+     *                               resource filter.
      * @see javax.ws.rs.HttpMethod
      */
-    public void setMethod(String method);
+    public void setMethod(String method) throws IllegalStateException;
 
     /**
      * Get the mutable request headers multivalued map.
