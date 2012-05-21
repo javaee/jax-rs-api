@@ -6,105 +6,111 @@ Filters and entity interceptors can be registered for execution at well-defined 
 \section{Introduction}
 \label{introduction_filters}
 Entity interceptors wrap around a method invocation at a specific extension point. 
-Filters execute code at an extension point but without wrapping a method invocation.  There are three extension points for filters: Pre, PreMatch and Post. There are two extension points for entity interceptors: ReadFrom and WriteTo.  For each of these extension points, there is a corresponding interface:
+Filters execute code at an extension point but without wrapping a method invocation.  There are four extension points for filters: ClientRequest, ClientResponse, ContainerRequest and ContainerResponse. There are two extension points for entity interceptors: ReadFrom and WriteTo.  For each of these extension points, there is a corresponding interface:
 
 \begin{listing}{1}
-public interface RequestFilter {
-    void preFilter(FilterContext ctx) throws IOException;
+public interface ClientRequestFilter {
+    void filter(ClientRequestContext requestContext) throws IOException;
 }
-public interface ResponseFilter {
-    void postFilter(FilterContext ctx) throws IOException;
+public interface ClientResponseFilter {
+    void filter(ClientRequestContext requestContext, 
+        ClientResponseContext responseContext) throws IOException;
 }
-public interface PreMatchRequestFilter {
-    void preMatchFilter(FilterContext ctx) throws IOException;
+public interface ContainerRequestFilter {
+    void filter(ContainerRequestContext requestContext) throws IOException;
+}
+public interface ContainerResponseFilter {
+    void filter(ContainerRequestContext requestContext, 
+        ContainerResponseContext responseContext) throws IOException;
 }
 \end{listing}
 
 \begin{listing}{1}
-public interface ReaderInterceptor<T> {
-    T aroundReadFrom(ReaderInterceptorContext<T> context) 
-        throws IOException, WebApplicationException;
+public interface ReaderInterceptor {
+    Object aroundReadFrom(ReaderInterceptorContext context)
+        throws java.io.IOException, javax.ws.rs.WebApplicationException;
 }
-public interface WriterInterceptor<T> {
-    void aroundWriteTo(WriterInterceptorContext<T> context) 
-        throws IOException, WebApplicationException;
+public interface WriterInterceptor {
+    void aroundWriteTo(WriterInterceptorContext context)
+        throws java.io.IOException, javax.ws.rs.WebApplicationException;
 }
 \end{listing}
 
-A filter is a class that implements \RequestFilter, \PreMatchRequestFilter\ or \ResponseFilter\ (or any combination thereof) and is annotated with \Provider. An entity interceptor is a class that implements \ReaderInterceptor\ or \WriterInterceptor\ (or both) and is annotated with \Provider. 
+A {\em client} filter is a class that implements \ClientRequestFilter\ or \ClientResponseFilter\, or both. A {\em container} filter is a class that implements \ContainerRequestFilter\ or \ContainerResponseFilter, or both. An entity interceptor is a class that implements \ReaderInterceptor\ or \WriterInterceptor, or both. Filters and entity interceptors are providers and, as such, may be annotated with \Provider\ for automatic discovery.
 
-In the Client API, a \RequestFilter\ is executed as part of the invocation pipeline, before the HTTP request is delivered to the network; still in the Client API, a \ResponseFilter\ is executed upon receiving a server response, before control is returned to the application. 
-In the Server API, a \RequestFilter\ is executed upon receiving a request from a client, before the resource method is called (but after it has been matched); still in the Server API, a \ResponseFilter\ is executed as part of the response pipeline, before the HTTP response is delivered to the network.
+In the Client API, a \ClientRequestFilter\ is executed as part of the invocation pipeline, before the HTTP request is delivered to the network; a \ClientResponseFilter\ is executed upon receiving a server response, before control is returned to the application. 
+In the Server API, a \ContainerRequestFilter\ is executed upon receiving a request from a client; a \ContainerResponseFilter\ is executed as part of the response pipeline, before the HTTP response is delivered to the network. 
 
-An entity interceptor implementing \ReaderInterceptor\ wraps around calls to \code{MessageBodyReader} method \code{readFrom}. An entity interceptor implementing \WriterInterceptor\ wraps around calls to \code{MessageBodyWriter} method \code{writeTo}. \jaxrs\ implementations are REQUIRED to call registered interceptors when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
+A \ContainerRequestFilter\ is a container filter executed before resource matching {\em unless} it is annotated with \PostMatching. The use of this annotation on this type of filters defines a new extension point for applications to use, namely PostContainerRequest. Certain \ContainerRequestContext\ methods may not be available at this extension point.
+
+An entity interceptor implementing \ReaderInterceptor\ wraps around calls to \code{MessageBodyReader}'s method \code{readFrom}. An entity interceptor implementing \WriterInterceptor\ wraps around calls to \code{MessageBodyWriter}'s method \code{writeTo}. \jaxrs\ implementations are REQUIRED to call registered interceptors when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
 
 \section{Filters}
 \label{filters}
 
-A filter implements one or more of the following interfaces:  \RequestFilter, \PreMatchRequestFilter\ and \ResponseFilter. There is a \emph{filter chain} for each kind of filter. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
+Filters are grouped into \emph{filter chains}. There is a separate filter chain for each extension points introduced in the previous section, namely: ClientRequest, ClientResponse, ContainerRequest, ContainerResponse and PostContainerRequest. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
-
-The following example shows an implementation of a logging filter: each method simply logs the message and returns.
+The following example shows an implementation of a container logging filter: each method simply logs the message and returns.
 
 \begin{listing}{1}
 @Provider
-class LoggingFilter implements RequestFilter, ResponseFilter {
+class LoggingFilter implements ContainerRequestFilter, 
+                               ContainerResponseFilter {
 
     @Override
-    public void preFilter(FilterContext ctx) throws IOException {
-        logRequest(ctx.getRequest());
+    public void filter(ContainerRequestContext requestContext) 
+        throws IOException {
+        log(requestContext);
     }
 
     @Override
-    public void postFilter(FilterContext ctx) throws IOException {
-        logResponse(ctx.getResponse());
+    public void filter(ContainerRequestContext requestContext, 
+        ContainerResponseContext responseContext) throws IOException {
+        log(responseContext);
     }
     ...
 }
 \end{listing}
 
-A \FilterContext\ provides access to the request, the response (in response filters) as well as the ability to create and set new responses.
+\ContainerRequestContext\ is a mutable class that provides request-specific information for the filter, such as request URI, message headers, message entity or request-scoped properties. The exposed setters allow (certain) modification of the request before its processing by a resource method. The dual class \ContainerResponseContext\ provides response-specific information.
 
-Request filters implementing \RequestFilter\ or \PreMatchRequestFilter\ can implicitly stop the execution of their corresponding chains by setting a response in their associated context. If a response is set by a filter of this type, implementations are REQUIRED to abort execution of the chain and treat the response object as if produced by calling the resource method (Server API) or by executing the HTTP invocation (Client API). For example, upon a cache hit, a client {\em caching} filter may set a response object in the context to optimize network access.
+Request filters implementing \ClientRequestFilter\ or \ContainerRequestFilter\ can stop the execution of their corresponding chains by calling \code{abortWith(Response)} in their corresponding context object. If this method is invoked, \jaxrs\ implementations are REQUIRED to abort execution of the chain and treat the response object as if produced by calling the resource method (Server API) or executing the HTTP invocation (Client API). For example, upon a cache hit, a client {\em caching} filter may call \code{abortWith(Response)} to abort execution and optimize network access.
 
-Filters that implement \PreMatchRequestFilter\ are supported only as part of the Server API and are executed upon receiving a client request but {\em before} a resource method is matched. Thus, a pre-match filter has the ability to modify the input to the matching algorithm (see Section~\ref{request_matching}) and, consequently, alter its outcome. 
-
-The following example uses a pre-match filter in order to tunnel requests via POST by using the X-HTTP-Method-Override header to overwrite the HTTP method prior to resource matching.
+As stated above, a \ContainerRequestFilter\ that is \emph{not} annotated with \PostMatching\ is executed upon receiving a client request but {\em before} a resource method is matched. Thus, this type of filter has the ability to modify the input to the matching algorithm (see Section~\ref{request_matching}) and, consequently, alter its outcome. 
+The following example uses a \ContainerRequestFilter\ to tunnel requests via POST by using the X-HTTP-Method-Override header to overwrite the HTTP method prior to resource matching.
 
 \begin{listing}{1}
 @Provider
-class PostMethodOverrideFilter implements PreMatchRequestFilter {
+public class PostMethodOverrideFilter implements ContainerRequestFilter {
 
-  @Override
-  public void preMatchFilter(FilterContext context) throws IOException {
-    Request request = context.getRequest();
-        
-    if (request.getMethod().equalsIgnoreCase("POST")) {
-      String m = request.getHeaders().getHeader("X-HTTP-Method-Override");
-      if (m != null) {
-        request = context.getRequestBuilder().method(m).build();
-        context.setRequest(request);
-      }
+    @Override
+    public void filter(ContainerRequestContext requestContext) 
+        throws IOException {
+        if (requestContext.getMethod().equalsIgnoreCase("POST")) {
+            String override = requestContext.getHeaders()
+                .getFirst("X-HTTP-Method-Override");
+            if (override != null) {
+                requestContext.setMethod(override);
+            }
+        }
     }
-  }
 }
 \end{listing}
 
 \section{Entity Interceptors}
 
-An entity interceptor implements interface \ReaderInterceptor\ or \WriterInterceptor\ or both. There is an \emph{interceptor chain} for each kind of entity interceptor. Entity interceptors in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
+An entity interceptor implements interface \ReaderInterceptor\ or \WriterInterceptor, or both. There is an \emph{interceptor chain} for each kind of entity interceptor. Entity interceptors in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
-Entity interceptors wrap calls to the methods \code{readFrom} in classes implementing \code{MessageBodyReader} and \code{writeTo} in classes implementing \code{MessageBodyWriter}. An implementation of an interceptor SHOULD explicitly call the context method \code{proceed} to continue the execution of the chain. Because of their wrapping nature, failure to call this method will prevent execution of the wrapped method in the corresponding message body reader or message body writer.
+Entity interceptors wrap calls to the methods \code{readFrom} in classes implementing \code{MessageBodyReader} and \code{writeTo} in classes implementing \code{MessageBodyWriter}. An interceptor SHOULD explicitly call the context method \code{proceed} to continue the execution of the chain. Because of their wrapping nature, failure to call this method will prevent execution of the wrapped method in the corresponding message body reader or message body writer.
 
 The following example shows an implementation of a GZIP entity interceptor that provides deflate and inflate capabilities~\footnote{This class is not intended to be a complete implementation of this interceptor.}.
 
 \begin{listing}{1}
 @Provider
-class GzipWidgetInterceptor implements 
-    ReaderInterceptor<Widget>, WriterInterceptor<Widget> {
+class GzipInterceptor implements ReaderInterceptor, WriterInterceptor {
 
     @Override
-    Widget aroundReadFrom(ReaderInterceptorContext<Widget> ctx) ... {
+    Object aroundReadFrom(ReaderInterceptorContext ctx) ... {
         InputStream old = ctx.getInputStream();
         ctx.setInputStream(new GZIPInputStream(old));
         try {
@@ -115,7 +121,7 @@ class GzipWidgetInterceptor implements
     }
 
     @Override
-    void aroundWriteTo(WriterInterceptorContext<Widget> context) ... {
+    void aroundWriteTo(WriterInterceptorContext context) ... {
         OutputStream old = ctx.getOutputStream();
         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(old);
         ctx.setOutputStream(gzipOutputStream);
@@ -143,7 +149,7 @@ Binding is the process by which a filter or interceptor is associated with a res
 \subsection{Global Binding}
 \label{global_binding}
 
-Global binding is the default type of binding. A filter or interceptor that is only annotated with \Provider\ is bound globally, i.e.~its applicability is all the resource methods in an application. For example, the \code{LoggingFilter} defined in Section \ref{filters} is bound globally. If this filter is part of an application, requests and responses will be logged for all resource methods. 
+Global binding is the default type of binding. A filter or interceptor that has no annotations or is only annotated with \Provider\ is bound globally, i.e.~its applicability is all the resource methods in an application. For example, the \code{LoggingFilter} defined in Section \ref{filters} is bound globally. If this filter is part of an application, requests and responses will be logged for all resource methods. 
 
 \subsection{Name Binding}
 \label{Name_Binding}
@@ -153,7 +159,8 @@ A filter or interceptor can be associated with a resource class or method by dec
 \begin{listing}{1}
 @Provider
 @Logged
-class LoggingFilter implements RequestFilter, ResponseFilter {
+class LoggingFilter implements ContainerRequestFilter, 
+                               ContainerResponseFilter {
     ...
 }
 \end{listing}
@@ -184,23 +191,31 @@ Binding annotations that decorate resource classes apply to all the resource met
 
 \subsection{Dynamic Binding}
 
-The annotation-based forms of binding presented thus far are {\em static}.  By having a filter or interceptor implement the \DynamicBinding\ interface, {\em dynamic} variants of name binding and global binding are possible. In these cases, binding is determined based on (i) the filter or interceptor being associated to a resource method globally or by name and (ii) the value returned by the \code{isBound} method in \DynamicBinding. 
+The annotation-based forms of binding presented thus far are {\em static}. Dynamic binding is also supported by using dynamic binders. A dynamic binder is a provider that implements the \DynamicBinder\ interface. Dynamic binder providers are consulted \emph{after} resource matching and are used to augment the set of filters and entity interceptors bound to a resource method. 
 
-The following example defines a global \code{LoggingFilter} that is bound dynamically to all resource methods in \code{MyResourceClass} that are annotated with \code{@GET}.
+The following example defines a dynamic binder, \code{DynamicLoggingFilterBinder}, in order to dynamically bind a \code{LoggingFilter} ---assumed not globally bound for the purpose of this example--- with all resource methods in \code{MyResourceClass} that are annotated with \code{@GET}.
 
 \begin{listing}{1}
 @Provider
-class LoggingFilter implements RequestFilter, DynamicBinding {
+class DynamicLoggingFilterBinder implements DynamicBinder<LoggingFilter> {
 
-    public boolean isBound(Class<?> type, Method method) {
-        return type.equals(MyResourceClass.class) 
-            && method.isAnnotationPresent(GET.class);    
+  @Override
+  public LoggingFilter getBoundInstance(ResourceInfo resourceInfo) {
+    if (MyResourceClass.class.isAssignableFrom(
+    	      resourceInfo.getResourceClass()) &&
+        resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
+          return new LoggingFilter();
     }
-    ...
+    return null;
+ }
 }
 \end{listing}
 
-\jaxrs\ implementations SHOULD resolve dynamic binding filters and interceptors at most once for each resource method (typically at deployment time).
+\begin{ednote}
+Shouldn't we return \code{Class<T>} instead of \code{T}?
+\end{ednote}
+
+\jaxrs\ implementations SHOULD resolve dynamic binders for filters and interceptors at most once for each resource method (typically at deployment time).
 
 \subsection{Binding in Client API}
 \label{binding_in_client_api}
@@ -210,9 +225,8 @@ Binding in the Client API is accomplished via API calls instead of annotations. 
 \section{Priorities}
 \label{priorities}
 
-The order in which filters or interceptors are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
-Priorities are represented by integer numbers. All execution chains except
-for the Post chain are sorted in ascending order; the lower the number the higher the priority. The Post filter chain is sorted in descending order to ensure that response filters are executed in {\em reverse order}.
+The order in which filters and interceptors are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
+Priorities are represented by integer numbers. Execution chains for extension points ContainerRequest, PostContainerRequest and ClientRequest are sorted in \emph{ascending order}; the lower the number the higher the priority. Execution chains for extension points ContainerResponse and ClientResponse are sorted in \emph{descending order}; the higher the number the higher the priority. These rules ensure that response filters are executed in reversed order of request filters.
 
 The \code{BindingPriority} class defines a set of built-in priorities for security, header decorators, decoders and encoders. The default binding priority is \code{BindingPriority.USER}. For example, the priority of an authentication filter can be set as follows:
 
@@ -220,7 +234,7 @@ The \code{BindingPriority} class defines a set of built-in priorities for securi
 @Provider
 @Authenticated
 @BindingPriority(BindingPriority.SECURITY)
-public class AuthenticationFilter implements RequestFilter {
+public class AuthenticationFilter implements ContainerRequestFilter {
     ...
 }
 \end{listing}
@@ -233,20 +247,3 @@ The order in which filters and interceptors that belong to the same priority cla
 \label{exceptions_filters_and_interceptors}
 
 When a filter or interceptor method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping.
-
-\section{Relationship between Filters and Interceptors}
-
-As stated above, filters and entity interceptors are used to extend an implementation in order to provide capabilities such as logging, security, etc. Filters have access to the complete message and can be used for multiple purposes. However, any task that involves transforming a message entity is likely better suited for an entity interceptor. 
-
-It is worth mentioning that an interceptor may be triggered by a filter that reads (or writes) an entity. This is 
-because filters may trigger message body readers (or writers) and these may, in turn, be wrapped by reader (or writer) interceptors. Figure \ref{jaxrs_pipeline} depicts this relationship. 
-
-Figure \ref{jaxrs_pipeline} also shows the relationship between pre-match filters and entity interceptors: namely, given that these type of filters are executed before matching, only interceptors bound globally wrap calls to the message body readers and writers in this case.
-
-\begin{figure}[H]
-\centering
-\includegraphics{chapters/jaxrs_pipeline.pdf}
-\caption{JAX-RS Server Processing Pipeline.}
-\label{jaxrs_pipeline}
-\end{figure}
-
