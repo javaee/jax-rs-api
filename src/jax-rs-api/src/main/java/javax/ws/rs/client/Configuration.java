@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.client;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +82,6 @@ import java.util.Set;
  */
 public interface Configuration {
 
-    // Getters
     /**
      * Get the immutable bag of configuration properties.
      *
@@ -95,7 +95,7 @@ public interface Configuration {
      *
      * @param name property name.
      * @return the property value for the specified property name or {@code null}
-     *     if the property with such name is not configured.
+     *         if the property with such name is not configured.
      * @see Configuration
      */
     Object getProperty(String name);
@@ -105,7 +105,7 @@ public interface Configuration {
      *
      * @return the enabled feature set. The returned value shall never be {@code null}.
      */
-    Set<Feature> getFeatures();
+    Collection<Feature> getFeatures();
 
     /**
      * Get the immutable set of registered provider classes to be instantiated,
@@ -116,7 +116,7 @@ public interface Configuration {
      * interface.
      *
      * @return the immutable set of registered provider classes. The returned
-     * value shall never be {@code null}.
+     *         value shall never be {@code null}.
      * @see #getProviderInstances()
      */
     Set<Class<?>> getProviderClasses();
@@ -130,26 +130,24 @@ public interface Configuration {
      * classes.
      *
      * @return the immutable set of registered provider instances. The returned
-     * value shall never be {@code null}.
+     *         value shall never be {@code null}.
      * @see #getProviderClasses()
      */
     Set<Object> getProviderInstances();
 
-    // Mutators
     /**
      * Replace the existing configuration state with the configuration state of
      * the externally provided configuration.
      *
      * @param configuration configuration to be used to update the instance.
-     *
      * @return the updated configuration.
      */
     Configuration update(Configuration configuration);
 
     /**
-     * Register a provider class to be instantiated and used in the scope of the
-     * configured instance.
-     * <p/>
+     * Register a {@link Feature feature} or a provider class to be instantiated
+     * and used in the scope of the configured instance.
+     * <p>
      * As opposed to the providers registered by the
      * {@link #register(java.lang.Object) provider instances}, providers
      * registered using this method are instantiated and properly injected
@@ -157,18 +155,28 @@ public interface Configuration {
      * a registered provider instance and instantiated registered provider class,
      * the registered provider instance takes precedence and the registered provider
      * class will not be instantiated in such case.
+     * </p>
+     * <p>
+     * In case the registered provider is a client-side {@link Feature feature},
+     * this {@code Configuration} object instantiates the feature and invokes the
+     * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method and
+     * lets the feature update it's internal configuration state. If the invocation
+     * of {@link Feature#onEnable(javax.ws.rs.client.Configuration)} returns {@code true}
+     * the feature is added to the {@link #getFeatures() collection of enabled features},
+     * otherwise the feature instance is discarded.
+     * </p>
      *
      * @param providerClass provider class to be instantiated and used in the scope
-     *     of the configured instance.
+     *                      of the configured instance.
      * @return the updated configuration.
      * @see #getProviderClasses()
      */
     Configuration register(Class<?> providerClass);
 
     /**
-     * Register a provider ("singleton") instance to be used in the scope of the
-     * configured instance.
-     * <p/>
+     * Register a {@link Feature feature} or a provider ("singleton") instance to be used
+     * in the scope of the configured instance.
+     * <p>
      * As opposed to the providers registered by the
      * {@link #register(java.lang.Class) provider classes}, provider instances
      * registered using this method are used "as is, i.e. are not managed or
@@ -176,48 +184,30 @@ public interface Configuration {
      * between a registered provider instance and instantiated registered provider
      * class, the registered provider instance takes precedence and the registered
      * provider class will not be instantiated in such case.
+     * </p>
+     * <p>
+     * In case the registered provider is a client-side {@link Feature feature},
+     * this {@code Configuration} object invokes the
+     * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method and
+     * lets the feature update it's internal configuration state. If the invocation
+     * of {@link Feature#onEnable(javax.ws.rs.client.Configuration)} returns {@code true}
+     * the feature is added to the {@link #getFeatures() collection of enabled features},
+     * otherwise the feature instance is discarded.
+     * </p>
      *
-     * @param provider a provider instance to be used in the scope of the configured
-     *     instance.
+     * @param provider a provider instance to be registered in the scope of the configured
+     *                 instance.
      * @return the updated configuration.
      * @see #getProviderInstances()
      */
     Configuration register(Object provider);
 
     /**
-     * Enable a feature.
-     * <p>
-     * The {@code Configuration} instance invokes the
-     * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method and
-     * lets the feature update it's internal configuration state.
-     * </p>
-     *
-     * @param feature instance of the feature to be enabled.
-     * @return the updated configuration.
-     * @see Configuration
-     */
-    Configuration enable(Feature feature);
-
-    /**
-     * Enable a feature using a new instance of a feature class.
-     * <p>
-     * The {@code Configuration} instance instantiates and invokes the
-     * {@link Feature#onEnable(javax.ws.rs.client.Configuration)} method and
-     * lets the feature update it's internal configuration state.
-     * </p>
-     *
-     * @param feature class of the feature to be enabled.
-     * @return the updated configuration.
-     * @see Configuration
-     */
-    Configuration enable(Class<? extends Feature> feature);
-
-    /**
      * Set new configuration properties replacing all previously set properties.
      *
      * @param properties new set of configuration properties. The content of
-     *     the map will replace any existing properties set on the configurable
-     *     instance.
+     *                   the map will replace any existing properties set on the configurable
+     *                   instance.
      * @return the updated configuration.
      * @see Configuration
      */
@@ -228,9 +218,9 @@ public interface Configuration {
      * the property will be updated. Setting a {@code null} value into a property
      * effectively removes the property from the property bag.
      *
-     * @param name property name.
+     * @param name  property name.
      * @param value (new) property value. {@code null} value removes the property
-     *     with the given name.
+     *              with the given name.
      * @return the updated configuration.
      * @see Configuration
      */
