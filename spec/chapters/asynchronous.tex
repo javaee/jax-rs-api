@@ -37,6 +37,7 @@ public class MyResource {
 Resource classes that support asynchronous processing must inject an instance of \code{ExecutionContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) calls \code{suspend} on the injected \code{ExecutionContext}, (ii) forks a (non-request) thread to execute a long running operation and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{ExecutionContext}.
 
 \subsection{Suspend Annotation}
+\label{suspend_annotation}
 
 An alternative to calling \code{ctx.suspend()} as the first step after entering an asynchronous method is to annotate the method with \Suspend. Thus, the \code{longRunningOp} method above is equivalent to:
 
