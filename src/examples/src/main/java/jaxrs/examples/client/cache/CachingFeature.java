@@ -46,16 +46,17 @@ import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Feature;
 
 /**
- *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 public class CachingFeature implements Feature {
 
     @Override
-    public void onEnable(Configuration configuration) {
+    public boolean onEnable(Configuration configuration) {
         final Map<String, CacheEntry> cacheStore = new ConcurrentHashMap<String, CacheEntry>();
         configuration
                 .register(new CacheEntryLocator(cacheStore))
                 .register(new CacheResponseFilter(cacheStore));
+
+        return true;
     }
 }

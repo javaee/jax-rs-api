@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.Invocation;
@@ -51,15 +52,15 @@ import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.client.ClientFactory;
 import static javax.ws.rs.client.Entity.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
 import jaxrs.examples.client.custom.ThrottledClient;
 
 /**
@@ -155,7 +156,7 @@ public class BasicExamples {
         List<Customer> customers = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers")
                 .request().get(new GenericType<List<Customer>>() {
-        });
+                });
         assert customers != null;
     }
 
@@ -235,16 +236,16 @@ public class BasicExamples {
         Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // Target
                 .request().async().get(new InvocationCallback<Customer>() {
 
-            @Override
-            public void completed(Customer customer) {
-                // Do something
-            }
+                    @Override
+                    public void completed(Customer customer) {
+                        // Do something
+                    }
 
-            @Override
-            public void failed(InvocationException error) {
-                // process error
-            }
-        });
+                    @Override
+                    public void failed(InvocationException error) {
+                        // process error
+                    }
+                });
         handle.cancel(true);
 
         // invoke another request in background
@@ -271,8 +272,9 @@ public class BasicExamples {
     public static class TestFeature implements Feature {
 
         @Override
-        public void onEnable(Configuration configuration) {
+        public boolean onEnable(Configuration configuration) {
             // do nothing
+            return true;
         }
     }
 
@@ -313,10 +315,10 @@ public class BasicExamples {
 
         // Configuration
         TestFeature testFeature = new TestFeature();
-        client.configuration().enable(testFeature);
-        client.target("http://examples.jaxrs.com/").configuration().enable(testFeature);
-        client.target("http://examples.jaxrs.com/").request("text/plain").configuration().enable(testFeature);
-        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().configuration().enable(testFeature);
+        client.configuration().register(testFeature);
+        client.target("http://examples.jaxrs.com/").configuration().register(testFeature);
+        client.target("http://examples.jaxrs.com/").request("text/plain").configuration().register(testFeature);
+        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().configuration().register(testFeature);
     }
 
     public void invocationFlexibility() {

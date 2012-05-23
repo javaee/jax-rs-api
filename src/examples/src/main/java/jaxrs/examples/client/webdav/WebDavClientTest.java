@@ -43,7 +43,6 @@ import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Feature;
 
 /**
- *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 public class WebDavClientTest {
@@ -56,7 +55,7 @@ public class WebDavClientTest {
     static class TestFeature implements Feature {
 
         @Override
-        public void onEnable(Configuration configurable) {
+        public boolean onEnable(Configuration configurable) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
@@ -65,12 +64,12 @@ public class WebDavClientTest {
         WebDavClient client = createClient();
 
         TestFeature testFeature = new TestFeature();
-        client.configuration().enable(testFeature);
+        client.configuration().register(testFeature);
 
         client.target("http://examples.jaxrs.com/webdav/");
-        client.target("http://examples.jaxrs.com/webdav/").configuration().enable(testFeature);
-        client.target("http://examples.jaxrs.com/webdav/").request().configuration().enable(testFeature);
-        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().configuration().enable(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").configuration().register(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").request().configuration().register(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().configuration().register(testFeature);
 
         // HTTP
         client.target("http://examples.jaxrs.com/webdav/").request().get();
