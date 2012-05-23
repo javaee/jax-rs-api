@@ -6,7 +6,7 @@ The Client API is used to access Web resources. It provides a higher-level API t
 \section{Bootstrapping a Client Instance}
 
 An instance of \Client\ is required to access a Web resource using the Client API. The default instance of \Client\ can be obtained by calling \code{newClient} on \ClientFactory. \Client\ instances can be configured by calling the \code{configuration} method which returns an object
-of type \code{Configuration}. Applications use configuration objects to set properties, register providers and enable features:
+of type \code{Configuration}. Applications use configuration objects to set properties as well as register providers (including features):
 
 \begin{listing}{1}
 // Default instance of client
@@ -16,14 +16,10 @@ Client client = ClientFactory.newClient();
 client.configuration()
     .setProperty("MyProperty", "MyValue")
     .register(MyProvider.class)
-    .enable(MyFeature.class);
+    .register(MyFeature.class);
 \end{listing}
 
-\begin{ednote}
-The example above is now incorrect given that enable() only takes a Feature instance.
-\end{ednote}
-
-See Chapter \ref{providers} for more information on providers. Properties are simply name-value pairs where the value is an arbitrary object.  Features must implement the \code{Feature} interface by providing concrete implementations of the \code{enable} and \code{disable} methods; they are useful for grouping sets of properties and providers (or other features) that are logically related and must be enabled and disabled as a unit.
+See Chapter \ref{providers} for more information on providers. Properties are simply name-value pairs where the value is an arbitrary object.  Features are also providers and must implement the \code{Feature} interface; they are useful for grouping sets of properties and providers (including other features) that are logically related and must be enabled as a unit.
 
 \section{Resource Access}
 \label{resource_access}
@@ -52,7 +48,7 @@ See the Javadoc for the classes in the \code{javax.ws.rs.client} package for mor
 
 \section{Targets}
 
-The benefits of using a \WebTarget\ become apparent when building complex URIs, for example by extending base URIs with additional path segments or templates. The following example highlights these features:
+The benefits of using a \WebTarget\ become apparent when building complex URIs, for example by extending base URIs with additional path segments or templates. The following example highlights these cases:
 
 \begin{listing}{1}
 WebTarget base = client.target("http://example.org/");
@@ -124,12 +120,12 @@ Chapter~\ref{asynchronous_processing} for more information on asynchronous invoc
 The following Client API types are configurable: \Client, \Invocation, \InvocationBuilder\ and \WebTarget. In all cases, the configuration can be accessed by calling the \code{configuration} method. This interface supports configuration of:
 
 \begin{description}
-\item [Features] Instances of classes that implement \code{Feature} and can be enabled or disabled in order to configure a \jaxrs\ implementation.
+\item [Features] A special type of provider that implement the \code{Feature} interface and can be used to configure a \jaxrs\ implementation.
 \item [Properties] Name-value pairs for additional configuration of features or other components of a \jaxrs\ implementation.
 \item [Providers] Classes or instances of classes that implement one or more of the provider interfaces from Chapter \ref{providers}. A provider can be a message body reader, a filter, a context resolver, etc. 
 \end{description}
 
-A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \WebTarget\ created from a \Client\ will inherit its configuration. However, any additional changes to the instance of \WebTarget\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached (deep copied) from its parent configuration and changes to the parent and child configurations are not be visible to each other.
+A configuration defined on an instance of any of the aforementioned types is inherited by other instances created from it. For example, an instance of \WebTarget\ created from a \Client\ will inherit the \Client's configuration. However, any additional changes to the instance of \WebTarget\ will not impact the \Client's configuration and vice versa. Therefore, once a configuration is inherited it is also detached (deep copied) from its parent configuration and changes to the parent and child configurations are not be visible to each other.
 
 \subsection{Filters and Entity Interceptors}
 \label{filters_interceptors_client}
