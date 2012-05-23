@@ -58,7 +58,7 @@ import javax.ws.rs.ext.Provider;
 public class DynamicLoggingFilterBinder implements DynamicBinder<LoggingFilter> {
 
     @Override
-    public LoggingFilter getBoundInstance(ResourceInfo resourceInfo) {
+    public LoggingFilter getBoundProvider(ResourceInfo resourceInfo) {
         if (MyResourceClass.class.isAssignableFrom(resourceInfo.getResourceClass())
                 && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
             return new LoggingFilter();
