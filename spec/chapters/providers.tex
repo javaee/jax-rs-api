@@ -1,7 +1,7 @@
 \chapter{Providers}
 \label{providers}
 
-The \jaxrs\ runtime is extended using application-supplied provider classes. A provider is annotated with \Provider\ and implements one or more interfaces defined by \jaxrs. This chapter presents all the providers except for filters and interceptors, which are introduced in Chapter \ref{filters_and_interceptors}.
+The \jaxrs\ runtime is extended using application-supplied provider classes. A provider is a class that implements one or more \jaxrs\ interfaces introduced in this specification and that may be annotated with \Provider\ for automatic discovery. This chapter introduces some of the basic \jaxrs\ providers; other providers are introduced in Chapter \ref{client_api} and Chapter \ref{filters_and_interceptors}.
 
 \section{Lifecycle and Environment}
 \label{lifecycle_and_environment}
@@ -10,12 +10,17 @@ By default a single instance of each provider class is instantiated for each \ja
 
 An implementation MAY offer other provider lifecycles, mechanisms for specifying these are outside the scope of this specification. E.g. an implementation based on an inversion-of-control framework may support all of the lifecycle options provided by that framework.
 
+\subsection{Automatic Discovery}
+\label{automatic_discovery}
+
+The annotation \Provider\ is used by a \jaxrs\ runtime to automatically discover provider classes via mechanisms such as class scanning. A \jaxrs\ implementation that supports automatic discovery of classes MUST process only those classes that are annotated with \Provider.
+
 \subsection{Constructors}
 \label{provider_class_constructor}
 
-Provider classes are instantiated by the \jaxrs\ runtime and MUST have a public constructor for which the \jaxrs\ runtime can provide all parameter values. Note that a zero argument constructor is permissible under this rule.
+Provider classes that are instantiated by the \jaxrs\ runtime and MUST have a public constructor for which the \jaxrs\ runtime can provide all parameter values. Note that a zero argument constructor is permissible under this rule.
 
-A public constructor MAY include parameters annotated with \Context - Chapter \ref{context} defines the parameter types permitted for this annotation. Since providers may be created outside the scope of a particular request, only deployment-specific properties may be available from injected interfaces at construction time - request-specific properties are available when a provider method is called. If more than one public constructor can be used then an implementation MUST use the one with the most parameters. Choosing amongst constructors with the same number of parameters is implementation specific, implementations SHOULD generate a warning about such ambiguity.
+A public constructor MAY include parameters annotated with \Context ---Chapter \ref{context} defines the parameter types permitted for this annotation. Since providers may be created outside the scope of a particular request, only deployment-specific properties may be available from injected interfaces at construction time; request-specific properties are available when a provider method is called. If more than one public constructor can be used then an implementation MUST use the one with the most parameters. Choosing amongst constructors with the same number of parameters is implementation specific, implementations SHOULD generate a warning about such ambiguity.
 
 \section{Entity Providers}
 \label{entity_providers}
@@ -25,7 +30,7 @@ Entity providers supply mapping services between representations and their assoc
 \subsection{Message Body Reader}
 \label{message_body_reader}
 
-The \MsgRead\ interface defines the contract between the \jaxrs\ runtime and components that provide mapping services from representations to a corresponding Java type. A class wishing to provide such a service implements the \MsgRead\ interface and is annotated with \Provider.
+The \MsgRead\ interface defines the contract between the \jaxrs\ runtime and components that provide mapping services from representations to a corresponding Java type. A class wishing to provide such a service implements the \MsgRead\ interface and may be annotated with \Provider\ for automatic discovery.
 
 The following describes the logical\footnote{Implementations are free to optimize their processing provided the results are equivalent to those that would be obtained if these steps are followed.} steps taken by a \jaxrs\ implementation when mapping a request entity body to a Java method parameter:
 
@@ -44,7 +49,7 @@ A \MsgRead\code{.readFrom} method MAY throw \WebAppExc. See Section \ref{excepti
 \subsection{Message Body Writer}
 \label{message_body_writer}
 
-The \MsgWrite\ interface defines the contract between the \jaxrs\ runtime and components that provide mapping services from a Java type to a representation. A class wishing to provide such a service implements the \MsgWrite\ interface and is annotated with \Provider.
+The \MsgWrite\ interface defines the contract between the \jaxrs\ runtime and components that provide mapping services from a Java type to a representation. A class wishing to provide such a service implements the \MsgWrite\ interface and may be annotated with \Provider\ for automatic discovery.
 
 The following describes the logical steps taken by a \jaxrs\ implementation when mapping a return value to a response entity body:
 
@@ -108,7 +113,7 @@ Content encoding is the responsibility of the application. Application-supplied 
 \section{Context Providers}
 \label{contextprovider}
 
-Context providers supply context to resource classes and other providers. A context provider class implements the \code{ContextResolver<T>} interface and is annotated with \Provider. E.g. an application wishing to provide a customized \code{JAXBContext} to the default JAXB entity providers would supply a class implementing \code{ContextResolver<JAXBContext>}.
+Context providers supply context to resource classes and other providers. A context provider class implements the \code{ContextResolver<T>} interface and may be annotated with \Provider\ for automatic discovery. E.g., an application wishing to provide a customized \code{JAXBContext} to the default JAXB entity providers would supply a class implementing \code{ContextResolver<JAXBContext>}.
 
 Context providers MAY return \code{null} from the \code{getContext} method if they do not wish to provide their context for a particular Java type. E.g. a JAXB context provider may wish to only provide the context for certain JAXB classes. Context providers MAY also manage multiple contexts of the same type keyed to different Java types.
 
@@ -122,7 +127,7 @@ When choosing a context provider an implementation sorts the available providers
 \section{Exception Mapping Providers}
 \label{exceptionmapper}
 
-Exception mapping providers map a checked or runtime exception to an instance of \Response. An exception mapping provider implements the \code{ExceptionMapper<T>} interface and is annotated with \Provider. When a resource class or provider method throws an exception for which there is an exception mapping provider, the matching provider is used to obtain a \Response\ instance. The resulting \Response\ is processed as if the web resource method matching the request had returned the \Response, see Section \ref{resource_method_return}. Exception mapping providers are {\em not} supported as part of the Client API.
+Exception mapping providers map a checked or runtime exception to an instance of \Response. An exception mapping provider implements the \code{ExceptionMapper<T>} interface and may be annotated with \Provider\ for automatic discovery. When a resource class or provider method throws an exception for which there is an exception mapping provider, the matching provider is used to obtain a \Response\ instance. The resulting \Response\ is processed as if the web resource method matching the request had returned the \Response, see Section \ref{resource_method_return}. Exception mapping providers are {\em not} supported as part of the Client API.
 
  When choosing an exception mapping provider to map an exception, an implementation MUST use the provider whose generic type is the nearest superclass of the exception.
 
