@@ -68,6 +68,7 @@ public class Variant {
      * @throws java.lang.IllegalArgumentException
      *          if all three parameters are
      *          {@code null}.
+     * @since 2.0
      */
     public Variant(MediaType mediaType, String language, String encoding) {
         if (mediaType == null && language == null && encoding == null) {
@@ -90,6 +91,7 @@ public class Variant {
      * @throws java.lang.IllegalArgumentException
      *          if all three parameters are
      *          {@code null}.
+     * @since 2.0
      */
     public Variant(MediaType mediaType, String language, String country, String encoding) {
         if (mediaType == null && language == null && encoding == null) {
@@ -116,6 +118,7 @@ public class Variant {
      * @throws java.lang.IllegalArgumentException
      *          if all three parameters are
      *          {@code null}.
+     * @since 2.0
      */
     public Variant(MediaType mediaType, String language, String country, String languageVariant, String encoding) {
         if (mediaType == null && language == null && encoding == null) {
@@ -160,6 +163,7 @@ public class Variant {
      *
      * @return the string representing variant language or {@code null}
      *         if none set.
+     * @since 2.0
      */
     public String getLanguageString() {
         return language.toString();
