@@ -108,6 +108,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
 Thus, \code{EmailValidator} applies to values annotated with \Email\ that are of type \code{String}. Validators for different types can be defined for the same constraint annotation. 
 
 \section{Entity Validation}
+\label{entity_validation}
 
 Request entity bodies can be mapped to resource method parameters. There are two ways in which these entities can be validated. If the request entity is mapped to a Java bean whose class is decorated with Bean Validation annotations, then validation can be enabled using \Valid:
 
@@ -163,6 +164,7 @@ class MyResourceClass {
 Note that \code{@PremiumUser} is explicitly listed and \code{@StandardUser} is triggered by the presence of the \Valid\ annotation ---see definition of \code{User} class earlier in this section.
 
 \section{Annotation Inheritance}
+\label{annotation_inheritance}
 
 The rules for inheritance of constraint annotation are defined in \cite{bv11}. It is worth noting that these rules are incompatible with those defined in Section \ref{annotationinheritance}. Generally speaking, constraint annotations in \cite{bv11} are cumulative (can be strengthen) across a given type hierarchy while \jaxrs\ annotations are inherited or, overridden and ignored.
 
@@ -188,10 +190,6 @@ The set of constraint violations is cumulative. If at the beginning of phase 4, 
 
 \begin{ednote}
 Should we require constructor parameter validation for beans that are not managed beans, CDI beans or EJBs? I.e., for beans directly managed by the JAX-RS implementation?
-\end{ednote}
-
-\begin{ednote}
-A ViolationException currently holds a list of violation messages (strings) instead of ConstraintViolation to avoid a dependency with BV. Is this sufficient?
 \end{ednote}
 
 Instances returned by sub-resource locators are validated in the same manner but excluding phase 1 (see Section \ref{resource_field} for more information). Note that sub-resource locators can return instances containing other sub-resource locators: only the instance that is matched on step 3 in Section \ref{request_matching} is validated. This is the instance on which a resource method, as opposed to an intermediate resource locator, is matched.
