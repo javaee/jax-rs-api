@@ -86,6 +86,14 @@ public abstract class Response {
     public abstract int getStatus();
 
     /**
+     * Get the complete status information associated with the response.
+     *
+     * @return the response status information or {@code null} if the status was
+     *         not set.
+     */
+    public abstract StatusType getStatusInfo();
+
+    /**
      * Get the message entity Java instance. Returns {@code null} if the message
      * does not contain an entity body.
      * <p/>
