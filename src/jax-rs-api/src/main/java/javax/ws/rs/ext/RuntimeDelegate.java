@@ -145,7 +145,7 @@ public abstract class RuntimeDelegate {
                 URL targetTypeURL = loader.getResource(classnameAsResource);
                 throw new LinkageError("ClassCastException: attempting to cast"
                         + delegate.getClass().getClassLoader().getResource(classnameAsResource)
-                        + "to" + targetTypeURL.toString());
+                        + " to " + targetTypeURL);
             }
             return (RuntimeDelegate) delegate;
         } catch (Exception ex) {
