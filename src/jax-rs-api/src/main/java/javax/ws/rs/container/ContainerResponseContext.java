@@ -69,6 +69,20 @@ import javax.ws.rs.ext.MessageBodyWriter;
 public interface ContainerResponseContext {
 
     /**
+     * Get the status code associated with the response.
+     *
+     * @return the response status code or -1 if the status was not set.
+     */
+    public int getStatusCode();
+
+    /**
+     * Set a new response status code.
+     *
+     * @param code new status code.
+     */
+    public void setStatusCode(int code);
+
+    /**
      * Get the mutable response headers multivalued map.
      *
      * @return mutable multivalued map of response headers.
