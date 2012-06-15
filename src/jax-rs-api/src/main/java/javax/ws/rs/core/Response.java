@@ -357,6 +357,15 @@ public abstract class Response {
     public abstract int getLength();
 
     /**
+     * Get the allowed HTTP methods from the Allow HTTP header.
+     *
+     * @return the allowed HTTP methods, all methods will returned as upper case
+     *         strings.
+     * @since 2.0
+     */
+    public abstract Set<String> getAllowedMethods();
+
+    /**
      * Get any new cookies set on the response message.
      *
      * @return a read-only map of cookie name (String) to Cookie.
@@ -665,6 +674,7 @@ public abstract class Response {
      * @return a new response builder.
      * @throws IllegalArgumentException if tag is {@code null}.
      */
+    @SuppressWarnings("HtmlTagCanBeJavadocTag")
     public static ResponseBuilder notModified(String tag) {
         return notModified().tag(tag);
     }
@@ -1061,6 +1071,7 @@ public abstract class Response {
          *            If {@code null} any existing entity tag value will be removed.
          * @return the updated response builder.
          */
+        @SuppressWarnings("HtmlTagCanBeJavadocTag")
         public abstract ResponseBuilder tag(String tag);
 
         /**
