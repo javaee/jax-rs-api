@@ -40,10 +40,10 @@
 package javax.ws.rs.client;
 
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -69,38 +69,69 @@ import javax.ws.rs.ext.MessageBodyWriter;
 public interface ClientRequestContext {
 
     /**
-     * Get a mutable map of request-scoped properties that can be used for communication
-     * between different request/response processing components.
+     * Returns the property with the given name registered in the current request/response
+     * exchange context, or {@code null} if there is no property by that name.
+     * <p>
+     * A property allows a JAX-RS filters and interceptors to exchange
+     * additional custom information not already provided by this interface.
+     * </p>
+     * <p>
+     * A list of supported properties can be retrieved using {@link #getPropertyNames()}.
+     * Custom property names should follow the same convention as package names.
+     * </p>
      *
-     * May be empty, but MUST never be {@code null}. In the scope of a single
-     * request/response processing a same property map instance is shared by the
-     * following methods:
-     * <ul>
-     * <li>{@code ClientRequestContext#getProperties() }</li>
-     * <li>{@link javax.ws.rs.client.ClientResponseContext#getProperties() }</li>
-     * <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
-     * </ul>
-     *
-     * A request-scoped property is an application-defined property that may be
-     * added, removed or modified by any of the components (user, filter,
-     * interceptor etc.) that participate in a given request/response processing
-     * flow.
-     * <p />
-     * On the client side, this property map is initialized by calling
-     * {@link javax.ws.rs.client.Configuration#setProperties(java.util.Map) } or
-     * {@link javax.ws.rs.client.Configuration#setProperty(java.lang.String, java.lang.Object) }
-     * on the configuration object associated with the corresponding
-     * {@link javax.ws.rs.client.Invocation request invocation}.
-     * <p />
-     * On the server side, specifying the initial values is implementation-specific.
-     * <p />
-     * If there are no initial properties set, the request-scoped property map is
-     * initialized to an empty map.
-     *
-     * @return a mutable request-scoped property map.
-     * @see javax.ws.rs.client.Configuration
+     * @param name a {@code String} specifying the name of the property.
+     * @return an {@code Object} containing the value of the property, or
+     *         {@code null} if no property exists matching the given name.
+     * @see #getPropertyNames()
      */
-    public MultivaluedMap<String, ? extends Serializable> getProperties();
+    public Object getProperty(String name);
+
+
+    /**
+     * Returns an {@link java.util.Enumeration enumeration} containing the property names
+     * available within the context of the current request/response exchange context.
+     * <p>
+     * Use the {@link #getProperty} method with a property name to get the value of
+     * a property.
+     * </p>
+     *
+     * @return an {@link java.util.Enumeration enumeration} of property names.
+     * @see #getProperty
+     */
+    public Enumeration<String> getPropertyNames();
+
+
+    /**
+     * Binds an object to a given property name in the current request/response
+     * exchange context. If the name specified is already used for a property,
+     * this method will replace the value of the property with the new value.
+     * <p>
+     * A property allows a JAX-RS filters and interceptors to exchange
+     * additional custom information not already provided by this interface.
+     * </p>
+     * <p>
+     * A list of supported properties can be retrieved using {@link #getPropertyNames()}.
+     * Custom property names should follow the same convention as package names.
+     * </p>
+     * <p>
+     * If a {@code null} value is passed, the effect is the same as calling the
+     * {@link #removeProperty(String)} method.
+     * </p>
+     *
+     * @param name   a {@code String} specifying the name of the property.
+     * @param object an {@code Object} representing the property to be bound.
+     */
+    public void setProperty(String name, Object object);
+
+    /**
+     * Removes a property with the given name from the current request/response
+     * exchange context. After removal, subsequent calls to {@link #getProperty}
+     * to retrieve the property value will return {@code null}.
+     *
+     * @param name a {@code String} specifying the name of the property to be removed.
+     */
+    public void removeProperty(String name);
 
     /**
      * Get the request URI.

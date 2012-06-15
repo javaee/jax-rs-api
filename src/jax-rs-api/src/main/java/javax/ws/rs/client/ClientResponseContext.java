@@ -40,7 +40,6 @@
 package javax.ws.rs.client;
 
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
@@ -65,40 +64,6 @@ import javax.ws.rs.core.NewCookie;
  * @since 2.0
  */
 public interface ClientResponseContext {
-
-    /**
-     * Get a mutable map of request-scoped properties that can be used for communication
-     * between different request/response processing components.
-     *
-     * May be empty, but MUST never be {@code null}. In the scope of a single
-     * request/response processing a same property map instance is shared by the
-     * following methods:
-     * <ul>
-     *     <li>{@link javax.ws.rs.client.ClientRequestContext#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.client.ClientResponseContext#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
-     * </ul>
-     *
-     * A request-scoped property is an application-defined property that may be
-     * added, removed or modified by any of the components (user, filter,
-     * interceptor etc.) that participate in a given request/response processing
-     * flow.
-     * <p />
-     * On the client side, this property map is initialized by calling
-     * {@link javax.ws.rs.client.Configuration#setProperties(java.util.Map) } or
-     * {@link javax.ws.rs.client.Configuration#setProperty(java.lang.String, java.lang.Object) }
-     * on the configuration object associated with the corresponding
-     * {@link javax.ws.rs.client.Invocation request invocation}.
-     * <p />
-     * On the server side, specifying the initial values is implementation-specific.
-     * <p />
-     * If there are no initial properties set, the request-scoped property map is
-     * initialized to an empty map.
-     *
-     * @return a mutable request-scoped property map.
-     * @see javax.ws.rs.client.Configuration
-     */
-    public MultivaluedMap<String, ? extends Serializable> getProperties();
 
     /**
      * Get the status code associated with the response.
