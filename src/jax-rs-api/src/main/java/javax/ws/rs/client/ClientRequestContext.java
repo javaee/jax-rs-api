@@ -76,9 +76,9 @@ public interface ClientRequestContext {
      * request/response processing a same property map instance is shared by the
      * following methods:
      * <ul>
-     *     <li>{@link javax.ws.rs.client.ClientRequestContext#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.client.ClientResponseContext#getProperties() }</li>
-     *     <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
+     * <li>{@code ClientRequestContext#getProperties() }</li>
+     * <li>{@link javax.ws.rs.client.ClientResponseContext#getProperties() }</li>
+     * <li>{@link javax.ws.rs.ext.InterceptorContext#getProperties() }</li>
      * </ul>
      *
      * A request-scoped property is an application-defined property that may be
@@ -120,7 +120,6 @@ public interface ClientRequestContext {
      * Get the request method.
      *
      * @return the request method.
-     *
      * @see javax.ws.rs.HttpMethod
      */
     public String getMethod();
@@ -129,7 +128,6 @@ public interface ClientRequestContext {
      * Set the request method.
      *
      * @param method new request method.
-     *
      * @see javax.ws.rs.HttpMethod
      */
     public void setMethod(String method);
@@ -156,18 +154,10 @@ public interface ClientRequestContext {
     public Locale getLanguage();
 
     /**
-     * Get Content-Length value.
-     *
-     * @return Content-Length as integer if present and valid number. In other
-     *     cases returns {@code -1}.
-     */
-    public int getLength();
-
-    /**
      * Get the media type of the entity.
      *
      * @return the media type or {@code null} if not specified (e.g. there's no
-     *     request entity).
+     *         request entity).
      */
     public MediaType getMediaType();
 
@@ -175,7 +165,7 @@ public interface ClientRequestContext {
      * Get a list of media types that are acceptable for the response.
      *
      * @return a read-only list of requested response media types sorted according
-     *     to their q-value, with highest preference first.
+     *         to their q-value, with highest preference first.
      */
     public List<MediaType> getAcceptableMediaTypes();
 
@@ -183,7 +173,7 @@ public interface ClientRequestContext {
      * Get a list of languages that are acceptable for the response.
      *
      * @return a read-only list of acceptable languages sorted according
-     *     to their q-value, with highest preference first.
+     *         to their q-value, with highest preference first.
      */
     public List<Locale> getAcceptableLanguages();
 
@@ -201,7 +191,7 @@ public interface ClientRequestContext {
      * {@code false} otherwise.
      *
      * @return {@code true} if there is an entity present in the message,
-     *     {@code false} otherwise.
+     *         {@code false} otherwise.
      */
     public boolean hasEntity();
 
@@ -211,19 +201,18 @@ public interface ClientRequestContext {
      * Returns {@code null} if the message does not contain an entity.
      *
      * @return the message entity or {@code null} if message does not contain an
-     *     entity body.
+     *         entity body.
      */
     public Object getEntity();
 
     /**
      * Set a new response message entity.
      *
-     * @param <T> entity Java type.
-     * @param type declared entity class.
+     * @param <T>         entity Java type.
+     * @param type        declared entity class.
      * @param annotations annotations attached to the entity.
-     * @param mediaType entity media type.
-     * @param entity entity object.
-     *
+     * @param mediaType   entity media type.
+     * @param entity      entity object.
      * @see MessageBodyWriter
      */
     public <T> void setEntity(
@@ -235,12 +224,11 @@ public interface ClientRequestContext {
     /**
      * Set a new response message entity.
      *
-     * @param <T> entity Java type.
-     * @param type declared generic entity type.
+     * @param <T>         entity Java type.
+     * @param type        declared generic entity type.
      * @param annotations annotations attached to the entity.
-     * @param mediaType entity media type.
-     * @param entity entity object.
-     *
+     * @param mediaType   entity media type.
+     * @param entity      entity object.
      * @see MessageBodyWriter
      */
     public <T> void setEntity(
