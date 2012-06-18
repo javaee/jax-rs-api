@@ -43,13 +43,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Type literal construction unit tests.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Martin Matula (martin.matula at oracle.com)
  */
 public class GenericTypeTest {
 
@@ -61,11 +64,33 @@ public class GenericTypeTest {
     public GenericTypeTest() {
     }
 
+    private static class ParameterizedSubclass1 extends GenericType<ArrayList<String>> {
+    }
+
+    private static class ParameterizedSubclass2<T, V> extends GenericType<V> {
+    }
+
     @Test
-    public void testStaticConstruction() {
+    public void testParameterizedSubclass1() {
+        ParameterizedSubclass1 ps = new ParameterizedSubclass1() {};
 
-        GenericType<ArrayList<String>> type = GenericType.of(ArrayList.class, new ParameterizedType() {
+        assertEquals(arrayListOfStringsType, ps.getType());
+        assertEquals(ArrayList.class, ps.getRawType());
+    }
 
+    @Test
+    public void testParameterizedSubclass2() {
+        ParameterizedSubclass2<String, ArrayList<String>> ps =
+                new ParameterizedSubclass2<String, ArrayList<String>>() {};
+
+        assertEquals(arrayListOfStringsType, ps.getType());
+        assertEquals(ArrayList.class, ps.getRawType());
+    }
+
+    @Test
+    public void testConstructor() {
+
+        GenericType type = new GenericType(new ParameterizedType() {
             @Override
             public Type[] getActualTypeArguments() {
                 return new Type[]{String.class};
@@ -81,23 +106,24 @@ public class GenericTypeTest {
                 return null;
             }
         });
+
         assertEquals(ArrayList.class, type.getRawType());
         assertEquals(arrayListOfStringsType, type.getType());
-        final Type[] parameterTypes = type.getParameterTypes();
-
-        assertEquals(1, parameterTypes.length);
-        assertEquals(String.class, parameterTypes[0]);
     }
 
-    @Test
-    public void testStaticConstructionForAGenericTypeVariable() throws NoSuchMethodException {
+    @Test(expected=IllegalArgumentException.class)
+    public void testInvalidGenericType() throws NoSuchMethodException {
         ArrayList<String> al = new ArrayList<String>();
         Method addMethod = al.getClass().getMethod("add", Object.class);
         final Type type = addMethod.getGenericParameterTypes()[0];
-        GenericType<String> genericType = GenericType.of(String.class, type);
+        new GenericType(type);
+    }
 
-        assertEquals(String.class, genericType.getRawType());
-        assertEquals(type, genericType.getType());
+    @Test
+    public void testConstructor2() {
+        GenericType gt = new GenericType(arrayListOfStringsType);
+        assertEquals(ArrayList.class, gt.getRawType());
+        assertEquals(arrayListOfStringsType, gt.getType());
     }
 
     @Test
@@ -106,9 +132,15 @@ public class GenericTypeTest {
         };
         assertEquals(ArrayList.class, tl.getRawType());
         assertEquals(arrayListOfStringsType, tl.getType());
-        final Type[] parameterTypes = tl.getParameterTypes();
+    }
 
-        assertEquals(1, parameterTypes.length);
-        assertEquals(String.class, parameterTypes[0]);
+    @Test
+    public void testGenericTypeOfArray() {
+        assertEquals(List[].class, new GenericType<List<String>[]>() {}.getRawType());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNullGenericType() {
+        new GenericType(null);
     }
 }
