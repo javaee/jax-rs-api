@@ -74,7 +74,7 @@ public class CacheResponseFilter implements ClientResponseFilter {
             final byte[] body = readFromStream(1024, response.getEntityStream());
 
             CacheEntry cacheEntry = new CacheEntry(
-                    response.getStatusCode(),
+                    response.getStatus(),
                     new MultivaluedHashMap<String, String>(response.getHeaders()),
                     body);
             cacheStore.put(request.getUri().toString(), cacheEntry);

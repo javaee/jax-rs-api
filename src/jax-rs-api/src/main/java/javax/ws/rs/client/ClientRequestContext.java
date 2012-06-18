@@ -41,6 +41,7 @@ package javax.ws.rs.client;
 
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Date;
 import java.util.Enumeration;
@@ -49,7 +50,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -237,43 +237,50 @@ public interface ClientRequestContext {
     public Object getEntity();
 
     /**
-     * Set a new response message entity.
+     * Get the raw entity type information.
      *
-     * @param <T>         entity Java type.
-     * @param type        declared entity class.
-     * @param annotations annotations attached to the entity.
-     * @param mediaType   entity media type.
-     * @param entity      entity object.
-     * @see MessageBodyWriter
+     * @return raw entity type.
      */
-    public <T> void setEntity(
-            final Class<T> type,
-            final Annotation annotations[],
-            final MediaType mediaType,
-            final T entity);
+    public Class<?> getEntityClass();
+
+    /**
+     * Get the generic entity type information.
+     *
+     * @return generic entity type.
+     */
+    public Type getEntityType();
 
     /**
      * Set a new response message entity.
      *
-     * @param <T>         entity Java type.
+     * It is the callers responsibility to wrap the actual entity with
+     * {@link javax.ws.rs.core.GenericEntity} if preservation of its generic
+     * type is required.
+     *
+     * @param entity      entity object.
+     * @param annotations annotations attached to the entity.
+     * @param mediaType   entity media type.
+     * @see MessageBodyWriter
+     */
+    public void setEntity(
+            final Object entity,
+            final Annotation[] annotations,
+            final MediaType mediaType);
+
+    /**
+     * Set a new response message entity.
+     *
+     * @param entity      entity object.
      * @param type        declared generic entity type.
      * @param annotations annotations attached to the entity.
      * @param mediaType   entity media type.
-     * @param entity      entity object.
      * @see MessageBodyWriter
      */
-    public <T> void setEntity(
-            final GenericType<T> type,
-            final Annotation annotations[],
-            final MediaType mediaType,
-            final T entity);
-
-    /**
-     * Get the declared generic message entity type information.
-     *
-     * @return declared generic message entity type.
-     */
-    public GenericType<?> getDeclaredEntityType();
+    public void setEntity(
+            final Object entity,
+            final Type type,
+            final Annotation[] annotations,
+            final MediaType mediaType);
 
     /**
      * Get the annotations attached to the entity.
@@ -293,9 +300,9 @@ public interface ClientRequestContext {
     /**
      * Set a new entity output stream.
      *
-     * @param input new entity output stream.
+     * @param outputStream new entity output stream.
      */
-    public void setEntityStream(OutputStream input);
+    public void setEntityStream(OutputStream outputStream);
 
     /**
      * Get the client instance associated with the request.

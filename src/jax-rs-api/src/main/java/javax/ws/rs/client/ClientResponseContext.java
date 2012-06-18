@@ -51,6 +51,7 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
 
 /**
  * Client response filter context.
@@ -70,14 +71,29 @@ public interface ClientResponseContext {
      *
      * @return the response status code or -1 if the status was not set.
      */
-    public int getStatusCode();
+    public int getStatus();
 
     /**
      * Set a new response status code.
      *
      * @param code new status code.
      */
-    public void setStatusCode(int code);
+    public void setStatus(int code);
+
+    /**
+     * Get the complete status information associated with the response.
+     *
+     * @return the response status information or {@code null} if the status was
+     *         not set.
+     */
+    public Response.StatusType getStatusInfo();
+
+    /**
+     * Set the complete status information associated with the response.
+     *
+     * @param statusInfo the response status information.
+     */
+    public void setStatusInfo(Response.StatusType statusInfo);
 
     /**
      * Get the mutable response headers multivalued map.
@@ -90,7 +106,7 @@ public interface ClientResponseContext {
      * Get the allowed HTTP methods from the Allow HTTP header.
      *
      * @return the allowed HTTP methods, all methods will returned as upper case
-     *     strings.
+     *         strings.
      */
     public Set<String> getAllowedMethods();
 
@@ -112,7 +128,7 @@ public interface ClientResponseContext {
      * Get Content-Length value.
      *
      * @return Content-Length as integer if present and valid number. In other
-     *     cases returns -1.
+     *         cases returns -1.
      */
     public int getLength();
 
@@ -120,7 +136,7 @@ public interface ClientResponseContext {
      * Get the media type of the entity.
      *
      * @return the media type or {@code null} if not specified (e.g. there's no
-     *     response entity).
+     *         response entity).
      */
     public MediaType getMediaType();
 
@@ -156,7 +172,7 @@ public interface ClientResponseContext {
      * Get the links attached to the message as header.
      *
      * @return links, may return empty {@link Set} if no links are present. Never
-     *     returns {@code null}.
+     *         returns {@code null}.
      */
     public Set<Link> getLinks();
 
@@ -165,7 +181,7 @@ public interface ClientResponseContext {
      *
      * @param relation link relation.
      * @return {@code true} if the for the relation link exists, {@code false}
-     *     otherwise.
+     *         otherwise.
      */
     boolean hasLink(String relation);
 
@@ -183,7 +199,7 @@ public interface ClientResponseContext {
      *
      * @param relation link relation.
      * @return the link builder for the relation, otherwise {@code null} if not
-     *     present.
+     *         present.
      */
     public Link.Builder getLinkBuilder(String relation);
 
@@ -195,7 +211,7 @@ public interface ClientResponseContext {
      * {@code false} otherwise.
      *
      * @return {@code true} if there is an entity present in the message,
-     *     {@code false} otherwise.
+     *         {@code false} otherwise.
      */
     public boolean hasEntity();
 
