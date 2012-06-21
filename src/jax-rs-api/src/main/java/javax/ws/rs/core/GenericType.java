@@ -56,14 +56,38 @@ import java.util.Stack;
  * representing a concrete parameterized type can be created using a
  * {@link #GenericType(java.lang.reflect.Type)} and manually specifying
  * the {@link #getType() actual (parameterized) type}.
- *
+ * <p>
+ * For example:
+ * </p>
  * <pre>
- *  GenericType&lt;List&lt;String>> stringListType = new GenericType&lt;List&lt;String>>() {};
+ *  GenericType&lt;List&lt;String&gt;&gt; stringListType = new GenericType&lt;List&lt;String&gt;&gt;() {};
+ * </pre>
+ * <p>
+ * Or:
+ * </p>
+ * <pre>
+ *  public class MyGenericType extends GenericType&lt;List&lt;String&gt;&gt; { ... }
+ *
+ *  ...
+ *
+ *  MyGenericType stringListType = new MyGenericType();
+ * </pre>
+ * <p>
+ * Note that due to the Java type erasure limitations the parameterized type information
+ * must be specified on a subclass, not just during the instance creation. For example,
+ * the following case would throw an {@link IllegalArgumentException}:
+ * </p>
+ * <pre>
+ *  public class MyGenericType&lt;T&gt; extends GenericType&lt;T&gt; { ... }
+ *
+ *  ...
+ *
+ *  // The type is only specified on instance, not in a sub-class
+ *  MyGenericType&lt;List&lt;String&gt;&gt; stringListType =
+ *          new MyGenericType&lt;List&lt;String&gt;&gt;();
  * </pre>
  *
  * @param <T> the generic type parameter.
- *
- * @author Jerome Dochez
  * @author Marek Potociar
  * @author Paul Sandoz
  * @author Martin Matula
@@ -85,6 +109,8 @@ public class GenericType<T> {
      * type parameter. Note that this constructor is protected, users should create
      * a (usually anonymous) subclass as shown above.
      *
+     * @throws IllegalArgumentException in case the generic type parameter value is not
+     *                                  provided by any of the subclasses.
      */
     protected GenericType() {
         // Get the type parameter of GenericType<T> (aka the T value)
@@ -97,8 +123,9 @@ public class GenericType<T> {
      * information and deriving the class.
      *
      * @param genericType the generic type.
-     * @throws IllegalArgumentException if genericType is null or not an instance of Class or ParameterizedType
-     * whose raw type is an instance of Class.
+     * @throws IllegalArgumentException if genericType is {@code null} or not an instance of
+     *                                  {@code Class} or {@link ParameterizedType} whose raw
+     *                                  type is an instance of {@code Class}.
      */
     public GenericType(Type genericType) {
         if (genericType == null) {
@@ -123,7 +150,7 @@ public class GenericType<T> {
      * the type represented by this generic type instance.
      *
      * @return the class or interface that declared the type represented by this
-     *     generic type instance.
+     *         generic type instance.
      */
     public final Class<?> getRawType() {
         return rawType;
@@ -138,11 +165,11 @@ public class GenericType<T> {
      */
     private static Class getClass(Type type) {
         if (type instanceof Class) {
-            return (Class)type;
+            return (Class) type;
         } else if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType)type;
+            ParameterizedType parameterizedType = (ParameterizedType) type;
             if (parameterizedType.getRawType() instanceof Class) {
-                return (Class)parameterizedType.getRawType();
+                return (Class) parameterizedType.getRawType();
             }
         } else if (type instanceof GenericArrayType) {
             GenericArrayType array = (GenericArrayType) type;
@@ -170,7 +197,7 @@ public class GenericType<T> {
     /**
      * Return the value of the type parameter of {@code GenericType<T>}.
      *
-     * @param clazz subClass of {@code baseClass} to analyze.
+     * @param clazz     subClass of {@code baseClass} to analyze.
      * @param baseClass base class having the type parameter the value of which we need to retrieve
      * @return the parameterized type of {@code GenericType<T>} (aka T)
      */
@@ -236,6 +263,6 @@ public class GenericType<T> {
 
     @Override
     public String toString() {
-        return "GenericType{" + type.toString() +"}";
+        return "GenericType{" + type.toString() + "}";
     }
 }

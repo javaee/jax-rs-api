@@ -119,8 +119,8 @@ public class GenericEntity<T> {
      * parameter. Note that this constructor is protected, users should create
      * a (usually anonymous) subclass as shown above.
      *
-     * @param entity the entity instance, must not be null
-     * @throws IllegalArgumentException if entity is null
+     * @param entity the entity instance, must not be {@code null}.
+     * @throws IllegalArgumentException if entity is {@code null}.
      */
     protected GenericEntity(final T entity) throws IllegalArgumentException {
         if (entity == null) {
@@ -138,8 +138,8 @@ public class GenericEntity<T> {
      * {@code ArrayList<String>} then {@code genericType} could
      * be the same or a superclass of {@code ArrayList} with the same generic
      * type like {@code List<String>}.
-     * @param entity the entity instance, must not be null
-     * @param genericType the generic type, must not be null
+     * @param entity the entity instance, must not be {@code null}.
+     * @param genericType the generic type, must not be {@code null}.
      * @throws IllegalArgumentException if the entity is not assignable to
      * a variable of the supplied generic type or if entity or genericType
      * is null.
