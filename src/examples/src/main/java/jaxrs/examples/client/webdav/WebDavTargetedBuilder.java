@@ -40,7 +40,6 @@
 package jaxrs.examples.client.webdav;
 
 import java.util.Locale;
-import java.util.Set;
 
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Entity;
@@ -109,16 +108,6 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
 
     @Override
     public WebDavTargetedBuilder cookie(Cookie cookie) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder allow(String... methods) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder allow(Set<String> methods) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
