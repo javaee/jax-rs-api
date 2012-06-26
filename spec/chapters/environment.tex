@@ -84,7 +84,7 @@ The example above takes advantage of the type-safe dependency injection provided
 \label{ejbs}
 
 In a product that supports EJBs, an implementation MUST support the use of stateless and singleton session beans as root resource classes, providers and \code{Application} subclasses. 
-\jaxrs\ annotations can be applied to a EJB's local interface or directly to a no-interface EJB. Resource class annotations (like \Path) MUST be applied to an EJB's class directly following the annotation inheritance rules defined in Section \ref{annotationinheritance}.
+\jaxrs\ annotations can be applied to methods in an EJB's local interface or directly to methods in a no-interface EJB. Resource class annotations (like \Path) MUST be applied to an EJB's class directly following the annotation inheritance rules defined in Section \ref{annotationinheritance}.
 
 For example, a stateless EJB that implements a local interface can be defined as a \jaxrs\ resource class as follows:
 
