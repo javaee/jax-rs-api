@@ -190,6 +190,15 @@ public interface Invocation {
         public Builder cookie(Cookie cookie);
 
         /**
+         * Add a cookie to be set.
+         *
+         * @param name the name of the cookie.
+         * @param value the value of the cookie.
+         * @return the updated builder.
+         */
+        public Builder cookie(String name, String value);
+
+        /**
          * Set the cache control data of the message.
          *
          * @param cacheControl the cache control directives, if {@code null}
