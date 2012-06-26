@@ -268,21 +268,6 @@ public interface ClientRequestContext {
             final MediaType mediaType);
 
     /**
-     * Set a new response message entity.
-     *
-     * @param entity      entity object.
-     * @param type        declared generic entity type.
-     * @param annotations annotations attached to the entity.
-     * @param mediaType   entity media type.
-     * @see MessageBodyWriter
-     */
-    public void setEntity(
-            final Object entity,
-            final Type type,
-            final Annotation[] annotations,
-            final MediaType mediaType);
-
-    /**
      * Get the annotations attached to the entity.
      *
      * @return entity annotations.

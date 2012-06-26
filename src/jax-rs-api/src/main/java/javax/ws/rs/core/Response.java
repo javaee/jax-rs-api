@@ -41,7 +41,6 @@ package javax.ws.rs.core;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -860,28 +859,6 @@ public abstract class Response {
          * @since 2.0
          */
         public abstract ResponseBuilder entity(Object entity, Annotation[] annotations);
-
-        /**
-         * Set the response entity in the builder.
-         * <p>
-         * Any Java type instance for a response entity, that is supported by the
-         * runtime can be passed. Note that the entity can be also set as an
-         * {@link java.io.InputStream input stream}.
-         * </p>
-         * A specific entity media type can be set using one of the {@code type(...)}
-         * methods.
-         *
-         * @param entity      the request entity.
-         * @param genericType generic entity type information
-         *                    that will be passed to the {@link MessageBodyWriter}.
-         * @param annotations annotations that will be passed to the {@link MessageBodyWriter}.
-         * @return updated response builder instance.
-         * @see #entity(java.lang.Object)
-         * @see #type(javax.ws.rs.core.MediaType)
-         * @see #type(java.lang.String)
-         * @since 2.0
-         */
-        public abstract ResponseBuilder entity(Object entity, Type genericType, Annotation[] annotations);
 
         /**
          * Set the list of allowed methods for the resource. Any duplicate method
