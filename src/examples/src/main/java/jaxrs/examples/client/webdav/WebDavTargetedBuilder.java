@@ -112,6 +112,11 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
+    public Invocation.Builder cookie(String name, String value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public WebDavTargetedBuilder cacheControl(CacheControl cacheControl) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -207,17 +212,17 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public Response trace(Entity<?> entity) throws InvocationException {
+    public Response trace() throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T trace(Entity<?> entity, Class<T> responseType) throws InvocationException {
+    public <T> T trace(Class<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T trace(Entity<?> entity, GenericType<T> responseType) throws InvocationException {
+    public <T> T trace(GenericType<T> responseType) throws InvocationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
