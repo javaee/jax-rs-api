@@ -317,6 +317,7 @@ public class MediaType {
      *                the "{@value #CHARSET_PARAMETER}" parameter will not be set or updated.
      * @return copy of the current {@code MediaType} instance with the "{@value #CHARSET_PARAMETER}"
      *         parameter set to the supplied value.
+     * @since 2.0
      */
     public MediaType withCharset(String charset) {
         return new MediaType(this.type, this.subtype, charset, createParametersMap(this.parameters));
