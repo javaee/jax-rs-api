@@ -22,9 +22,11 @@ This section describes the additional requirements that apply to a \jaxrs\ imple
 \subsection{Servlets}
 \label{servlets}
 
-In a product that also supports the Servlet specification, implementations MUST support \jaxrs\ applications that are packaged as a web application. Implementations MUST behave as if built using the Servlet 3 pluggability mechanism, see Section \ref{servlet}. 
+In a product that also supports the Servlet specification, implementations MUST support \jaxrs\ applications that are packaged as a Web application.
+See Section \ref{servlet} for more information Web application packaging.
 
-It is RECOMMENDED for \jaxrs\ implementations to provide asynchronous processing support, as defined in Chapter \ref{asynchronous_processing}, by enabling asynchronous processing (i.e., \code{asyncSupported=true}) in the underlying Servlet 3 container.
+It is RECOMMENDED for a \jaxrs\ implementation to provide asynchronous processing support, as defined in Chapter \ref{asynchronous_processing}, by enabling asynchronous processing (i.e., \code{asyncSupported=true}) in the underlying Servlet 3 container. It is OPTIONAL for a \jaxrs\ implementation to support asynchronous processing when running on a Servlet container whose version is prior to 3.
+
 As explained in Section \ref{servlet_container}, injection of Servlet-defined types is possible using the \Context\ annotation.
 
 \subsection{Managed Beans}
