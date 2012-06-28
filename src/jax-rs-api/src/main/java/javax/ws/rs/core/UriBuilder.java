@@ -537,6 +537,7 @@ public abstract class UriBuilder {
      *                                  current state of the builder.
      * @see #buildFromMap(java.util.Map)
      * @see #buildFromMap(java.util.Map, boolean)
+     * @since 2.0
      */
     public abstract URI buildFromEncodedMap(Map<String, ?> values)
             throws IllegalArgumentException, UriBuilderException;
@@ -613,6 +614,7 @@ public abstract class UriBuilder {
      *                                  current state of the builder.
      * @see #build(Object[])
      * @see #buildFromEncoded(Object...)
+     * @since 2.0
      */
     public abstract URI build(Object[] values, boolean encodeSlashInPath)
             throws IllegalArgumentException, UriBuilderException;
