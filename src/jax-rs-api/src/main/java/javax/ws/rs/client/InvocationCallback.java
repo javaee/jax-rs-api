@@ -39,10 +39,6 @@
  */
 package javax.ws.rs.client;
 
-import java.lang.reflect.Type;
-
-import javax.ws.rs.core.GenericType;
-
 /**
  * Callback that can be implemented to receive the asynchronous processing
  * events from the invocation processing.
@@ -54,35 +50,7 @@ import javax.ws.rs.core.GenericType;
  * @author Marek Potociar
  * @since 2.0
  */
-public abstract class InvocationCallback<RESPONSE> extends GenericType<RESPONSE> {
-
-    /**
-     * Constructs a new invocation callback, deriving the generic response type and class
-     * information from the invocation callback's sub-class type parameter.
-     * <p>
-     * Note that this constructor is protected, users are expected to create a
-     * (possibly anonymous) subclass with the resolved response type parameter
-     * discussed in the documentation of {@link GenericType} class.
-     * </p>
-     *
-     * @throws IllegalArgumentException in case the generic type parameter value is not
-     *                                  provided by any of the subclasses.
-     */
-    protected InvocationCallback() {
-    }
-
-    /**
-     * Constructs a new invocation callback, supplying the generic response type
-     * information.
-     *
-     * @param genericType the generic type.
-     * @throws IllegalArgumentException if genericType is {@code null} or not an instance of
-     *                                  {@code Class} or {@link java.lang.reflect.ParameterizedType}
-     *                                  whose raw type is an instance of {@code Class}.
-     */
-    protected InvocationCallback(Type genericType) {
-        super(genericType);
-    }
+public interface InvocationCallback<RESPONSE> {
 
     /**
      * Called when the invocation was successfully completed. Note that this does
