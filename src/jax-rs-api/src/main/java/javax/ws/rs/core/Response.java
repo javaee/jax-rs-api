@@ -436,10 +436,10 @@ public abstract class Response {
     public abstract MultivaluedMap<String, Object> getMetadata();
 
     /**
-     * Get headers associated with the response as a multivalued map.
+     * Get view of the response headers and their object values.
      *
-     * The returned map is immutable, but the underlying data may be subsequently
-     * modified by the JAX-RS runtime.
+     * The underlying header data may be subsequently modified by the JAX-RS runtime on the
+     * server side. Changes in the underlying header data are reflected in this view.
      * <p>
      * On the server-side, when the message is sent, the non-string values will be serialized
      * using a {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available via
@@ -452,7 +452,7 @@ public abstract class Response {
      * {@link #getStringHeaders()}.
      * </p>
      *
-     * @return response headers as a multivalued map.
+     * @return response headers as an object view of header values.
      * @see #getStringHeaders()
      * @see #getHeaderString
      * @since 2.0
@@ -462,12 +462,12 @@ public abstract class Response {
     }
 
     /**
-     * Get headers associated with the response as a multivalued map of string values.
+     * Get view of the response headers and their string values.
      *
-     * The returned map is immutable, but the underlying data may be subsequently
-     * modified by the JAX-RS runtime.
+     * The underlying header data may be subsequently modified by the JAX-RS runtime on
+     * the server side. Changes in the underlying header data are reflected in this view.
      *
-     * @return response headers as a multivalued map of string values.
+     * @return response headers as a string view of header values.
      * @see #getHeaders()
      * @see #getHeaderString
      * @since 2.0

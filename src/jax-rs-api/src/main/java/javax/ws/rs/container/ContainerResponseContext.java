@@ -108,9 +108,11 @@ public interface ContainerResponseContext {
     public MultivaluedMap<String, Object> getHeaders();
 
     /**
-     * Get headers associated with the message as an immutable multivalued map
-     * of string values.
+     * Get a string view of header values associated with the message.
      *
+     * Changes in the underlying {@link #getHeaders() headers map} are reflected
+     * in this view. Conversely, this view supports removal operations, and these
+     * are reflected in the underlying headers map.
      * <p>
      * The method converts the non-string header values to strings using a
      * {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available via
@@ -119,7 +121,7 @@ public interface ContainerResponseContext {
      * not available.
      * </p>
      *
-     * @return response headers as an immutable multivalued map of string values.
+     * @return response headers as a string view of header values.
      * @see #getHeaders()
      * @see #getHeaderString(String)
      */
