@@ -341,9 +341,8 @@ public class Variant {
          *         .build()</pre>
          *
          * @return the updated builder.
-         * @throws IllegalStateException
-         *          if there is not at least one
-         *          mediaType, language or encoding set for the current variant.
+         * @throws IllegalStateException if there is not at least one
+         *                               mediaType, language or encoding set for the current variant.
          */
         public abstract VariantListBuilder add();
 

@@ -1361,7 +1361,30 @@ public abstract class Response {
          */
         public enum Family {
 
-            INFORMATIONAL, SUCCESSFUL, REDIRECTION, CLIENT_ERROR, SERVER_ERROR, OTHER;
+            /**
+             * {@code 1xx} HTTP status codes.
+             */
+            INFORMATIONAL,
+            /**
+             * {@code 2xx} HTTP status codes.
+             */
+            SUCCESSFUL,
+            /**
+             * {@code 3xx} HTTP status codes.
+             */
+            REDIRECTION,
+            /**
+             * {@code 4xx} HTTP status codes.
+             */
+            CLIENT_ERROR,
+            /**
+             * {@code 5xx} HTTP status codes.
+             */
+            SERVER_ERROR,
+            /**
+             * Other, unrecognized HTTP status codes.
+             */
+            OTHER;
 
             /**
              * Get the response status family for the status code.

@@ -44,7 +44,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -55,7 +55,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.ExecutionContext;
 
 /**
- *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 @Path("/async/longRunning")

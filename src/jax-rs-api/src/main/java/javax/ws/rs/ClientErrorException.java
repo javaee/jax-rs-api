@@ -119,7 +119,7 @@ public class ClientErrorException extends WebApplicationException {
      *
      * @param response client error response. Must have a status code set to a {@code 4xx}
      *                 status code.
-     * @param cause  the underlying cause of the exception.
+     * @param cause    the underlying cause of the exception.
      * @throws IllegalArgumentException in case the response status code is not from the
      *                                  {@link javax.ws.rs.core.Response.Status.Family#CLIENT_ERROR} status code family.
      */

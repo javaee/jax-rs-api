@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -44,18 +44,18 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Suspend;
-import javax.ws.rs.core.ExecutionContext;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.ExecutionContext;
 import javax.ws.rs.core.MediaType;
 
 /**
- *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 @Path("/async/nextMessage")
@@ -64,7 +64,8 @@ import javax.ws.rs.core.MediaType;
 public class AsyncEventResource {
     private static final BlockingQueue<String> messages = new ArrayBlockingQueue<String>(5);
 
-    @Context ExecutionContext ctx;
+    @Context
+    ExecutionContext ctx;
 
     @GET
     @Suspend

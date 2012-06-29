@@ -43,7 +43,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-
 import javax.enterprise.util.AnnotationLiteral;
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;

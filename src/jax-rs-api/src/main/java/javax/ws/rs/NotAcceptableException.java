@@ -85,7 +85,7 @@ public class NotAcceptableException extends ClientErrorException {
      * Construct a new "request not acceptable" exception.
      *
      * @param response error response.
-     * @param cause the underlying cause of the exception.
+     * @param cause    the underlying cause of the exception.
      * @throws IllegalArgumentException in case the status code set in the response
      *                                  is not HTTP {@code 406}.
      */

@@ -84,7 +84,7 @@ public class InternalServerErrorException extends ServerErrorException {
      * Construct a new internal server error exception.
      *
      * @param response internal server error response.
-     * @param cause the underlying cause of the exception.
+     * @param cause    the underlying cause of the exception.
      * @throws IllegalArgumentException in case the status code set in the response
      *                                  is not HTTP {@code 500}.
      */

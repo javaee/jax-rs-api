@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,6 +40,7 @@
 package jaxrs.examples.client.webdav;
 
 import java.net.URI;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Entity;
@@ -48,7 +49,6 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 public class WebDavClient implements Client {

@@ -42,8 +42,7 @@ package javax.ws.rs;
 import javax.ws.rs.core.Response;
 
 /**
- * A runtime exception indicating a {@link Response.Status#BAD_REQUEST
- * bad client request}.
+ * A runtime exception indicating a {@link Response.Status#BAD_REQUEST bad client request}.
  *
  * @author Sergey Beryozkin
  * @author Marek Potociar
@@ -84,7 +83,7 @@ public class BadRequestException extends ClientErrorException {
      * Construct a new bad client request exception.
      *
      * @param response error response.
-     * @param cause the underlying cause of the exception.
+     * @param cause    the underlying cause of the exception.
      * @throws IllegalArgumentException in case the status code set in the response
      *                                  is not HTTP {@code 400}.
      */

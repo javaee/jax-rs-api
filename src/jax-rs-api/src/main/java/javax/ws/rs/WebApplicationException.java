@@ -174,7 +174,7 @@ public class WebApplicationException extends RuntimeException {
      * Validate that a {@link javax.ws.rs.core.Response} object has an expected HTTP response
      * status code set.
      *
-     * @param response       response object.
+     * @param response             response object.
      * @param expectedStatusFamily expected response status code family.
      * @return validated response object.
      * @throws IllegalArgumentException if the response validation failed.

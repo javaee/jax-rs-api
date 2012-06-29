@@ -40,18 +40,19 @@
 package jaxrs.examples.client.spec;
 
 import java.util.concurrent.Future;
-import jaxrs.examples.client.custom.ThrottledClient;
 
 import javax.ws.rs.client.AsyncInvoker;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.client.ClientFactory;
-import static javax.ws.rs.client.Entity.*;
+import static javax.ws.rs.client.Entity.entity;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
+import jaxrs.examples.client.custom.ThrottledClient;
 
 /**
  * @author Bill Burke
@@ -100,7 +101,7 @@ public class SpecExamples {
                 .request("text/plain").get();
 
         Response res2 = client.target("http://example.org/hello")
-                .queryParam("MyParam","...")
+                .queryParam("MyParam", "...")
                 .request("text/plain")
                 .header("MyHeader", "...")
                 .get();

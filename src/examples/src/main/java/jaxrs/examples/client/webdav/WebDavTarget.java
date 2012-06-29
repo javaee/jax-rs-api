@@ -41,6 +41,7 @@ package jaxrs.examples.client.webdav;
 
 import java.net.URI;
 import java.util.Map;
+
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -48,7 +49,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 public class WebDavTarget implements WebTarget {

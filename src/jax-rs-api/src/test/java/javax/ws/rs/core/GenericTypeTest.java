@@ -72,7 +72,8 @@ public class GenericTypeTest {
 
     @Test
     public void testParameterizedSubclass1() {
-        ParameterizedSubclass1 ps = new ParameterizedSubclass1() {};
+        ParameterizedSubclass1 ps = new ParameterizedSubclass1() {
+        };
 
         assertEquals(arrayListOfStringsType, ps.getType());
         assertEquals(ArrayList.class, ps.getRawType());
@@ -81,7 +82,8 @@ public class GenericTypeTest {
     @Test
     public void testParameterizedSubclass2() {
         ParameterizedSubclass2<String, ArrayList<String>> ps =
-                new ParameterizedSubclass2<String, ArrayList<String>>() {};
+                new ParameterizedSubclass2<String, ArrayList<String>>() {
+                };
 
         assertEquals(arrayListOfStringsType, ps.getType());
         assertEquals(ArrayList.class, ps.getRawType());
@@ -111,7 +113,7 @@ public class GenericTypeTest {
         assertEquals(arrayListOfStringsType, type.getType());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testInvalidGenericType() throws NoSuchMethodException {
         ArrayList<String> al = new ArrayList<String>();
         Method addMethod = al.getClass().getMethod("add", Object.class);
@@ -136,7 +138,8 @@ public class GenericTypeTest {
 
     @Test
     public void testGenericTypeOfArray() {
-        assertEquals(List[].class, new GenericType<List<String>[]>() {}.getRawType());
+        assertEquals(List[].class, new GenericType<List<String>[]>() {
+        }.getRawType());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -40,12 +40,12 @@
 package jaxrs.examples.client.webdav;
 
 import java.util.concurrent.Future;
+
 import javax.ws.rs.client.AsyncInvoker;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 /**
- *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 public interface WebDavAsyncInvoker extends AsyncInvoker {

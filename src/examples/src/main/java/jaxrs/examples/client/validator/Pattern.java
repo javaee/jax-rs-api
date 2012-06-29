@@ -43,7 +43,6 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.validation.Payload;
 
 /**
- *
  * @author sp106478
  */
 public class Pattern extends AnnotationLiteral<javax.validation.constraints.Pattern>

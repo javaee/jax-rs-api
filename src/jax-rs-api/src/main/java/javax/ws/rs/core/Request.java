@@ -88,8 +88,10 @@ public interface Request {
      * @param variants a list of Variant that describe all of the available representation
      *                 variants.
      * @return the variant that best matches the request or {@code null} if there's no match.
-     * @throws java.lang.IllegalArgumentException if variants is empty or {@code null}.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request.
+     * @throws java.lang.IllegalArgumentException
+     *          if variants is empty or {@code null}.
+     * @throws java.lang.IllegalStateException
+     *          if called outside the scope of a request.
      * @see Variant.VariantListBuilder
      */
     public Variant selectVariant(List<Variant> variants) throws IllegalArgumentException;
@@ -104,8 +106,10 @@ public interface Request {
      *         provided none of the precondition evaluation has failed, in which case
      *         the ETag header would not be included and the status code of the returned
      *         {@code ResponseBuilder} would be set to {@link Response.Status#PRECONDITION_FAILED}.
-     * @throws java.lang.IllegalArgumentException if eTag is {@code null}.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request.
+     * @throws java.lang.IllegalArgumentException
+     *          if eTag is {@code null}.
+     * @throws java.lang.IllegalStateException
+     *          if called outside the scope of a request.
      */
     public ResponseBuilder evaluatePreconditions(EntityTag eTag);
 
@@ -115,8 +119,10 @@ public interface Request {
      * @param lastModified a date that specifies the modification date of the resource
      * @return {@code null} if the preconditions are met or a {@code ResponseBuilder} set with
      *         the appropriate status if the preconditions are not met.
-     * @throws java.lang.IllegalArgumentException if lastModified is {@code null}.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request.
+     * @throws java.lang.IllegalArgumentException
+     *          if lastModified is {@code null}.
+     * @throws java.lang.IllegalStateException
+     *          if called outside the scope of a request.
      */
     public ResponseBuilder evaluatePreconditions(Date lastModified);
 
@@ -131,8 +137,10 @@ public interface Request {
      *         provided none of the precondition evaluation has failed, in which case
      *         the ETag header would not be included and the status code of the returned
      *         {@code ResponseBuilder} would be set to {@link Response.Status#PRECONDITION_FAILED}.
-     * @throws java.lang.IllegalArgumentException if lastModified or eTag is {@code null}.
-     * @throws java.lang.IllegalStateException if called outside the scope of a request.
+     * @throws java.lang.IllegalArgumentException
+     *          if lastModified or eTag is {@code null}.
+     * @throws java.lang.IllegalStateException
+     *          if called outside the scope of a request.
      */
     public ResponseBuilder evaluatePreconditions(Date lastModified, EntityTag eTag);
 

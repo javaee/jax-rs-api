@@ -43,7 +43,6 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.validation.Payload;
 
 /**
- *
  * @author Santiago Pericas-Geertsen
  */
 public class NotNull extends AnnotationLiteral<javax.validation.constraints.NotNull>

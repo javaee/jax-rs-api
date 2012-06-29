@@ -52,7 +52,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 /**
- *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvoker {
