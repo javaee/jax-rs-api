@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.client;
 
+import java.lang.annotation.Annotation;
 import java.util.Locale;
 
 import javax.ws.rs.core.Form;
@@ -53,9 +54,11 @@ import javax.ws.rs.core.Variant;
  * @author Marek Potociar
  */
 public final class Entity<T> {
+    private static final Annotation[] EMPTY_ANNOTATIONS = new Annotation[0];
 
     private final T entity;
     private final Variant variant;
+    private final Annotation[] annotations;
 
     /**
      * Create an entity using a supplied content media type.
@@ -67,6 +70,19 @@ public final class Entity<T> {
      */
     public static <T> Entity<T> entity(final T entity, final MediaType mediaType) {
         return new Entity<T>(entity, mediaType);
+    }
+
+    /**
+     * Create an entity using a supplied content media type.
+     *
+     * @param <T>         entity Java type.
+     * @param entity      entity data.
+     * @param mediaType   entity content type.
+     * @param annotations entity annotations.
+     * @return entity instance.
+     */
+    public static <T> Entity<T> entity(final T entity, final MediaType mediaType, Annotation[] annotations) {
+        return new Entity<T>(entity, mediaType, annotations);
     }
 
     /**
@@ -93,6 +109,19 @@ public final class Entity<T> {
      */
     public static <T> Entity<T> entity(final T entity, final Variant variant) {
         return new Entity<T>(entity, variant);
+    }
+
+    /**
+     * Create an entity using a supplied content media type.
+     *
+     * @param <T>         entity Java type.
+     * @param entity      entity data.
+     * @param variant     entity {@link Variant variant} information.
+     * @param annotations entity annotations.
+     * @return entity instance.
+     */
+    public static <T> Entity<T> entity(final T entity, final Variant variant, Annotation[] annotations) {
+        return new Entity<T>(entity, variant, annotations);
     }
 
     /**
@@ -176,13 +205,21 @@ public final class Entity<T> {
     }
 
     private Entity(final T entity, final MediaType mediaType) {
-        this.entity = entity;
-        this.variant = new Variant(mediaType, (Locale) null, null);
+        this(entity, new Variant(mediaType, (Locale) null, null), EMPTY_ANNOTATIONS);
     }
 
     private Entity(final T entity, final Variant variant) {
+        this(entity, variant, EMPTY_ANNOTATIONS);
+    }
+
+    private Entity(final T entity, final MediaType mediaType, Annotation[] annotations) {
+        this(entity, new Variant(mediaType, (Locale) null, null), annotations);
+    }
+
+    private Entity(final T entity, final Variant variant, Annotation[] annotations) {
         this.entity = entity;
         this.variant = variant;
+        this.annotations = annotations;
     }
 
     /**
@@ -228,5 +265,15 @@ public final class Entity<T> {
      */
     public T getEntity() {
         return entity;
+    }
+
+    /**
+     * Get the entity annotations.
+     *
+     * @return entity annotations if set, an empty annotation array if no
+     *         entity annotations have been specified.
+     */
+    public Annotation[] getAnnotations() {
+        return annotations;
     }
 }
