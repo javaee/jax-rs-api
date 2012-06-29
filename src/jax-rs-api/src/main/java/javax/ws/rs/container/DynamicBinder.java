@@ -57,7 +57,6 @@ import javax.ws.rs.ext.WriterInterceptor;
  * This provider types is supported only as part of the Server API.
  * </p>
  *
- * @param <T> Filter or interceptor type provided by the dynamic binder.
  * @author Santiago Pericas-Geertsen
  * @author Bill Burke
  * @author Marek Potociar
@@ -66,7 +65,7 @@ import javax.ws.rs.ext.WriterInterceptor;
  */
 // TODO should the binding priority defined here or on the returned filter?
 // TODO should we allow BindingPriority to be set on the method (a class implementing more filter interfaces)?
-public interface DynamicBinder<T> {
+public interface DynamicBinder {
 
     /**
      * Get the filter or interceptor instances or classes that should be bound to the
@@ -106,8 +105,8 @@ public interface DynamicBinder<T> {
      * </p>
      *
      * @param resourceInfo resource class and method information.
-     * @return filter or interceptor instances that should be dynamically bound
+     * @return filter or interceptor instances or classes that should be dynamically bound
      *         to the (sub)resource method or {@code null} otherwise.
      */
-    public Iterable<T> getBoundProvider(ResourceInfo resourceInfo);
+    public Iterable<?> getBoundProvider(ResourceInfo resourceInfo);
 }

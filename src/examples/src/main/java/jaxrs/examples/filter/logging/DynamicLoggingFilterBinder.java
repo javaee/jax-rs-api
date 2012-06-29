@@ -39,6 +39,8 @@
  */
 package jaxrs.examples.filter.logging;
 
+import java.util.Collections;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.container.DynamicBinder;
 import javax.ws.rs.container.PostMatching;
@@ -55,13 +57,13 @@ import javax.ws.rs.ext.Provider;
  * @author Marek Potociar
  */
 @Provider
-public class DynamicLoggingFilterBinder implements DynamicBinder<LoggingFilter> {
+public class DynamicLoggingFilterBinder implements DynamicBinder {
 
     @Override
-    public LoggingFilter getBoundProvider(ResourceInfo resourceInfo) {
+    public Iterable<?> getBoundProvider(ResourceInfo resourceInfo) {
         if (MyResourceClass.class.isAssignableFrom(resourceInfo.getResourceClass())
                 && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
-            return new LoggingFilter();
+            return Collections.singleton(new LoggingFilter());
         }
 
         return null;
