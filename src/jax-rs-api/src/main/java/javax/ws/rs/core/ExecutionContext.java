@@ -48,14 +48,21 @@ import java.util.concurrent.TimeUnit;
  * The injected execution context instance is bound to the currently processed
  * request and can be used to
  * <ul>
- *   <li>suspend the request processing (with a defined timeout)</li>
- *   <li>set a default time-out response</li>
- *   <li>resume the request processing suspended either using this execution
- *       context instance or via {@code @Suspend} annotation</li>
- *   <li>cancel the suspended request</li>
+ * <li>suspend the request processing (with a defined timeout)</li>
+ * <li>set a default time-out response</li>
+ * <li>resume the request processing suspended either using this execution
+ * context instance or via {@code @Suspend} annotation</li>
+ * <li>cancel the suspended request</li>
  * </ul>
  * For an example usage of {@code ExecutionContext} kindly consult the
  * {@link javax.ws.rs.Suspend &#64;Suspend} annotation API documentation.
+ * </p>
+ * <p>
+ * Because injection occurs at object creation time, use of this annotation
+ * on resource class fields and bean properties is only supported for the
+ * default per-request resource class lifecycle. Resource classes using
+ * other lifecycles should only use this annotation on resource method
+ * parameters.
  * </p>
  *
  * @author Marek Potociar
@@ -76,8 +83,7 @@ public interface ExecutionContext {
      *
      * @param response data to be sent back in response to the suspended request.
      * @throws IllegalStateException in case the request has not been
-     *     {@link #isSuspended() suspended}.
-     *
+     *                               {@link #isSuspended() suspended}.
      * @see #resume(java.lang.Throwable)
      */
     public void resume(Object response) throws IllegalStateException;
@@ -88,13 +94,13 @@ public interface ExecutionContext {
      *
      * For the provided throwable same rules apply as for an exception thrown
      * by a {@link javax.ws.rs.HttpMethod JAX-RS resource method}.
-     * The processing of the throwable by JAX-RS framework follows the same path as
-     * it would for any exception thrown by a JAX-RS resource method.
+     * The processing of the throwable by JAX-RS framework follows the same path
+     * as it would for any exception thrown by a JAX-RS resource method.
      *
-     * @param response an exception to be raised in response to the suspended request.
+     * @param response an exception to be raised in response to the suspended
+     *                 request.
      * @throws IllegalStateException in case the request has not been
-     *     {@link #isSuspended() suspended}.
-     *
+     *                               {@link #isSuspended() suspended}.
      * @see #resume(java.lang.Object)
      */
     public void resume(Throwable response) throws IllegalStateException;
@@ -121,13 +127,13 @@ public interface ExecutionContext {
      * </p>
      *
      * @throws IllegalStateException in case the request has already been
-     *     {@link #isSuspended() suspended}, {@link #isDone() resumed} or has
-     *     been {@link #isCancelled() canceled} previously.
-     *
+     *                               {@link #isSuspended() suspended}, {@link #isDone()
+     *                               resumed} or has been {@link #isCancelled() canceled}
+     *                               previously.
      * @see #suspend(long)
      * @see #suspend(long, java.util.concurrent.TimeUnit)
      * @see #setSuspendTimeout(long, TimeUnit)
-     * @see #setResponse(java.lang.Object)
+     * @see #setFallbackResponse
      */
     public void suspend() throws IllegalStateException;
 
@@ -154,10 +160,10 @@ public interface ExecutionContext {
      * processing will be resumed once the specified timeout threshold is reached
      * provided the request processing was not explicitly resumed before the
      * suspend operation has timed-out. A timed-out request processing will be
-     * resumed using response returned by {@link #getResponse()} method. Should
-     * the {@code getResponse()} return {@code null},
+     * resumed using response returned by {@link #getFallbackResponse} method. Should
+     * the {@code getFallbackResponse()} return {@code null},
      * {@link javax.ws.rs.WebApplicationException} is raised with a HTTP&nbsp;503
-     * error status (Service unavailable). Use {@link #setResponse(java.lang.Object)}
+     * error status (Service unavailable). Use {@link #setFallbackResponse}
      * method to customize the default timeout response.
      * </p>
      * <p>
@@ -167,15 +173,14 @@ public interface ExecutionContext {
      * </p>
      *
      * @param millis suspend timeout value in milliseconds. Value lower
-     *     or equal to 0 causes the context to suspend indefinitely.
+     *               or equal to 0 causes the context to suspend indefinitely.
      * @throws IllegalStateException in case the request has already been
-     *     {@link #isSuspended() suspended} or has been {@link #isCancelled() canceled}
-     *     previously.
-     *
+     *                               {@link #isSuspended() suspended} or has been
+     *                               {@link #isCancelled() canceled} previously.
      * @see #suspend()
      * @see #suspend(long, java.util.concurrent.TimeUnit)
      * @see #setSuspendTimeout(long, TimeUnit)
-     * @see #setResponse(java.lang.Object)
+     * @see #setFallbackResponse
      */
     public void suspend(long millis) throws IllegalStateException;
 
@@ -202,10 +207,10 @@ public interface ExecutionContext {
      * processing will be resumed once the specified timeout threshold is reached
      * provided the request processing was not explicitly resumed before the
      * suspend operation has timed-out. A timed-out request processing will be
-     * resumed using response returned by {@link #getResponse()} method. Should
-     * the {@code getResponse()} return {@code null},
+     * resumed using response returned by {@link #getFallbackResponse} method. Should
+     * the {@code getFallbackResponse()} return {@code null},
      * {@link javax.ws.rs.WebApplicationException} is raised with a HTTP&nbsp;503
-     * error status (Service unavailable). Use {@link #setResponse(java.lang.Object)}
+     * error status (Service unavailable). Use {@link #setFallbackResponse}
      * method to customize the default timeout response.
      * </p>
      * <p>
@@ -215,15 +220,14 @@ public interface ExecutionContext {
      * </p>
      *
      * @param time suspend timeout value in the give time {@code unit}. Value lower
-     *     or equal to 0 causes the context to suspend indefinitely.
+     *             or equal to 0 causes the context to suspend indefinitely.
      * @param unit suspend timeout value time unit
      * @throws IllegalStateException in case the request has already been
-     *     {@link #isSuspended() suspended} or has been {@link #isCancelled() canceled}
-     *     previously.
-     *
+     *                               {@link #isSuspended() suspended} or has been
+     *                               {@link #isCancelled() canceled} previously.
      * @see #suspend()
      * @see #setSuspendTimeout(long, TimeUnit)
-     * @see #setResponse(java.lang.Object)
+     * @see #setFallbackResponse
      */
     public void suspend(long time, TimeUnit unit) throws IllegalStateException;
 
@@ -236,7 +240,7 @@ public interface ExecutionContext {
      * The execution context must be suspended for this method to succeed.
      *
      * @param time suspend timeout value in the give time {@code unit}. Value lower
-     *     or equal to 0 causes the context to suspend indefinitely.
+     *             or equal to 0 causes the context to suspend indefinitely.
      * @param unit suspend timeout value time unit.
      * @throws IllegalStateException in case the context has not been suspended.
      */
@@ -263,7 +267,6 @@ public interface ExecutionContext {
      * not {finished processing yet.
      *
      * @return {@code true} if this task was canceled before it completed.
-     *
      * @see #isCancelled()
      * @see #isDone()
      */
@@ -274,7 +277,6 @@ public interface ExecutionContext {
      * completed normally.
      *
      * @return {@code true} if this task was canceled before it completed.
-     *
      * @see #isSuspended()
      * @see #isDone()
      */
@@ -288,14 +290,14 @@ public interface ExecutionContext {
      * {@code true}.
      *
      * @return {@code true} if this execution context has finished processing.
-     *
      * @see #isSuspended()
      * @see #isCancelled()
      */
     boolean isDone();
 
     /**
-     * Set the default response to be used in case the suspended request times out.
+     * Set the default fall-back response to be used in case the suspended request
+     * execution fails or times out.
      * <p/>
      * The provided response data can be of any Java type that can be
      * returned from a {@link javax.ws.rs.HttpMethod JAX-RS resource method}.
@@ -304,19 +306,20 @@ public interface ExecutionContext {
      * resource method.
      *
      * @param response data to be sent back to the client in case the suspended
-     *     request times out.
-     * @see #getResponse()
+     *                 request fails or times out.
+     * @see #getFallbackResponse
      */
-    public void setResponse(Object response);
+    public void setFallbackResponse(Object response);
 
     /**
-     * Returns default response to be send back to the client in case the suspended
-     * request times out. The method may return {@code null} if no default response
-     * was set in the execution context.
+     * Returns default fall-back response to be send back to the client in case the
+     * suspended request execution fails times out. The method may return {@code null}
+     * if no default response was set in the execution context.
      *
-     * @return default response to be sent back to the client in case the suspended
-     *     request times out or {@code null} if no default response was set.
-     * @see #setResponse(java.lang.Object)
+     * @return default fall-back response to be sent back to the client in case the
+     *         suspended request execution fails times out or {@code null} if no default
+     *         response was set.
+     * @see #setFallbackResponse
      */
-    public Response getResponse();
+    public Response getFallbackResponse();
 }
