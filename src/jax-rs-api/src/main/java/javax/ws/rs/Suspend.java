@@ -111,10 +111,10 @@ import java.util.concurrent.TimeUnit;
  * not been explicitly resumed before the timeout has expired, the processing
  * will be resumed once the specified timeout threshold is reached. The request
  * processing will be resumed using response data returned by the associated
- * {@link javax.ws.rs.core.ExecutionContext#getResponse()} method. Should the method
+ * {@link javax.ws.rs.core.ExecutionContext#getFallbackResponse()} method. Should the method
  * return {@code null}, a {@link WebApplicationException} is raised with a
  * HTTP 503 error status (Service unavailable). Use
- * {@link javax.ws.rs.core.ExecutionContext#setResponse(java.lang.Object)}
+ * {@link javax.ws.rs.core.ExecutionContext#setFallbackResponse(java.lang.Object)}
  * method to programmatically customize the default timeout response.
  * <p/>
  * The annotation is ignored if it is used on any method other than JAX-RS
