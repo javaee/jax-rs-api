@@ -44,9 +44,8 @@ package javax.ws.rs.client;
  * events from the invocation processing.
  *
  * @param <RESPONSE> response type. It can be either a general-purpose
- *     {@link javax.ws.rs.core.Response} or the anticipated response entity
- *     type.
- *
+ *                   {@link javax.ws.rs.core.Response} or the anticipated response entity
+ *                   type.
  * @author Marek Potociar
  * @since 2.0
  */
@@ -64,7 +63,14 @@ public interface InvocationCallback<RESPONSE> {
     /**
      * Called when the invocation has failed for any reason.
      *
+     * <p>
+     * Note that the provided {@link ClientException} may contain a cause represented by nested
+     * {@link javax.ws.rs.WebApplicationException} or one of its subclasses in case the response
+     * status code is not {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL successful}
+     * and the generic callback type is not {@link javax.ws.rs.core.Response}.
+     * </p>
+     *
      * @param error contains failure details.
      */
-    public abstract void failed(InvocationException error);
+    public abstract void failed(ClientException error);
 }

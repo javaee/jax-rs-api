@@ -37,33 +37,58 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.client;
+package javax.ws.rs;
 
-import java.io.IOException;
+import javax.ws.rs.core.Response;
 
 /**
- * An extension interface implemented by client request filters.
+ * A runtime exception indicating an {@link javax.ws.rs.core.Response.Status#INTERNAL_SERVER_ERROR
+ * internal server error}.
  *
- * Filters implementing this interface MUST be annotated with
- * {@link javax.ws.rs.ext.Provider &#64;Provider}. This type of filters is supported
- * only as part of the Client API.
- *
+ * @author Sergey Beryozkin
  * @author Marek Potociar
- * @author Santiago Pericas-Geertsen
- * @see javax.ws.rs.client.ClientResponseFilter
  * @since 2.0
  */
-public interface ClientRequestFilter {
+public class InternalServerErrorException extends ServerErrorException {
+
+    private static final long serialVersionUID = -6515710697540553309L;
 
     /**
-     * Filter method called before a request has been dispatched to a client
-     * transport layer.
-     *
-     * Filters in the filter chain are ordered according to their binding
-     * priority (see {@link javax.ws.rs.BindingPriority}).
-     *
-     * @param requestContext request context.
-     * @throws IOException if an I/O exception occurs.
+     * Construct a new internal server error exception.
      */
-    public void filter(ClientRequestContext requestContext) throws IOException;
+    public InternalServerErrorException() {
+        super(Response.Status.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Construct a new internal server error exception.
+     *
+     * @param response internal server error response.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 500}.
+     */
+    public InternalServerErrorException(Response response) throws IllegalArgumentException {
+        super(validate(response, Response.Status.INTERNAL_SERVER_ERROR));
+    }
+
+    /**
+     * Construct a new internal server error exception.
+     *
+     * @param cause the underlying cause of the exception.
+     */
+    public InternalServerErrorException(Throwable cause) {
+        super(Response.Status.INTERNAL_SERVER_ERROR, cause);
+    }
+
+    /**
+     * Construct a new internal server error exception.
+     *
+     * @param response internal server error response.
+     * @param cause the underlying cause of the exception.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 500}.
+     */
+    public InternalServerErrorException(Response response, Throwable cause) throws IllegalArgumentException {
+        super(validate(response, Response.Status.INTERNAL_SERVER_ERROR), cause);
+    }
 }

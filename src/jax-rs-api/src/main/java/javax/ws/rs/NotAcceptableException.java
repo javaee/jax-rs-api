@@ -37,33 +37,59 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.client;
+package javax.ws.rs;
 
-import java.io.IOException;
+import javax.ws.rs.core.Response;
 
 /**
- * An extension interface implemented by client request filters.
+ * A runtime exception indicating that a client request is
+ * {@link javax.ws.rs.core.Response.Status#NOT_ACCEPTABLE not acceptable}
+ * by the server.
  *
- * Filters implementing this interface MUST be annotated with
- * {@link javax.ws.rs.ext.Provider &#64;Provider}. This type of filters is supported
- * only as part of the Client API.
- *
+ * @author Sergey Beryozkin
  * @author Marek Potociar
- * @author Santiago Pericas-Geertsen
- * @see javax.ws.rs.client.ClientResponseFilter
  * @since 2.0
  */
-public interface ClientRequestFilter {
+public class NotAcceptableException extends ClientErrorException {
+
+    private static final long serialVersionUID = -1476163816796529078L;
 
     /**
-     * Filter method called before a request has been dispatched to a client
-     * transport layer.
-     *
-     * Filters in the filter chain are ordered according to their binding
-     * priority (see {@link javax.ws.rs.BindingPriority}).
-     *
-     * @param requestContext request context.
-     * @throws IOException if an I/O exception occurs.
+     * Construct a new "request not acceptable" exception.
      */
-    public void filter(ClientRequestContext requestContext) throws IOException;
+    public NotAcceptableException() {
+        super(Response.Status.NOT_ACCEPTABLE);
+    }
+
+    /**
+     * Construct a new "request not acceptable" exception.
+     *
+     * @param response error response.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 406}.
+     */
+    public NotAcceptableException(Response response) throws IllegalArgumentException {
+        super(validate(response, Response.Status.NOT_ACCEPTABLE));
+    }
+
+    /**
+     * Construct a new "request not acceptable" exception.
+     *
+     * @param cause the underlying cause of the exception.
+     */
+    public NotAcceptableException(Throwable cause) {
+        super(Response.Status.NOT_ACCEPTABLE, cause);
+    }
+
+    /**
+     * Construct a new "request not acceptable" exception.
+     *
+     * @param response error response.
+     * @param cause the underlying cause of the exception.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 406}.
+     */
+    public NotAcceptableException(Response response, Throwable cause) throws IllegalArgumentException {
+        super(validate(response, Response.Status.NOT_ACCEPTABLE), cause);
+    }
 }

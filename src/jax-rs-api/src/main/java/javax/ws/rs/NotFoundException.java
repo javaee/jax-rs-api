@@ -37,33 +37,58 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.client;
+package javax.ws.rs;
 
-import java.io.IOException;
+import javax.ws.rs.core.Response;
 
 /**
- * An extension interface implemented by client request filters.
+ * A runtime exception indicating a resource requested by a client was
+ * {@link javax.ws.rs.core.Response.Status#NOT_FOUND not found} on the server.
  *
- * Filters implementing this interface MUST be annotated with
- * {@link javax.ws.rs.ext.Provider &#64;Provider}. This type of filters is supported
- * only as part of the Client API.
- *
+ * @author Sergey Beryozkin
  * @author Marek Potociar
- * @author Santiago Pericas-Geertsen
- * @see javax.ws.rs.client.ClientResponseFilter
  * @since 2.0
  */
-public interface ClientRequestFilter {
+public class NotFoundException extends ClientErrorException {
+
+    private static final long serialVersionUID = -6820866117511628388L;
 
     /**
-     * Filter method called before a request has been dispatched to a client
-     * transport layer.
-     *
-     * Filters in the filter chain are ordered according to their binding
-     * priority (see {@link javax.ws.rs.BindingPriority}).
-     *
-     * @param requestContext request context.
-     * @throws IOException if an I/O exception occurs.
+     * Construct a new "not found" exception.
      */
-    public void filter(ClientRequestContext requestContext) throws IOException;
+    public NotFoundException() {
+        super(Response.Status.NOT_FOUND);
+    }
+
+    /**
+     * Construct a new "not found" exception.
+     *
+     * @param response error response.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 404}.
+     */
+    public NotFoundException(Response response) throws IllegalArgumentException {
+        super(validate(response, Response.Status.NOT_FOUND));
+    }
+
+    /**
+     * Construct a new "not found" exception.
+     *
+     * @param cause the underlying cause of the exception.
+     */
+    public NotFoundException(Throwable cause) {
+        super(Response.Status.NOT_FOUND, cause);
+    }
+
+    /**
+     * Construct a new "not found" exception.
+     *
+     * @param response error response.
+     * @param cause the underlying cause of the exception.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 404}.
+     */
+    public NotFoundException(Response response, Throwable cause) throws IllegalArgumentException {
+        super(validate(response, Response.Status.NOT_FOUND), cause);
+    }
 }

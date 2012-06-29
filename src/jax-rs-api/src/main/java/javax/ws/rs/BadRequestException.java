@@ -37,33 +37,58 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.client;
+package javax.ws.rs;
 
-import java.io.IOException;
+import javax.ws.rs.core.Response;
 
 /**
- * An extension interface implemented by client request filters.
+ * A runtime exception indicating a {@link Response.Status#BAD_REQUEST
+ * bad client request}.
  *
- * Filters implementing this interface MUST be annotated with
- * {@link javax.ws.rs.ext.Provider &#64;Provider}. This type of filters is supported
- * only as part of the Client API.
- *
+ * @author Sergey Beryozkin
  * @author Marek Potociar
- * @author Santiago Pericas-Geertsen
- * @see javax.ws.rs.client.ClientResponseFilter
  * @since 2.0
  */
-public interface ClientRequestFilter {
+public class BadRequestException extends ClientErrorException {
+
+    private static final long serialVersionUID = 7264647684649480265L;
 
     /**
-     * Filter method called before a request has been dispatched to a client
-     * transport layer.
-     *
-     * Filters in the filter chain are ordered according to their binding
-     * priority (see {@link javax.ws.rs.BindingPriority}).
-     *
-     * @param requestContext request context.
-     * @throws IOException if an I/O exception occurs.
+     * Construct a new bad client request exception.
      */
-    public void filter(ClientRequestContext requestContext) throws IOException;
+    public BadRequestException() {
+        super(Response.Status.BAD_REQUEST);
+    }
+
+    /**
+     * Construct a new bad client request exception.
+     *
+     * @param response error response.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 400}.
+     */
+    public BadRequestException(Response response) throws IllegalArgumentException {
+        super(validate(response, Response.Status.BAD_REQUEST));
+    }
+
+    /**
+     * Construct a new bad client request exception.
+     *
+     * @param cause the underlying cause of the exception.
+     */
+    public BadRequestException(Throwable cause) {
+        super(Response.Status.BAD_REQUEST, cause);
+    }
+
+    /**
+     * Construct a new bad client request exception.
+     *
+     * @param response error response.
+     * @param cause the underlying cause of the exception.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 400}.
+     */
+    public BadRequestException(Response response, Throwable cause) throws IllegalArgumentException {
+        super(validate(response, Response.Status.BAD_REQUEST), cause);
+    }
 }

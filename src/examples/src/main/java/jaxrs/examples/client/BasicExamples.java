@@ -43,12 +43,12 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientException;
 import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.Feature;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
-import javax.ws.rs.client.InvocationException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Form;
@@ -207,7 +207,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(InvocationException error) {
+            public void failed(ClientException error) {
                 // process error
             }
         });
@@ -221,7 +221,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(InvocationException error) {
+            public void failed(ClientException error) {
                 // process error
             }
         });
@@ -242,7 +242,7 @@ public class BasicExamples {
                     }
 
                     @Override
-                    public void failed(InvocationException error) {
+                    public void failed(ClientException error) {
                         // process error
                     }
                 });
@@ -258,7 +258,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(InvocationException error) {
+            public void failed(ClientException error) {
                 // process error
             }
         });

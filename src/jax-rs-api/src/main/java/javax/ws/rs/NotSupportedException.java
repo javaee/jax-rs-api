@@ -37,33 +37,58 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.client;
+package javax.ws.rs;
 
-import java.io.IOException;
+import javax.ws.rs.core.Response;
 
 /**
- * An extension interface implemented by client request filters.
+ * A runtime exception indicating that the client request entity media type is
+ * {@link javax.ws.rs.core.Response.Status#UNSUPPORTED_MEDIA_TYPE not supported}.
  *
- * Filters implementing this interface MUST be annotated with
- * {@link javax.ws.rs.ext.Provider &#64;Provider}. This type of filters is supported
- * only as part of the Client API.
- *
+ * @author Sergey Beryozkin
  * @author Marek Potociar
- * @author Santiago Pericas-Geertsen
- * @see javax.ws.rs.client.ClientResponseFilter
  * @since 2.0
  */
-public interface ClientRequestFilter {
+public class NotSupportedException extends ClientErrorException {
+
+    private static final long serialVersionUID = -8286622745725405656L;
 
     /**
-     * Filter method called before a request has been dispatched to a client
-     * transport layer.
-     *
-     * Filters in the filter chain are ordered according to their binding
-     * priority (see {@link javax.ws.rs.BindingPriority}).
-     *
-     * @param requestContext request context.
-     * @throws IOException if an I/O exception occurs.
+     * Construct a new unsupported media type exception.
      */
-    public void filter(ClientRequestContext requestContext) throws IOException;
+    public NotSupportedException() {
+        super(Response.Status.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    /**
+     * Construct a new unsupported media type exception.
+     *
+     * @param response error response.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 415}.
+     */
+    public NotSupportedException(Response response) throws IllegalArgumentException {
+        super(validate(response, Response.Status.UNSUPPORTED_MEDIA_TYPE));
+    }
+
+    /**
+     * Construct a new unsupported media type exception.
+     *
+     * @param cause the underlying cause of the exception.
+     */
+    public NotSupportedException(Throwable cause) {
+        super(Response.Status.UNSUPPORTED_MEDIA_TYPE, cause);
+    }
+
+    /**
+     * Construct a new unsupported media type exception.
+     *
+     * @param response error response.
+     * @param cause the underlying cause of the exception.
+     * @throws IllegalArgumentException in case the status code set in the response
+     *                                  is not HTTP {@code 415}.
+     */
+    public NotSupportedException(Response response, Throwable cause) throws IllegalArgumentException {
+        super(validate(response, Response.Status.UNSUPPORTED_MEDIA_TYPE), cause);
+    }
 }
