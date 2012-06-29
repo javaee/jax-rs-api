@@ -167,8 +167,48 @@ public interface ClientRequestContext {
      * Get the mutable request headers multivalued map.
      *
      * @return mutable multivalued map of request headers.
+     * @see #getStringHeaders()
+     * @see #getHeaderString(String)
      */
     public MultivaluedMap<String, Object> getHeaders();
+
+    /**
+     * Get headers associated with the message as an immutable multivalued map
+     * of string values.
+     *
+     * <p>
+     * The method converts the non-string header values to strings using a
+     * {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available via
+     * {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)} for the
+     * class of the value or using the values {@code toString} method if a header delegate is
+     * not available.
+     * </p>
+     *
+     * @return response headers as an immutable multivalued map of string values.
+     * @see #getHeaders()
+     * @see #getHeaderString(String)
+     */
+    public abstract MultivaluedMap<String, String> getStringHeaders();
+
+    /**
+     * Get a message header as a single string value.
+     *
+     * Each single header value is converted to String using a
+     * {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available
+     * via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
+     * for the header value class or using its {@code toString} method  if a header
+     * delegate is not available.
+     *
+     * @param name the message header.
+     * @return the message header value. If the message header is not present then
+     *         {@code null} is returned. If the message header is present but has no
+     *         value then the empty string is returned. If the message header is present
+     *         more than once then the values of joined together and separated by a ','
+     *         character.
+     * @see #getHeaders()
+     * @see #getStringHeaders()
+     */
+    public String getHeaderString(String name);
 
     /**
      * Get message date.
