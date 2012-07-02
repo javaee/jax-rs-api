@@ -76,6 +76,9 @@ public @interface Uri {
      *    &#64;Uri("http://mail.acme.com/accounts/{name}")
      *    WebTarget userEmailAccount;
      *
+     *    // An external, template-based resource target
+     *    &#64;Uri("http://{audit-host}:{audit-port}/auditlogs/")
+     *    WebTarget auditLogs;
      *    ...
      * }
      * </pre>
