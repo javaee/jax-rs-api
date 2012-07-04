@@ -51,6 +51,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Suspend;
+import javax.ws.rs.core.AsynchronousResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.ExecutionContext;
 
@@ -78,7 +79,7 @@ public class LongRunningAsyncOperationResource {
     @GET
     @Suspend(timeOut = 15, timeUnit = SECONDS)
     @Path("suspendViaAnnotationFieldInjectedCtx")
-    public void suspendViaAnnotationExample() {
+    public void suspendViaAnnotationExample(final AsynchronousResponse ar) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -88,7 +89,7 @@ public class LongRunningAsyncOperationResource {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
                 }
-                ctx.resume("Hello async world!");
+                ar.resume("Hello async world!");
             }
         });
 
@@ -98,7 +99,7 @@ public class LongRunningAsyncOperationResource {
     @GET
     @Suspend(timeOut = 15, timeUnit = SECONDS)
     @Path("suspendViaAnnotationMethodInjectedCtx")
-    public void suspendViaAnnotationExample2(@Context final ExecutionContext ctx2) {
+    public void suspendViaAnnotationExample2(@Context final AsynchronousResponse ar) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -106,9 +107,10 @@ public class LongRunningAsyncOperationResource {
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
+                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName())
+                            .log(Level.SEVERE, "Response processing interrupted", ex);
                 }
-                ctx2.resume("Hello async world!");
+                ar.resume("Hello async world!");
             }
         });
 
@@ -122,7 +124,7 @@ public class LongRunningAsyncOperationResource {
             return "Simple result for " + query; // process simple queries synchronously
         }
 
-        ctx.suspend(); // programmatic suspend
+        final AsynchronousResponse ar = ctx.suspend(); // programmatic suspend
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -130,9 +132,10 @@ public class LongRunningAsyncOperationResource {
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
+                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName())
+                            .log(Level.SEVERE, "Response processing interrupted", ex);
                 }
-                ctx.resume("Complex result for " + query);
+                ar.resume("Complex result for " + query);
             }
         });
 
@@ -146,7 +149,11 @@ public class LongRunningAsyncOperationResource {
     @GET
     @Path("timeoutOverriden")
     @Suspend(timeOut = 15000) // default time unit is milliseconds
-    public void timeoutValueConflict_OverridingExample(@QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit) {
+    public void timeoutValueConflict_OverridingExample(
+            final AsynchronousResponse ar, @QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit) {
+        if (timeOut != null && timeUnit != null) {
+            ar.setSuspendTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overridden
+        }
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -154,21 +161,19 @@ public class LongRunningAsyncOperationResource {
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
+                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName())
+                            .log(Level.SEVERE, "Response processing interrupted", ex);
                 }
-                ctx.resume("Hello async world!");
+                ar.resume("Hello async world!");
             }
         });
-        if (timeOut != null && timeUnit != null) {
-            ctx.setSuspendTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overriden
-        } else {
-            // suspend using annotation values
-        }
     }
 
     @GET
     @Path("suspendHandleUsage")
     public void suspendHandleUsageExample() {
+        final AsynchronousResponse ar = ctx.suspend();
+
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -176,21 +181,21 @@ public class LongRunningAsyncOperationResource {
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
+                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName())
+                            .log(Level.SEVERE, "Response processing interrupted", ex);
                 }
-                ctx.resume("Hello async world!");
+                ar.resume("Hello async world!");
             }
         });
-
-        ctx.suspend();
 
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
             public void run() {
-                while (!ctx.isDone()) {
+                while (!ar.isDone()) {
                 }
-                Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.INFO, "Context resumed with a response!");
+                Logger.getLogger(LongRunningAsyncOperationResource.class.getName())
+                        .log(Level.INFO, "Context resumed with a response!");
             }
         });
     }

@@ -42,7 +42,8 @@ package javax.ws.rs;
 import javax.ws.rs.core.Response;
 
 /**
- * A runtime exception indicating a {@link Response.Status#BAD_REQUEST bad client request}.
+ * A runtime exception indicating a {@link javax.ws.rs.core.Response.Status#BAD_REQUEST
+ * bad client request}.
  *
  * @author Sergey Beryozkin
  * @author Marek Potociar

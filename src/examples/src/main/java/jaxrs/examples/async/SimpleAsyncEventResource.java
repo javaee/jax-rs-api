@@ -48,8 +48,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Suspend;
+import javax.ws.rs.core.AsynchronousResponse;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.ExecutionContext;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -59,20 +59,17 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.TEXT_PLAIN)
 @Consumes(MediaType.TEXT_PLAIN)
 public class SimpleAsyncEventResource {
-    private static final BlockingQueue<ExecutionContext> suspended = new ArrayBlockingQueue<ExecutionContext>(5);
-
-    @Context
-    ExecutionContext ctx;
+    private static final BlockingQueue<AsynchronousResponse> SUSPENDED = new ArrayBlockingQueue<AsynchronousResponse>(5);
 
     @GET
     @Suspend
-    public void pickUpMessage() throws InterruptedException {
-        suspended.put(ctx);
+    public void pickUpMessage(AsynchronousResponse asynchronousResponse) throws InterruptedException {
+        SUSPENDED.put(asynchronousResponse);
     }
 
     @POST
     public String postMessage(final String message) throws InterruptedException {
-        suspended.take().resume(message);
+        SUSPENDED.take().resume(message);
         return "Message sent";
     }
 }

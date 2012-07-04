@@ -60,7 +60,7 @@ public class RedirectionException extends WebApplicationException {
      * @param status   redirection status. Must be a {@code 3xx} redirection code.
      * @param location redirection URI placed into the response {@code Location} header.
      * @throws IllegalArgumentException in case the status code is {@code null} or is not from
-     *                                  {@link Response.Status.Family#REDIRECTION} status code
+     *                                  {@link javax.ws.rs.core.Response.Status.Family#REDIRECTION} status code
      *                                  family.
      */
     public RedirectionException(Response.Status status, URI location) throws IllegalArgumentException {
@@ -73,7 +73,7 @@ public class RedirectionException extends WebApplicationException {
      * @param status   redirection status. Must be a {@code 3xx} redirection code.
      * @param location redirection URI placed into the response {@code Location} header.
      * @throws IllegalArgumentException in case the status code is not a valid HTTP status code or
-     *                                  if it is not from the {@link Response.Status.Family#REDIRECTION}
+     *                                  if it is not from the {@link javax.ws.rs.core.Response.Status.Family#REDIRECTION}
      *                                  status code family.
      */
     public RedirectionException(int status, URI location) throws IllegalArgumentException {
@@ -86,7 +86,7 @@ public class RedirectionException extends WebApplicationException {
      * @param response redirection response. Must have a status code set to a {@code 3xx}
      *                 redirection code.
      * @throws IllegalArgumentException in case the response status code is not from the
-     *                                  {@link Response.Status.Family#REDIRECTION} status code family.
+     *                                  {@link javax.ws.rs.core.Response.Status.Family#REDIRECTION} status code family.
      */
     public RedirectionException(Response response) throws IllegalArgumentException {
         super(null, validate(response, Response.Status.Family.REDIRECTION));

@@ -51,8 +51,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Suspend;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.ExecutionContext;
+import javax.ws.rs.core.AsynchronousResponse;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -64,21 +63,18 @@ import javax.ws.rs.core.MediaType;
 public class AsyncEventResource {
     private static final BlockingQueue<String> messages = new ArrayBlockingQueue<String>(5);
 
-    @Context
-    ExecutionContext ctx;
-
     @GET
     @Suspend
-    public void pickUpMessage() {
+    public void pickUpMessage(final AsynchronousResponse asynchronousResponse) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    ctx.resume(messages.take());
+                    asynchronousResponse.resume(messages.take());
                 } catch (InterruptedException ex) {
                     Logger.getLogger(AsyncEventResource.class.getName()).log(Level.SEVERE, null, ex);
-                    ctx.cancel(); // close the open connection
+                    asynchronousResponse.cancel(); // close the open connection
                 }
             }
         });
@@ -86,17 +82,17 @@ public class AsyncEventResource {
 
     @POST
     @Suspend
-    public void postMessage(final String message) {
+    public void postMessage(final String message, final AsynchronousResponse asynchronousResponse) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
             public void run() {
                 try {
                     messages.put(message);
-                    ctx.resume("Message stored.");
+                    asynchronousResponse.resume("Message stored.");
                 } catch (InterruptedException ex) {
                     Logger.getLogger(AsyncEventResource.class.getName()).log(Level.SEVERE, null, ex);
-                    ctx.resume(ex); // proagate info about the problem
+                    asynchronousResponse.resume(ex); // proagate info about the problem
                 }
             }
         });
