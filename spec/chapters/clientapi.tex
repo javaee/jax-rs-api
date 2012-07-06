@@ -151,9 +151,25 @@ String newId = i.invoke(String.class);
 
 In this example, \code{LoggingFilter} is inherited by each instance of \WebTarget\ created from \code{client}; the providers \code{CachingFilter} and \code{GzipInterceptor} are defined on a \WebTarget\ and an \Invocation, respectively.
 
+\section{@Uri Annotation}
 
+Instances of \WebTarget\ can be injected in any JAXRS-managed class using the \code{@Uri} annotation. Consider the following example:
+     
+\begin{listing}{1}    
+@Path("users/{name}")
+public class MyResource {
+    @Uri("users/{name}/orders")
+    WebTarget userOrders;
 
+    @Uri("http://mail.acme.com/accounts/{name}")
+    WebTarget userEmailAccount;
 
+    ...
+}
+\end{listing}
+
+A relative URI (or path) is resolved using the application's path as defined by the \code{@ApplicationPath} annotation. Template parameter values 
+(e.g., \code{\{name\}} in the example above) are resolved in the context of the enclosing resource class and relative to the current request. For more information, see Javadoc for the \code{@Uri} annotation.
 
 
 
