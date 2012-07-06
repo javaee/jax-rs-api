@@ -375,7 +375,7 @@ A request is matched to the corresponding resource method or sub-resource method
 Matching of requests to resource methods proceeds in three stages as follows:
 
 \begin{enumerate}
-\item Identify the root resource class:
+\item Identify a set of candidate root resource classes matching the request:
 
 \begin{description}
 \item[Input]  $U=\mbox{request URI path},C=\{\mbox{root resource classes}\}$
@@ -387,8 +387,10 @@ Matching of requests to resource methods proceeds in three stages as follows:
 
 \item For each class $Z$ in $C$ add a regular expression (computed using the function $R(A)$ described in Section \ref{template_to_regex}) to $E$ as follows:
 \begin{itemize}
-\item Add $R(T_Z)$ where $T_Z$ is the URI path template specified for the class $Z$.
+\item\label{build_E} Add $R(T_Z)$ where $T_Z$ is the URI path template specified for the class $Z$.
 \end{itemize}
+Note that two or more classes in $C$ may add the same regular expression to $E$ if they are
+annotated with the same URI path template (modulo variable names).
 
 \item Filter $E$ by matching each member against $U$ as follows:
 \begin{itemize}
@@ -400,29 +402,28 @@ Matching of requests to resource methods proceeds in three stages as follows:
 
 \item Sort $E$ using the number of literal characters\footnote{Here, literal characters means those not resulting from template variable substitution.} in each member as the primary key (descending order), the number of capturing groups as a secondary key (descending order) and the number of capturing groups with non-default regular expressions (i.e. not \lq([\^{ }/]+?)\rq) as the tertiary key (descending order).
 
-\item Let $C'$ to be the ordered set of root resource classes that correspond to the elements in $E$. By definition, $C'$ must be a non-empty subset of $C$ at this point.
+\item Set $R_{\mbox{match}}$ to be the first member of $E$ and set $U$ to be the value of the
+final capturing group of $R_{\mbox{match}}$ when matched against $U$. Let $C'$ be the set
+of classes $Z$ such that $R(T_Z)=R_{\mbox{match}}$. By definition, all root resource
+classes in $C'$ must be annotated with the same URI path template modulo variable names.
 
 \end{enumerate}
 
-\item \label{find_object} Obtain a candidate object and a subset candidate methods for the request:
+\item \label{find_object} Obtain a set of candidate resource methods for the request:
 
 \begin{description}
 \item[Input] $U=\mbox{final capturing group not yet matched}, C'=\{\mbox{root resouce classes matched so far}\}$
-\item[Output] $O=\mbox{instance of resource class matched}, M=\mbox{candidate resource methods of $O$}$
+\item[Output] $M=\{\mbox{candidate resource methods}$\}
 \end{description}
 
 \begin{enumerate}
-\item \label{loop_root} Let $Z'$ be the next class in the ordered set $C'$. If all classes in $C'$ have been processed, the algorithm terminates by generating a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. 
-
-\item Let $O$ be an instance of class $Z'$.
-
 \item \label{check_null} If $U$ is null or \lq/\rq, set
-$$M = \{\mbox{resource methods of } O \mbox{ (excluding sub-resource methods)}\}$$
+$$M = \{\mbox{resource methods of all classes in $C'$ (excluding sub-resource methods)}\}$$
 and go to step \ref{find_method} if $M \neq \{\}$ 
 
 \item Set $E=\{\}$.
 
-\item For class $Z'$ add regular expressions to $E$ for each sub-resource method and locator as follows:
+\item For class $Z'$ in $C'$ add regular expressions to $E$ for each sub-resource method and locator as follows:
 \begin{enumerate}
 \item \label{t_method_items} For each sub-resource method $D$, add $R(T_D)$ where $T_D$ is the URI path template of the sub-resource method.
 \item For each sub-resource locator $L$, add $R(T_L)$ where $T_L$ is the URI path template of the sub-resource locator.
@@ -434,17 +435,17 @@ and go to step \ref{find_method} if $M \neq \{\}$
 \item Remove members derived from $T_D$ (those added in step \ref{t_method_items}) for which the final capturing group value is neither empty nor \lq/\rq.
 \end{itemize}
 
-\item If $E$ is empty and there are {\em more} root resource classes to process in $C'$, go to step \ref{loop_root}. If $E$ is empty and there are {\em no more} classes in $C'$, then no matching resource can be found and the algorithm terminates by generating a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. 
+\item If $E$ is empty, then no matching resource can be found and the algorithm terminates by generating a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. 
 
 \item Sort $E$ using the number of literal characters in each member as the primary key (descending order), the number of capturing groups as a secondary key (descending order), the number of capturing groups with non-default regular expressions (i.e. not \lq([\^{ }/]+?)\rq) as the tertiary key (descending order), and the source of each member as quaternary key sorting those derived from sub-resource methods ahead of those derived from sub-resource locators.
 
 \item Set $R_{\mbox{match}}$ to be the first member of $E$
 
 \item Set $M$ as follows,
-$$M = \{\mbox{subresource methods of }O \mbox{ matching } R_{\mbox{match}} \mbox{ (excluding sub-resource locators)}\}$$
+$$M = \{\mbox{subresource methods of all classes in $C'$ (excluding sub-resource locators)}\}$$
 and go to step \ref{find_method} if $M \neq \{\}$.
 
-\item Let $L$ be a sub-resource locator such that $R_{\mbox{match}} = R(T_L)$. Implementations SHOULD report an error if there is more than one sub-resource locator that satisfies this condition. Set $U$ to be the value of the final capturing group of $R(T_L)$ when matched against $U$, invoke the sub-resource locator $L$ of $O$ and set $O$ to the value returned from that method.
+\item Let $L$ be a sub-resource locator such that $R_{\mbox{match}} = R(T_L)$. Implementations SHOULD report an error if there is more than one sub-resource locator that satisfies this condition. Set $U$ to be the value of the final capturing group of $R(T_L)$ when matched against $U$, and set $C'$ to be the singleton set containing only the class that defines $L$.
 
 \item Go to step \ref{check_null}.
 
@@ -453,7 +454,7 @@ and go to step \ref{find_method} if $M \neq \{\}$.
 \item \label{find_method} Identify the method that will handle the request:
 
 \begin{description}
-\item[Input] $O=\mbox{instance of resource class matched}, M=\mbox{candidate resource methods of $O$}$
+\item[Input] $M=\mbox{candidate resource methods}$
 \item[Output] $O=\mbox{instance of resource class matched}, D=\mbox{resource method matched from $M$}$
 \end{description}
 
@@ -461,14 +462,14 @@ and go to step \ref{find_method} if $M \neq \{\}$.
 \begin{enumerate}
 \item \label{filter_methods} Filter $M$ by removing members that do not meet the following criteria:
 \begin{itemize}
-\item The request method is supported. If no methods support the request method an implementation MUST generate a \WebAppExc\ with a method not allowed response (HTTP 405 status) and no entity, unless there are more classes to process in step \ref{loop_root}. If there are more root resource classes to process, go to step \ref{loop_root}. Note the additional support for \code{HEAD} and \code{OPTIONS} described in Section \ref{head_and_options}.
-\item The media type of the request entity body (if any) is a supported input data format (see Section \ref{declaring_method_capabilities}). If no methods support the media type of the request entity body an implementation MUST generate a \WebAppExc\ with an unsupported media type response (HTTP 415 status) and no entity, unless there are more classes to process in step \ref{loop_root}. If there are more root resource classes to process, go to step \ref{loop_root}.
-\item At least one of the acceptable response entity body media types is a supported output data format (see Section \ref{declaring_method_capabilities}). If no methods support one of the acceptable response entity body media types an implementation MUST generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity, unless there are more classes to process in step \ref{loop_root}. If there are more root resource classes to process, go to step \ref{loop_root}.
+\item The request method is supported. If no methods support the request method an implementation MUST generate a \WebAppExc\ with a method not allowed response (HTTP 405 status) and no entity. Note the additional support for \code{HEAD} and \code{OPTIONS} described in Section \ref{head_and_options}.
+\item The media type of the request entity body (if any) is a supported input data format (see Section \ref{declaring_method_capabilities}). If no methods support the media type of the request entity body an implementation MUST generate a \WebAppExc\ with an unsupported media type response (HTTP 415 status) and no entity.
+\item At least one of the acceptable response entity body media types is a supported output data format (see Section \ref{declaring_method_capabilities}). If no methods support one of the acceptable response entity body media types an implementation MUST generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity.
 \end{itemize} 
 
 \newcommand{\bottom}{\perp}
 
-\item If $M$ has more than one element, sort it in descending order. Let a {\em client} media type be of the form $\mbox{$n$/$m$;q=$v_1$}$, a {\em server} media type be of the form $\mbox{$n$/$m$;qs=$v_2$}$ and a {\em combined} media type of the form $\mbox{$n$/$m$;q=$v_1$;qs=$v_2$;d=$v_3$}$, where the distance factor $d$ is defined below. For any of these types, $m$ could be $*$, or $m$ and $n$ could be $*$ and the values of q and qs are assumed to be $1.0$ if absent. 
+\item If after filtering the set $M$ has more than one element, sort it in descending order as follows. Let a {\em client} media type be of the form $\mbox{$n$/$m$;q=$v_1$}$, a {\em server} media type be of the form $\mbox{$n$/$m$;qs=$v_2$}$ and a {\em combined} media type of the form $\mbox{$n$/$m$;q=$v_1$;qs=$v_2$;d=$v_3$}$, where the distance factor $d$ is defined below. For any of these types, $m$ could be $*$, or $m$ and $n$ could be $*$ and the values of q and qs are assumed to be $1.0$ if absent. 
 
 Let $S(p_1, p_2)$ be defined over a client media type $p_1$ and a server media type $p_2$ as the function that returns the {\em most} specific combined type with a distance factor if $p_1$ and $p_2$ are compatible and $\bottom$ otherwise. For example: 
 \begin{itemize}
@@ -495,7 +496,7 @@ Given these definitions, we can now sort $M$ in descending order based on $\ge$ 
 \item Let $A$ be the request accept header set of client media types and $P_M$ a resource method's \Produces\ set of server media types, we use the media type $\max_\ge \{ S(a,p) \, | \, (a,p) \in A \times P_M\}$ as secondary key. If there is more than one maximum element \footnoterecall{equality}, implementations SHOULD report a warning and select one of these types in an implementation dependent manner.
 \end{itemize}
 
-\item \label{dispatch_method} The request is dispatched to the first resource method $D$ in the set $M$\footnote{Step \ref{filter_methods} ensures the set contains at least one member.}. If after sorting, there is more than one maximum element in $M$, implementations SHOULD report a warning and select one of these methods in an implementation dependent manner.
+\item \label{dispatch_method} Let $D$ be the first resource method in the set $M$\footnote{Step \ref{filter_methods} ensures the set contains at least one member.} and $O$ an instance of the class that defines $D$. If after sorting, there is more than one maximum element in $M$, implementations SHOULD report a warning and select one of these methods in an implementation dependent manner.
 \end{enumerate}
 
 Consider the following example and assume the request to be \code{GET} \code{widgets/1}:
@@ -531,19 +532,19 @@ public class WidgetsResource {
 
 The input and output values for each of the 3 steps in the matching algorithm are as follows:
 \begin{description}
-\item[Step 1] Match root resource class using $R(\mbox{widgets}) = \mbox{widgets(/.*)?}$ and $R(\mbox{widget}) = \mbox{widget(/.*)?}$
+\item[Step 1] Identify a set of candidate root resource classes matching the request. Let $R(\mbox{widgets}) = \mbox{widgets(/.*)?}$ and $R(\mbox{widget}) = \mbox{widget(/.*)?}$,
 \begin{description}
 \item[Input] $U = \mbox{widgets/1}$ and $C = \{\mbox{WidgetResource}, \mbox{WidgetsResource}\}$
 \item[Output] $U = \mbox{/1}$ and $C' = \{\mbox{WidgetsResource}\}$
 \end{description}
-\item[Step 2] Match resource class instance using $R(\{\mbox{id}\}) = \mbox{([\^{ }/]+?)(/.*)?}$
+\item[Step 2] Obtain a set of candidate resource methods for the request. Let $R(\{\mbox{id}\}) = \mbox{([\^{ }/]+?)(/.*)?}$,
 \begin{description}
 \item[Input] $U = \mbox{/1}$ and $C' = \{\mbox{WidgetsResource}\}$
-\item[Output] $O = \mbox{WidgetResource instance}$ and $M = \{\mbox{findWidget}\}$
+\item[Output] $M = \{\mbox{findWidget}\}$
 \end{description}
-\item[Step 3] Match resource class method
+\item[Step 3] Identify the method that will handle the request,
 \begin{description}
-\item[Input] $O = \mbox{WidgetResource instance}$ and $M = \{\mbox{findWidget}\}$
+\item[Input] $M = \{\mbox{findWidget}\}$
  \item[Output] $O = \mbox{WidgetResource instance}$ and $D = \mbox{findWidget}$
 \end{description}
 \end{description}
