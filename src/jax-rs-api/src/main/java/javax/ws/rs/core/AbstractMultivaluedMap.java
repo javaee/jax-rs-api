@@ -40,6 +40,7 @@
 package javax.ws.rs.core;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -359,5 +360,27 @@ public abstract class AbstractMultivaluedMap<K, V> implements MultivaluedMap<K, 
     @Override
     public void clear() {
         store.clear();
+    }
+
+    @Override
+    public boolean equalsIgnoreValueOrder(MultivaluedMap<K, V> omap) {
+        if (this == omap) {
+            return true;
+        }
+        if (!keySet().equals(omap.keySet())) {
+            return false;
+        }
+        for (Entry<K, List<V>> e : entrySet()) {
+            List<V> olist = omap.get(e.getKey());
+            if (e.getValue().size() != olist.size()) {
+                return false;
+            }
+            for (V v : e.getValue()) {
+                if (!olist.contains(v)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
