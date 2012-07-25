@@ -42,15 +42,12 @@ package javax.ws.rs.core;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
@@ -82,14 +79,17 @@ public final class Link {
     public static final String TITLE = "title";
     public static final String REL = "rel";
     public static final String TYPE = "type";
+
     /**
      * The underlying link URI.
      */
     private URI uri;
+
     /**
      * A map for all the link parameters such as "rel", "type", "method", etc.
      */
-    private MultivaluedMap<String, String> map = new MultivaluedHashMap<String, String>();
+    private MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
+
     /**
      * Underlying implementation delegate to serialize as link header.
      */
@@ -205,7 +205,7 @@ public final class Link {
         }
         if (other instanceof Link) {
             final Link olink = (Link) other;
-            return uri.equals(olink.uri) && map.equals(olink.map);
+            return uri.equals(olink.uri) && map.equalsIgnoreValueOrder(olink.map);
         }
         return false;
     }
@@ -347,6 +347,10 @@ public final class Link {
                 if (httpMethod == null) {
                     throw new IllegalArgumentException("Unable to find HTTP method annotation in " + method);
                 }
+                Path path = m.getAnnotation(Path.class);
+                if (path != null) {
+                    lb.path(m);
+                }
                 Produces ps = m.getAnnotation(Produces.class);
                 if (ps == null) {
                     lb.produces(MediaType.WILDCARD);
@@ -386,6 +390,7 @@ public final class Link {
          * Link being built by the builder.
          */
         private Link link = new Link();
+        
         /**
          * Underlying builder for link's URI.
          */
@@ -419,13 +424,13 @@ public final class Link {
 
         /**
          * Convenience method to set a link relation. More than one rel value can
-         * be specified using this method.
+         * be specified by using one or more whitespace characters as delimiters.
          *
          * @param name relation name
          * @return the updated builder
          */
         public Builder rel(String name) {
-            link.map.add(REL, name);
+            link.map.addAll(REL, toValueList(name));
             return this;
         }
 
@@ -443,14 +448,14 @@ public final class Link {
         }
 
         /**
-         * Convenience method to set a type on this link. More than one
-         * type value can be specified using this method.
+         * Convenience method to set a type on this link. More than one type can
+         * be specified by using one or more whitespace characters as delimiters.
          *
          * @param type link type as string
          * @return the updated builder
          */
         public Builder type(String type) {
-            link.map.add(TYPE, type);
+            link.map.addAll(TYPE, toValueList(type));
             return this;
         }
 
@@ -468,33 +473,35 @@ public final class Link {
 
         /**
          * Convenience method to set a produces type on this link. More than one
-         * type value can be specified using this method.
+         * value can be specified by using one or more whitespace characters as
+         * delimiters.
          *
          * @param type link type as string
          * @return the updated builder
          */
         public Builder produces(String type) {
-            link.map.add(PRODUCES, type);
+            link.map.addAll(PRODUCES, toValueList(type));
             return this;
         }
 
         /**
-         * Convenience method to set a consumes type on this link. More than one
-         * type value can be specified using this method.
+         * Convenience method to set a produces type on this link. More than one
+         * value can be specified by using one or more whitespace characters as
+         * delimiters.
          *
          * @param type link type as string
          * @return the updated builder
          */
         public Builder consumes(String type) {
-            link.map.add(CONSUMES, type);
+            link.map.addAll(CONSUMES, toValueList(type));
             return this;
         }
 
         /**
          * Set an arbitrary parameter on this link. This method supports adding
-         * more than one parameter value for each parameter. It is recommended
-         * to use the more specific methods {@link #method} or {@link #title}
-         * when setting these single-valued parameters.
+         * more than one value for each parameter using one or more whitespace delimiters.
+         * It is recommended to use the more specific methods {@link #method} or
+         * {@link #title} when setting these single-valued parameters.
          *
          * @param name  the name of the parameter
          * @param value the value set for the parameter
@@ -505,7 +512,7 @@ public final class Link {
             if (name == null || value == null) {
                 throw new IllegalArgumentException("Link parameter name or value is null");
             }
-            link.map.add(name, value);
+            link.map.addAll(name, toValueList(value));
             return this;
         }
 
@@ -529,6 +536,31 @@ public final class Link {
         public Link build(Object... values) throws UriBuilderException {
             link.uri = uriBuilder.build(values);
             return link;
+        }
+
+        /**
+         * Adds a path to the existing URI builder. For internal use only.
+         *
+         * @param method method from which to get path.
+         * @return the updated builder.
+         */
+        private Builder path(Method method) {
+            uriBuilder.path(method);
+            return this;
+        }
+
+        /**
+         * Split a string value using one or more whitespace chars as separators.
+         *
+         * @param value values representation as string.
+         * @return list of strings.
+         */
+        private static List<String> toValueList(String value) {
+            if (value == null) {
+                throw new IllegalArgumentException("Link parameter value is null");
+            }
+            final String[] vs = value.split("\\s+");
+            return Arrays.asList(vs);
         }
     }
 
