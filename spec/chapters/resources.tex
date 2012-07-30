@@ -327,7 +327,7 @@ With the updated value for \Produces\ in this example, and in response to a \cod
 \section{Annotation Inheritance}
 \label{annotationinheritance}
 
-\jaxrs\ annotations MAY be used on the methods and method parameters of a super-class or an implemented interface. Such annotations are inherited by a corresponding sub-class or implementation class method provided that method and its parameters do not have any \jaxrs\ annotations of its own. Annotations on a super-class take precedence over those on an implemented interface. The precedence over conflicting annotations defined in multiple implemented interfaces is implementation specific.
+\jaxrs\ annotations may be used on the methods and method parameters of a super-class or an implemented interface. Such annotations are inherited by a corresponding sub-class or implementation class method provided that the method and its parameters do not have any \jaxrs\ annotations of their own. Annotations on a super-class take precedence over those on an implemented interface. The precedence over conflicting annotations defined in multiple implemented interfaces is implementation specific. Note that inheritance of class or interface annotations is not supported.
 
 If a subclass or implementation method has any \jaxrs\ annotations then {\em all} of the annotations on the super class or interface method are ignored. E.g.:
 
