@@ -81,15 +81,16 @@ public abstract class Response {
     /**
      * Get the status code associated with the response.
      *
-     * @return the response status code or -1 if the status was not set.
+     * @return the response status code.
      */
     public abstract int getStatus();
 
     /**
      * Get the complete status information associated with the response.
      *
-     * @return the response status information or {@code null} if the status was
-     *         not set.
+     * @return the response status information. The returned value is never
+     *         {@code null}.
+     * @since 2.0
      */
     public abstract StatusType getStatusInfo();
 
