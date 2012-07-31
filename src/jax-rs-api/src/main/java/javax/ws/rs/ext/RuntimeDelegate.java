@@ -243,6 +243,7 @@ public abstract class RuntimeDelegate {
      * @throws IllegalStateException in case the method is not invoked from within
      *                               a context of a running request that was not yet
      *                               suspended.
+     * @since 2.0
      */
     public abstract AsynchronousResponse createAsynchronousResponse(long time, TimeUnit unit) throws IllegalStateException;
 
