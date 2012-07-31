@@ -187,8 +187,10 @@ public class MediaType {
                 return o1.compareToIgnoreCase(o2);
             }
         });
-        for (Map.Entry<String, String> e : initialValues.entrySet()) {
-            map.put(e.getKey().toLowerCase(), e.getValue());
+        if (initialValues != null) {
+            for (Map.Entry<String, String> e : initialValues.entrySet()) {
+                map.put(e.getKey().toLowerCase(), e.getValue());
+            }
         }
         return map;
     }

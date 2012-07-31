@@ -39,6 +39,8 @@
  */
 package javax.ws.rs.core;
 
+import java.util.Map;
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -62,5 +64,20 @@ public class MediaTypeTest {
                 "ISO-8859-13",
                 MediaType.APPLICATION_XML_TYPE.withCharset("UTF-8").withCharset("ISO-8859-13")
                         .getParameters().get(MediaType.CHARSET_PARAMETER));
+    }
+
+    /**
+     * Test that passing {@code null} values to {@link MediaType} constructor does
+     * not throw a {@link NullPointerException} and produces expected result.
+     */
+    @Test
+    public void testNullConstructorValues() {
+        MediaType actual;
+
+        actual = new MediaType(null, null, (Map<String, String>) null);
+        assertEquals(MediaType.WILDCARD_TYPE, actual);
+
+        actual = new MediaType(null, null, (String) null);
+        assertEquals(MediaType.WILDCARD_TYPE, actual);
     }
 }
