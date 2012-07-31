@@ -47,12 +47,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Suspend;
 import javax.ws.rs.core.AsynchronousResponse;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 /**
+ * Simple asynchronous event-based request processing example.
+ *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 @Path("/async/nextMessage")
@@ -62,9 +62,10 @@ public class SimpleAsyncEventResource {
     private static final BlockingQueue<AsynchronousResponse> SUSPENDED = new ArrayBlockingQueue<AsynchronousResponse>(5);
 
     @GET
-    @Suspend
-    public void pickUpMessage(AsynchronousResponse asynchronousResponse) throws InterruptedException {
+    public AsynchronousResponse pickUpMessage() throws InterruptedException {
+        final AsynchronousResponse asynchronousResponse = AsynchronousResponse.suspend();
         SUSPENDED.put(asynchronousResponse);
+        return asynchronousResponse;
     }
 
     @POST

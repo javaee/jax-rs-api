@@ -211,7 +211,7 @@ public interface Configuration {
      * @return the updated configuration.
      * @see Configuration
      */
-    Configuration setProperties(Map<String, ? extends Object> properties);
+    Configuration setProperties(Map<String, ?> properties);
 
     /**
      * Set the new configuration property, if already set, the existing value of
@@ -225,4 +225,7 @@ public interface Configuration {
      * @see Configuration
      */
     Configuration setProperty(String name, Object value);
+
+    <T> Configuration register(Class<T> provider, Class<? super T>... contracts);
+    <T> Configuration register(T provider, Class<? super T>... contracts);
 }

@@ -50,23 +50,19 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.Suspend;
 import javax.ws.rs.core.AsynchronousResponse;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.ExecutionContext;
 
 /**
+ * Long-running asynchronous processing examples.
+ *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 @Path("/async/longRunning")
 @Produces("text/plain")
 public class LongRunningAsyncOperationResource {
 
-    @Context
-    private ExecutionContext ctx;
-
     @GET
-    @Path("basicSyncExample")
+    @Path("sync")
     public String basicSyncExample() {
         try {
             Thread.sleep(10000);
@@ -77,9 +73,9 @@ public class LongRunningAsyncOperationResource {
     }
 
     @GET
-    @Suspend(timeOut = 15, timeUnit = SECONDS)
-    @Path("suspendViaAnnotationFieldInjectedCtx")
-    public void suspendViaAnnotationExample(final AsynchronousResponse ar) {
+    @Path("async")
+    public AsynchronousResponse suspendViaAnnotationExample() {
+        final AsynchronousResponse ar = AsynchronousResponse.suspend(15, SECONDS);
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -93,67 +89,49 @@ public class LongRunningAsyncOperationResource {
             }
         });
 
-        // default suspend;
+        return ar;
     }
 
     @GET
-    @Suspend(timeOut = 15, timeUnit = SECONDS)
-    @Path("suspendViaAnnotationMethodInjectedCtx")
-    public void suspendViaAnnotationExample2(@Context final AsynchronousResponse ar) {
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName())
-                            .log(Level.SEVERE, "Response processing interrupted", ex);
-                }
-                ar.resume("Hello async world!");
-            }
-        });
-
-        // default suspend;
-    }
-
-    @GET
-    @Path("suspendViaContext")
-    public String suspendViaContextExample(@QueryParam("query") final String query) {
+    @Path("asyncSelective")
+    public AsynchronousResponse suspendViaContextExample(@QueryParam("query") final String query) {
+        final AsynchronousResponse ar = AsynchronousResponse.suspend();
         if (!isComplex(query)) {
-            return "Simple result for " + query; // process simple queries synchronously
+            // process simple queries synchronously
+            ar.resume("Simple result for " + query);
+        } else {
+            Executors.newSingleThreadExecutor().submit(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(LongRunningAsyncOperationResource.class.getName())
+                                .log(Level.SEVERE, "Response processing interrupted", ex);
+                    }
+                    ar.resume("Complex result for " + query);
+                }
+            });
         }
 
-        final AsynchronousResponse ar = ctx.suspend(); // programmatic suspend
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(LongRunningAsyncOperationResource.class.getName())
-                            .log(Level.SEVERE, "Response processing interrupted", ex);
-                }
-                ar.resume("Complex result for " + query);
-            }
-        });
-
-        return null; // return value ignored for suspended requests
+        return ar;
     }
 
     private boolean isComplex(String query) {
-        return new Random().nextBoolean();
+        return new Random(query.hashCode()).nextBoolean();
     }
 
     @GET
-    @Path("timeoutOverriden")
-    @Suspend(timeOut = 15000) // default time unit is milliseconds
-    public void timeoutValueConflict_OverridingExample(
-            final AsynchronousResponse ar, @QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit) {
+    @Path("asyncTimeoutOverride")
+    public AsynchronousResponse timeoutValueConflict_OverridingExample(
+            @QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit) {
+        final AsynchronousResponse ar = AsynchronousResponse.suspend(15, SECONDS);
+
         if (timeOut != null && timeUnit != null) {
             ar.setSuspendTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overridden
         }
+
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -167,12 +145,14 @@ public class LongRunningAsyncOperationResource {
                 ar.resume("Hello async world!");
             }
         });
+
+        return ar;
     }
 
     @GET
-    @Path("suspendHandleUsage")
-    public void suspendHandleUsageExample() {
-        final AsynchronousResponse ar = ctx.suspend();
+    @Path("asyncHandleUsage")
+    public AsynchronousResponse suspendHandleUsageExample() {
+        final AsynchronousResponse ar = AsynchronousResponse.suspend();
 
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
@@ -198,5 +178,7 @@ public class LongRunningAsyncOperationResource {
                         .log(Level.INFO, "Context resumed with a response!");
             }
         });
+
+        return ar;
     }
 }

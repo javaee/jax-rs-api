@@ -50,11 +50,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Suspend;
 import javax.ws.rs.core.AsynchronousResponse;
 import javax.ws.rs.core.MediaType;
 
 /**
+ * Asynchronous event-based request processing example.
+ *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
 @Path("/async/nextMessage")
@@ -64,8 +65,8 @@ public class AsyncEventResource {
     private static final BlockingQueue<String> messages = new ArrayBlockingQueue<String>(5);
 
     @GET
-    @Suspend
-    public void pickUpMessage(final AsynchronousResponse asynchronousResponse) {
+    public AsynchronousResponse pickUpMessage() {
+        final AsynchronousResponse asynchronousResponse = AsynchronousResponse.suspend();
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -78,11 +79,12 @@ public class AsyncEventResource {
                 }
             }
         });
+        return asynchronousResponse;
     }
 
     @POST
-    @Suspend
-    public void postMessage(final String message, final AsynchronousResponse asynchronousResponse) {
+    public AsynchronousResponse postMessage(final String message) {
+        final AsynchronousResponse asynchronousResponse = AsynchronousResponse.suspend();
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -96,5 +98,6 @@ public class AsyncEventResource {
                 }
             }
         });
+        return asynchronousResponse;
     }
 }
