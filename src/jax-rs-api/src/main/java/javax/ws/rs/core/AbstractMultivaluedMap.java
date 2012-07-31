@@ -40,7 +40,6 @@
 package javax.ws.rs.core;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +167,10 @@ public abstract class AbstractMultivaluedMap<K, V> implements MultivaluedMap<K, 
      */
     @Override
     public final void addAll(K key, V... newValues) {
-        if (newValues == null || newValues.length == 0) {
+        if (newValues == null) {
+            throw new NullPointerException("Supplied array of values must not be null.");
+        }
+        if (newValues.length == 0) {
             return;
         }
 
@@ -200,7 +202,10 @@ public abstract class AbstractMultivaluedMap<K, V> implements MultivaluedMap<K, 
      */
     @Override
     public final void addAll(K key, List<V> valueList) {
-        if (valueList == null || valueList.isEmpty()) {
+        if (valueList == null) {
+            throw new NullPointerException("Supplied list of values must not be null.");
+        }
+        if (valueList.isEmpty()) {
             return;
         }
 
