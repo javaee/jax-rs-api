@@ -129,6 +129,9 @@ public abstract class UriBuilder {
      * @since 2.0
      */
     public static UriBuilder fromLink(Link link) throws IllegalArgumentException {
+        if (link == null) {
+            throw new IllegalArgumentException("The provider 'link' parameter value is 'null'.");
+        }
         return UriBuilder.fromUri(link.getUri());
     }
 
