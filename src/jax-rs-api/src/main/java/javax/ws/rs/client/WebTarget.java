@@ -94,7 +94,7 @@ public interface WebTarget {
      *
      * @param path the path, may contain URI template parameters.
      * @return a new target instance.
-     * @throws NullPointerException if path is null.
+     * @throws NullPointerException if path is {@code null}.
      */
     public WebTarget path(String path) throws NullPointerException;
 
@@ -110,7 +110,7 @@ public interface WebTarget {
      * @param value value to be used to replace the template.
      * @return a new target instance.
      * @throws IllegalArgumentException if there is no such path parameter.
-     * @throws NullPointerException     if name or value is null.
+     * @throws NullPointerException     if name or value is {@code null}.
      */
     public WebTarget pathParam(String name, Object value)
             throws IllegalArgumentException, NullPointerException;
@@ -126,7 +126,8 @@ public interface WebTarget {
      * @param parameters a map of URI template parameter names and values.
      * @return a new target instance.
      * @throws IllegalArgumentException if the supplied map is empty.
-     * @throws NullPointerException     if the parameter map or any of the names or values is null.
+     * @throws NullPointerException     if the parameter map or any of the names
+     *                                  or values is {@code null}.
      */
     public WebTarget pathParams(Map<String, Object> parameters)
             throws IllegalArgumentException, NullPointerException;
@@ -149,7 +150,7 @@ public interface WebTarget {
      *               to a {@code String} using its {@code toString()} method. Stringified
      *               values may contain URI template parameters.
      * @return a new target instance.
-     * @throws NullPointerException if the name or any of the values is null.
+     * @throws NullPointerException if the name or any of the values is {@code null}.
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
     public WebTarget matrixParam(String name, Object... values)
@@ -185,7 +186,8 @@ public interface WebTarget {
      * @param parameters a map of query parameter names and values.
      * @return a new target instance.
      * @throws IllegalArgumentException if the supplied map is empty.
-     * @throws NullPointerException     if the parameter map or any of the names or values is null.
+     * @throws NullPointerException     if the parameter map or any of the
+     *                                  names or values is {@code null}.
      */
     public WebTarget queryParams(MultivaluedMap<String, Object> parameters)
             throws IllegalArgumentException, NullPointerException;
