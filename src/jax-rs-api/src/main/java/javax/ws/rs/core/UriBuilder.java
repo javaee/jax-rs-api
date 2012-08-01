@@ -649,4 +649,12 @@ public abstract class UriBuilder {
      */
     public abstract URI buildFromEncoded(Object... values)
             throws IllegalArgumentException, UriBuilderException;
+
+    /**
+     * Get the URI template string represented by this URI builder.
+     *
+     * @return the URI template string for this URI builder.
+     * @since 2.0
+     */
+    public abstract String toTemplate();
 }
