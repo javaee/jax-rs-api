@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,61 +37,62 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.client;
+package javax.ws.rs.core;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.Feature;
-
 /**
- * Represents inheritable configuration of the main client-side JAX-RS components,
- * such as {@link Client}, {@link WebTarget}, {@link Invocation.Builder Invocation Builder}
- * or {@link Invocation}.
+ * A configurable JAX-RS runtime context.
+ *
+ * The exact scope of the configurable context is typically determined by a
+ * use case scenario in which the configurable context is accessed.
  * <p>
- * Configuration is inherited from a parent component to a child component.
- * When creating new {@link WebTarget resource targets} using a {@link Client} instance,
- * the configuration of the {@code Client} instance is inherited by the child target
- * instances being created. Similarly, when creating new
- * {@code Invocation.Builder invocation builders} or derived resource targets
- * using a parent target instance, the configuration of the parent target is
- * inherited by the child instances being created.
- * <p>
+ * A configurable context may be used to retrieve or updated configuration
+ * of the bound run-time component. The modification of the context typically
+ * involves setting properties or registering new providers and/or features.
  * </p>
- * The inherited configuration on a child instance reflects the state of the parent
- * configuration at the time of the child instance creation. Once the child instance
- * is created its configuration is detached from the parent configuration. This means
- * that any subsequent changes in the parent configuration do not affect
- * the configuration of previously created child instances.
+ * <h3>Registering providers and/or features.</h3>
  * <p>
+ * In some situations a provider class or instance may implement multiple contracts
+ * recognized by a JAX-RS implementation (e.g. filter, interceptor or entity provider).
+ * By default, the JAX-RS implementation will register the provider as
+ * a provider for all the recognized implemented contracts. For example:
  * </p>
- * Once the child instance is created, it's configuration can be further customized
- * using the provided set of instance configuration mutator methods. A change
- * made in the configuration of a child instance does not affect the configuration
- * of its parent, for example:
  * <pre>
- * Client client = ClientFactory.newClient();
- * client.configuration().setProperty("FOO_PROPERTY", "FOO_VALUE");
+ * public class MyProvider
+ *         implements ReaderInterceptor, WriterInterceptor { ... }
  *
- * // inherits the configured "FOO_PROPERTY" from the client instance
- * WebTarget resourceTarget = client.target("http://examples.jaxrs.com/");
+ * ...
  *
- * // does not modify the client instance configuration
- * resourceTarget.configuration().register(new BarFeature());
+ * // register MyProvider as a ReaderInterceptor
+ * // as well as a WriterInterceptor
+ * configuration.register(MyProvider.class);
+ * </pre>
+ * <p>
+ * However there are some situations when the default registration to all the recognized
+ * contracts is not desirable. In such case the users may use a version of the {@code register(...)}
+ * method that allows to explicitly list the {@code contracts} for which the provider class should
+ * be registered, effectively limiting the scope of the provider. For example:
+ * </p>
+ * <p>
+ * <pre>
+ * public class ClientLoggingFilter
+ *         implements ClientRequestFilter, ClientResponseFilter { ... }
+ *
+ * ...
+ *
+ * ClientLoggingFilter loggingFilter = ...;
+ * // register loggingFilter as a ClientResponseFilter only
+ * configuration.register(loggingFilter, ClientResponseFilter.class);
  * </pre>
  * </p>
- * <p>
- * For a discussion on registering providers or narrowing down the scope of the
- * contracts registered for each provider, see {@link javax.ws.rs.core.Configurable
- * configurable context documentation}.
- * </p>
  *
- * @author Marek Potociar
+ * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.0
  */
-public interface Configuration {
-
+public interface Configurable {
     /**
      * Get the immutable bag of configuration properties.
      *
@@ -114,9 +115,9 @@ public interface Configuration {
      * @param properties new set of configuration properties. The content of
      *                   the map will replace any existing properties set on the configurable
      *                   instance.
-     * @return the updated configuration.
+     * @return the updated configurable instance.
      */
-    public Configuration setProperties(Map<String, ?> properties);
+    public Configurable setProperties(Map<String, ?> properties);
 
     /**
      * Set the new configuration property, if already set, the existing value of
@@ -126,15 +127,15 @@ public interface Configuration {
      * @param name  property name.
      * @param value (new) property value. {@code null} value removes the property
      *              with the given name.
-     * @return the updated configuration.
+     * @return the updated configurable instance.
      */
-    public Configuration setProperty(String name, Object value);
+    public Configurable setProperty(String name, Object value);
 
     /**
      * Get the immutable set of enabled features.
      *
      * @return the enabled feature set. The returned value shall never be {@code null}.
-     * @see Feature#configure(javax.ws.rs.core.Configurable)
+     * @see Feature#configure(Configurable)
      */
     public Collection<Feature> getFeatures();
 
@@ -167,20 +168,11 @@ public interface Configuration {
     public Set<Object> getProviderInstances();
 
     /**
-     * Replace the existing configuration state with the configuration state of
-     * the externally provided configuration.
-     *
-     * @param configuration configuration to be used to update the instance.
-     * @return the updated configuration.
-     */
-    public Configuration update(Configuration configuration);
-
-    /**
      * Register a provider or a {@link Feature feature} class to be instantiated
      * and used in the scope of the configured instance.
      *
-     * The registered provider class is registered as a provider of all the recognized JAX-RS
-     * or implementation-specific extension contracts.
+     * The registered provider class is registered as a provider of all the recognized
+     * JAX-RS or implementation-specific extension contracts.
      * <p>
      * As opposed to the providers registered by the
      * {@link #register(Object)  provider instances}, providers
@@ -192,21 +184,21 @@ public interface Configuration {
      * </p>
      * <p>
      * In case the registered provider is a {@link Feature feature},
-     * this {@code Configuration} object instantiates the feature and invokes the
+     * this {@code Configurable} context instantiates the feature and invokes the
      * {@link Feature#configure(javax.ws.rs.core.Configurable)} method and
-     * lets the feature update configurable context of the configuration instance. If the
-     * invocation of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
+     * lets the feature update the configurable context. If the invocation
+     * of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
      * the feature is added to the {@link #getFeatures() collection of enabled features},
      * otherwise the feature instance is discarded.
      * </p>
      *
      * @param providerClass provider class to be instantiated and used in the scope
      *                      of the configured instance.
-     * @return the updated configuration.
+     * @return the updated configurable instance.
      * @see #getProviderClasses()
      * @see #register(Class, Class[])
      */
-    public Configuration register(Class<?> providerClass);
+    public Configurable register(Class<?> providerClass);
 
     /**
      * Register a provider or a {@link Feature feature} class to be instantiated
@@ -225,10 +217,10 @@ public interface Configuration {
      * </p>
      * <p>
      * In case the registered provider is a {@link Feature feature},
-     * this {@code Configuration} object instantiates the feature and invokes the
+     * this {@code Configurable} context instantiates the feature and invokes the
      * {@link Feature#configure(javax.ws.rs.core.Configurable)} method and
-     * lets the feature update configurable context of the configuration instance. If the
-     * invocation of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
+     * lets the feature update the configurable context. If the invocation
+     * of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
      * the feature is added to the {@link #getFeatures() collection of enabled features},
      * otherwise the feature instance is discarded.
      * </p>
@@ -239,11 +231,11 @@ public interface Configuration {
      *                      for which the provider should be registered. If omitted, the
      *                      provider class will be registered as a provider of all recognized
      *                      contracts implemented by the provider class.
-     * @return the updated configuration.
+     * @return the updated configurable instance.
      * @see #getProviderClasses()
      * @see #register(Class)
      */
-    public <T> Configuration register(Class<T> providerClass, Class<? super T>... contracts);
+    public <T> Configurable register(Class<T> providerClass, Class<? super T>... contracts);
 
     /**
      * Register a provider or a {@link Feature feature} ("singleton") instance to be used
@@ -262,28 +254,27 @@ public interface Configuration {
      * </p>
      * <p>
      * In case the registered provider is a {@link Feature feature},
-     * this {@code Configuration} object invokes the
+     * this {@code Configurable} context instantiates the feature and invokes the
      * {@link Feature#configure(javax.ws.rs.core.Configurable)} method and
-     * lets the feature update configurable context of the configuration instance. If the
-     * invocation of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
+     * lets the feature update the configurable context. If the invocation
+     * of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
      * the feature is added to the {@link #getFeatures() collection of enabled features},
      * otherwise the feature instance is discarded.
      * </p>
      *
      * @param provider  a provider instance to be registered in the scope of the configured
      *                  instance.
-     * @return the updated configuration.
+     * @return the updated configurable instance.
      * @see #getProviderInstances()
      * @see #register(Object, Class[])
      */
-    public Configuration register(Object provider);
+    public Configurable register(Object provider);
 
     /**
      * Register a provider or a {@link Feature feature} ("singleton") instance to be used
      * in the scope of the configured instance.
      *
-     * The registered provider is only registered as a provider of the listed
-     * {@code contracts}.
+     * The registered provider is only registered as a provider of the listed {@code contracts}.
      * <p>
      * As opposed to the providers registered by the
      * {@link #register(Class, Class[]) provider classes}, provider instances
@@ -295,10 +286,10 @@ public interface Configuration {
      * </p>
      * <p>
      * In case the registered provider is a {@link Feature feature},
-     * this {@code Configuration} object invokes the
+     * this {@code Configurable} context instantiates the feature and invokes the
      * {@link Feature#configure(javax.ws.rs.core.Configurable)} method and
-     * lets the feature update configurable context of the configuration instance. If the
-     * invocation of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
+     * lets the feature update the configurable context. If the invocation
+     * of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
      * the feature is added to the {@link #getFeatures() collection of enabled features},
      * otherwise the feature instance is discarded.
      * </p>
@@ -309,9 +300,9 @@ public interface Configuration {
      *                  for which the provider should be registered. If omitted, the
      *                  provider class will be registered as a provider of all recognized
      *                  contracts implemented by the provider class.
-     * @return the updated configuration.
+     * @return the updated configurable instance.
      * @see #getProviderInstances()
      * @see #register(Object)
      */
-    public <T> Configuration register(Object provider, Class<? super T>... contracts);
+    public <T> Configurable register(Object provider, Class<? super T>... contracts);
 }

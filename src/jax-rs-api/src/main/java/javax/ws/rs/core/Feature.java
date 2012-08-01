@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,34 +37,37 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.container;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import javax.ws.rs.NameBinding;
+package javax.ws.rs.core;
 
 /**
- * Global binding annotation that can be applied to a {@link ContainerRequestFilter
- * container request filter} to indicate that such filter should be applied globally
- * on all resources in the application but depends on a matched resource information
- * being available.
+ * A feature extension.
  * <p>
- * The JAX-RS runtime will apply the filters marked with the {@code @PostMatching}
- * annotation globally to all resources, but only in case the incoming request
- * has been matched to a particular resource method. In case the request has not
- * been matched, the filter implementations annotated with the {@code @PostMatching}
- * annotation will not be applied.
+ * Typically encapsulates concepts that involve multiple providers
+ * (e.g. filters or interceptors) and/or configuration properties.
  * </p>
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
+ * @since 2.0
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@NameBinding
-public @interface PostMatching {
+public interface Feature {
+
+    /**
+     * A call-back method called when the feature is to be enabled in a given
+     * configurable scope.
+     *
+     * The responsibility of the feature is to properly update the supplied configurable context
+     * and return {@code true} if the feature was successfully enabled or {@code false} otherwise.
+     * <p>
+     * Note that under some circumstances the feature may decide not to enable itself, which
+     * is indicated by returning {@code false}. In such case the configurable context does
+     * not internally register the feature in the {@link javax.ws.rs.core.Configurable#getFeatures()
+     * collection of enabled features} and the attempt to enable the feature is ignored.
+     * </p>
+     *
+     *
+     * @param configurable configurable context in which the feature should be enabled.
+     * @return {@code true} if the feature was successfully enabled, {@code false}
+     *         otherwise.
+     */
+    public boolean configure(Configurable configurable);
 }

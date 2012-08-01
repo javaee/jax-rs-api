@@ -39,17 +39,15 @@
  */
 package jaxrs.examples.filter.logging;
 
-import java.util.Collections;
-
 import javax.ws.rs.GET;
-import javax.ws.rs.container.DynamicBinder;
-import javax.ws.rs.container.PostMatching;
+import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Configurable;
 import javax.ws.rs.ext.Provider;
 
 /**
- * Dynamic binder for a logging request/response {@link PostMatching post-matching}
- * filter that dynamically decides to bind the logging filter only to GET processing
+ * Dynamic feature for a enabling a logging request/response post-matching filter
+ * that dynamically decides to bind the logging filter only to GET processing
  * resource methods on all subclasses of {@link MyResourceClass} and the
  * {@code MyResourceClass} itself.
  *
@@ -57,15 +55,13 @@ import javax.ws.rs.ext.Provider;
  * @author Marek Potociar
  */
 @Provider
-public class DynamicLoggingFilterBinder implements DynamicBinder {
+public final class DynamicLoggingFilterFeature implements DynamicFeature {
 
     @Override
-    public Iterable<?> getBoundProvider(ResourceInfo resourceInfo) {
+    public void configure(ResourceInfo resourceInfo, Configurable configurable) {
         if (MyResourceClass.class.isAssignableFrom(resourceInfo.getResourceClass())
                 && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
-            return Collections.singleton(new LoggingFilter());
+            configurable.register(new LoggingFilter());
         }
-
-        return null;
     }
 }

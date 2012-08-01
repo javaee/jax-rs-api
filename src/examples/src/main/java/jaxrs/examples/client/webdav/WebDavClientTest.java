@@ -39,8 +39,8 @@
  */
 package jaxrs.examples.client.webdav;
 
-import javax.ws.rs.client.Configuration;
-import javax.ws.rs.client.Feature;
+import javax.ws.rs.core.Configurable;
+import javax.ws.rs.core.Feature;
 
 /**
  * @author Marek Potociar (marek.potociar at oracle.com)
@@ -55,7 +55,7 @@ public class WebDavClientTest {
     static class TestFeature implements Feature {
 
         @Override
-        public boolean onEnable(Configuration configurable) {
+        public boolean configure(Configurable configurable) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

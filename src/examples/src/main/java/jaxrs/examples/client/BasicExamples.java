@@ -45,8 +45,8 @@ import java.util.concurrent.Future;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientException;
 import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.client.Configuration;
-import javax.ws.rs.client.Feature;
+import javax.ws.rs.core.Configurable;
+import javax.ws.rs.core.Feature;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
@@ -272,7 +272,7 @@ public class BasicExamples {
     public static class TestFeature implements Feature {
 
         @Override
-        public boolean onEnable(Configuration configuration) {
+        public boolean configure(Configurable configurable) {
             // do nothing
             return true;
         }
