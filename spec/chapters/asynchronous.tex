@@ -18,60 +18,52 @@ Let us illustrate these concepts via an example:
 \begin{listing}{1}
 @Path("/async/longRunning")
 public class MyResource {
-    @Context
-    private ExecutionContext ctx;
-    
+
     @GET
     public void longRunningOp() {
-        ctx.suspend();    // Suspend connection
+        final AsynchronousResponse ar = AsynchronousResponse.suspend();
         Executors.newSingleThreadExecutor().submit(
             new Runnable() {
                 public void run() {
                     executeLongRunningOp();
-                    ctx.resume("Hello async world!");
+                    ar.resume("Hello async world!");
         } });
     } 
 }
 \end{listing}
 
-Resource classes that support asynchronous processing must inject an instance of \code{ExecutionContext} in order to suspend and resume connections. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) calls \code{suspend} on the injected \code{ExecutionContext}, (ii) forks a (non-request) thread to execute a long running operation and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on \code{ExecutionContext}.
+In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) calls \code{AsynchronousResponse.suspend} to suspend the connection, (ii) forks a (non-request) thread to execute a long running operation and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on the instance of \code{AsynchronousResponse} created when the connection was suspended.
 
-\subsection{Suspend Annotation}
+\subsection{Timeouts and Fallback Responses}
 \label{suspend_annotation}
+% Update label!
 
-An alternative to calling \code{ctx.suspend()} as the first step after entering an asynchronous method is to annotate the method with \Suspend. Thus, the \code{longRunningOp} method above is equivalent to:
+A timeout value can be specified when suspending a connection to avoid waiting for a response indefinitely. The default unit is milliseconds, but any unit of type \code{java.util.concurrent.TimeUnit} can be used:
 
 \begin{listing}{1}
-@GET @Suspend
-public void longRunningOp() {
-    Executors.newSingleThreadExecutor().submit(
-        new Runnable() {
-            public void run() {
-                executeLongRunningOp();
-                ctx.resume("Hello async world!");
+@Path("/async/longRunning")
+public class MyResource {
+    
+    @GET
+    public void longRunningOp() {
+        final AsynchronousResponse ar = 
+            AsynchronousResponse.suspend(15, TimeUnit.SECONDS);
+        ar.setFallbackResponse(getMyResponse());
+
+        Executors.newSingleThreadExecutor().submit(
+            new Runnable() {
+                public void run() {
+                    executeLongRunningOp();
+                    ar.resume("Hello async world!");
         } });
     } 
+    ...
 }
 \end{listing}
 
-The \Suspend\ annotation supports a timeout value that can be used to avoid waiting for a response indefinitely. The default unit is milliseconds, but any unit of type \code{java.util.concurrent.TimeUnit} can be used:
+In this example, a timeout of 15 seconds is set when the connection is suspended. Additionally, a fallback response is set in case the timeout is reached before the connection is resumed.
 
-\begin{listing}{1}
-@GET @Suspend(timeOut = 15, timeUnit = TimeUnit.SECONDS)
-public void longRunningOp() {
-    Executors.newSingleThreadExecutor().submit(
-        new Runnable() {
-            public void run() {
-                executeLongRunningOp();
-                ctx.resume("Hello async world!");
-        } });
-    } 
-}
-\end{listing}
-
-JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set in \ExecutionContext. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set in \ExecutionContext, via the method \code{setResponse}, JAX-RS implementations are REQUIRED to return the fallback response without generating a \WebApplicationException\ when the timeout is reached.
-
-Overloaded versions of the method \code{suspend} in \ExecutionContext\ also accept a timeout value and a unit, thus providing the same functionality as the \Suspend\ annotation. Note that it is forbidden to call \code{suspend} more than once or to call it from within a method that is already annotated with \Suspend.
+JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set, JAX-RS implementations are REQUIRED to return the fallback response without generating an exception when the timeout is reached. An \code{IllegalStateException} MUST be thrown if attempting to suspend a connection more than once or resume a connection that is not suspended.
 
 \section{EJB Resource Classes}
 \label{async_ejbs}
@@ -85,22 +77,27 @@ an asynchronous response.
 
 Consider the following example:
 
+\begin{ednote}
+This example requires JAX-RS implementations to (i) automatically suspend
+a connection when EJB's @Asynchronous is specified and (ii) inject the response as a parameter.
+\end{ednote}
+
 \begin{listing}{1}
 @Stateless 
 @Path("/")
 class EJBResource {
 
-    @GET @Suspend @Asynchronous
-    public void longRunningOp(@Context ExecutionContext ctx) {
+    @GET @Asynchronous
+    public void longRunningOp(@Context AsynchronousResponse ar) {
         executeLongRunningOp();
-        ctx.resume("Hello async world!");
+        ar.resume("Hello async world!");
     }
 }
 \end{listing}
 
 There is no explicit thread management is needed in this case since that is
 under the control of the EJB container. Just like the other examples in this chapter,
-the response is produced by calling \code{resume} on the \code{ExecutionContext}. Hence,
+the response is produced by calling \code{resume} on the \code{AsynchronousResponse}. Hence,
 the return type of \code{longRunningOp} is simply \code{void}.
 
 \section{Client API}
