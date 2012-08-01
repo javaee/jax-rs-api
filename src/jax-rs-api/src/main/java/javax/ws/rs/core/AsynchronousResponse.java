@@ -53,8 +53,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * result or otherwise manipulate the suspended client connection. The available operations include:
  * <ul>
  * <li>setting a default fall-back response (e.g. in case of a time-out event etc.)</li>
- * <li>resuming the request processing suspended either using this execution context instance
- * or via {@code @Suspend} annotation</li>
+ * <li>resuming the suspended request processing</li>
  * <li>cancel the suspended request processing</li>
  * </ul>
  * </p>
