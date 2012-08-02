@@ -522,6 +522,10 @@ public final class Link {
          * Finish building this link and return the instance.
          *
          * @return newly built link.
+         * @throws IllegalArgumentException if there are any URI template parameters
+         *                                  without a supplied value.
+         * @throws UriBuilderException      if a URI cannot be constructed based on the
+         *                                  current state of the builder.
          */
         public Link build() {
             link.uri = uriBuilder.build();
@@ -533,7 +537,10 @@ public final class Link {
          *
          * @param values parameters used to build underlying URI.
          * @return the updated builder.
-         * @throws UriBuilderException maybe thrown when building underlying URI.
+         * @throws IllegalArgumentException if there are any URI template parameters
+         *                                  without a supplied value, or if a value is {@code null}.
+         * @throws UriBuilderException      if a URI cannot be constructed based on the
+         *                                  current state of the underlying URI builder.
          */
         public Link build(Object... values) throws UriBuilderException {
             link.uri = uriBuilder.build(values);
@@ -557,11 +564,15 @@ public final class Link {
          * @param value values representation as string.
          * @return list of strings.
          */
-        private static List<String> toValueList(String value) {
+        public static List<String> toValueList(String value) {
             if (value == null) {
                 throw new IllegalArgumentException("Link parameter value is null");
             }
             final String[] vs = value.split("\\s+");
+            for (int i = 0; i < vs.length; i++) {
+                vs[i] = vs[i].trim();
+            }
+
             return Arrays.asList(vs);
         }
     }
