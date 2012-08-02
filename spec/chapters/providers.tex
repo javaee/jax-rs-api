@@ -143,7 +143,8 @@ To avoid a potentially infinite loop, a single exception mapper should be used d
 \section{Exceptions}
 \label{exceptions_providers}
 
-When a provider method throws an exception, the \jaxrs\ runtime will attempt to map the exception to a suitable HTTP response in the same way as described for methods and locators in Section \ref{method_exc}.
+When a provider method throws an exception, the \jaxrs\ runtime will attempt to map the exception to a suitable HTTP response in the same way as described for methods and locators in Section \ref{method_exc}. If the exception is thrown
+while generating a response, \jaxrs\ implementations are required to map the exception {\em only when} the response has not been committed yet.
 
 As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping, but these exception mappers may be ignored during the processing of a {\em previously mapped} response to avoid entering a potentially infinite loop. For example, suppose a method in a message body reader throws an exception that is mapped to a response via an exception mapping provider; if the message body writer throws an exception while trying to write the mapped response, a \jaxrs\ implementation may simply return a server error (status code 500) instead of mapping the exception one more time.
 
