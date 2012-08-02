@@ -88,7 +88,7 @@ Resource methods MAY return \code{void}, \Response, \code{Generic\-Entity}, or a
 \item[\code{void}] Results in an empty entity body with a 204 status code.
 \item[\Response] Results in an entity body mapped from the entity property of the \Response\ with the status code specified by the status property of the \Response. A \code{null} return value results in a 204 status code. If the status property of the \Response\ is not set: a 200 status code is used for a non-\code{null} entity property and a 204 status code is used if the entity property is \code{null}.
 \item[\code{Generic\-Entity}] Results in an entity body mapped from the \code{Entity} property of the \code{Generic\-Entity}. If the return value is not \code{null} a 200 status code is used, a \code{null} return value results in a 204 status code.
-\item[Other] Results in an entity body mapped from the class of the returned instance. If the return value is not \code{null} a 200 status code is used, a \code{null} return value results in a 204 status code.
+\item[Other] Results in an entity body mapped from the class of the returned instance; if this class is an anonymous inner class, its superclass is used instead. If the return value is not \code{null} a 200 status code is used, a \code{null} return value results in a 204 status code.
 \end{description}
 
 Methods that need to provide additional metadata with a response should return an instance of \Response, the \Response\code{Builder} class provides a convenient way to create a \Response\ instance using a builder pattern.
@@ -329,7 +329,7 @@ With the updated value for \Produces\ in this example, and in response to a \cod
 
 \jaxrs\ annotations may be used on the methods and method parameters of a super-class or an implemented interface. Such annotations are inherited by a corresponding sub-class or implementation class method provided that the method and its parameters do not have any \jaxrs\ annotations of their own. Annotations on a super-class take precedence over those on an implemented interface. The precedence over conflicting annotations defined in multiple implemented interfaces is implementation specific. Note that inheritance of class or interface annotations is not supported.
 
-If a subclass or implementation method has any \jaxrs\ annotations then {\em all} of the annotations on the super class or interface method are ignored. E.g.:
+If a subclass or implementation method has any \jaxrs\ annotations then {\em all} of the annotations on the superclass or interface method are ignored. E.g.:
 
 \begin{listing}{1}
 public interface ReadOnlyAtomFeed {
