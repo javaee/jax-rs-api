@@ -51,6 +51,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsynchronousResponse;
+import javax.ws.rs.container.Suspend;
 
 /**
  * Long-running asynchronous processing examples.
@@ -74,10 +75,9 @@ public class LongRunningAsyncOperationResource {
 
     @GET
     @Path("async")
-    public AsynchronousResponse suspendViaAnnotationExample() {
-        final AsynchronousResponse ar = AsynchronousResponse.suspend(15, SECONDS);
+    public void suspendViaAnnotationExample(
+            @Suspend(timeOut = 15, timeUnit = SECONDS) final AsynchronousResponse ar) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
-
             @Override
             public void run() {
                 try {
@@ -88,14 +88,13 @@ public class LongRunningAsyncOperationResource {
                 ar.resume("Hello async world!");
             }
         });
-
-        return ar;
     }
 
     @GET
     @Path("asyncSelective")
-    public AsynchronousResponse suspendViaContextExample(@QueryParam("query") final String query) {
-        final AsynchronousResponse ar = AsynchronousResponse.suspend();
+    public void suspendViaContextExample(
+            @QueryParam("query") final String query,
+            @Suspend(timeOut = 15, timeUnit = SECONDS) final AsynchronousResponse ar) {
         if (!isComplex(query)) {
             // process simple queries synchronously
             ar.resume("Simple result for " + query);
@@ -114,8 +113,6 @@ public class LongRunningAsyncOperationResource {
                 }
             });
         }
-
-        return ar;
     }
 
     private boolean isComplex(String query) {
@@ -124,10 +121,9 @@ public class LongRunningAsyncOperationResource {
 
     @GET
     @Path("asyncTimeoutOverride")
-    public AsynchronousResponse timeoutValueConflict_OverridingExample(
-            @QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit) {
-        final AsynchronousResponse ar = AsynchronousResponse.suspend(15, SECONDS);
-
+    public void timeoutValueConflict_OverridingExample(
+            @QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit,
+            @Suspend(timeOut = 15, timeUnit = SECONDS) final AsynchronousResponse ar) {
         if (timeOut != null && timeUnit != null) {
             ar.setSuspendTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overridden
         }
@@ -145,15 +141,12 @@ public class LongRunningAsyncOperationResource {
                 ar.resume("Hello async world!");
             }
         });
-
-        return ar;
     }
 
     @GET
     @Path("asyncHandleUsage")
-    public AsynchronousResponse suspendHandleUsageExample() {
-        final AsynchronousResponse ar = AsynchronousResponse.suspend();
-
+    public void suspendHandleUsageExample(
+            @Suspend(timeOut = 15, timeUnit = SECONDS) final AsynchronousResponse ar) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -178,7 +171,5 @@ public class LongRunningAsyncOperationResource {
                         .log(Level.INFO, "Context resumed with a response!");
             }
         });
-
-        return ar;
     }
 }

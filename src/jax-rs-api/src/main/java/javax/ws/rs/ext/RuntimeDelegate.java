@@ -41,10 +41,8 @@ package javax.ws.rs.ext;
 
 import java.lang.reflect.ReflectPermission;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Application;
-import javax.ws.rs.container.AsynchronousResponse;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
@@ -231,21 +229,6 @@ public abstract class RuntimeDelegate {
      */
     public abstract <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type)
             throws IllegalArgumentException;
-
-    /**
-     * Create a new suspended asynchronous response instance for the currently running
-     * request.
-     *
-     * @param time suspend timeout value in the give time {@code unit}. Value lower
-     *             or equal to 0 causes the context to suspend indefinitely.
-     * @param unit suspend timeout value time unit
-     * @return suspended asynchronous response.
-     * @throws IllegalStateException in case the method is not invoked from within
-     *                               a context of a running request that was not yet
-     *                               suspended.
-     * @since 2.0
-     */
-    public abstract AsynchronousResponse createAsynchronousResponse(long time, TimeUnit unit) throws IllegalStateException;
 
     /**
      * Defines the contract for a delegate that is responsible for

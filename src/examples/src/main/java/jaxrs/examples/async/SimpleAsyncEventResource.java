@@ -48,6 +48,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsynchronousResponse;
+import javax.ws.rs.container.Suspend;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -62,10 +63,8 @@ public class SimpleAsyncEventResource {
     private static final BlockingQueue<AsynchronousResponse> SUSPENDED = new ArrayBlockingQueue<AsynchronousResponse>(5);
 
     @GET
-    public AsynchronousResponse pickUpMessage() throws InterruptedException {
-        final AsynchronousResponse asynchronousResponse = AsynchronousResponse.suspend();
-        SUSPENDED.put(asynchronousResponse);
-        return asynchronousResponse;
+    public void readMessage(@Suspend final AsynchronousResponse ar) throws InterruptedException {
+        SUSPENDED.put(ar);
     }
 
     @POST

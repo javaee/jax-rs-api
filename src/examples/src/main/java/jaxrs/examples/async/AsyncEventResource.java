@@ -51,6 +51,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsynchronousResponse;
+import javax.ws.rs.container.Suspend;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -65,8 +66,7 @@ public class AsyncEventResource {
     private static final BlockingQueue<String> messages = new ArrayBlockingQueue<String>(5);
 
     @GET
-    public AsynchronousResponse pickUpMessage() {
-        final AsynchronousResponse asynchronousResponse = AsynchronousResponse.suspend();
+    public void readMessage(@Suspend final AsynchronousResponse asynchronousResponse) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -79,12 +79,10 @@ public class AsyncEventResource {
                 }
             }
         });
-        return asynchronousResponse;
     }
 
     @POST
-    public AsynchronousResponse postMessage(final String message) {
-        final AsynchronousResponse asynchronousResponse = AsynchronousResponse.suspend();
+    public void postMessage(final String message, @Suspend final AsynchronousResponse asynchronousResponse) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
@@ -98,6 +96,5 @@ public class AsyncEventResource {
                 }
             }
         });
-        return asynchronousResponse;
     }
 }

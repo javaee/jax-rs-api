@@ -43,17 +43,12 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.RuntimeDelegate;
 
 /**
- * A JAX-RS asynchronous response that provides access to asynchronous server side
- * response manipulation.
+ * An injectable JAX-RS asynchronous response that provides means for asynchronous server side
+ * response processing.
  * <p>
- * A new instance of {@code AsynchronousResponse} is created by a call to a static
- * {@code AsynchronousResponse.suspend(...)} method.
- * </p>
- * <p>
- * Alternatively, an instance of an asynchronous response may be injected into a
+ * A new instance of {@code AsynchronousResponse} may be injected into a
  * {@link javax.ws.rs.HttpMethod resource or sub-resource method} parameter using
  * the {@link Suspend &#64;Suspend} annotation.
  * </p>
@@ -61,9 +56,9 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * asynchronously provide the request processing result or otherwise manipulate the suspended
  * client connection. The available operations include:
  * <ul>
- * <li>setting a default fall-back response (e.g. in case of a time-out event etc.)</li>
+ * <li>updating suspended state data (time-out value, response ...)</li>
  * <li>resuming the suspended request processing</li>
- * <li>cancel the suspended request processing</li>
+ * <li>canceling the suspended request processing</li>
  * </ul>
  * </p>
  * <p>
@@ -77,8 +72,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
  *             new ArrayBlockingQueue&lt;AsynchronousResponse&gt;(5);
  *
  *     &#64;GET
- *     public AsynchronousResponse readMessage() throws InterruptedException {
- *         final AsynchronousResponse ar = AsynchronousResponse.suspend();
+ *     public void readMessage(&#64;Suspend AsynchronousResponse ar) throws InterruptedException {
  *         suspended.put(ar);
  *         return ar;
  *     }
@@ -105,91 +99,11 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.0
  */
-public abstract class AsynchronousResponse {
+public interface AsynchronousResponse {
     /**
      * Constant specifying no suspend timeout value.
      */
     public static final long NEVER = 0;
-
-    /**
-     * Suspend the running request processing and create a new asynchronous response
-     * for the suspended request.
-     * <p>
-     * While the asynchronous response returned from this method  is still suspended,
-     * the suspend timeout value may be updated using the {@link #setSuspendTimeout(long, TimeUnit)}
-     * method.
-     * </p>
-     * <p>
-     * The method may only be invoked from within the context of a running
-     * {@link javax.ws.rs.HttpMethod JAX-RS resource method} that has not been
-     * previously suspended.
-     * </p>
-     *
-     * @return suspended asynchronous response for the running request.
-     * @throws IllegalStateException in case the method is not invoked from within
-     *                               a context of a running request that was not yet
-     *                               suspended.
-     * @see #suspend(long)
-     * @see #suspend(long, java.util.concurrent.TimeUnit)
-     */
-    public static AsynchronousResponse suspend() throws IllegalStateException {
-        return RuntimeDelegate.getInstance().createAsynchronousResponse(NEVER, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * Suspend the running request processing and create a new asynchronous response
-     * for the suspended request.
-     * <p>
-     * While the asynchronous response returned from this method  is still suspended,
-     * the suspend timeout value may be updated using the {@link #setSuspendTimeout(long, TimeUnit)}
-     * method.
-     * </p>
-     * <p>
-     * The method may only be invoked from within the context of a running
-     * {@link javax.ws.rs.HttpMethod JAX-RS resource method} that has not been
-     * previously suspended.
-     * </p>
-     *
-     * @param millis suspend timeout value in milliseconds. Value lower
-     *               or equal to 0 causes the response to suspend indefinitely.
-     * @return suspended asynchronous response for the running request.
-     * @throws IllegalStateException in case the method is not invoked from within
-     *                               a context of a running request that was not yet
-     *                               suspended.
-     * @see #suspend()
-     * @see #suspend(long, java.util.concurrent.TimeUnit)
-     */
-    public static AsynchronousResponse suspend(long millis) throws IllegalStateException {
-        return RuntimeDelegate.getInstance().createAsynchronousResponse(millis, TimeUnit.MILLISECONDS);
-    }
-
-    /**
-     * Suspend the running request processing and create a new asynchronous response
-     * for the suspended request.
-     * <p>
-     * While the asynchronous response returned from this method  is still suspended,
-     * the suspend timeout value may be updated using the {@link #setSuspendTimeout(long, TimeUnit)}
-     * method.
-     * </p>
-     * <p>
-     * The method may only be invoked from within the context of a running
-     * {@link javax.ws.rs.HttpMethod JAX-RS resource method} that has not been
-     * previously suspended.
-     * </p>
-     *
-     * @param time suspend timeout value in the give time {@code unit}. Value lower
-     *             or equal to 0 causes the context to suspend indefinitely.
-     * @param unit suspend timeout value time unit
-     * @return suspended asynchronous response for the running request.
-     * @throws IllegalStateException in case the method is not invoked from within
-     *                               a context of a running request that was not yet
-     *                               suspended.
-     * @see #suspend()
-     * @see #suspend(long)
-     */
-    public static AsynchronousResponse suspend(long time, TimeUnit unit) throws IllegalStateException {
-        return RuntimeDelegate.getInstance().createAsynchronousResponse(time, unit);
-    }
 
     /**
      * Resume the suspended request processing using the provided response data.
@@ -207,7 +121,7 @@ public abstract class AsynchronousResponse {
      * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
      * @see #resume(Throwable)
      */
-    public abstract void resume(Object response) throws IllegalStateException;
+    public void resume(Object response) throws IllegalStateException;
 
     /**
      * Resume the suspended request processing using the provided throwable.
@@ -226,7 +140,7 @@ public abstract class AsynchronousResponse {
      * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
      * @see #resume(Object)
      */
-    public abstract void resume(Throwable response) throws IllegalStateException;
+    public void resume(Throwable response) throws IllegalStateException;
 
     /**
      * Set/update the suspend timeout.
@@ -241,7 +155,7 @@ public abstract class AsynchronousResponse {
      * @param unit suspend timeout value time unit.
      * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
      */
-    public abstract void setSuspendTimeout(long time, TimeUnit unit) throws IllegalStateException;
+    public void setSuspendTimeout(long time, TimeUnit unit) throws IllegalStateException;
 
     /**
      * Cancel the suspended request processing.
@@ -259,7 +173,7 @@ public abstract class AsynchronousResponse {
      * response will result in an {@link IllegalStateException} being thrown.
      * </p>
      */
-    public abstract void cancel();
+    public void cancel();
 
     /**
      * Cancel the suspended request processing.
@@ -282,7 +196,7 @@ public abstract class AsynchronousResponse {
      *                   indicates how long the service is expected to be unavailable to the requesting
      *                   client.
      */
-    public abstract void cancel(int retryAfter);
+    public void cancel(int retryAfter);
 
     /**
      * Cancel the suspended request processing.
@@ -304,7 +218,7 @@ public abstract class AsynchronousResponse {
      * @param retryAfter a date that indicates how long the service is expected to be unavailable to the
      *                   requesting client.
      */
-    public abstract void cancel(Date retryAfter);
+    public void cancel(Date retryAfter);
 
     /**
      * Check if the asynchronous response instance is in a suspended state.
@@ -317,7 +231,7 @@ public abstract class AsynchronousResponse {
      * @see #isCancelled()
      * @see #isDone()
      */
-    public abstract boolean isSuspended();
+    public boolean isSuspended();
 
     /**
      * Check if the asynchronous response instance has been cancelled.
@@ -329,7 +243,7 @@ public abstract class AsynchronousResponse {
      * @see #isSuspended()
      * @see #isDone()
      */
-    public abstract boolean isCancelled();
+    public boolean isCancelled();
 
     /**
      * Check if the processing of a request this asynchronous response instance belongs to
@@ -346,7 +260,7 @@ public abstract class AsynchronousResponse {
      * @see #isSuspended()
      * @see #isCancelled()
      */
-    public abstract boolean isDone();
+    public boolean isDone();
 
     /**
      * Set a timeout response to be used in case the suspended request
@@ -356,5 +270,5 @@ public abstract class AsynchronousResponse {
      * @param response data to be sent back to the client in case the suspended
      *                 response times out.
      */
-    public abstract void setTimeoutResponse(Response response);
+    public void setTimeoutResponse(Response response);
 }
