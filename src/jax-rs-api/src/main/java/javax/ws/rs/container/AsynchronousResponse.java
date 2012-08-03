@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.container;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Response;
@@ -94,11 +95,11 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * If the asynchronous response was suspended with a positive timeout value, and has
  * not been explicitly resumed before the timeout has expired, the processing
  * will be resumed once the specified timeout threshold is reached, provided a positive
- * timeout value was set on the response. The request processing will be resumed using
- * response data returned by the {@link #getFallbackResponse()} method. Should the method
- * return {@code null}, a {@link javax.ws.rs.WebApplicationException} is raised with a
- * HTTP 503 error status (Service unavailable). Use {@link #setFallbackResponse(Object)}
- * method to programmatically customize the default timeout response.
+ * timeout value was set on the response. In case a {@link #setTimeoutResponse(javax.ws.rs.core.Response)
+ * time-out response has been set}, the request processing will be resumed using
+ * the custom time-out response, otherwise a {@link javax.ws.rs.WebApplicationException} is
+ * raised with a {@link javax.ws.rs.core.Response.Status#SERVICE_UNAVAILABLE HTTP 503
+ * (Service unavailable)} error status.
  * </p>
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
@@ -244,23 +245,66 @@ public abstract class AsynchronousResponse {
 
     /**
      * Cancel the suspended request processing.
-     *
-     * This method causes that the underlying suspended client connection is closed eventually.
      * <p>
-     * If a {@link #setFallbackResponse(Object) fallback response} was set, the fallback response
-     * is returned to the client. In case no fallback response has been set,  JAX-RS implementations
-     * should indicate that the request processing has been cancelled by sending back a
-     * {@link javax.ws.rs.core.Response.Status#INTERNAL_SERVER_ERROR HTTP 500} error response.
+     * When a request processing is cancelled using this method, the JAX-RS implementation
+     * MUST indicate to the client that the request processing has been cancelled by sending
+     * back a {@link javax.ws.rs.core.Response.Status#SERVICE_UNAVAILABLE HTTP 503 (Service unavailable)}
+     * error response.
      * </p>
      * <p>
-     * Invoking this method multiple times has the same effect as invoking it only once.
-     * Invoking this method on an asynchronous response instance that has already been
-     * resumed has no effect and the method call is ignored. Once the request is canceled,
-     * any attempts to suspend or resume the execution context will result in an
-     * {@link IllegalStateException} being thrown.
+     * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
+     * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
+     * an asynchronous response instance that has already been resumed has no effect and the method
+     * call is ignored. Once the request is canceled, any attempts to suspend or resume the asynchronous
+     * response will result in an {@link IllegalStateException} being thrown.
      * </p>
      */
     public abstract void cancel();
+
+    /**
+     * Cancel the suspended request processing.
+     * <p>
+     * When a request processing is cancelled using this method, the JAX-RS implementation
+     * MUST indicate to the client that the request processing has been cancelled by sending
+     * back a {@link javax.ws.rs.core.Response.Status#SERVICE_UNAVAILABLE HTTP 503 (Service unavailable)}
+     * error response with a {@code Retry-After} header set to the value provided by the method
+     * parameter.
+     * </p>
+     * <p>
+     * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
+     * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
+     * an asynchronous response instance that has already been resumed has no effect and the method
+     * call is ignored. Once the request is canceled, any attempts to suspend or resume the asynchronous
+     * response will result in an {@link IllegalStateException} being thrown.
+     * </p>
+     *
+     * @param retryAfter a decimal integer number of seconds after the response is sent to the client that
+     *                   indicates how long the service is expected to be unavailable to the requesting
+     *                   client.
+     */
+    public abstract void cancel(int retryAfter);
+
+    /**
+     * Cancel the suspended request processing.
+     * <p>
+     * When a request processing is cancelled using this method, the JAX-RS implementation
+     * MUST indicate to the client that the request processing has been cancelled by sending
+     * back a {@link javax.ws.rs.core.Response.Status#SERVICE_UNAVAILABLE HTTP 503 (Service unavailable)}
+     * error response with a {@code Retry-After} header set to the value provided by the method
+     * parameter.
+     * </p>
+     * <p>
+     * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
+     * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
+     * an asynchronous response instance that has already been resumed has no effect and the method
+     * call is ignored. Once the request is canceled, any attempts to suspend or resume the asynchronous
+     * response will result in an {@link IllegalStateException} being thrown.
+     * </p>
+     *
+     * @param retryAfter a date that indicates how long the service is expected to be unavailable to the
+     *                   requesting client.
+     */
+    public abstract void cancel(Date retryAfter);
 
     /**
      * Check if the asynchronous response instance is in a suspended state.
@@ -305,32 +349,12 @@ public abstract class AsynchronousResponse {
     public abstract boolean isDone();
 
     /**
-     * Set a default fall-back response to be used in case the suspended request
+     * Set a timeout response to be used in case the suspended request
      * execution does not terminate normally via a call to {@code resume(...)} method
-     * (e.g. is cancelled or times out).
-     * <p>
-     * The provided response data can be of any Java type that can be
-     * returned from a {@link javax.ws.rs.HttpMethod JAX-RS resource method}.
-     * If used, the processing of the data by JAX-RS framework follows the same
-     * path as it would for the response data returned synchronously by a JAX-RS
-     * resource method.
-     * </p>
+     * but times out instead.
      *
      * @param response data to be sent back to the client in case the suspended
-     *                 request is cancelled or times out.
-     * @see #getFallbackResponse
+     *                 response times out.
      */
-    public abstract void setFallbackResponse(Object response);
-
-    /**
-     * Get a default fall-back response to be send back to the client in case the
-     * suspended request execution is cancelled or times out. The method may return {@code null}
-     * if no default response was set in the execution context.
-     *
-     * @return default fall-back response to be sent back to the client in case the
-     *         suspended request execution is cancelled or times out. Returns {@code null} if no default
-     *         response was set.
-     * @see #setFallbackResponse
-     */
-    public abstract Response getFallbackResponse();
+    public abstract void setTimeoutResponse(Response response);
 }
