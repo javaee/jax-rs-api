@@ -51,6 +51,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsynchronousResponse;
+import javax.ws.rs.container.ConnectionCallback;
 import javax.ws.rs.container.Suspend;
 import javax.ws.rs.core.MediaType;
 
@@ -62,20 +63,21 @@ import javax.ws.rs.core.MediaType;
 @Path("/async/nextMessage")
 @Produces(MediaType.TEXT_PLAIN)
 @Consumes(MediaType.TEXT_PLAIN)
-public class AsyncEventResource {
+public class AsyncEventResource implements ConnectionCallback {
     private static final BlockingQueue<String> messages = new ArrayBlockingQueue<String>(5);
 
     @GET
-    public void readMessage(@Suspend final AsynchronousResponse asynchronousResponse) {
+    public void readMessage(@Suspend final AsynchronousResponse ar) {
+        ar.register(AsyncEventResource.class);
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    asynchronousResponse.resume(messages.take());
+                    ar.resume(messages.take());
                 } catch (InterruptedException ex) {
                     Logger.getLogger(AsyncEventResource.class.getName()).log(Level.SEVERE, null, ex);
-                    asynchronousResponse.cancel(); // close the open connection
+                    ar.cancel(); // close the open connection
                 }
             }
         });
@@ -96,5 +98,10 @@ public class AsyncEventResource {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDisconnect(AsynchronousResponse disconnected) {
+        System.out.println("Connection to the client has been lost for response: " + disconnected);
     }
 }

@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
  * of the active request and can be used to resume the request processing when
  * a response is available.
  * <p>
- * By default there is {@link AsynchronousResponse#NEVER no suspend timeout set} and
+ * By default there is {@link AsynchronousResponse#NO_TIMEOUT no suspend timeout set} and
  * the asynchronous response is suspended indefinitely. The suspend timeout can be
  * specified using the annotation values. Declaratively specified timeout can be further
  * programmatically overridden using the {@link AsynchronousResponse#setSuspendTimeout(long, TimeUnit)}
@@ -110,11 +110,11 @@ import java.util.concurrent.TimeUnit;
 public @interface Suspend {
     /**
      * Suspend timeout value in the given {@link #timeUnit() time unit}. A default
-     * value is {@link AsynchronousResponse#NEVER no timeout}. Similarly, any
+     * value is {@link AsynchronousResponse#NO_TIMEOUT no timeout}. Similarly, any
      * explicitly set value lower then or equal to zero will be treated as a "no timeout"
      * value.
      */
-    long timeOut() default AsynchronousResponse.NEVER;
+    long timeOut() default AsynchronousResponse.NO_TIMEOUT;
 
     /**
      * The suspend timeout time unit. Defaults to {@link java.util.concurrent.TimeUnit#MILLISECONDS}.
