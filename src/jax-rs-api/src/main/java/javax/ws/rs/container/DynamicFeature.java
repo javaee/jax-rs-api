@@ -69,8 +69,9 @@ public interface DynamicFeature {
     /**
      * A callback method called by the JAX-RS runtime during the application
      * deployment to register provider instances or classes in a
-     * {@link Configurable configurable} scope of a particular (sub)resource method;
-     * i.e. the providers that should be dynamically bound to the (sub)resource method.
+     * {@link Configurable configurable} scope of a particular {@link javax.ws.rs.HttpMethod
+     * resource or sub-resource method}; i.e. the providers that should be dynamically bound
+     * to the method.
      * <p>
      * The registered provider instances or classes are expected to be implementing one
      * or more of the following interfaces:
@@ -89,19 +90,19 @@ public interface DynamicFeature {
      * can be registered using a dynamic feature concept.
      * </p>
      * <p>
-     * Conceptually, this callback method is called during a (sub)resource method
-     * discovery phase (typically once per each discovered (sub)resource method) to
-     * register provider instances or classes in a {@code configurable} scope of
-     * a particular (sub)resource method identified by the supplied
+     * Conceptually, this callback method is called during a {@link javax.ws.rs.HttpMethod
+     * resource or sub-resource method} discovery phase (typically once per each discovered
+     * resource or sub-resource method) to register provider instances or classes in a
+     * {@code configurable} scope of each particular method identified by the supplied
      * {@link ResourceInfo resource information}.
      * The responsibility of the feature is to properly update the supplied {@code configurable}
      * context.
      * </p>
      *
      * @param resourceInfo resource class and method information.
-     * @param configurable a (sub)resource method-level configurable context associated
-     *                     with the {@code resourceInfo} in which the feature should be
-     *                     enabled.
+     * @param configurable a resource or sub-resource method-level configurable context
+     *                     associated with the {@code resourceInfo} in which the feature
+     *                     should be enabled.
      */
     public void configure(ResourceInfo resourceInfo, Configurable configurable);
 }

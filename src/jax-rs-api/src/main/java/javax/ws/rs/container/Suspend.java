@@ -39,10 +39,85 @@
  */
 package javax.ws.rs.container;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
+
 /**
- * TODO: javadoc.
+ * Inject a suspended {@link AsynchronousResponse} into a parameter of an invoked
+ * JAX-RS {@link javax.ws.rs.HttpMethod resource or sub-resource method}.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * The injected {@code AsynchronousResponse} instance is bound to the processing
+ * of the active request and can be used to resume the request processing when
+ * a response is available.
+ * <p>
+ * By default there is {@link AsynchronousResponse#NEVER no suspend timeout set} and
+ * the asynchronous response is suspended indefinitely. The suspend timeout can be
+ * specified using the annotation values. Declaratively specified timeout can be further
+ * programmatically overridden using the {@link AsynchronousResponse#setSuspendTimeout(long, TimeUnit)}
+ * method.
+ * <p/>
+ * <p>
+ * This type of {@code AsynchronousResponse} instance provisioning is useful in environments
+ * that provide additional support for thread management of asynchronously executed tasks,
+ * such as in case of asynchronous EJB methods:
+ * </p>
+ * <pre>
+ *  &#64;Stateless
+ *  &#64;Path("/")
+ *  public class MyEjbResource {
+ *    &#64;GET
+ *    &#64;Asynchronous
+ *    public void longRunningOperation(&#64;Suspend AsynchronousResponse ar) {
+ *      final String result = executeLongRunningOperation();
+ *      ar.resume(result);
+ *    }
+ *
+ *    private String executeLongRunningOperation() { &hellip; }
+ *  }
+ * </pre>
+ * <p>
+ * A resource or sub-resource method that injects an instance of an
+ * {@code AsynchronousResponse} using the {@code &#64;Suspend} annotation is expected
+ * be declared to return {@code void} type. Methods that inject asynchronous
+ * response instance using the {@code &#64;Suspend} annotation and declare a
+ * return type other than {@code void} MUST be detected by the JAX-RS runtime and
+ * a warning message MUST be logged. Any response value returned from such resource
+ * or sub-resource method MUST be ignored by the framework:
+ * </p>
+ * <pre>
+ * &#64;Path("/messages/next")
+ * public class MessagingResource {
+ *     &hellip;
+ *     &#64;GET
+ *     public String readMessage(&#64;Suspend AsynchronousResponse ar) {
+ *         suspended.put(ar);
+ *         return "This response will be ignored.";
+ *     }
+ *     &hellip;
+ * }
+ * </pre>
+ *
+ * @author Marek Potociar
+ * @since 2.0
  */
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface Suspend {
+    /**
+     * Suspend timeout value in the given {@link #timeUnit() time unit}. A default
+     * value is {@link AsynchronousResponse#NEVER no timeout}. Similarly, any
+     * explicitly set value lower then or equal to zero will be treated as a "no timeout"
+     * value.
+     */
+    long timeOut() default AsynchronousResponse.NEVER;
+
+    /**
+     * The suspend timeout time unit. Defaults to {@link java.util.concurrent.TimeUnit#MILLISECONDS}.
+     */
+    TimeUnit timeUnit() default TimeUnit.MILLISECONDS;
 }

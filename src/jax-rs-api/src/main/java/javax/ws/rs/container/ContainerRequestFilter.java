@@ -50,8 +50,8 @@ import java.io.IOException;
  * by JAX-RS runtime.
  * If there is a {@link javax.ws.rs.NameBinding &#64;NameBinding} annotation
  * applied to the filter, the filter will also be executed at the <i>post-match</i>
- * request extension point, but only in case the matched (sub)resource method is bound to
- * the same name-binding annotation.
+ * request extension point, but only in case the matched {@link javax.ws.rs.HttpMethod
+ * resource or sub-resource method} is bound to the same name-binding annotation.
  * </p>
  * <p>
  * In case the filter should be applied at the <i>pre-match</i> extension point,

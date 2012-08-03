@@ -41,6 +41,7 @@ package javax.ws.rs.core;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.container.AsynchronousResponse;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
 import javax.ws.rs.ext.RuntimeDelegate;

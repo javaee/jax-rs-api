@@ -49,9 +49,16 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * response manipulation.
  * <p>
  * A new instance of {@code AsynchronousResponse} is created by a call to a static
- * {@code AsynchronousResponse.suspend(...)} method. The returned asynchronous response instance
- * is bound to the running request and can be used to asynchronously provide the request processing
- * result or otherwise manipulate the suspended client connection. The available operations include:
+ * {@code AsynchronousResponse.suspend(...)} method.
+ * </p>
+ * <p>
+ * Alternatively, an instance of an asynchronous response may be injected into a
+ * {@link javax.ws.rs.HttpMethod resource or sub-resource method} parameter using
+ * the {@link Suspend &#64;Suspend} annotation.
+ * </p>
+ * Each asynchronous response instance is bound to the running request and can be used to
+ * asynchronously provide the request processing result or otherwise manipulate the suspended
+ * client connection. The available operations include:
  * <ul>
  * <li>setting a default fall-back response (e.g. in case of a time-out event etc.)</li>
  * <li>resuming the suspended request processing</li>
@@ -64,12 +71,12 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * </p>
  * <pre>
  * &#64;Path("/messages/next")
- * public class SimpleAsyncEventResource {
+ * public class MessagingResource {
  *     private static final BlockingQueue&lt;AsynchronousResponse&gt; suspended =
  *             new ArrayBlockingQueue&lt;AsynchronousResponse&gt;(5);
  *
  *     &#64;GET
- *     public AsynchronousResponse pickUpMessage() throws InterruptedException {
+ *     public AsynchronousResponse readMessage() throws InterruptedException {
  *         final AsynchronousResponse ar = AsynchronousResponse.suspend();
  *         suspended.put(ar);
  *         return ar;
@@ -84,10 +91,14 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * }
  * </pre>
  * <p>
- * Alternatively, an instance of asynchronous response may be injected into a field or
- * property of a request-scoped resource class or into a (sub)resource method using the
- * {@link javax.ws.rs.core.Context &#64;Context} annotation. In such case the
- *
+ * If the asynchronous response was suspended with a positive timeout value, and has
+ * not been explicitly resumed before the timeout has expired, the processing
+ * will be resumed once the specified timeout threshold is reached, provided a positive
+ * timeout value was set on the response. The request processing will be resumed using
+ * response data returned by the {@link #getFallbackResponse()} method. Should the method
+ * return {@code null}, a {@link javax.ws.rs.WebApplicationException} is raised with a
+ * HTTP 503 error status (Service unavailable). Use {@link #setFallbackResponse(Object)}
+ * method to programmatically customize the default timeout response.
  * </p>
  *
  * @author Marek Potociar (marek.potociar at oracle.com)

@@ -44,7 +44,7 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Application;
-import javax.ws.rs.core.AsynchronousResponse;
+import javax.ws.rs.container.AsynchronousResponse;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;

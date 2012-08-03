@@ -50,14 +50,15 @@ import java.io.IOException;
  * to a particular resource by JAX-RS runtime.
  * If there is a {@link javax.ws.rs.NameBinding &#64;NameBinding} annotation
  * applied to the filter, the filter will also be executed at the <i>post-match</i>
- * response extension point, but only in case the matched (sub)resource method is bound to
- * the same name-binding annotation.
+ * response extension point, but only in case the matched {@link javax.ws.rs.HttpMethod
+ * resource or sub-resource method} is bound to the same name-binding annotation.
  * </p>
  * <p>
  * In case the filter should be applied at the <i>pre-match</i> response extension point,
  * i.e. globaly for any response, regardless of whether the originating request has been
- * matched to a particular (sub)resource method or not, the
- * filter MUST be annotated with a {@link PreMatching &#64;PreMatching} annotation.
+ * matched to a particular {@link javax.ws.rs.HttpMethod resource or sub-resource method}
+ * or not, the filter MUST be annotated with a {@link PreMatching &#64;PreMatching}
+ * annotation.
  * </p>
  * <p>
  * Implement a name-bound or global response filter in cases when you want limit

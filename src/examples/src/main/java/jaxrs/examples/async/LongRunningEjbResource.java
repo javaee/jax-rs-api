@@ -39,10 +39,35 @@
  */
 package jaxrs.examples.async;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.container.AsynchronousResponse;
+import javax.ws.rs.core.Context;
+
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
+
 /**
  * TODO: javadoc.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
+@Stateless
+@Path("/")
 public class LongRunningEjbResource {
+    @GET
+    @Asynchronous
+    public void longRunningOperation(@Context AsynchronousResponse ar) {
+        final String result = executeLongRunningOperation();
+        ar.resume(result);
+    }
+
+    private String executeLongRunningOperation() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "done";
+    }
 }
