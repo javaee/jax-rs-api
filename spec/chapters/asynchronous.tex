@@ -6,7 +6,7 @@ This chapter describes the asynchronous processing capabilities in JAX-RS. Async
 \section{Introduction}
 \label{introduction_async}
 
-Asynchronous processing is a technique that enables a better and more efficient use of processing threads. On the client side, a thread that issues a request may also be responsible for updating a UI component; if that thread is blocked waiting for a response, the user's perceived performance of the application will suffer. Similarly, on the server side, a thread that is processing a request should avoid blocking while waiting for an external event to complete so that it can process other requests that may be arriving to the server during that period\footnote{The maximum number of request threads is typically set by the administrator; if that upper bound is reached, subsequent requests will be rejected.}.
+Asynchronous processing is a technique that enables a better and more efficient use of processing threads. On the client side, a thread that issues a request may also be responsible for updating a UI component; if that thread is blocked waiting for a response, the user's perceived performance of the application will suffer. Similarly, on the server side, a thread that is processing a request should avoid blocking while waiting for an external event to complete so that other requests arriving to the server during that period of time can be attended\footnote{The maximum number of request threads is typically set by the administrator; if that upper bound is reached, subsequent requests will be rejected.}.
 
 \section{Server API}
 \label{server_api}
@@ -18,38 +18,9 @@ Let us illustrate these concepts via an example:
 \begin{listing}{1}
 @Path("/async/longRunning")
 public class MyResource {
-
-    @GET
-    public void longRunningOp() {
-        final AsynchronousResponse ar = AsynchronousResponse.suspend();
-        Executors.newSingleThreadExecutor().submit(
-            new Runnable() {
-                public void run() {
-                    executeLongRunningOp();
-                    ar.resume("Hello async world!");
-        } });
-    } 
-}
-\end{listing}
-
-In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method: (i) calls \code{AsynchronousResponse.suspend} to suspend the connection, (ii) forks a (non-request) thread to execute a long running operation and (iii) returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling the method \code{resume} on the instance of \code{AsynchronousResponse} created when the connection was suspended.
-
-\subsection{Timeouts and Fallback Responses}
-\label{suspend_annotation}
-% Update label!
-
-A timeout value can be specified when suspending a connection to avoid waiting for a response indefinitely. The default unit is milliseconds, but any unit of type \code{java.util.concurrent.TimeUnit} can be used:
-
-\begin{listing}{1}
-@Path("/async/longRunning")
-public class MyResource {
     
     @GET
-    public void longRunningOp() {
-        final AsynchronousResponse ar = 
-            AsynchronousResponse.suspend(15, TimeUnit.SECONDS);
-        ar.setFallbackResponse(getMyResponse());
-
+    public void longRunningOp(@Suspend final AsynchronousResponse ar) {
         Executors.newSingleThreadExecutor().submit(
             new Runnable() {
                 public void run() {
@@ -57,13 +28,40 @@ public class MyResource {
                     ar.resume("Hello async world!");
         } });
     } 
-    ...
 }
 \end{listing}
 
-In this example, a timeout of 15 seconds is set when the connection is suspended. Additionally, a fallback response is set in case the timeout is reached before the connection is resumed.
+A resource method that elects to produce a response asynchronously must inject as a method parameter an instance of the class \code{AsynchronousResponse} using the special annotation \Suspend. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method forks a (non-request) thread to execute a long running operation and returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling \code{resume} on the injected instance of \code{AsynchronousResponse}.
 
-JAX-RS implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and no fallback response is set. The exception MUST be processed as described in section~\ref{method_exc}. If a fallback response is set, JAX-RS implementations are REQUIRED to return the fallback response without generating an exception when the timeout is reached. An \code{IllegalStateException} MUST be thrown if attempting to suspend a connection more than once or resume a connection that is not suspended.
+\subsection{Timeouts and Asynchronous Events}
+\label{suspend_annotation} %% Update label here
+
+A timeout value can be specified when suspending a connection to avoid waiting for a response indefinitely. The default unit is milliseconds, but any unit of type \code{java.util.concurrent.TimeUnit} can be used. The following example sets a timeout of 15 seconds and registers an instance of \code{TimeoutHandler} in case the timeout is reached before the connection is resumed.
+
+\begin{listing}{1}
+    @GET
+    public void longRunningOp(@Suspend(timeOut=15, timeUnit=SECONDS) 
+            final AsynchronousResponse ar) {
+        // Register timeout handler
+        ar.setTimeoutHandler(new TimeoutHandler() {
+            public void handleTimeout(AsynchronousResponse ar) {
+                ar.resume("Operation timed out -- please try again");
+            }
+        });
+        // Execute long running operation in new thread
+        Executors.newSingleThreadExecutor().submit(
+            new Runnable() {
+                public void run() {
+                    executeLongRunningOp();
+                    ar.resume("Hello async world!");
+        } });
+    }
+\end{listing}
+
+\jaxrs\ implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and either no timeout handler is registered or the registered timeout handler does not produce a response. The exception MUST be processed as described in section~\ref{method_exc}. If a registered timeout handler resumes the connection and returns a response, \jaxrs\ implementations MUST NOT generate an exception.
+
+It is also possible to register callbacks to listen for connection resumption (\code{ResumeCallback}) and connection termination (\code{ConnectionCallback}) events. See Javadoc for \code{AsynchronousResponse} for more information on how to register these callbacks.
+
 
 \section{EJB Resource Classes}
 \label{async_ejbs}
@@ -77,28 +75,22 @@ an asynchronous response.
 
 Consider the following example:
 
-\begin{ednote}
-This example requires JAX-RS implementations to (i) automatically suspend
-a connection when EJB's @Asynchronous is specified and (ii) inject the response as a parameter.
-\end{ednote}
-
 \begin{listing}{1}
 @Stateless 
 @Path("/")
 class EJBResource {
 
     @GET @Asynchronous
-    public void longRunningOp(@Context AsynchronousResponse ar) {
+    public void longRunningOp(@Suspend AsynchronousResponse ar) {
         executeLongRunningOp();
         ar.resume("Hello async world!");
     }
 }
 \end{listing}
 
-There is no explicit thread management is needed in this case since that is
+Note that no explicit thread management is needed in this case since that is
 under the control of the EJB container. Just like the other examples in this chapter,
-the response is produced by calling \code{resume} on the \code{AsynchronousResponse}. Hence,
-the return type of \code{longRunningOp} is simply \code{void}.
+the response is produced by calling \code{resume} on the injected \code{AsynchronousResponse}. Hence, the return type of \code{longRunningOp} is simply \code{void}.
 
 \section{Client API}
 \label{client_api_async}
