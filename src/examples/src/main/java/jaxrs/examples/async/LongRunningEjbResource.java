@@ -42,7 +42,7 @@ package jaxrs.examples.async;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.container.AsynchronousResponse;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.Suspend;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
@@ -57,7 +57,7 @@ import javax.ejb.Stateless;
 public class LongRunningEjbResource {
     @GET
     @Asynchronous
-    public void longRunningOperation(@Context AsynchronousResponse ar) {
+    public void longRunningOperation(@Suspend AsynchronousResponse ar) {
         final String result = executeLongRunningOperation();
         ar.resume(result);
     }
