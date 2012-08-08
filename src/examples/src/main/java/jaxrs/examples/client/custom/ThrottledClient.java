@@ -70,7 +70,7 @@ public final class ThrottledClient implements Client {
     public ThrottledClient(Configuration configuration, int queueCapacity) {
         this(queueCapacity);
 
-        configuration().update(configuration);
+        configuration().updateFrom(configuration);
     }
 
     @Override
