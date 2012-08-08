@@ -132,7 +132,11 @@ public interface Configurable {
     public Configurable setProperty(String name, Object value);
 
     /**
-     * Get the immutable set of enabled features.
+     * Get the immutable set of configured features.
+     * <p>
+     * The returned set contains the features that have already been successfully
+     * {@link Feature#configure(Configurable) configured} in this configuration context.
+     * </p>
      *
      * @return the enabled feature set. The returned value shall never be {@code null}.
      * @see Feature#configure(Configurable)
@@ -141,11 +145,8 @@ public interface Configurable {
 
     /**
      * Get the immutable set of registered provider classes to be instantiated,
-     * injected and utilized in the scope of the configured instance.
-     * <p />
-     * A provider class is a Java class with a {@link javax.ws.rs.ext.Provider}
-     * annotation declared on the class that implements a specific service
-     * interface.
+     * injected and utilized in the scope of the configured instance (excluding
+     * {@link Feature features}).
      *
      * @return the immutable set of registered provider classes. The returned
      *         value shall never be {@code null}.
@@ -155,11 +156,12 @@ public interface Configurable {
 
     /**
      * Get the immutable set of registered provider instances to be utilized by
-     * the configured instance.
-     * <p />
+     * the configured instance (excluding {@link Feature features}).
+     * <p>
      * When the configured instance is initialized the set of provider instances
      * will be combined and take precedence over the instantiated registered provider
      * classes.
+     * </p>
      *
      * @return the immutable set of registered provider instances. The returned
      *         value shall never be {@code null}.
@@ -183,7 +185,7 @@ public interface Configurable {
      * class will not be instantiated in such case.
      * </p>
      * <p>
-     * In case the registered provider is a {@link Feature feature},
+     * In case the registered class represents a {@link Feature feature},
      * this {@code Configurable} context instantiates the feature and invokes the
      * {@link Feature#configure(javax.ws.rs.core.Configurable)} method and
      * lets the feature update the configurable context. If the invocation
@@ -195,34 +197,39 @@ public interface Configurable {
      * @param providerClass provider class to be instantiated and used in the scope
      *                      of the configured instance.
      * @return the updated configurable instance.
-     * @see #getProviderClasses()
-     * @see #register(Class, Class[])
      */
     public Configurable register(Class<?> providerClass);
 
     /**
-     * Register a provider or a {@link Feature feature} class to be instantiated
-     * and used in the scope of the configured instance.
-     *
-     * The registered provider class is only registered as a provider of the listed
-     * {@code contracts}.
+     * Register a provider or a {@link Feature feature} class to be instantiated and used
+     * in the scope of the configured instance.
      * <p>
-     * As opposed to the providers registered by the
-     * {@link #register(Object, Class[])  provider instances}, providers
-     * registered using this method are instantiated and properly injected
-     * by the JAX-RS implementation provider. In case of a conflict between
-     * a registered provider instance and instantiated registered provider class,
-     * the registered provider instance takes precedence and the registered provider
-     * class will not be instantiated in such case.
+     * This registration method provides same functionality as {@link #register(Class)}
+     * except that any provider binding priority specified on the provider class using
+     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
+     * with the supplied {@code bindingPriority} value.
      * </p>
      * <p>
-     * In case the registered provider is a {@link Feature feature},
-     * this {@code Configurable} context instantiates the feature and invokes the
-     * {@link Feature#configure(javax.ws.rs.core.Configurable)} method and
-     * lets the feature update the configurable context. If the invocation
-     * of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
-     * the feature is added to the {@link #getFeatures() collection of enabled features},
-     * otherwise the feature instance is discarded.
+     * Note that in case the binding priority cannot be applied to a particular provider
+     * contract registered for the provider class, the supplied {@code bindingPriority} value
+     * is ignored.
+     * </p>
+     *
+     * @param providerClass   provider class to be instantiated and used in the scope
+     *                        of the configured instance.
+     * @param bindingPriority the overriding binding priority for the registered contract(s).
+     * @return the updated configurable instance.
+     */
+    public Configurable register(Class<?> providerClass, int bindingPriority);
+
+    /**
+     * Register a provider or a {@link Feature feature} class to be instantiated
+     * and used in the scope of the configured instance.
+     * <p>
+     * This registration method provides same functionality as {@link #register(Class)}
+     * except the provider class is only registered as a provider of the listed
+     * {@code contracts}. Note that in case the {@link Feature} interface is not listed
+     * explicitly, the provider class is not recognized as a JAX-RS feature.
      * </p>
      *
      * @param providerClass provider class to be instantiated and used in the scope
@@ -232,10 +239,34 @@ public interface Configurable {
      *                      provider class will be registered as a provider of all recognized
      *                      contracts implemented by the provider class.
      * @return the updated configurable instance.
-     * @see #getProviderClasses()
-     * @see #register(Class)
      */
     public <T> Configurable register(Class<T> providerClass, Class<? super T>... contracts);
+
+    /**
+     * Register a provider or a {@link Feature feature} class to be instantiated
+     * and used in the scope of the configured instance.
+     * <p>
+     * This registration method provides same functionality as {@link #register(Class, Class[])}
+     * except that any provider binding priority specified on the provider class using
+     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
+     * with the supplied {@code bindingPriority} value.
+     * </p>
+     * <p>
+     * Note that in case the binding priority cannot be applied to a particular provider
+     * contract registered for the provider class, the supplied {@code bindingPriority} value
+     * is ignored.
+     * </p>
+     *
+     * @param providerClass   provider class to be instantiated and used in the scope
+     *                        of the configured instance.
+     * @param bindingPriority the overriding binding priority for the registered contract(s).
+     * @param contracts       the specific set of contracts implemented by the provider class
+     *                        for which the provider should be registered. If omitted, the
+     *                        provider class will be registered as a provider of all recognized
+     *                        contracts implemented by the provider class.
+     * @return the updated configurable instance.
+     */
+    public <T> Configurable register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
 
     /**
      * Register a provider or a {@link Feature feature} ("singleton") instance to be used
@@ -253,7 +284,7 @@ public interface Configurable {
      * provider class will not be instantiated in such case.
      * </p>
      * <p>
-     * In case the registered provider is a {@link Feature feature},
+     * In case the registered class represents a {@link Feature feature},
      * this {@code Configurable} context instantiates the feature and invokes the
      * {@link Feature#configure(javax.ws.rs.core.Configurable)} method and
      * lets the feature update the configurable context. If the invocation
@@ -262,36 +293,42 @@ public interface Configurable {
      * otherwise the feature instance is discarded.
      * </p>
      *
-     * @param provider  a provider instance to be registered in the scope of the configured
-     *                  instance.
+     * @param provider a provider instance to be registered in the scope of the configured
+     *                 instance.
      * @return the updated configurable instance.
-     * @see #getProviderInstances()
-     * @see #register(Object, Class[])
      */
     public Configurable register(Object provider);
 
     /**
      * Register a provider or a {@link Feature feature} ("singleton") instance to be used
      * in the scope of the configured instance.
-     *
-     * The registered provider is only registered as a provider of the listed {@code contracts}.
      * <p>
-     * As opposed to the providers registered by the
-     * {@link #register(Class, Class[]) provider classes}, provider instances
-     * registered using this method are used "as is, i.e. are not managed or
-     * injected by the JAX-RS implementation provider. In case of a conflict
-     * between a registered provider instance and instantiated registered provider
-     * class, the registered provider instance takes precedence and the registered
-     * provider class will not be instantiated in such case.
+     * This registration method provides same functionality as {@link #register(Object)}
+     * except that any provider binding priority specified on the provider using
+     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
+     * with the supplied {@code bindingPriority} value.
      * </p>
      * <p>
-     * In case the registered provider is a {@link Feature feature},
-     * this {@code Configurable} context instantiates the feature and invokes the
-     * {@link Feature#configure(javax.ws.rs.core.Configurable)} method and
-     * lets the feature update the configurable context. If the invocation
-     * of {@link Feature#configure(javax.ws.rs.core.Configurable)} returns {@code true}
-     * the feature is added to the {@link #getFeatures() collection of enabled features},
-     * otherwise the feature instance is discarded.
+     * Note that in case the binding priority cannot be applied to a particular provider
+     * contract registered for the provider, the supplied {@code bindingPriority} value
+     * is ignored.
+     * </p>
+     *
+     * @param provider        provider class to be instantiated and used in the scope
+     *                        of the configured instance.
+     * @param bindingPriority the overriding binding priority for the registered contract(s).
+     * @return the updated configurable instance.
+     */
+    public Configurable register(Object provider, int bindingPriority);
+
+    /**
+     * Register a provider or a {@link Feature feature} ("singleton") instance to be used
+     * in the scope of the configured instance.
+     * <p>
+     * This registration method provides same functionality as {@link #register(Object)}
+     * except the provider is only registered as a provider of the listed
+     * {@code contracts}. Note that in case the {@link Feature} interface is not listed
+     * explicitly, the provider is not recognized as a JAX-RS feature.
      * </p>
      *
      * @param provider  a provider instance to be registered in the scope of the configured
@@ -301,8 +338,32 @@ public interface Configurable {
      *                  provider class will be registered as a provider of all recognized
      *                  contracts implemented by the provider class.
      * @return the updated configurable instance.
-     * @see #getProviderInstances()
-     * @see #register(Object)
      */
     public <T> Configurable register(Object provider, Class<? super T>... contracts);
+
+    /**
+     * Register a provider or a {@link Feature feature} ("singleton") instance to be used
+     * in the scope of the configured instance.
+     * <p>
+     * This registration method provides same functionality as {@link #register(Object, Class[])}
+     * except that any provider binding priority specified on the provider using
+     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
+     * with the supplied {@code bindingPriority} value.
+     * </p>
+     * <p>
+     * Note that in case the binding priority cannot be applied to a particular provider
+     * contract registered for the provider, the supplied {@code bindingPriority} value
+     * is ignored.
+     * </p>
+     *
+     * @param provider  a provider instance to be registered in the scope of the configured
+     *                  instance.
+     * @param bindingPriority the overriding binding priority for the registered contract(s).
+     * @param contracts the specific set of contracts implemented by the provider class
+     *                  for which the provider should be registered. If omitted, the
+     *                  provider class will be registered as a provider of all recognized
+     *                  contracts implemented by the provider class.
+     * @return the updated configurable instance.
+     */
+    public <T> Configurable register(Object provider, int bindingPriority, Class<? super T>... contracts);
 }

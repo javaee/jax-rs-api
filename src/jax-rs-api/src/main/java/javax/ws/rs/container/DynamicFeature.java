@@ -86,7 +86,7 @@ public interface DynamicFeature {
      * A provider instance or class that does not implement any of the interfaces
      * above may be ignored by the JAX-RS implementation. In such case a
      * {@link java.util.logging.Level#WARNING warning} message must be logged.
-     * JAX-RS implementations may support additional extension interfaces that
+     * JAX-RS implementations may support additional provider contracts that
      * can be registered using a dynamic feature concept.
      * </p>
      * <p>

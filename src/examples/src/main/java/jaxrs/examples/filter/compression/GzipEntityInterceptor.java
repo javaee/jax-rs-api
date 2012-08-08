@@ -57,7 +57,7 @@ import javax.ws.rs.ext.WriterInterceptorContext;
  */
 @Provider
 @Gzipped
-@BindingPriority(BindingPriority.DECODER)
+@BindingPriority(BindingPriority.ENTITY_CODER)
 public class GzipEntityInterceptor implements ReaderInterceptor, WriterInterceptor {
 
     @Override
