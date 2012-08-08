@@ -50,9 +50,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsynchronousResponse;
+import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.ConnectionCallback;
-import javax.ws.rs.container.Suspend;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -67,7 +67,7 @@ public class AsyncEventResource implements ConnectionCallback {
     private static final BlockingQueue<String> messages = new ArrayBlockingQueue<String>(5);
 
     @GET
-    public void readMessage(@Suspend final AsynchronousResponse ar) {
+    public void readMessage(@Suspended final AsyncResponse ar) {
         ar.register(AsyncEventResource.class);
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
@@ -84,24 +84,24 @@ public class AsyncEventResource implements ConnectionCallback {
     }
 
     @POST
-    public void postMessage(final String message, @Suspend final AsynchronousResponse asynchronousResponse) {
+    public void postMessage(final String message, @Suspended final AsyncResponse asyncResponse) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
             public void run() {
                 try {
                     messages.put(message);
-                    asynchronousResponse.resume("Message stored.");
+                    asyncResponse.resume("Message stored.");
                 } catch (InterruptedException ex) {
                     Logger.getLogger(AsyncEventResource.class.getName()).log(Level.SEVERE, null, ex);
-                    asynchronousResponse.resume(ex); // proagate info about the problem
+                    asyncResponse.resume(ex); // propagate info about the problem
                 }
             }
         });
     }
 
     @Override
-    public void onDisconnect(AsynchronousResponse disconnected) {
+    public void onDisconnect(AsyncResponse disconnected) {
         System.out.println("Connection to the client has been lost for response: " + disconnected);
     }
 }

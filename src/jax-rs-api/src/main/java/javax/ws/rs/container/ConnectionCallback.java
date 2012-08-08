@@ -41,7 +41,7 @@ package javax.ws.rs.container;
 
 /**
  * Asynchronous request processing lifecycle callback that receives connection
- * related {@link AsynchronousResponse asynchronous response} lifecycle events.
+ * related {@link AsyncResponse asynchronous response} lifecycle events.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
@@ -54,5 +54,5 @@ public interface ConnectionCallback {
      * @param disconnected asynchronous response for which the remote client connection
      *                     has been lost.
      */
-    public void onDisconnect(AsynchronousResponse disconnected);
+    public void onDisconnect(AsyncResponse disconnected);
 }

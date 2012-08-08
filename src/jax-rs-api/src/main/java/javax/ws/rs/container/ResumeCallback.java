@@ -43,14 +43,14 @@ import javax.ws.rs.core.Response;
 
 /**
  * Asynchronous request processing lifecycle callback that receives suspended
- * {@link AsynchronousResponse asynchronous response} resume events.
+ * {@link AsyncResponse asynchronous response} resume events.
  * <p>
  * A resume callback may receive resume events (from an asynchronous response
  * the callback was registered with) as a result of one of the following
  * actions:
  * <ul>
  * <li>asynchronous response has been resumed directly, by calling
- * {@link AsynchronousResponse#resume(Object)} or {@link AsynchronousResponse#resume(Throwable)}
+ * {@link AsyncResponse#resume(Object)} or {@link AsyncResponse#resume(Throwable)}
  * method</li>
  * <li>asynchronous response processing was cancelled resulting in an asynchronous response
  * instance being resumed with a generated error response</li>
@@ -71,14 +71,14 @@ public interface ResumeCallback {
      * response is being resumed by a response instance.
      * <p>
      * Callback implementations may use check whether resuming asynchronous response
-     * {@link javax.ws.rs.container.AsynchronousResponse#isCancelled() has been cancelled}
+     * {@link AsyncResponse#isCancelled() has been cancelled}
      * or not.
      * </p>
      *
      * @param resuming asynchronous response to be resumed.
      * @param response response used to resume the asynchronous response.
      */
-    public void onResume(AsynchronousResponse resuming, Response response);
+    public void onResume(AsyncResponse resuming, Response response);
 
     /**
      * A resume callback notification method that will be invoked in case the asynchronous
@@ -87,5 +87,5 @@ public interface ResumeCallback {
      * @param resuming asynchronous response to be resumed.
      * @param error error used to resume the asynchronous response.
      */
-    public void onResume(AsynchronousResponse resuming, Throwable error);
+    public void onResume(AsyncResponse resuming, Throwable error);
 }

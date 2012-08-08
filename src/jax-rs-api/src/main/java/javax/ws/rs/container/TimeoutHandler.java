@@ -48,19 +48,19 @@ package javax.ws.rs.container;
  * By default, JAX-RS runtime generates a {@link javax.ws.rs.WebApplicationException}
  * with a {@link javax.ws.rs.core.Response.Status#SERVICE_UNAVAILABLE HTTP 503
  * (Service unavailable)} error response status code. A custom time-out handler
- * may be {@link AsynchronousResponse#setTimeoutHandler(TimeoutHandler) set} on an
+ * may be {@link AsyncResponse#setTimeoutHandler(TimeoutHandler) set} on an
  * asynchronous response instance to provide custom time-out event resolution.
  * </p>
  * <p>
  * In case of a suspend time-out event, a custom time-out handler takes typically one
  * of the following actions:
  * <ul>
- * <li>Resumes the suspended asynchronous response using a {@link AsynchronousResponse#resume(Object)
- * custom response} or a {@link AsynchronousResponse#resume(Throwable) custom exception}</li>
- * <li>Cancels the response by calling one of the {@link AsynchronousResponse} {@code cancel(...)}
+ * <li>Resumes the suspended asynchronous response using a {@link AsyncResponse#resume(Object)
+ * custom response} or a {@link AsyncResponse#resume(Throwable) custom exception}</li>
+ * <li>Cancels the response by calling one of the {@link AsyncResponse} {@code cancel(...)}
  * methods.</li>
  * <li>Extends the suspend period of the response by
- * {@link AsynchronousResponse#setSuspendTimeout(long, java.util.concurrent.TimeUnit)
+ * {@link AsyncResponse#setSuspendTimeout(long, java.util.concurrent.TimeUnit)
  * setting a new suspend time-out}</li>
  * </ul>
  * If the registered time-out handler does not take any of the actions above, the
@@ -101,5 +101,26 @@ package javax.ws.rs.container;
  * @since 2.0
  */
 public interface TimeoutHandler {
-    public void handleTimeout(AsynchronousResponse asynchronousResponse);
+
+    /**
+     * Invoked when the suspended asynchronous response is about to time out.
+     *
+     * Implementing time-out handlers may use the callback method to change the
+     * default time-out strategy defined by JAX-RS specification (see
+     * {@link javax.ws.rs.container.Suspended.DefaultTimeoutHandler}).
+     * <p>
+     * A custom time-out handler may decide to either
+     * <ul>
+     * <li>resume the suspended response using one of it's {@code resume(...)} methods,</li>
+     * <li>cancel the suspended response using one of it's {@code cancel(...)} methods, or</li>
+     * <li>extend the suspend period by {@link AsyncResponse#setSuspendTimeout(long, java.util.concurrent.TimeUnit)
+     * setting a new suspend time-out}</li>
+     * </ul>
+     * </p>
+     * In case the time-out handler does not take any of the actions mentioned above,
+     * a default time-out strategy is executed by the JAX-RS runtime.
+     *
+     * @param asyncResponse suspended asynchronous response that is timing out.
+     */
+    public void handleTimeout(AsyncResponse asyncResponse);
 }

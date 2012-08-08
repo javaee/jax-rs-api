@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * A new instance of {@code AsynchronousResponse} may be injected into a
  * {@link javax.ws.rs.HttpMethod resource or sub-resource method} parameter using
- * the {@link Suspend &#64;Suspend} annotation.
+ * the {@link Suspended &#64;Suspend} annotation.
  * </p>
  * Each asynchronous response instance is bound to the running request and can be used to
  * asynchronously provide the request processing result or otherwise manipulate the suspended
@@ -87,18 +87,14 @@ import java.util.concurrent.TimeUnit;
  * If the asynchronous response was suspended with a positive timeout value, and has
  * not been explicitly resumed before the timeout has expired, the processing
  * will be resumed once the specified timeout threshold is reached, provided a positive
- * timeout value was set on the response. By default a timed-out asynchronous response
- * is resumed with a {@link javax.ws.rs.WebApplicationException} that has
- * {@link javax.ws.rs.core.Response.Status#SERVICE_UNAVAILABLE HTTP 503 (Service unavailable)}
- * error response status code set. This default behavior may
- * be overridden by {@link #setTimeoutHandler(TimeoutHandler) providing} a custom
- * {@link TimeoutHandler time-out handler}.
+ * timeout value was set on the response. See the {@link javax.ws.rs.container.Suspended.DefaultTimeoutHandler}
+ * documentation for the description of the default time-out JAX-RS processing behavior.
  * </p>
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.0
  */
-public interface AsynchronousResponse {
+public interface AsyncResponse {
     /**
      * Constant specifying no suspend timeout value.
      */
@@ -267,7 +263,7 @@ public interface AsynchronousResponse {
      * @return updated asynchronous response instance.
      * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
      */
-    public AsynchronousResponse setSuspendTimeout(long time, TimeUnit unit) throws IllegalStateException;
+    public AsyncResponse setSuspendTimeout(long time, TimeUnit unit) throws IllegalStateException;
 
     /**
      * Set/replace a time-out handler for the suspended asynchronous response.
@@ -289,7 +285,7 @@ public interface AsynchronousResponse {
      * @param handler response time-out handler.
      * @return updated asynchronous response instance.
      */
-    public AsynchronousResponse setTimeoutHandler(TimeoutHandler handler);
+    public AsyncResponse setTimeoutHandler(TimeoutHandler handler);
 
     /**
      * Register an asynchronous processing lifecycle callback class to receive lifecycle
@@ -301,11 +297,11 @@ public interface AsynchronousResponse {
      * @throws NullPointerException     in case the callback class is {@code null}.
      * @throws IllegalArgumentException in case the callback class does not implement any
      *                                  recognized callback interface.
-     * @see #addCallback
+     * @see #register(Object)
      * @see ResumeCallback
      * @see ConnectionCallback
      */
-    public AsynchronousResponse register(Class<?> callback) throws NullPointerException, IllegalArgumentException;
+    public AsyncResponse register(Class<?> callback) throws NullPointerException, IllegalArgumentException;
 
     /**
      * Register an asynchronous processing lifecycle callback instance to receive lifecycle
@@ -317,8 +313,9 @@ public interface AsynchronousResponse {
      * @throws NullPointerException     in case the callback instance is {@code null}.
      * @throws IllegalArgumentException in case the callback instance does not implement any
      *                                  recognized callback interface.
+     * @see #register(Class)
      * @see ResumeCallback
      * @see ConnectionCallback
      */
-    public AsynchronousResponse register(Object callback) throws NullPointerException, IllegalArgumentException;
+    public AsyncResponse register(Object callback) throws NullPointerException, IllegalArgumentException;
 }

@@ -50,8 +50,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.container.AsynchronousResponse;
-import javax.ws.rs.container.Suspend;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.ManagedAsync;
+import javax.ws.rs.container.Suspended;
 
 /**
  * Long-running asynchronous processing examples.
@@ -75,8 +76,8 @@ public class LongRunningAsyncOperationResource {
 
     @GET
     @Path("async")
-    public void suspendViaAnnotationExample(
-            @Suspend(timeOut = 15, timeUnit = SECONDS) final AsynchronousResponse ar) {
+    public void asyncExample(
+            @Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
@@ -90,11 +91,24 @@ public class LongRunningAsyncOperationResource {
         });
     }
 
+
+    @GET
+    @Path("managedAsync")
+    @ManagedAsync
+    public void managedAsyncExample(@Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
+        }
+        ar.resume("Hello async world!");
+    }
+
     @GET
     @Path("asyncSelective")
-    public void suspendViaContextExample(
+    public void selectiveSuspend(
             @QueryParam("query") final String query,
-            @Suspend(timeOut = 15, timeUnit = SECONDS) final AsynchronousResponse ar) {
+            @Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
         if (!isComplex(query)) {
             // process simple queries synchronously
             ar.resume("Simple result for " + query);
@@ -121,9 +135,9 @@ public class LongRunningAsyncOperationResource {
 
     @GET
     @Path("asyncTimeoutOverride")
-    public void timeoutValueConflict_OverridingExample(
+    public void overriddenTimeoutAsync(
             @QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit,
-            @Suspend(timeOut = 15, timeUnit = SECONDS) final AsynchronousResponse ar) {
+            @Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
         if (timeOut != null && timeUnit != null) {
             ar.setSuspendTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overridden
         }
@@ -146,7 +160,7 @@ public class LongRunningAsyncOperationResource {
     @GET
     @Path("asyncHandleUsage")
     public void suspendHandleUsageExample(
-            @Suspend(timeOut = 15, timeUnit = SECONDS) final AsynchronousResponse ar) {
+            @Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override
