@@ -51,9 +51,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.ConnectionCallback;
+import javax.ws.rs.container.ResumeCallback;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Asynchronous event-based request processing example.
@@ -63,7 +64,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/async/nextMessage")
 @Produces(MediaType.TEXT_PLAIN)
 @Consumes(MediaType.TEXT_PLAIN)
-public class AsyncEventResource implements ConnectionCallback {
+public class AsyncEventResource implements ResumeCallback {
     private static final BlockingQueue<String> messages = new ArrayBlockingQueue<String>(5);
 
     @GET
@@ -101,7 +102,12 @@ public class AsyncEventResource implements ConnectionCallback {
     }
 
     @Override
-    public void onDisconnect(AsyncResponse disconnected) {
-        System.out.println("Connection to the client has been lost for response: " + disconnected);
+    public void onResume(AsyncResponse resuming, Response response) {
+        System.out.println("Resumed with a response.");
+    }
+
+    @Override
+    public void onResume(AsyncResponse resuming, Throwable error) {
+        System.out.println("Resumed with error.");
     }
 }

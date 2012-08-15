@@ -87,8 +87,13 @@ import java.util.concurrent.TimeUnit;
  * If the asynchronous response was suspended with a positive timeout value, and has
  * not been explicitly resumed before the timeout has expired, the processing
  * will be resumed once the specified timeout threshold is reached, provided a positive
- * timeout value was set on the response. See the {@link javax.ws.rs.container.Suspended.DefaultTimeoutHandler}
- * documentation for the description of the default time-out JAX-RS processing behavior.
+ * timeout value was set on the response.
+ * </p>
+ * <p>
+ * By default a timed-out asynchronous response is resumed with a {@link javax.ws.rs.WebApplicationException}
+ * that has {@link javax.ws.rs.core.Response.Status#SERVICE_UNAVAILABLE HTTP 503 (Service unavailable)}
+ * error response status code set. This default behavior may be overridden by
+ * {@link AsyncResponse#setTimeoutHandler(TimeoutHandler) setting} a custom {@link TimeoutHandler time-out handler}.
  * </p>
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
@@ -260,10 +265,9 @@ public interface AsyncResponse {
      * @param time suspend timeout value in the give time {@code unit}. Value lower
      *             or equal to 0 causes the context to suspend indefinitely.
      * @param unit suspend timeout value time unit.
-     * @return updated asynchronous response instance.
      * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
      */
-    public AsyncResponse setSuspendTimeout(long time, TimeUnit unit) throws IllegalStateException;
+    public void setTimeout(long time, TimeUnit unit) throws IllegalStateException;
 
     /**
      * Set/replace a time-out handler for the suspended asynchronous response.
@@ -283,25 +287,34 @@ public interface AsyncResponse {
      * </p>
      *
      * @param handler response time-out handler.
-     * @return updated asynchronous response instance.
      */
-    public AsyncResponse setTimeoutHandler(TimeoutHandler handler);
+    public void setTimeoutHandler(TimeoutHandler handler);
 
     /**
      * Register an asynchronous processing lifecycle callback class to receive lifecycle
      * events for the asynchronous response based on the implemented callback interfaces.
      *
-     * @param callback callback class implementing one or more of the recognized callback
-     *                 interfaces.
-     * @return updated asynchronous response instance.
-     * @throws NullPointerException     in case the callback class is {@code null}.
-     * @throws IllegalArgumentException in case the callback class does not implement any
-     *                                  recognized callback interface.
-     * @see #register(Object)
+     * @param callback callback class.
+     * @return {@code true} if the callback class was recognized and registered, {@code false}
+     *         otherwise.
+     * @throws NullPointerException in case the callback class is {@code null}.
      * @see ResumeCallback
-     * @see ConnectionCallback
      */
-    public AsyncResponse register(Class<?> callback) throws NullPointerException, IllegalArgumentException;
+    public boolean register(Class<?> callback) throws NullPointerException, IllegalArgumentException;
+
+    /**
+     * Register asynchronous processing lifecycle callback classes to receive lifecycle
+     * events for the asynchronous response based on the implemented callback interfaces.
+     *
+     * @param callback  callback class.
+     * @param callbacks additional callback classes.
+     * @return a {@code boolean} array of the size equal to the number of registered callback classes.
+     *         Each value in the array indicate whether the particular callback class was registered
+     *         successfully or not.
+     * @throws NullPointerException in case any of the callback classes is {@code null}.
+     * @see ResumeCallback
+     */
+    public boolean[] register(Class<?> callback, Class<?>... callbacks) throws NullPointerException, IllegalArgumentException;
 
     /**
      * Register an asynchronous processing lifecycle callback instance to receive lifecycle
@@ -309,13 +322,26 @@ public interface AsyncResponse {
      *
      * @param callback callback instance implementing one or more of the recognized callback
      *                 interfaces.
-     * @return updated asynchronous response instance.
+     * @return {@code true} if the callback class was recognized and registered, {@code false}
+     *         otherwise.
      * @throws NullPointerException     in case the callback instance is {@code null}.
      * @throws IllegalArgumentException in case the callback instance does not implement any
      *                                  recognized callback interface.
-     * @see #register(Class)
      * @see ResumeCallback
-     * @see ConnectionCallback
      */
     public AsyncResponse register(Object callback) throws NullPointerException, IllegalArgumentException;
+
+    /**
+     * Register an asynchronous processing lifecycle callback instances to receive lifecycle
+     * events for the asynchronous response based on the implemented callback interfaces.
+     *
+     * @param callback  callback instance.
+     * @param callbacks additional callback instances.
+     * @return a {@code boolean} array of the size equal to the number of registered callbacks.
+     *         Each value in the array indicate whether the particular callback was registered
+     *         successfully or not.
+     * @throws NullPointerException in case any of the callback instances is {@code null}.
+     * @see ResumeCallback
+     */
+    public AsyncResponse register(Object callback, Object... callbacks) throws NullPointerException, IllegalArgumentException;
 }

@@ -51,7 +51,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.ManagedAsync;
 import javax.ws.rs.container.Suspended;
 
 /**
@@ -77,7 +76,8 @@ public class LongRunningAsyncOperationResource {
     @GET
     @Path("async")
     public void asyncExample(
-            @Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
+            @Suspended final AsyncResponse ar) {
+        ar.setTimeout(15, SECONDS);
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
             public void run() {
@@ -91,24 +91,9 @@ public class LongRunningAsyncOperationResource {
         });
     }
 
-
-    @GET
-    @Path("managedAsync")
-    @ManagedAsync
-    public void managedAsyncExample(@Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(LongRunningAsyncOperationResource.class.getName()).log(Level.SEVERE, "Response processing interrupted", ex);
-        }
-        ar.resume("Hello async world!");
-    }
-
     @GET
     @Path("asyncSelective")
-    public void selectiveSuspend(
-            @QueryParam("query") final String query,
-            @Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
+    public void selectiveSuspend(@QueryParam("query") final String query, @Suspended final AsyncResponse ar) {
         if (!isComplex(query)) {
             // process simple queries synchronously
             ar.resume("Simple result for " + query);
@@ -135,11 +120,12 @@ public class LongRunningAsyncOperationResource {
 
     @GET
     @Path("asyncTimeoutOverride")
-    public void overriddenTimeoutAsync(
-            @QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit,
-            @Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
+    public void overriddenTimeoutAsync(@QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit,
+                                       @Suspended final AsyncResponse ar) {
         if (timeOut != null && timeUnit != null) {
-            ar.setSuspendTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overridden
+            ar.setTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overridden
+        } else {
+            ar.setTimeout(15, SECONDS);
         }
 
         Executors.newSingleThreadExecutor().submit(new Runnable() {
@@ -159,8 +145,8 @@ public class LongRunningAsyncOperationResource {
 
     @GET
     @Path("asyncHandleUsage")
-    public void suspendHandleUsageExample(
-            @Suspended(timeOut = 15, timeUnit = SECONDS) final AsyncResponse ar) {
+    public void suspendHandleUsageExample(@Suspended final AsyncResponse ar) {
+        ar.setTimeout(15, SECONDS);
         Executors.newSingleThreadExecutor().submit(new Runnable() {
 
             @Override

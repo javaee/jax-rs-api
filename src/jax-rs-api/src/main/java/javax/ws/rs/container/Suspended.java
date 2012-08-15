@@ -46,10 +46,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.ServerErrorException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 /**
  * Inject a suspended {@link AsyncResponse} into a parameter of an invoked
  * JAX-RS {@link javax.ws.rs.HttpMethod resource or sub-resource method}.
@@ -59,23 +55,21 @@ import javax.ws.rs.core.Response;
  * a response is available.
  * <p>
  * By default there is {@link AsyncResponse#NO_TIMEOUT no suspend timeout set} and
- * the asynchronous response is suspended indefinitely. The suspend timeout can be
- * specified using the annotation values. Declaratively specified timeout can be further
- * programmatically overridden using the {@link AsyncResponse#setSuspendTimeout(long, TimeUnit)}
- * method.
+ * the asynchronous response is suspended indefinitely. The suspend timeout as well
+ * as a custom {@link TimeoutHandler timeout handler} can be specified programmatically
+ * using the {@link AsyncResponse#setTimeout(long, TimeUnit)} and
+ * {@link AsyncResponse#setTimeoutHandler(TimeoutHandler)} methods. For example:
  * <p/>
- * <p>
- * This type of {@code AsynchronousResponse} instance provisioning is useful in environments
- * that provide additional support for thread management of asynchronously executed tasks,
- * such as in case of asynchronous EJB methods:
- * </p>
  * <pre>
  *  &#64;Stateless
  *  &#64;Path("/")
  *  public class MyEjbResource {
+ *    &hellip;
  *    &#64;GET
  *    &#64;Asynchronous
- *    public void longRunningOperation(&#64;Suspend AsynchronousResponse ar) {
+ *    public void longRunningOperation(&#64;Suspended AsynchronousResponse ar) {
+ *      ar.setTimeoutHandler(customHandler);
+ *      ar.setTimeout(10, TimeUnit.SECONDS);
  *      final String result = executeLongRunningOperation();
  *      ar.resume(result);
  *    }
@@ -84,10 +78,10 @@ import javax.ws.rs.core.Response;
  *  }
  * </pre>
  * <p>
- * A resource or sub-resource method that injects an instance of an
- * {@code AsynchronousResponse} using the {@code &#64;Suspend} annotation is expected
+ * A resource or sub-resource method that injects a suspended instance of an
+ * {@code AsynchronousResponse} using the {@code &#64;Suspended} annotation is expected
  * be declared to return {@code void} type. Methods that inject asynchronous
- * response instance using the {@code &#64;Suspend} annotation and declare a
+ * response instance using the {@code &#64;Suspended} annotation and declare a
  * return type other than {@code void} MUST be detected by the JAX-RS runtime and
  * a warning message MUST be logged. Any response value returned from such resource
  * or sub-resource method MUST be ignored by the framework:
@@ -97,7 +91,7 @@ import javax.ws.rs.core.Response;
  * public class MessagingResource {
  *     &hellip;
  *     &#64;GET
- *     public String readMessage(&#64;Suspend AsynchronousResponse ar) {
+ *     public String readMessage(&#64;Suspended AsynchronousResponse ar) {
  *         suspended.put(ar);
  *         return "This response will be ignored.";
  *     }
@@ -112,53 +106,4 @@ import javax.ws.rs.core.Response;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Suspended {
-    /**
-     * A default timeout-handler registered with the suspended {@link AsyncResponse asynchronous response}.
-     * <p>
-     * This handler implements the default JAX-RS processing behavior for a timed-out asynchronous response.
-     * When invoked a timed-out asynchronous response is resumed with a {@link javax.ws.rs.WebApplicationException}
-     * that has {@link javax.ws.rs.core.Response.Status#SERVICE_UNAVAILABLE HTTP 503 (Service unavailable)}
-     * error response status code set. This default behavior may be overridden by
-     * {@link AsyncResponse#setTimeoutHandler(TimeoutHandler) setting} a custom {@link TimeoutHandler time-out handler}.
-     * </p>
-     */
-    public static final class DefaultTimeoutHandler implements TimeoutHandler {
-        @Override
-        public void handleTimeout(AsyncResponse asyncResponse) {
-            asyncResponse.resume(new ServerErrorException(
-                    Response.status(Response.Status.SERVICE_UNAVAILABLE)
-                            .entity("Request processing has timed out.")
-                            .type(MediaType.TEXT_PLAIN_TYPE)
-                            .build()));
-        }
-    }
-
-    /**
-     * Suspend timeout value in the given {@link #timeUnit() time unit}. A default
-     * value is {@link AsyncResponse#NO_TIMEOUT no timeout}. Similarly, any
-     * explicitly set value lower then or equal to zero will be treated as a "no timeout"
-     * value.
-     */
-    long timeOut() default AsyncResponse.NO_TIMEOUT;
-
-    /**
-     * The suspend timeout time unit. Defaults to {@link java.util.concurrent.TimeUnit#MILLISECONDS}.
-     */
-    TimeUnit timeUnit() default TimeUnit.MILLISECONDS;
-
-    /**
-     * Set a time-out handler for the suspended asynchronous response. Defaults to
-     * {@link DefaultTimeoutHandler} class.
-     *
-     * @see AsyncResponse#setTimeoutHandler(TimeoutHandler)
-     */
-    Class<? extends TimeoutHandler> timeoutHandler() default DefaultTimeoutHandler.class;
-
-    /**
-     * Register lifecycle callbacks for the suspended asynchronous response. Defaults to
-     * an empty array.
-     *
-     * @see AsyncResponse#register(Class)
-     */
-    Class<?>[] callbacks() default {};
 }

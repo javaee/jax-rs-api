@@ -60,7 +60,7 @@ package javax.ws.rs.container;
  * <li>Cancels the response by calling one of the {@link AsyncResponse} {@code cancel(...)}
  * methods.</li>
  * <li>Extends the suspend period of the response by
- * {@link AsyncResponse#setSuspendTimeout(long, java.util.concurrent.TimeUnit)
+ * {@link AsyncResponse#setTimeout(long, java.util.concurrent.TimeUnit)
  * setting a new suspend time-out}</li>
  * </ul>
  * If the registered time-out handler does not take any of the actions above, the
@@ -75,7 +75,7 @@ package javax.ws.rs.container;
  *     &hellip;
  *     public void handleTimeout(AsynchronousResponse ar) {
  *         if (keepSuspended) {
- *             ar.setSuspendTimeout(10, SECONDS);
+ *             ar.setTimeout(10, SECONDS);
  *         } else if (cancel) {
  *             ar.cancel(retryPeriod);
  *         } else {
@@ -107,13 +107,13 @@ public interface TimeoutHandler {
      *
      * Implementing time-out handlers may use the callback method to change the
      * default time-out strategy defined by JAX-RS specification (see
-     * {@link javax.ws.rs.container.Suspended.DefaultTimeoutHandler}).
+     * {@link javax.ws.rs.container.AsyncResponse} API documentation).
      * <p>
      * A custom time-out handler may decide to either
      * <ul>
      * <li>resume the suspended response using one of it's {@code resume(...)} methods,</li>
      * <li>cancel the suspended response using one of it's {@code cancel(...)} methods, or</li>
-     * <li>extend the suspend period by {@link AsyncResponse#setSuspendTimeout(long, java.util.concurrent.TimeUnit)
+     * <li>extend the suspend period by {@link AsyncResponse#setTimeout(long, java.util.concurrent.TimeUnit)
      * setting a new suspend time-out}</li>
      * </ul>
      * </p>
