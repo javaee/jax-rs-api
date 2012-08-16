@@ -105,7 +105,8 @@ public abstract class Response {
      * @return the message entity or {@code null} if message does not contain an
      *         entity body.
      * @throws IllegalStateException if the entity was previously fully consumed
-     *                               as an {@link InputStream input stream}.
+     *                               as an {@link InputStream input stream}, or
+     *                               if the response has been {@link #close() closed}.
      */
     public abstract Object getEntity() throws IllegalStateException;
 
@@ -138,6 +139,7 @@ public abstract class Response {
      * @throws MessageProcessingException if the content of the message cannot be
      *                                    mapped to an entity of the requested type.
      * @throws IllegalStateException      if the entity is not backed by an input stream,
+     *                                    the response has been {@link #close() closed} already,
      *                                    or if the entity input stream has been fully consumed already and has
      *                                    not been buffered prior consuming.
      * @see javax.ws.rs.ext.MessageBodyReader
@@ -174,6 +176,7 @@ public abstract class Response {
      * @throws MessageProcessingException if the content of the message cannot be
      *                                    mapped to an entity of the requested type.
      * @throws IllegalStateException      if the entity is not backed by an input stream,
+     *                                    the response has been {@link #close() closed} already,
      *                                    or if the entity input stream has been fully consumed already and has
      *                                    not been buffered prior consuming.
      * @see javax.ws.rs.ext.MessageBodyReader
@@ -211,12 +214,14 @@ public abstract class Response {
      * @throws MessageProcessingException if the content of the message cannot be
      *                                    mapped to an entity of the requested type.
      * @throws IllegalStateException      if the entity is not backed by an input stream,
+     *                                    the response has been {@link #close() closed} already,
      *                                    or if the entity input stream has been fully consumed already and has
      *                                    not been buffered prior consuming.
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
-    public abstract <T> T readEntity(Class<T> entityType, Annotation[] annotations) throws MessageProcessingException, IllegalStateException;
+    public abstract <T> T readEntity(Class<T> entityType, Annotation[] annotations)
+            throws MessageProcessingException, IllegalStateException;
 
     /**
      * Read the message entity input stream as an instance of specified Java type
@@ -248,6 +253,7 @@ public abstract class Response {
      * @throws MessageProcessingException if the content of the message cannot be
      *                                    mapped to an entity of the requested type.
      * @throws IllegalStateException      if the entity is not backed by an input stream,
+     *                                    the response has been {@link #close() closed} already,
      *                                    or if the entity input stream has been fully consumed already and has
      *                                    not been buffered prior consuming.
      * @see javax.ws.rs.ext.MessageBodyReader
@@ -262,9 +268,10 @@ public abstract class Response {
      *
      * @return {@code true} if there is an entity present in the message,
      *         {@code false} otherwise.
+     * @throws IllegalStateException in case the response has been {@link #close() closed}.
      * @since 2.0
      */
-    public abstract boolean hasEntity();
+    public abstract boolean hasEntity() throws IllegalStateException;
 
     /**
      * Buffer the message entity data.
@@ -293,17 +300,18 @@ public abstract class Response {
      * once the response instance itself is {@link #close() closed}, the implementations
      * are expected to release the buffered message entity data. Therefore any subsequent
      * attempts to read a message entity stream on such closed response will result in an
-     * {@link MessageProcessingException} being thrown.
+     * {@link IllegalStateException} being thrown.
      * </p>
      *
      * @return {@code true} if the message entity input stream was available and
      *         was buffered successfully, returns {@code false} if the entity stream
      *         was not available.
-     * @throws MessageProcessingException if there was an error while buffering
-     *                                    the entity input stream.
+     * @throws MessageProcessingException if there was an error while buffering the entity
+     *                                    input stream.
+     * @throws IllegalStateException      in case the response has been {@link #close() closed}.
      * @since 2.0
      */
-    public abstract boolean bufferEntity() throws MessageProcessingException;
+    public abstract boolean bufferEntity() throws MessageProcessingException, IllegalStateException;
 
     /**
      * Close the underlying message entity input stream (if available and open)
@@ -322,8 +330,8 @@ public abstract class Response {
      * processes only the response headers and ignores the response entity.
      * </p>
      * <p>
-     * Any attempts to read a message entity stream on a closed response
-     * will result in an {@link MessageProcessingException} being thrown.
+     * Any attempts to manipulate (read, get, buffer) a message entity on a closed response
+     * will result in an {@link IllegalStateException} being thrown.
      * </p>
      *
      * @throws MessageProcessingException if there is an error closing the response.
