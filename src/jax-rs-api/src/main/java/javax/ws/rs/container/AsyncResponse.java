@@ -329,7 +329,7 @@ public interface AsyncResponse {
      *                                  recognized callback interface.
      * @see ResumeCallback
      */
-    public AsyncResponse register(Object callback) throws NullPointerException, IllegalArgumentException;
+    public boolean register(Object callback) throws NullPointerException, IllegalArgumentException;
 
     /**
      * Register an asynchronous processing lifecycle callback instances to receive lifecycle
@@ -343,5 +343,5 @@ public interface AsyncResponse {
      * @throws NullPointerException in case any of the callback instances is {@code null}.
      * @see ResumeCallback
      */
-    public AsyncResponse register(Object callback, Object... callbacks) throws NullPointerException, IllegalArgumentException;
+    public boolean[] register(Object callback, Object... callbacks) throws NullPointerException, IllegalArgumentException;
 }
