@@ -93,6 +93,7 @@ An implementation MUST include pre-packaged \MsgRead\ and \MsgWrite\ implementat
 \item[\code{javax.xml.bind.JAXBElement} and application-supplied JAXB classes] XML media types (\code{text\-/\-xml}, \code{application/xml} and \code{application/*+xml}).
 \item[\code{MultivaluedMap<String,String>}] Form content (\code{application/x-www-form-urlencoded}).
 \item[\code{StreamingOutput}] All media types (\code{*/*}), \MsgWrite\ only.
+\item[\code{java.lang.Boolean}, \code{java.lang.Character}, \code{java.lang.Number}] Only for \code{text/plain}. Corresponding primitive types supported via boxing/unboxing conversion.
 \end{description}
 
 When reading zero-length request entities, all pre-packaged \MsgRead\ implementations except the JAXB-related one MUST create a corresponding Java object that represents zero-length data; they MUST NOT return null. The pre-packaged JAXB \MsgRead\ implementation MUST throw a \WebAppExc\ with a client error response (HTTP 400) for zero-length request entities. Moreover, all pre-packaged \MsgRead\ implementations SHOULD throw a \WebAppExc\ with a client error response (HTTP 400) if any other error is encountered while
