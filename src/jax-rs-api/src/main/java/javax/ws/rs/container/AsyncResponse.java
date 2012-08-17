@@ -300,7 +300,7 @@ public interface AsyncResponse {
      * @throws NullPointerException in case the callback class is {@code null}.
      * @see ResumeCallback
      */
-    public boolean register(Class<?> callback) throws NullPointerException, IllegalArgumentException;
+    public boolean register(Class<?> callback) throws NullPointerException;
 
     /**
      * Register asynchronous processing lifecycle callback classes to receive lifecycle
@@ -314,7 +314,7 @@ public interface AsyncResponse {
      * @throws NullPointerException in case any of the callback classes is {@code null}.
      * @see ResumeCallback
      */
-    public boolean[] register(Class<?> callback, Class<?>... callbacks) throws NullPointerException, IllegalArgumentException;
+    public boolean[] register(Class<?> callback, Class<?>... callbacks) throws NullPointerException;
 
     /**
      * Register an asynchronous processing lifecycle callback instance to receive lifecycle
@@ -324,12 +324,10 @@ public interface AsyncResponse {
      *                 interfaces.
      * @return {@code true} if the callback class was recognized and registered, {@code false}
      *         otherwise.
-     * @throws NullPointerException     in case the callback instance is {@code null}.
-     * @throws IllegalArgumentException in case the callback instance does not implement any
-     *                                  recognized callback interface.
+     * @throws NullPointerException in case the callback instance is {@code null}.
      * @see ResumeCallback
      */
-    public boolean register(Object callback) throws NullPointerException, IllegalArgumentException;
+    public boolean register(Object callback) throws NullPointerException;
 
     /**
      * Register an asynchronous processing lifecycle callback instances to receive lifecycle
@@ -343,5 +341,5 @@ public interface AsyncResponse {
      * @throws NullPointerException in case any of the callback instances is {@code null}.
      * @see ResumeCallback
      */
-    public boolean[] register(Object callback, Object... callbacks) throws NullPointerException, IllegalArgumentException;
+    public boolean[] register(Object callback, Object... callbacks) throws NullPointerException;
 }
