@@ -48,14 +48,19 @@ import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Contract for a provider that supports the conversion of a Java type to a
- * stream. To add a <code>MessageBodyWriter</code> implementation, annotate the
- * implementation class with <code>@Provider</code>.
+ * stream.
  *
- * A <code>MessageBodyWriter</code> implementation may be annotated
+ * A {@code MessageBodyWriter} implementation may be annotated
  * with {@link javax.ws.rs.Produces} to restrict the media types for which it will
  * be considered suitable.
+ * <p>
+ * Providers implementing {@code MessageBodyWriter} contract must be either programmatically
+ * registered in a JAX-RS runtime or must be annotated with
+ * {@link javax.ws.rs.ext.Provider &#64;Provider} annotation to be automatically discovered
+ * by the JAX-RS runtime during a provider scanning phase.
+ * </p>
  *
- * @param <T> the type that can be written
+ * @param <T> the type that can be written.
  * @author Paul Sandoz
  * @author Marc Hadley
  * @see Provider
@@ -81,9 +86,9 @@ public interface MessageBodyWriter<T> {
                                Annotation[] annotations, MediaType mediaType);
 
     /**
-     * Called before <code>writeTo</code> to ascertain the length in bytes of
-     * the serialized form of <code>t</code>. A non-negative return value is
-     * used in a HTTP <code>Content-Length</code> header.
+     * Called before {@code writeTo} to ascertain the length in bytes of
+     * the serialized form of {@code t}. A non-negative return value is
+     * used in a HTTP {@code Content-Length} header.
      *
      * @param t           the instance to write
      * @param type        the class of object that is to be written.

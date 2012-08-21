@@ -48,12 +48,17 @@ import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Contract for a provider that supports the conversion of a stream to a
- * Java type. To add a <code>MessageBodyReader</code> implementation, annotate the
- * implementation class with <code>@Provider</code>.
+ * Java type.
  *
- * A <code>MessageBodyReader</code> implementation may be annotated
+ * A {@code MessageBodyReader} implementation may be annotated
  * with {@link javax.ws.rs.Consumes} to restrict the media types for which it will
  * be considered suitable.
+ * <p>
+ * Providers implementing {@code MessageBodyReader} contract must be either programmatically
+ * registered in a JAX-RS runtime or must be annotated with
+ * {@link javax.ws.rs.ext.Provider &#64;Provider} annotation to be automatically discovered
+ * by the JAX-RS runtime during a provider scanning phase.
+ * </p>
  *
  * @param <T> Java type supported by the provider
  * @author Paul Sandoz
@@ -99,12 +104,12 @@ public interface MessageBodyReader<T> {
      * @param genericType  the type of object to be produced. E.g. if the
      *                     message body is to be converted into a method parameter, this will be
      *                     the formal type of the method parameter as returned by
-     *                     <code>Method.getGenericParameterTypes</code>.
+     *                     {@code Method.getGenericParameterTypes}.
      * @param annotations  an array of the annotations on the declaration of the
      *                     artifact that will be initialized with the produced instance. E.g.
      *                     if the message body is to be converted into a method parameter, this
      *                     will be the annotations on that parameter returned by
-     *                     <code>Method.getParameterAnnotations</code>.
+     *                     {@code Method.getParameterAnnotations}.
      * @param mediaType    the media type of the HTTP entity.
      * @param httpHeaders  the read-only HTTP headers associated with HTTP entity.
      * @param entityStream the {@link InputStream} of the HTTP entity. The
