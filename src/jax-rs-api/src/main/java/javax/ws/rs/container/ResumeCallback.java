@@ -63,7 +63,7 @@ import javax.ws.rs.core.Response;
  * {@code ResumeCallback} interface will be invoked.
  * </p>
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 public interface ResumeCallback {
     /**

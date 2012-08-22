@@ -51,8 +51,8 @@ import static org.junit.Assert.assertEquals;
 /**
  * Type literal construction unit tests.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
- * @author Martin Matula (martin.matula at oracle.com)
+ * @author Marek Potociar
+ * @author Martin Matula
  */
 public class GenericTypeTest {
 

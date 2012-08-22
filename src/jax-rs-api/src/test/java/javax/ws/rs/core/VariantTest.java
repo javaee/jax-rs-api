@@ -45,7 +45,7 @@ import static org.junit.Assert.assertNull;
 /**
  * Variant regression unit tests.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 public class VariantTest {
 

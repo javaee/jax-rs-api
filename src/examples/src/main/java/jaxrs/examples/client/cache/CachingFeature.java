@@ -46,7 +46,9 @@ import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Feature;
 
 /**
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * Example caching feature.
+ *
+ * @author Marek Potociar
  */
 public class CachingFeature implements Feature {
 

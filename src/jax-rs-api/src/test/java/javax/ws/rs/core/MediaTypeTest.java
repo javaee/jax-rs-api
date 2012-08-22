@@ -47,7 +47,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * {@link MediaType} unit test.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 public class MediaTypeTest {
 

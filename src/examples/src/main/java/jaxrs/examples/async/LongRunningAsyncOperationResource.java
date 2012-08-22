@@ -56,7 +56,7 @@ import javax.ws.rs.container.Suspended;
 /**
  * Long-running asynchronous processing examples.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 @Path("/async/longRunning")
 @Produces("text/plain")

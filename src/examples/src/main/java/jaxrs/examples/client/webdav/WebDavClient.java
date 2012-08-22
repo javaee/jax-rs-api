@@ -49,7 +49,7 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 public class WebDavClient implements Client {
 

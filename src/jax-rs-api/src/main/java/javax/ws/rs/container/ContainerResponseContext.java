@@ -64,7 +64,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
  * The exposed setters allow modification of the exposed response-specific
  * information.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  * @since 2.0
  */
 public interface ContainerResponseContext {

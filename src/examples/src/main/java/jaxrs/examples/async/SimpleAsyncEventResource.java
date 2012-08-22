@@ -54,7 +54,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Simple asynchronous event-based request processing example.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 @Path("/async/nextMessage")
 @Produces(MediaType.TEXT_PLAIN)

@@ -44,7 +44,7 @@ import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.core.Response;
 
 /**
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 public interface WebDavSyncInvoker extends SyncInvoker {
 

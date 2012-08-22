@@ -50,7 +50,7 @@ import javax.ejb.Stateless;
 /**
  * TODO: javadoc.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 @Stateless
 @Path("/")

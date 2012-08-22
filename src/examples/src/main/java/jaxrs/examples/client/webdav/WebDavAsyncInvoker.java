@@ -46,7 +46,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 /**
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 public interface WebDavAsyncInvoker extends AsyncInvoker {
 

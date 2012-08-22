@@ -52,7 +52,7 @@ import javax.ws.rs.ext.Provider;
  * Example of a logging resource filter (server-side).
  *
  * @author Santiago Pericas-Geertsen
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 @Provider
 @Logged // name-bound => resource filter
