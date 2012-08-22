@@ -41,14 +41,14 @@ A {\em client} filter is a class that implements \ClientRequestFilter\ or \Clien
 In the Client API, a \ClientRequestFilter\ is executed as part of the invocation pipeline, before the HTTP request is delivered to the network; a \ClientResponseFilter\ is executed upon receiving a server response, before control is returned to the application. 
 In the Server API, a \ContainerRequestFilter\ is executed upon receiving a request from a client; a \ContainerResponseFilter\ is executed as part of the response pipeline, before the HTTP response is delivered to the network. 
 
-A globally-bound (see Section \ref{global_binding}) \ContainerRequestFilter\ is a container filter executed before resource matching {\em unless} it is annotated with \PostMatching. The use of this annotation on this type of filters defines a new extension point for applications to use, namely PostContainerRequest. Certain \ContainerRequestContext\ methods may not be available at this extension point. 
+A globally-bound (see Section \ref{global_binding}) \ContainerRequestFilter\ is a container filter executed after resource matching {\em unless} it is annotated with \PreMatching. The use of this annotation on this type of filters defines a new extension point for applications to use, namely PreContainerRequest. Certain \ContainerRequestContext\ methods may not be available at this extension point. 
 
 An entity interceptor implementing \ReaderInterceptor\ wraps around calls to \code{MessageBodyReader}'s method \code{readFrom}. An entity interceptor implementing \WriterInterceptor\ wraps around calls to \code{MessageBodyWriter}'s method \code{writeTo}. \jaxrs\ implementations are REQUIRED to call registered interceptors when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
 
 \section{Filters}
 \label{filters}
 
-Filters are grouped into \emph{filter chains}. There is a separate filter chain for each extension points introduced in the previous section, namely: ClientRequest, ClientResponse, ContainerRequest, ContainerResponse and PostContainerRequest. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
+Filters are grouped into \emph{filter chains}. There is a separate filter chain for each extension point introduced in the previous section, namely: ClientRequest, ClientResponse, ContainerRequest, ContainerResponse and PreContainerRequest. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
 The following example shows an implementation of a container logging filter: each method simply logs the message and returns.
 
@@ -72,16 +72,17 @@ class LoggingFilter implements ContainerRequestFilter,
 }
 \end{listing}
 
-\ContainerRequestContext\ is a mutable class that provides request-specific information for the filter, such as request URI, message headers, message entity or request-scoped properties. The exposed setters allow (certain) modification of the request before its processing by a resource method. The dual class \ContainerResponseContext\ provides response-specific information.
+\ContainerRequestContext\ is a mutable class that provides request-specific information for the filter, such as the request URI, message headers, message entity or request-scoped properties. The exposed setters allow (certain) modification of the request before it is processed by the resource method. The dual class \ContainerResponseContext\ provides response-specific information.
 
 Request filters implementing \ClientRequestFilter\ or \ContainerRequestFilter\ can stop the execution of their corresponding chains by calling \code{abortWith(Response)} in their corresponding context object. If this method is invoked, \jaxrs\ implementations are REQUIRED to abort execution of the chain and treat the response object as if produced by calling the resource method (Server API) or executing the HTTP invocation (Client API). For example, upon a cache hit, a client {\em caching} filter may call \code{abortWith(Response)} to abort execution and optimize network access.
 
-As stated above, a \ContainerRequestFilter\ that is \emph{not} annotated with \PostMatching\ is executed upon receiving a client request but {\em before} a resource method is matched. Thus, this type of filter has the ability to modify the input to the matching algorithm (see Section~\ref{request_matching}) and, consequently, alter its outcome. 
-The following example uses a \ContainerRequestFilter\ to tunnel requests via POST by using the X-HTTP-Method-Override header to overwrite the HTTP method prior to resource matching.
+As stated above, a \ContainerRequestFilter\ that is annotated with \PreMatching\ is executed upon receiving a client request but {\em before} a resource method is matched. Thus, this type of filter has the ability to modify the input to the matching algorithm (see Section~\ref{request_matching}) and, consequently, alter its outcome. 
+The following example uses a \ContainerRequestFilter\ annotated with \PreMatching\ to tunnel requests via POST by using the X-HTTP-Method-Override header to overwrite the HTTP method prior to resource matching.
 
 \begin{listing}{1}
 @Provider
-public class PostMethodOverrideFilter implements ContainerRequestFilter {
+@PreMatching
+public class HttpMethodOverrideFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) 
@@ -149,11 +150,11 @@ Binding is the process by which a filter or interceptor is associated with a res
 \subsection{Global Binding}
 \label{global_binding}
 
-Global binding is the default type of binding. A filter or interceptor that has no annotations is assumed to be bound globally, i.e.~it applies to all the resource methods in an application. Like any other provider, a filter or interceptor can be registered manually (e.g., via \code{Application} or \code{Configuration}) or be discovered automatically. Note that for a filter or interceptor to be automatically discovered it must be annotated with \Provider\ (see Section \ref{automatic_discovery}). 
+Global binding is the default type of binding. A filter or interceptor that has no annotations is assumed to be bound globally, i.e.~it applies to all the resource methods in an application. Like any other provider, a filter or interceptor can be registered manually (e.g., via \code{Application} or \code{Configuration}) or be discovered automatically. Note that for a filter or interceptor to be automatically discovered it MUST be annotated with \Provider\ (see Section \ref{automatic_discovery}). 
 
 For example, the \code{LoggingFilter} defined in Section \ref{filters} is both automatically discovered (it is annotated with \Provider) and bound globally. If this filter is part of an application, requests and responses will be logged for all resource methods. 
 
-As stated in Section \ref{introduction_filters}, a global \ContainerRequestFilter\ is executed before resource matching unless annotated with \PostMatching. A global filter that injects \code{ResourceInfo}, and generally depends on resource information for its execution, must be annotated with \PostMatching.
+As stated in Section \ref{introduction_filters}, a global \ContainerRequestFilter\ is executed after resource matching unless annotated with \PreMatching. A global filter that injects \code{ResourceInfo}, and generally depends on resource information for its execution, must not be annotated with \PreMatching.
 
 \subsection{Name Binding}
 \label{Name_Binding}
@@ -228,7 +229,7 @@ Binding in the Client API is accomplished via API calls instead of annotations. 
 \label{priorities}
 
 The order in which filters and interceptors are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
-Priorities are represented by integer numbers. Execution chains for extension points ContainerRequest, PostContainerRequest and ClientRequest are sorted in \emph{ascending order}; the lower the number the higher the priority. Execution chains for extension points ContainerResponse and ClientResponse are sorted in \emph{descending order}; the higher the number the higher the priority. These rules ensure that response filters are executed in reversed order of request filters.
+Priorities are represented by integer numbers. Execution chains for extension points ContainerRequest, PreContainerRequest and ClientRequest are sorted in \emph{ascending order}; the lower the number the higher the priority. Execution chains for extension points ContainerResponse and ClientResponse are sorted in \emph{descending order}; the higher the number the higher the priority. These rules ensure that response filters are executed in reversed order of request filters.
 
 The \code{BindingPriority} class defines a set of built-in priorities for security, header decorators, decoders and encoders. The default binding priority is \code{BindingPriority.USER}. For example, the priority of an authentication filter can be set as follows:
 
