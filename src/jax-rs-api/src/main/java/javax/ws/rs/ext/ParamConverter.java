@@ -57,32 +57,32 @@ import javax.ws.rs.DefaultValue;
  * is supported as well as conversion of any parameter values passed to
  * a JAX-RS client API or {@link javax.ws.rs.core.Response.ResponseBuilder} method.
  * <p>
- * By default, when used for injection of parameter values, a selected {@code StringConverter}
+ * By default, when used for injection of parameter values, a selected {@code ParamConverter}
  * instance MUST be used eagerly by a JAX-RS runtime to convert any {@link DefaultValue
  * default value} in the resource or provider model, that is during the application deployment,
  * before any value &ndash; default or otherwise &ndash; is actually required.
  * This conversion strategy ensures that any errors in the default values are reported
  * as early as possible.
- * This default behavior may be overridden by annotating the {@code StringConverter}
+ * This default behavior may be overridden by annotating the {@code ParamConverter}
  * implementation class with a {@link Lazy &#64;Lazy} annotation. In such case any default
  * value conversion delegated to the {@code &#64;Lazy}-annotated converter will be deferred
  * to a latest possible moment (i.e. until the injection of such default value is required).
  * </p>
  * <p>
  * NOTE: A service implementing this contract is not recognized as a registrable
- * JAX-RS extension provider. Instead, a {@link StringConverterProvider} instance
- * responsible for providing {@code StringConverter} instances has to be registered
+ * JAX-RS extension provider. Instead, a {@link ParamConverterProvider} instance
+ * responsible for providing {@code ParamConverter} instances has to be registered
  * as one of the JAX-RS extension providers.
  * </p>
  *
  * @param <T> the supported Java type convertible to/from a {@code String} format.
  * @author Marek Potociar
  */
-public interface StringConverter<T> {
+public interface ParamConverter<T> {
 
     /**
      * Mandates that a conversion of any {@link DefaultValue default value} delegated
-     * to a {@link StringConverter string converter} annotated with {@code &#64;Lazy}
+     * to a {@link ParamConverter parameter converter} annotated with {@code &#64;Lazy}
      * annotation SHOULD occur only once the value is actually required (e.g. to be
      * injected for the first time).
      */

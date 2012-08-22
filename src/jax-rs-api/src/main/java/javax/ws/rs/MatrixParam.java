@@ -59,8 +59,8 @@ import java.lang.annotation.Target;
  * <li>Have a static method named {@code valueOf} or {@code fromString}
  * that accepts a single
  * {@code String} argument (see, for example, {@link Integer#valueOf(String)})</li>
- * <li>Have a registered implementation of {@link javax.ws.rs.ext.StringConverterProvider}
- * JAX-RS extension SPI that returns a {@link javax.ws.rs.ext.StringConverter}
+ * <li>Have a registered implementation of {@link javax.ws.rs.ext.ParamConverterProvider}
+ * JAX-RS extension SPI that returns a {@link javax.ws.rs.ext.ParamConverter}
  * instance capable of a "from string" conversion for the type.</li>
  * <li>Be {@code List&lt;T&gt;}, {@code Set&lt;T&gt;} or
  * {@code SortedSet&lt;T&gt;}, where {@code T} satisfies 2, 3 or 4 above.

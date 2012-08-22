@@ -43,9 +43,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
- * Contract for a provider of {@link StringConverter} instances.
+ * Contract for a provider of {@link ParamConverter} instances.
  * <p>
- * Providers implementing {@code StringConverterProvider} contract must be either programmatically
+ * Providers implementing {@code ParamConverterProvider} contract must be either programmatically
  * registered in a JAX-RS runtime or must be annotated with
  * {@link javax.ws.rs.ext.Provider &#64;Provider} annotation to be automatically discovered
  * by the JAX-RS runtime during a provider scanning phase.
@@ -53,10 +53,10 @@ import java.lang.reflect.Type;
  *
  * @author Marek Potociar
  */
-public interface StringConverterProvider {
+public interface ParamConverterProvider {
 
     /**
-     * Obtain a {@link StringConverter} that can provide from/to string conversion
+     * Obtain a {@link ParamConverter} that can provide from/to string conversion
      * for an instance of a particular Java type.
      *
      * @param <T>         the supported Java type convertible to/from a {@code String} format.
@@ -71,5 +71,5 @@ public interface StringConverterProvider {
      *                    {@link java.lang.reflect.Method#getParameterAnnotations}.
      * @return the string converter, otherwise {@code null}.
      */
-    public <T> StringConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation annotations[]);
+    public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation annotations[]);
 }

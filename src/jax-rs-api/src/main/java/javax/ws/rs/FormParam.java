@@ -58,8 +58,8 @@ import java.lang.annotation.Target;
  * <li>Have a constructor that accepts a single {@code String} argument</li>
  * <li>Have a static method named {@code valueOf} or {@code fromString}
  * that accepts a single</li>
- * <li>Have a registered implementation of {@link javax.ws.rs.ext.StringConverterProvider}
- * JAX-RS extension SPI that returns a {@link javax.ws.rs.ext.StringConverter}
+ * <li>Have a registered implementation of {@link javax.ws.rs.ext.ParamConverterProvider}
+ * JAX-RS extension SPI that returns a {@link javax.ws.rs.ext.ParamConverter}
  * instance capable of a "from string" conversion for the type.</li>
  * {@code String} argument (see, for example, {@link Integer#valueOf(String)})</li>
  * <li>Be {@code List&lt;T&gt;}, {@code Set&lt;T&gt;} or
