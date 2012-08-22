@@ -104,12 +104,7 @@ public final class ThrottledClient implements Client {
     }
 
     @Override
-    public Invocation invocation(Link link) throws NullPointerException, IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Invocation invocation(Link link, Entity<?> entity) throws NullPointerException, IllegalArgumentException {
+    public Invocation.Builder invocation(Link link) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

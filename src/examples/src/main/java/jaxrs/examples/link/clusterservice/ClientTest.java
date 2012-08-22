@@ -59,7 +59,7 @@ public class ClientTest {
 
         // Ensure cluster is online
         if (rc.hasLink("onliner")) {
-            client.invocation(rc.getLink("onliner")).invoke();
+            client.invocation(rc.getLink("onliner")).buildPost(null).invoke();
         }
 
         // Start all machines in cluster
@@ -69,11 +69,11 @@ public class ClientTest {
             Link l = rc.getLinkBuilder("item").build(m.getName());
 
             // Create invocation from link and call invoke()
-            Response rm = client.invocation(l).invoke();
+            Response rm = client.invocation(l).buildGet().invoke();
 
             // Start machine if not started already
             if (rm.hasLink("starter")) {
-                client.invocation(rm.getLink("starter")).invoke();
+                client.invocation(rm.getLink("starter")).buildPost(null).invoke();
             }
         }
     }

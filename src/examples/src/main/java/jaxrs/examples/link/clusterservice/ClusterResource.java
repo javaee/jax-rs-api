@@ -88,8 +88,7 @@ public class ClusterResource {
         Link offliner = Link.fromResourceMethod(getClass(), "offliner").build();
 
         return cluster.getStatus() == Status.ONLINE ?
-                new Link[]{self, item, offliner} :
-                new Link[]{self, item, onliner};
+                new Link[] {self, item, offliner} : new Link[] {self, item, onliner};
     }
 
 }

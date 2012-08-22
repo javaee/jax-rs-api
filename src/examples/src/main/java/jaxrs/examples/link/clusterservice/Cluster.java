@@ -53,9 +53,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Cluster {
 
-    public enum Status {OFFLINE, ONLINE}
-
-    ;
+    public enum Status {OFFLINE, ONLINE};
 
     private String name;
 

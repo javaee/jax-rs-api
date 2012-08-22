@@ -76,7 +76,7 @@ public class ResourceExample {
         public MyModel() {
         }
 
-        @XmlElement(name = "link")
+        @XmlElement(name="link")
         @XmlJavaTypeAdapter(JaxbAdapter.class)
         public Link getLink() {
             return link;
@@ -86,7 +86,7 @@ public class ResourceExample {
             this.link = link;
         }
 
-        @XmlElement(namespace = "http://www.w3.org/2005/Atom", name = "link")
+        @XmlElement(namespace="http://www.w3.org/2005/Atom", name="link")
         @XmlJavaTypeAdapter(JaxbAdapter.class)
         public Link getAtomLink() {
             return atomLink;
