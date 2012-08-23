@@ -43,7 +43,8 @@ package javax.ws.rs.container;
  * A request processing callback that receives request processing completion events.
  * <p>
  * A completion callback is invoked when the whole request processing is over, i.e.
- * once a response for the request has been processed and sent back to the client.
+ * once a response for the request has been processed and sent back to the client
+ * or in when an unmapped exception or error is being propagated to the container.
  * </p>
  *
  * @author Marek Potociar
@@ -56,4 +57,19 @@ public interface CompletionCallback {
      * client.
      */
     public void onComplete();
+
+    /**
+     * Invoked in case an {@link javax.ws.rs.ext.ExceptionMapper exception mapper} for an
+     * exception or error thrown during request/response processing was not found and the
+     * unmapped exception or error is being propagated to the hosting I/O container.
+     * <p>
+     * The {@code throwable} passed to the method is the actual unmapped exception thrown,
+     * during the request/response processing, i.e. not wrapped into a container-specific
+     * exception.
+     * </p>
+     *
+     * @param throwable unmapped exception or error thrown during the request/response processing
+     *                  that is being propagated to the hosting I/O container.
+     */
+    public void onError(Throwable throwable);
 }
