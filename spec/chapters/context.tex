@@ -88,3 +88,10 @@ The \SecurityContext\ interface provides access to information about the securit
 The \code{Providers} interface allows for lookup of provider instances based on a set of search criteria. An instance of \code{Providers} can be injected into a class field or method parameter using the \Context\ annotation.
 
 This interface is expected to be primarily of interest to provider authors wishing to use other providers functionality.
+
+\subsection{Resource Context}
+\label{resource_context}
+
+The \code{ResourceContext} interface provides access to instances of resource classes. This interface can be used when instances of managed resource classes are to be returned by sub-resource locator methods. Such instances will be injected and managed within the declared scope just like instances of root resource classes, as opposed to any instances that are manually created using the \code{new} operator.
+
+The \code{ResourceContext} interface can also be used when matching of URIs is required, for example, when validating a URI sent in a request entity. It is worth noting that application functionality may be affected as the matching process will result in the construction or sharing of previously constructed resource classes that are in scope of the HTTP request, and the invocation of any matching sub-resource locator methods. However, no resource or sub-resource methods will be invoked, only matched.
