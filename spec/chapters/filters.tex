@@ -197,28 +197,27 @@ Binding annotations that decorate resource classes apply to all the resource met
 \subsection{Dynamic Binding}
 \label{dynamic_binding}
 
-The annotation-based forms of binding presented thus far are {\em static}. Dynamic binding is also supported by using dynamic binders. A dynamic binder is a provider that implements the \DynamicBinder\ interface. Dynamic binder providers are used to augment the set of filters and entity interceptors bound to a resource method. 
+The annotation-based forms of binding presented thus far are {\em static}. Dynamic binding is also supported using dynamic features. A dynamic feature is a provider that implements the \DynamicFeature\ interface. These providers are used to augment the set of filters and entity interceptors bound to a resource method. 
 
-The following example defines a dynamic binder that binds the filter \code{LoggingFilter} ---assumed not globally bound for the purpose of this example--- with all the resource methods in \code{MyResourceClass} that are annotated with \code{@GET}.
+The following example defines a dynamic feature that binds the filter \code{LoggingFilter} ---assumed not globally bound for the purpose of this example--- with all the resource methods in \code{MyResource} that are annotated with \code{@GET}.
 
 \begin{listing}{1}
 @Provider
-class DynamicLoggingFilterBinder implements DynamicBinder<LoggingFilter> {
+public class DynamicLoggingFilterFeature implements DynamicFeature {
 
   @Override
-  public LoggingFilter getBoundProvider(ResourceInfo resourceInfo) {
-    if (MyResourceClass.class.isAssignableFrom(
-    	      resourceInfo.getResourceClass()) &&
-        resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
-          return new LoggingFilter();
+  void configure(ResourceInfo resourceInfo, Configurable configurable) {
+    if (MyResource.class.isAssignableFrom(resourceInfo.getResourceClass())
+      && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
+      configurable.register(new LoggingFilter());
     }
-    return null;
- }
+  }
 }
+
 \end{listing}
 
-The method \code{getBoundProvider} can return either an instance or a class. The parameter \code{T} in the type \code{DynamicBinder<T>} determines the return type. Returning a class, such as \code{LoggingFilter.class} in the example above, delegates the responsibility of instantiation (and injection) to the \jaxrs\ implementation.
-\jaxrs\ implementations SHOULD resolve dynamic binders for filters and interceptors once for each resource method. It is RECOMMENDED to process dynamic binders at application deployment time.
+The overridden method in this provider updates the \code{Configurable} object assigned to each resource method; the information about the resource method is provided in the form of a \code{ResourceInfo} instance.
+\jaxrs\ implementations SHOULD resolve dynamic features for filters and interceptors once for each resource method. It is RECOMMENDED to process dynamic features at application deployment time.
 
 \subsection{Binding in Client API}
 \label{binding_in_client_api}
