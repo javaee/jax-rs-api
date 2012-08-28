@@ -133,11 +133,13 @@ When choosing a context provider an implementation sorts the available providers
 \section{Exception Mapping Providers}
 \label{exceptionmapper}
 
-Exception mapping providers map a checked or runtime exception to an instance of \Response. An exception mapping provider implements the \code{ExceptionMapper<T>} interface and may be annotated with \Provider\ for automatic discovery. When a resource class or provider method throws an exception for which there is an exception mapping provider, the matching provider is used to obtain a \Response\ instance. The resulting \Response\ is processed as if the web resource method matching the request had returned the \Response, see Section \ref{resource_method_return}. Exception mapping providers are {\em not} supported as part of the Client API.
+Exception mapping providers map a checked or runtime exception to an instance of \Response. An exception mapping provider implements the \code{ExceptionMapper<T>} interface and may be annotated with \Provider\ for automatic discovery. When choosing an exception mapping provider to map an exception, an implementation MUST use the provider whose generic type is the nearest superclass of the exception.
 
- When choosing an exception mapping provider to map an exception, an implementation MUST use the provider whose generic type is the nearest superclass of the exception.
+When a resource class or provider method throws an exception for which there is an exception mapping provider, the matching provider is used to obtain a \Response\ instance. The resulting \Response\ is processed as if a web resource method had returned the \Response, see Section \ref{resource_method_return}. In particular, a mapped \Response\ MUST be processed using the ContainerResponse filter chain defined in  Chapter~\ref{filters_and_interceptors}.
 
-To avoid a potentially infinite loop, a single exception mapper should be used during the processing of a request and its corresponding response. \jaxrs\ implementations SHOULD NOT attempt to map exceptions thrown while processing a response previously mapped from an exception and SHOULD instead simply return a server error (status code 500) response.
+To avoid a potentially infinite loop, a single exception mapper must be used during the processing of a request and its corresponding response. \jaxrs\ implementations MUST NOT attempt to map exceptions thrown while processing a response previously mapped from an exception. Instead, this exception MUST be processed as described in steps \ref{runtimeexc} and \ref{checkedexc} in Section \ref{method_exc}.
+
+Note that exception mapping providers are {\em not} supported as part of the Client API.
 
 \section{Exceptions}
 \label{exceptions_providers}
@@ -145,7 +147,7 @@ To avoid a potentially infinite loop, a single exception mapper should be used d
 When a provider method throws an exception, the \jaxrs\ runtime will attempt to map the exception to a suitable HTTP response in the same way as described for methods and locators in Section \ref{method_exc}. If the exception is thrown
 while generating a response, \jaxrs\ implementations are required to map the exception {\em only when} the response has not been committed yet.
 
-As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping, but these exception mappers may be ignored during the processing of a {\em previously mapped} response to avoid entering a potentially infinite loop. For example, suppose a method in a message body reader throws an exception that is mapped to a response via an exception mapping provider; if the message body writer throws an exception while trying to write the mapped response, a \jaxrs\ implementation may simply return a server error (status code 500) instead of mapping the exception one more time.
+As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping, but these exception mappers will be ignored during the processing of a {\em previously mapped} response to avoid entering a potentially infinite loop. For example, suppose a method in a message body reader throws an exception that is mapped to a response via an exception mapping provider; if the message body writer throws an exception while trying to write the mapped response, \jaxrs\ implementations will not attempt to map the exception again.
 
 
 

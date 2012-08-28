@@ -248,4 +248,13 @@ The order in which filters and interceptors that belong to the same priority cla
 \section{Exceptions}
 \label{exceptions_filters_and_interceptors}
 
-When a filter or interceptor method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping.
+When a filter or interceptor method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping. 
+
+At most one exception mapper will be used in a single request processing cycle to avoid potentially infinite loops. A response mapped from an exception MUST be filtered as follows:
+
+\begin{enumerate}
+\item If a web resource had been matched before the exception was thrown, then all the filters in the ContainerResponse chain for that resource MUST be invoked;
+\item\label{no_matching} Otherwise, only globally bound filters in the ContainerResponse chain MUST be invoked. 
+\end{enumerate}
+
+Note that a filter invoked in step \ref{no_matching} will not have access to resource-dependent information such as that returned by an injectable instance of \code{ResourceInfo}.
