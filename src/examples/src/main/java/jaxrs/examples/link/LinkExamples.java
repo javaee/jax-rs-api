@@ -70,7 +70,7 @@ public class LinkExamples {
      * @return response.
      */
     public Response example2() {
-        Link link = Link.fromUri("http://foo.bar/employee/john").rel("manager friend")
+        Link link = Link.fromUri("http://foo.bar/employee/john").rel("manager").rel("friend")
                 .title("employee").type("application/xml").build();
         System.out.println("Link = " + link);
         return Response.ok().links(link).build();

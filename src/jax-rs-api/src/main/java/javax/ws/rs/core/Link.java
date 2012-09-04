@@ -41,7 +41,10 @@ package javax.ws.rs.core;
 
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -69,6 +72,7 @@ import javax.xml.namespace.QName;
  * @see javax.ws.rs.client.Client#invocation
  * @since 2.0
  */
+
 public final class Link {
 
     /**
@@ -129,6 +133,17 @@ public final class Link {
      */
     public String getRel() {
         return map.get(REL);
+    }
+
+    /**
+     * Returns the value associated with the link "rel" param as a list
+     * of strings or the empty list if "rel" is not defined. 
+     *
+     * @return relation types as list of strings or empty list.
+     */
+    public List<String> getRels() {
+        final String rels = map.get(REL);
+        return rels == null ? Collections.<String>emptyList() : Arrays.asList(rels.split(" +"));
     }
 
     /**
@@ -369,14 +384,16 @@ public final class Link {
         /**
          * Convenience method to set a link relation. More than one "rel" value can
          * be specified by using one or more whitespace characters as delimiters
-         * according to RFC 5988. However, the format is not enforced by this builder.
+         * according to RFC 5988. The effect of calling this method is cumulative;
+         * relations are appended using a single space character as separator. 
          *
-         * @param name relation name.
+         * @param rel relation name.
          * @return the updated builder.
          * @throws IllegalArgumentException if the name is {@code null}.
          */
-        public Builder rel(String name) {
-            param(REL, name);
+        public Builder rel(String rel) {
+            final String rels = link.map.get(REL);
+            param(REL, rels == null ? rel : rels + " " + rel);
             return this;
         }
 
