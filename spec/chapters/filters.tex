@@ -194,6 +194,17 @@ public @interface Logged { }
 
 Binding annotations that decorate resource classes apply to all the resource methods defined in them. A filter or interceptor class can be decorated with multiple binding annotations. Similarly, a resource method can be decorated with multiple binding annotations.  Each binding annotation instance in a resource method denotes a set of filters and interceptors whose class definitions are decorated with that annotation (possibly among others). The final set of (static) filters and interceptors is the union of all these sets \footnote{By definition of {\em set}, any duplicate filters or interceptors in each individual set or the final set are eliminated.}; this set must be sorted based on priorities as explained in Section \ref{priorities}. 
 
+Name binding annotations can also be applied to \code{Application} subclasses for the purpose of binding a filter or interceptor globally for that application. For example,
+
+\begin{listing}{1}
+@Logged
+public class MyApplication extends Application {
+    ...
+}
+\end{listing}
+
+Note that returning filters or interceptors from the methods \code{getClasses} or \code{getSingletons} in an application subclass will bind them globally only if they are \emph{not} decorated with a name binding annotation. If they are decorated with at least one name binding annotation, the application subclass must be annotated as shown above in order for those filters or interceptors to be globally bound. See Chapter \ref{applications} for more information on \jaxrs\ applications.
+
 \subsection{Dynamic Binding}
 \label{dynamic_binding}
 
