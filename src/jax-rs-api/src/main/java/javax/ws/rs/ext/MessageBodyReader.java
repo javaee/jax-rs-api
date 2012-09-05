@@ -72,15 +72,15 @@ public interface MessageBodyReader<T> {
     /**
      * Ascertain if the MessageBodyReader can produce an instance of a
      * particular type. The {@code type} parameter gives the
-     * class of the object that should be produced, the {@code genericType} parameter
-     * gives the {@link java.lang.reflect.Type java.lang.reflect.Type} of the object
+     * class of the instance that should be produced, the {@code genericType} parameter
+     * gives the {@link java.lang.reflect.Type java.lang.reflect.Type} of the instance
      * that should be produced.
-     * E.g. if the object to be produced is List&lt;String&gt;, the {@code type} parameter
+     * E.g. if the instance to be produced is List&lt;String&gt;, the {@code type} parameter
      * will be {@code java.util.List} and the {@code genericType} parameter will be
      * {@link java.lang.reflect.ParameterizedType java.lang.reflect.ParameterizedType}.
      *
-     * @param type        the class of object to be produced.
-     * @param genericType the type of object to be produced. E.g. if the
+     * @param type        the class of instance to be produced.
+     * @param genericType the type of instance to be produced. E.g. if the
      *                    message body is to be converted into a method parameter, this will be
      *                    the formal type of the method parameter as returned by
      *                    {@code Method.getGenericParameterTypes}.
@@ -101,7 +101,7 @@ public interface MessageBodyReader<T> {
      * Read a type from the {@link InputStream}.
      *
      * @param type         the type that is to be read from the entity stream.
-     * @param genericType  the type of object to be produced. E.g. if the
+     * @param genericType  the type of instance to be produced. E.g. if the
      *                     message body is to be converted into a method parameter, this will be
      *                     the formal type of the method parameter as returned by
      *                     {@code Method.getGenericParameterTypes}.
