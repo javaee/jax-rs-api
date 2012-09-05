@@ -39,10 +39,7 @@
  */
 package javax.ws.rs.container;
 
-import java.net.URI;
-
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 
 /**
  * The resource context provides access to instances of resource classes.
@@ -71,62 +68,7 @@ import javax.ws.rs.core.UriInfo;
 public interface ResourceContext {
 
     /**
-     * Match a URI to a {@link UriInfo URI information}.
-     * <p>
-     * If the URI is relative then the base URI of the application will be
-     * used to resolve the relative URI to an absolute URI.
-     * If the URI is absolute then it must match the base URI of the
-     * application, otherwise an IllegalArgumentException is thrown.
-     * </p>
-     *
-     * @param uri the URI to be matched. Must not be {@code null}.
-     * @return the matched URI information, or {@code null} if the URI cannot be matched.
-     * @throws NullPointerException     if the {@code uri} parameter is {@code null}.
-     * @throws IllegalArgumentException if the {@code uri} parameter represents an absolute
-     *                                  URI that does not match the base URI of the application.
-     */
-    public UriInfo matchUriInfo(URI uri) throws NullPointerException, IllegalArgumentException;
-
-    /**
-     * Match a URI to a resource instance.
-     * <p>
-     * If the URI is relative then the base URI of the application will be
-     * used to resolve the relative URI to an absolute URI.
-     * If the URI is absolute then it must match the base URI of the
-     * application, otherwise an IllegalArgumentException is thrown.
-     * </p>
-     *
-     * @param uri the URI to be matched. Must not be {@code null}.
-     * @return the matched resource instance, or {@code null} if the URI cannot be matched.
-     * @throws NullPointerException     if the {@code uri} parameter is {@code null}.
-     * @throws IllegalArgumentException if the {@code uri} parameter represents an absolute
-     *                                  URI that does not match the base URI of the application.
-     */
-    public Object matchResource(URI uri) throws NullPointerException, IllegalArgumentException;
-
-    /**
-     * Match a URI to a resource instance of a particular Java type.
-     * <p>
-     * If the URI is relative then the base URI of the application will be
-     * used to resolve the relative URI to an absolute URI.
-     * If the URI is absolute then it must match the base URI of the
-     * application, otherwise an IllegalArgumentException is thrown.
-     * </p>
-     *
-     * @param <T>  the type of the resource class.
-     * @param uri  the URI to be matched. Must not be {@code null}.
-     * @param type the resource class.
-     * @return the matched resource instance, or {@code null} if the URI cannot be matched.
-     * @throws NullPointerException     if the {@code uri} parameter is {@code null}.
-     * @throws IllegalArgumentException if the {@code uri} parameter represents an absolute
-     *                                  URI that does not match the base URI of the application.
-     * @throws ClassCastException       if the resource instance cannot be cast to
-     *                                  {@code type}.
-     */
-    public <T> T matchResource(URI uri, Class<T> type) throws NullPointerException, IllegalArgumentException, ClassCastException;
-
-    /**
-     * Get a resolved instance of a resource class.
+     * Get a resolved instance of a resource or sub-resource class.
      * <p>
      * The resolved resource instance is properly initialized in the context of the
      * current request processing scope. The scope of the resolved resource instance
@@ -139,4 +81,16 @@ public interface ResourceContext {
      * @return an instance if it could be resolved, otherwise {@code null}.
      */
     public <T> T getResource(Class<T> resourceClass);
+
+    /**
+     * Initialize the resource or sub-resource instance.
+     *
+     * All JAX-RS injectable fields in the resource instance will be properly initialized in
+     * the context of the current request processing scope.
+     *
+     * @param <T>      resource instance type.
+     * @param resource resource instance.
+     * @return initialized (same) resource instance.
+     */
+    public <T> T initResource(T resource);
 }
