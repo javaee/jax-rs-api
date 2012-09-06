@@ -92,6 +92,31 @@ This interface is expected to be primarily of interest to provider authors wishi
 \subsection{Resource Context}
 \label{resource_context}
 
-The \code{ResourceContext} interface provides access to instances of resource classes. This interface can be used when instances of managed resource classes are to be returned by sub-resource locator methods. Such instances will be injected and managed within the declared scope just like instances of root resource classes, as opposed to any instances that are manually created using the \code{new} operator.
+The \code{ResourceContext} interface provides access to instantiation and initialization of resource or sub-resource classes in the default per-request scope. It can be injected to help with creation and initialization, or just initialization, of instances created by an application.
 
-The \code{ResourceContext} interface can also be used when matching of URIs is required, for example, when validating a URI sent in a request entity. It is worth noting that application functionality may be affected as the matching process will result in the construction or sharing of previously constructed resource classes that are in scope of the HTTP request, and the invocation of any matching sub-resource locator methods. However, no resource or sub-resource methods will be invoked, only matched.
+Let us revisit the example from Section \ref{sub_resources} with some simple modifications:
+
+\begin{listing}{1}
+@Path("widgets")
+public class WidgetsResource {
+  @Context 
+  private ResourceContext rc;
+  
+  @Path("{id}")
+  public WidgetResource findWidget(@PathParam("id") String id) {
+    return rc.initResource(new WidgetResource(id));
+  }
+}
+
+public class WidgetResource {
+  @Context 
+  private HttpHeaders headers;
+
+  public WidgetResource(String id) {...}
+
+  @GET
+  public Widget getDetails() {...}
+}
+\end{listing}
+
+Note that the instance returned by the resource locator \code{findWidget} in \code{WidgetsResource} is initialized using the injected \code{ResourceContext} before it is returned. Without this step, the \code{headers} field in \code{WidgetResource} will not be properly initialized.
