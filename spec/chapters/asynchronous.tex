@@ -20,7 +20,7 @@ Let us illustrate these concepts via an example:
 public class MyResource {
     
     @GET
-    public void longRunningOp(@Suspend final AsynchronousResponse ar) {
+    public void longRunningOp(@Suspended final AsyncResponse ar) {
         Executors.newSingleThreadExecutor().submit(
             new Runnable() {
                 public void run() {
@@ -31,20 +31,20 @@ public class MyResource {
 }
 \end{listing}
 
-A resource method that elects to produce a response asynchronously must inject as a method parameter an instance of the class \code{AsynchronousResponse} using the special annotation \Suspend. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method forks a (non-request) thread to execute a long running operation and returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling \code{resume} on the injected instance of \code{AsynchronousResponse}.
+A resource method that elects to produce a response asynchronously must inject as a method parameter an instance of the class \code{AsyncResponse} using the special annotation \Suspended. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method forks a (non-request) thread to execute a long running operation and returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling \code{resume} on the injected instance of \code{AsyncResponse}.
 
-\subsection{Timeouts and Asynchronous Events}
+\subsection{Timeouts and Callbacks}
 \label{suspend_annotation} %% Update label here
 
 A timeout value can be specified when suspending a connection to avoid waiting for a response indefinitely. The default unit is milliseconds, but any unit of type \code{java.util.concurrent.TimeUnit} can be used. The following example sets a timeout of 15 seconds and registers an instance of \code{TimeoutHandler} in case the timeout is reached before the connection is resumed.
 
 \begin{listing}{1}
     @GET
-    public void longRunningOp(@Suspend(timeOut=15, timeUnit=SECONDS) 
-            final AsynchronousResponse ar) {
-        // Register timeout handler
+    public void longRunningOp(@Suspended final AsyncResponse ar) {
+        // Set timeout and register handler for it
+        ar.setTimeout(15, SECONDS);
         ar.setTimeoutHandler(new TimeoutHandler() {
-            public void handleTimeout(AsynchronousResponse ar) {
+            public void handleTimeout(AsyncResponse ar) {
                 ar.resume("Operation timed out -- please try again");
             }
         });
@@ -58,9 +58,9 @@ A timeout value can be specified when suspending a connection to avoid waiting f
     }
 \end{listing}
 
-\jaxrs\ implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and either no timeout handler is registered or the registered timeout handler does not produce a response. The exception MUST be processed as described in section~\ref{method_exc}. If a registered timeout handler resumes the connection and returns a response, \jaxrs\ implementations MUST NOT generate an exception.
+\jaxrs\ implementations are REQUIRED to generate a \WebApplicationException\ with a service unavailable error response (HTTP 503 status) if the timeout value is reached and either no timeout handler is registered. The exception MUST be processed as described in section~\ref{method_exc}. If a registered timeout handler resets the timeout value or resumes the connection and returns a response, \jaxrs\ implementations MUST NOT generate an exception.
 
-It is also possible to register callbacks to listen for connection resumption (\code{ResumeCallback}) and connection termination (\code{ConnectionCallback}) events. See Javadoc for \code{AsynchronousResponse} for more information on how to register these callbacks.
+It is also possible to register callbacks on an instance of \code{AsyncResponse} in order to listen for connection resumption (\code{ResumeCallback}), connection completion (\code{CompletionCallback}) and connection termination (\code{ConnectionCallback}) events. See Javadoc for \code{AsyncResponse} for more information on how to register these callbacks. Note that support \code{ConnectionCallback} is OPTIONAL.
 
 
 \section{EJB Resource Classes}
@@ -81,16 +81,16 @@ Consider the following example:
 class EJBResource {
 
     @GET @Asynchronous
-    public void longRunningOp(@Suspend AsynchronousResponse ar) {
+    public void longRunningOp(@Suspended AsyncResponse ar) {
         executeLongRunningOp();
         ar.resume("Hello async world!");
     }
 }
 \end{listing}
 
-Note that no explicit thread management is needed in this case since that is
+There is no explicit thread management needed in this case since that is
 under the control of the EJB container. Just like the other examples in this chapter,
-the response is produced by calling \code{resume} on the injected \code{AsynchronousResponse}. Hence, the return type of \code{longRunningOp} is simply \code{void}.
+the response is produced by calling \code{resume} on the injected \code{AsyncResponse}. Hence, the return type of \code{longRunningOp} is simply \code{void}.
 
 \section{Client API}
 \label{client_api_async}
