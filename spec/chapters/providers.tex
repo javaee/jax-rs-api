@@ -59,7 +59,7 @@ The following describes the logical steps taken by a \jaxrs\ implementation when
 \item\label{item_sort} Sort the selected \MsgWrite\ providers with a primary key of generic type where providers whose generic type is the nearest superclass of the object class are sorted first and a secondary key of media type (see Section \ref{declaring_provider_capabilities}).
 \item\label{findwriter} Iterate through the sorted \MsgWrite\ providers and, utilizing the \code{isWriteable} method of each, choose an \MsgWrite\ that supports the object that will be mapped to the entity body.
 \item If step \ref{findwriter} locates a suitable \MsgWrite\ then use its \code{writeTo} method to map the object to the entity body. 
-\item Else generate a \WebAppExc\ with an internal server error response (HTTP 500 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
+\item Else generate an \code{InternalServerErrorException}, a subclass of \WebAppExc\ with its status set to 500, and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
 \end{enumerate}
 
 Experience gained in the field has resulted in the reversal of the sorting keys in step
