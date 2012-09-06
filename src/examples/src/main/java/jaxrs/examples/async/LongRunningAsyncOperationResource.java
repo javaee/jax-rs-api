@@ -123,7 +123,7 @@ public class LongRunningAsyncOperationResource {
     public void overriddenTimeoutAsync(@QueryParam("timeOut") Long timeOut, @QueryParam("timeUnit") TimeUnit timeUnit,
                                        @Suspended final AsyncResponse ar) {
         if (timeOut != null && timeUnit != null) {
-            ar.setTimeout(timeOut, timeUnit); // time-out values specified in the @Suspend annotation are overridden
+            ar.setTimeout(timeOut, timeUnit);
         } else {
             ar.setTimeout(15, SECONDS);
         }
