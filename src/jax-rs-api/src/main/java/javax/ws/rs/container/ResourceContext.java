@@ -52,16 +52,6 @@ import javax.ws.rs.core.Context;
  * will be injected and managed within the declared scope just like instances
  * of root resource classes.
  * </p>
- * <p>
- * The resource context can also be utilized when matching of URIs is
- * required, for example when validating a URI sent in a request entity.
- * Users should be aware that application functionality may be affected as the
- * matching process will result in the construction or sharing of previously
- * constructed resource classes that are in scope of the HTTP request, and the
- * invocation of any matching sub-resource locator methods. However, no
- * {@link javax.ws.rs.HttpMethod resource or sub-resource methods} will be
- * invoked.
- * </p>
  *
  * @author Marek Potociar
  */
