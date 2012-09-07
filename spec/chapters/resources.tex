@@ -61,6 +61,7 @@ Resource methods are methods of a resource class annotated with a request method
 A request method designator is a runtime annotation that is annotated with the \HttpMethod\ annotation. \jaxrs\ defines a set of request method designators for the common HTTP methods: \code{@GET}, \code{@POST}, \code{@PUT}, \code{@DELETE}, \code{@HEAD} and \code{@OPTIONS}. Users may define their own custom request method designators including alternate designators for the common HTTP methods.
 
 \subsection{Visibility}
+\label{visibility}
 
 Only \code{public} methods may be exposed as resource methods. An implementation SHOULD warn users if a non-\code{public} method carries a method designator or \Path\ annotation.
 
