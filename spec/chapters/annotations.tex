@@ -52,15 +52,19 @@
 \hline
 \code{BindingPriority} & \raggedright Type & \raggedright  Specifies a binding priority for a filter or interceptor. Binding priorities are represented by integer numbers. The default binding priority is 500 (\code{BindingPriority.USER}). \tabularnewline
 \hline
-\code{NameBinding} & \raggedright Annotation  & \raggedright Meta-annotation to create annotations for binding filters or interceptors to resource methods. Name binding is only supported as part of the Server API.  \tabularnewline
+\code{NameBinding} & \raggedright Annotation  & \raggedright Meta-annotation to create annotations for binding filters or interceptors to resource methods and applications. Name binding is only supported as part of the Server API.  \tabularnewline
 \hline
-\code{Suspend} & \raggedright Method & \raggedright  Indicates that a resource method is asynchronous. I.e., that it does not produce a response upon returning. JAX-RS implementations will suspend the incoming connection until a response becomes available. \tabularnewline
+\code{Suspended} & \raggedright Parameter & \raggedright  Indicates that a resource method is asynchronous. I.e., that it does not produce a response upon returning. JAX-RS implementations will suspend the incoming connection until a response becomes available. \tabularnewline
 \hline
 \code{Uri} & \raggedright  Parameter, field or method & \raggedright  Injects a \WebTarget\ pointing at a resource identified by the resolved URI.\tabularnewline
 \hline
-\code{PostMatching} & \raggedright Type & \raggedright Global binding annotation that can be applied to a container filter to indicate that it should be applied globally and after the resource method is matched.\tabularnewline
+\code{PreMatching} & \raggedright Type & \raggedright Global binding annotation that can be applied to a container filter to indicate that it should be applied globally and before the resource method is matched.\tabularnewline
 \hline
-
-
+\code{BeanParam} & \raggedright  Parameter, field or method & \raggedright Can be used to inject a user-defined bean whose fields and properties may be annotated with JAX-RS param annotations.\tabularnewline\hline
+\hline
+\code{ConstrainedTo} & \raggedright Type & \raggedright Can be used to restrict the applicability of a provider to just the Client API or just the Server API. If omitted, a provider can be used in either context. 
+\tabularnewline\hline
+\code{ParamsConverter.Lazy} & \raggedright Type & \raggedright Indicates that a conversion of a default value delegated to a \code{ParamConverter} SHOULD occur only when the value is actually requested.
+\tabularnewline\hline
 \end{longtable}
 %\end{center}
