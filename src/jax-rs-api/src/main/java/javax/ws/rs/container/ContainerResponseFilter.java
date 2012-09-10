@@ -45,20 +45,20 @@ import java.io.IOException;
  * An extension interface implemented by container response filters.
  * <p>
  * By default, i.e. if no {@link javax.ws.rs.NameBinding name binding} is applied
- * to the filter implementation class, the filter instance is applied globally for
- * all outgoing responses.
- * If there is a {@link javax.ws.rs.NameBinding &#64;NameBinding} annotation
- * applied to the filter, the filter will only be executed in case the request is
- * matched to a  {@link javax.ws.rs.HttpMethod resource or sub-resource method}
- * and the method is bound to the same name-binding annotation.
+ * to the filter implementation class, the filter instance is applied globally to
+ * any outgoing response for which the request has been matched to a
+ * {@link javax.ws.rs.HttpMethod resource or sub-resource method}.
+ * If there is a {@code &#64;NameBinding} annotation applied to the filter, the filter
+ * will only be executed for a response for which the request has been matched to
+ * a resource or sub-resource method AND the method is bound to the same name-binding
+ * annotation.
  * </p>
  * <p>
- * Implement a name-bound response filter in cases when you want limit
- * the filter functionality to a particular resource or resource method or if you
- * depend on a matched resource information in your filter processing. In other cases,
- * when the filter should be applied globally to all responses, even in cases
- * when a request has not been matched to a resource implement an unbound, global
- * response filter.
+ * Implement a name-bound response filter in cases when you want limit the filter
+ * functionality to a particular resource or resource method. In other cases,
+ * when the filter should be applied globally to any outgoing response for which
+ * the request has been matched to a resource or sub-resource method, implement an
+ * unbound, global response filter.
  * </p>
  * <p>
  * Filters implementing this interface must be annotated with
