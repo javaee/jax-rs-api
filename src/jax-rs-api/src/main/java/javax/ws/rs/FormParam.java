@@ -67,8 +67,9 @@ import java.lang.annotation.Target;
  * The resulting collection is read-only.</li>
  * </ol>
  *
- * <p>If the type is not one of those listed in 4 above then the first value
- * (lexically) of the parameter is used.</p>
+ * <p>If the type is not one of the collection types listed in 5 above and the
+ * form parameter is represented by multiple values then the first value (lexically)
+ * of the parameter is used.</p>
  *
  * <p>Note that, whilst the annotation target permits use on fields and methods,
  * this annotation is only required to be supported on resource method

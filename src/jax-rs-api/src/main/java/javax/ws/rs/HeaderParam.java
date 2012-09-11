@@ -66,8 +66,9 @@ import java.lang.annotation.Target;
  * The resulting collection is read-only.</li>
  * </ol>
  *
- * <p>If the type is not one of those listed in 4 above then the first value
- * (lexically) of the header is used.</p>
+ * <p>If the type is not one of the collection types listed in 5 above and the
+ * header parameter is represented by multiple values then the first value (lexically)
+ * of the parameter is used.</p>
  *
  * <p>Because injection occurs at object creation time, use of this annotation
  * on resource class fields and bean properties is only supported for the
