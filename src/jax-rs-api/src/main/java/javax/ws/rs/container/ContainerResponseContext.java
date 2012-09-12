@@ -111,8 +111,7 @@ public interface ContainerResponseContext {
      * Get a string view of header values associated with the message.
      *
      * Changes in the underlying {@link #getHeaders() headers map} are reflected
-     * in this view. Conversely, this view supports removal operations, and these
-     * are reflected in the underlying headers map.
+     * in this view.
      * <p>
      * The method converts the non-string header values to strings using a
      * {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available via
