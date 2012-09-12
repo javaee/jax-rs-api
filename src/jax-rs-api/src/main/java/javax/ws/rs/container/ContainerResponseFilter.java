@@ -46,18 +46,17 @@ import java.io.IOException;
  * <p>
  * By default, i.e. if no {@link javax.ws.rs.NameBinding name binding} is applied
  * to the filter implementation class, the filter instance is applied globally to
- * any outgoing response for which the request has been matched to a
- * {@link javax.ws.rs.HttpMethod resource or sub-resource method}.
+ * any outgoing response.
  * If there is a {@code &#64;NameBinding} annotation applied to the filter, the filter
  * will only be executed for a response for which the request has been matched to
- * a resource or sub-resource method AND the method is bound to the same name-binding
- * annotation.
+ * a {@link javax.ws.rs.HttpMethod resource or sub-resource method} AND the method
+ * or the whole custom {@link javax.ws.rs.core.Application JAX-RS Application} class
+ * is bound to the same name-binding annotation.
  * </p>
  * <p>
  * Implement a name-bound response filter in cases when you want limit the filter
- * functionality to a particular resource or resource method. In other cases,
- * when the filter should be applied globally to any outgoing response for which
- * the request has been matched to a resource or sub-resource method, implement an
+ * functionality to a matched resource or resource method. In other cases,
+ * when the filter should be applied globally to any outgoing response, implement an
  * unbound, global response filter.
  * </p>
  * <p>
