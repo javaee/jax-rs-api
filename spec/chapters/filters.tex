@@ -45,6 +45,8 @@ A globally-bound (see Section \ref{global_binding}) \ContainerRequestFilter\ is 
 
 An entity interceptor implementing \ReaderInterceptor\ wraps around calls to \code{MessageBodyReader}'s method \code{readFrom}. An entity interceptor implementing \WriterInterceptor\ wraps around calls to \code{MessageBodyWriter}'s method \code{writeTo}. \jaxrs\ implementations are REQUIRED to call registered interceptors when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
 
+Please refer to Appendix \ref{processing_pipeline} for some diagrams on the client and server processing pipelines that show the interaction between filters and entity interceptors.
+
 \section{Filters}
 \label{filters}
 
