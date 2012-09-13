@@ -6,7 +6,7 @@ Filters and entity interceptors can be registered for execution at well-defined 
 \section{Introduction}
 \label{introduction_filters}
 Entity interceptors wrap around a method invocation at a specific extension point. 
-Filters execute code at an extension point but without wrapping a method invocation.  There are four extension points for filters: ClientRequest, ClientResponse, ContainerRequest and ContainerResponse. There are two extension points for entity interceptors: ReadFrom and WriteTo.  For each of these extension points, there is a corresponding interface:
+Filters execute code at an extension point but without wrapping a method invocation.  There are four extension points for filters: \ClientRequest, \ClientResponse, \ContainerRequest\ and \ContainerResponse. There are two extension points for entity interceptors: \ReadFrom\ and \WriteTo.  For each of these extension points, there is a corresponding interface:
 
 \begin{listing}{1}
 public interface ClientRequestFilter {
@@ -41,14 +41,14 @@ A {\em client} filter is a class that implements \ClientRequestFilter\ or \Clien
 In the Client API, a \ClientRequestFilter\ is executed as part of the invocation pipeline, before the HTTP request is delivered to the network; a \ClientResponseFilter\ is executed upon receiving a server response, before control is returned to the application. 
 In the Server API, a \ContainerRequestFilter\ is executed upon receiving a request from a client; a \ContainerResponseFilter\ is executed as part of the response pipeline, before the HTTP response is delivered to the network. 
 
-A globally-bound (see Section \ref{global_binding}) \ContainerRequestFilter\ is a container filter executed after resource matching {\em unless} it is annotated with \PreMatching. The use of this annotation on this type of filters defines a new extension point for applications to use, namely PreContainerRequest. Certain \ContainerRequestContext\ methods may not be available at this extension point. 
+A globally-bound (see Section \ref{global_binding}) \ContainerRequestFilter\ is a container filter executed after resource matching {\em unless} it is annotated with \PreMatching. The use of this annotation on this type of filters defines a new extension point for applications to use, namely \PreMatchContainerRequest. Certain \ContainerRequestContext\ methods may not be available at this extension point. 
 
 An entity interceptor implementing \ReaderInterceptor\ wraps around calls to \code{MessageBodyReader}'s method \code{readFrom}. An entity interceptor implementing \WriterInterceptor\ wraps around calls to \code{MessageBodyWriter}'s method \code{writeTo}. \jaxrs\ implementations are REQUIRED to call registered interceptors when mapping representations to Java types and vice versa. See Section \ref{entity_providers} for more information on entity providers.
 
 \section{Filters}
 \label{filters}
 
-Filters are grouped into \emph{filter chains}. There is a separate filter chain for each extension point introduced in the previous section, namely: ClientRequest, ClientResponse, ContainerRequest, ContainerResponse and PreContainerRequest. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
+Filters are grouped into \emph{filter chains}. There is a separate filter chain for each extension point introduced in the previous section, namely: \ClientRequest, \ClientResponse, \ContainerRequest, \ContainerResponse\ and \PreMatchContainerRequest. Filters in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
 The following example shows an implementation of a container logging filter: each method simply logs the message and returns.
 
@@ -239,7 +239,7 @@ Binding in the Client API is accomplished via API calls instead of annotations. 
 \label{priorities}
 
 The order in which filters and interceptors are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
-Priorities are represented by integer numbers. Execution chains for extension points ContainerRequest, PreContainerRequest and ClientRequest are sorted in \emph{ascending order}; the lower the number the higher the priority. Execution chains for extension points ContainerResponse and ClientResponse are sorted in \emph{descending order}; the higher the number the higher the priority. These rules ensure that response filters are executed in reversed order of request filters.
+Priorities are represented by integer numbers. Execution chains for extension points \ContainerRequest, \PreMatchContainerRequest, \ClientRequest, \ReadFrom\ and \WriteTo\ are sorted in \emph{ascending order}; the lower the number the higher the priority. Execution chains for extension points \ContainerResponse\ and \ClientResponse\ are sorted in \emph{descending order}; the higher the number the higher the priority. These rules ensure that response filters are executed in reversed order of request filters.
 
 The \code{BindingPriority} class defines a set of built-in priorities for security, header decorators, decoders and encoders. The default binding priority is \code{BindingPriority.USER}. For example, the priority of an authentication filter can be set as follows:
 
@@ -264,8 +264,8 @@ When a filter or interceptor method throws an exception, the \jaxrs\ runtime wil
 At most one exception mapper will be used in a single request processing cycle to avoid potentially infinite loops. A response mapped from an exception MUST be filtered as follows:
 
 \begin{enumerate}
-\item If a web resource had been matched before the exception was thrown, then all the filters in the ContainerResponse chain for that resource MUST be invoked;
-\item\label{no_matching} Otherwise, only globally bound filters in the ContainerResponse chain MUST be invoked. 
+\item If a web resource had been matched before the exception was thrown, then all the filters in the \ContainerResponse\ chain for that resource MUST be invoked;
+\item\label{no_matching} Otherwise, only globally bound filters in the \ContainerResponse\ chain MUST be invoked. 
 \end{enumerate}
 
 Note that a filter invoked in step \ref{no_matching} will not have access to resource-dependent information such as that returned by an injectable instance of \code{ResourceInfo}.
