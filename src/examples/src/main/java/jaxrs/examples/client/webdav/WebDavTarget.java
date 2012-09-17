@@ -75,12 +75,12 @@ public class WebDavTarget implements WebTarget {
     }
 
     @Override
-    public WebDavTarget pathParam(String name, Object value) throws IllegalArgumentException {
+    public WebDavTarget resolveTemplate(String name, Object value) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public WebDavTarget pathParams(Map<String, Object> parameters) throws IllegalArgumentException {
+    public WebDavTarget resolveTemplates(Map<String, Object> parameters) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

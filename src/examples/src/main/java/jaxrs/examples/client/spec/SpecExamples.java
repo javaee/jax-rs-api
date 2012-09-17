@@ -128,7 +128,7 @@ public class SpecExamples {
         Client client = ClientFactory.newClient();
         WebTarget base = client.target("http://example.org/");
         WebTarget hello = base.path("hello").path("{whom}");
-        final WebTarget whomToGreet = hello.pathParam("whom", "world");
+        final WebTarget whomToGreet = hello.resolveTemplate("whom", "world");
         Response res = whomToGreet.request().get();
     }
 

@@ -110,7 +110,7 @@ public class BasicExamples {
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/{id}/ )
         WebTarget anyCustomerUri = customersUri.path("{id}");
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/123/ )
-        WebTarget customer123 = anyCustomerUri.pathParam("id", 123);
+        WebTarget customer123 = anyCustomerUri.resolveTemplate("id", 123);
 
         assert customer123 != null;
     }
@@ -137,7 +137,7 @@ public class BasicExamples {
 
         final WebTarget customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
-        response = customersUri.path("{id}").pathParam("id", 123).request().get();
+        response = customersUri.path("{id}").resolveTemplate("id", 123).request().get();
         customer = response.readEntity(Customer.class);
         assert customer != null;
 
@@ -148,7 +148,7 @@ public class BasicExamples {
     public void typedResponse() {
         Customer customer = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .pathParam("id", 123).request().get(Customer.class);
+                .resolveTemplate("id", 123).request().get(Customer.class);
         assert customer != null;
     }
 
@@ -170,11 +170,11 @@ public class BasicExamples {
 
         Customer favorite;
         // view a customer
-        favorite = customer.pathParam("id", 123).request().get(Customer.class);
+        favorite = customer.resolveTemplate("id", 123).request().get(Customer.class);
         assert favorite != null;
 
         // view a customer (alternative)
-        favorite = customer.pathParam("id", 123) // Target ("http://jaxrs.examples.org/jaxrsApplication/customers/123/")
+        favorite = customer.resolveTemplate("id", 123) // Target ("http://jaxrs.examples.org/jaxrsApplication/customers/123/")
                 .request().get(Customer.class);
         assert favorite != null;
     }
@@ -182,7 +182,7 @@ public class BasicExamples {
     public void asyncResponse() throws Exception {
         Future<Response> future = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .pathParam("id", 123).request().async().get();
+                .resolveTemplate("id", 123).request().async().get();
 
         Response response = future.get();
         Customer customer = response.readEntity(Customer.class);
@@ -192,14 +192,14 @@ public class BasicExamples {
     public void typedAsyncResponse() throws Exception {
         Future<Customer> customer = ClientFactory.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
-                .pathParam("id", 123).request().async().get(Customer.class);
+                .resolveTemplate("id", 123).request().async().get(Customer.class);
         assert customer.get() != null;
     }
 
     public void asyncCallback() {
         final Client client = ClientFactory.newClient();
         WebTarget target = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
-        target.pathParam("id", 123).request().async().get(new InvocationCallback<Customer>() {
+        target.resolveTemplate("id", 123).request().async().get(new InvocationCallback<Customer>() {
 
             @Override
             public void completed(Customer customer) {
@@ -213,7 +213,7 @@ public class BasicExamples {
         });
 
         // invoke another request in background
-        Future<?> handle = target.pathParam("id", 456).request().async().get(new InvocationCallback<Response>() {
+        Future<?> handle = target.resolveTemplate("id", 456).request().async().get(new InvocationCallback<Response>() {
 
             @Override
             public void completed(Response response) {
@@ -233,7 +233,7 @@ public class BasicExamples {
         WebTarget anyCustomerUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
 
         // invoke a request in background
-        Future<Customer> handle = anyCustomerUri.pathParam("id", 123) // Target
+        Future<Customer> handle = anyCustomerUri.resolveTemplate("id", 123) // Target
                 .request().async().get(new InvocationCallback<Customer>() {
 
                     @Override
@@ -249,7 +249,7 @@ public class BasicExamples {
         handle.cancel(true);
 
         // invoke another request in background
-        anyCustomerUri.pathParam("id", 456) // Target
+        anyCustomerUri.resolveTemplate("id", 456) // Target
                 .request().async().get(new InvocationCallback<Response>() {
 
             @Override
@@ -264,7 +264,7 @@ public class BasicExamples {
         });
 
         // invoke one more request using newClient
-        Future<Response> response = anyCustomerUri.pathParam("id", 789)
+        Future<Response> response = anyCustomerUri.resolveTemplate("id", 789)
                 .request().cookie(new Cookie("fooName", "XYZ")).async().get();
         assert response.get() != null;
     }
