@@ -137,7 +137,7 @@ public final class Link {
 
     /**
      * Returns the value associated with the link "rel" param as a list
-     * of strings or the empty list if "rel" is not defined. 
+     * of strings or the empty list if "rel" is not defined.
      *
      * @return relation types as list of strings or empty list.
      */
@@ -230,7 +230,7 @@ public final class Link {
      * </pre>
      *
      * See RFC 5988 for more information.
-     * 
+     *
      * @param value String representation.
      * @return newly parsed link.
      * @throws IllegalArgumentException if a syntax error is found.
@@ -385,7 +385,7 @@ public final class Link {
          * Convenience method to set a link relation. More than one "rel" value can
          * be specified by using one or more whitespace characters as delimiters
          * according to RFC 5988. The effect of calling this method is cumulative;
-         * relations are appended using a single space character as separator. 
+         * relations are appended using a single space character as separator.
          *
          * @param rel relation name.
          * @return the updated builder.
@@ -423,7 +423,7 @@ public final class Link {
         }
 
         /**
-         * Set an arbitrary parameter on this link. 
+         * Set an arbitrary parameter on this link.
          *
          * @param name  the name of the parameter.
          * @param value the value set for the parameter.
