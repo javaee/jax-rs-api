@@ -45,7 +45,6 @@ import java.util.Map;
 import javax.ws.rs.client.Configuration;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -80,7 +79,27 @@ public class WebDavTarget implements WebTarget {
     }
 
     @Override
-    public WebDavTarget resolveTemplates(Map<String, Object> parameters) throws IllegalArgumentException {
+    public WebDavTarget resolveTemplate(String name, Object value, boolean encodeSlashInPath) throws NullPointerException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public WebDavTarget resolveTemplateFromEncoded(String name, Object value) throws NullPointerException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public WebDavTarget resolveTemplates(Map<String, Object> templateValues) throws NullPointerException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public WebDavTarget resolveTemplatesFromEncoded(Map<String, Object> templateValues) throws NullPointerException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public WebDavTarget resolveTemplates(Map<String, Object> parameters, boolean encodeSlashInPath) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -91,11 +110,6 @@ public class WebDavTarget implements WebTarget {
 
     @Override
     public WebDavTarget queryParam(String name, Object... values) throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTarget queryParams(MultivaluedMap<String, Object> parameters) throws IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
