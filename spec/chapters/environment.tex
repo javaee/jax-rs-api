@@ -14,7 +14,7 @@ An injected \code{Http\-Servlet\-Response} allows a resource method to commit th
 
 Servlet filters may trigger consumption of a request body by accessing request parameters. In a servlet container the @FormParam annotation and the standard entity provider for \code{application\-/x-\-www-\-form-\-urlencoded} MUST obtain their values from the servlet request parameters if the request body has already been consumed. Servlet APIs do not differentiate between parameters in the URI and body of a request so URI-based query parameters may be included in the entity parameter.
 
-\section{Java EE Container}
+\section{Integration with Java EE Technologies}
 \label{javaee}
 
 This section describes the additional requirements that apply to a \jaxrs\ implementation when combined in a product that supports the following specifications. 
