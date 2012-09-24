@@ -3,6 +3,7 @@
 \section{Changes Since 2.0 Early Draft (Third Edition)}
 
 \begin{itemize}
+\item Chapter ``Validation'': Removed from PR. JAX-RS 2.0 will defer to CDI for Bean Validation. Only those resource classes that are CDI beans would be validated.
 \item Section \ref{method_exc}: Clarified that the steps must be followed in order and that throwables are propagated to the underlying container only if they cannot be mapped.
 \item Section \ref{resource_method}: Added \code{@OPTIONS} to list.
 \item Section \ref{resource_method_return}: New note about anonymous inner classes.
@@ -14,7 +15,7 @@
 \item Section \ref{uri_annotation}: New section that explains the use of the \code{@Uri} annotation.
 \item Section \ref{dynamic_binding}: \code{DynamicBinder} replaced by \code{DynamicFeature}.
 \item Section \ref{exceptions_filters_and_interceptors}: Clarified processing of responses mapped using exception mappers. 
-\item Section \ref{annotations_and_validators}: Explained notion of processing groups and use of \code{Default} group.
+%\item Section \ref{annotations_and_validators}: Explained notion of processing groups and use of \code{Default} group.
 \item Chapter \ref{asynchronous_processing}: Updated sections related to the Server API. \code{@Suspended} annotation, timeouts and callbacks.
 \item Section \ref{suspend_annotation}: Throw new exception \code{ServiceUnavailableException}.
 \item Section \ref{resource_context}: New section for \code{ResourceContext}.
@@ -38,10 +39,7 @@
 \item Chapter \ref{filters_and_interceptors}: Section on the relationship between filters and entity interceptors (including diagram) dropped.
 \item Section \ref{global_binding}: Clarified global binding in relation to the new semantics of \Provider\ for automatic discovery.
 \item Section \ref{dynamic_binding}: The \code{DynamicBinding} interface, intended to be implemented by filters and entity interceptors, is replaced by \code{DynamicBinder}. A dynamic binder is a new type of provider that binds filters and entity interceptors with resource methods. 
-\item Section \ref{constraint_annotations}: Use media type names instead of Java constants for clarity.
-\item Section \ref{entity_validation}: More descriptive names for constraint annotations.
-\item Section \ref{annotation_inheritance}: Changed inheritance rules for constraint annotations to follow those defined in \cite{bv11}.
-\item Section \ref{validation_phases_and_error_reporting}: New note about \code{@Valid} support for return values. Fixed phase number typo.
+\item Chapter ``Validation'': Use media type names instead of Java constants for clarity. More descriptive names for constraint annotations. Changed inheritance rules for constraint annotations to follow those defined in \cite{bv11}. New note about \code{@Valid} support for return values. Fixed phase number typo.
 \item Section \ref{suspend_annotation}: New sentence about calling \code{suspend} more than once or in a method annotated with \code{@Suspend}.
 \item Section \ref{async_ejbs}: New section about EJB resource classes with methods annotated with \code{@Asynchronous}.
 \item Chapter \ref{environment}: Re-structured chapter with sub-sections for each of the EE technologies with which \jaxrs\ integrates. New examples added.
@@ -62,8 +60,7 @@
 \item Section \ref{global_binding}: Global binding is now the default for filters and entity interceptors. The annotation \code{@GlobalBinding} has been dropped.
 \item Section \ref{priorities}: Clarified reverse ordering of the response filter chain based on binding priorities.
 \item Appendix C: Removed from this version after changes to Chapter \ref{filters_and_interceptors}.
-\item Chapter \ref{validation}: Moved to an instantiate-then-validate strategy in which validation of constructor parameters and setters is no longer supported.
-\item Section \ref{validation_phases_and_error_reporting}: Simplified validation process to better align with Bean Validation 1.1 \cite{bv11}. In particular, validation of resource classes, fields and property getters are all carried out in a single step.
+\item Chapter ``Validation'': Moved to an instantiate-then-validate strategy in which validation of constructor parameters and setters is no longer supported. Simplified validation process to better align with Bean Validation 1.1 \cite{bv11}. In particular, validation of resource classes, fields and property getters are all carried out in a single step.
 
 \end{itemize}
 
@@ -75,7 +72,7 @@
 \item Section \ref{terminology}: Added new terminology.
 \item Section \ref{expert_group}: List 2.0 expert group members.
 \item Section \ref{acks}: acknowledgements for 2.0 version.
-\item Chapter \ref{applications}: Somewhat generic section on validation removed to avoid confusion with the type of validation defined in Chapter \ref{validation}.
+\item Chapter \ref{applications}: Somewhat generic section on validation removed to avoid confusion with the type of validation defined in Chapter ``Validation''.
 \item Section \ref{servlet}: Clarified used of Servlet 3 framework pluggability. Added sample web.xml files and a table summarizing all cases.
 \item Section \ref{entity_parameters}: Clarified notion of entity parameter as a parameter not annotated with any JAX-RS annotation.
 \item Section \ref{declaring_method_capabilities}: Explained use of quality factor q. Introduced server-side quality factor qs and included example.
@@ -84,7 +81,7 @@
 \item Section \ref{determine_response_type}: Updated algorithm to support server-side quality factor qs.
 \item Chapter \ref{client_api}: New chapter Client API.
 \item Chapter \ref{filters_and_interceptors}: New chapter Filters and Interceptors.
-\item Chapter \ref{validation}: New chapter Validation.
+\item Chapter ``Validation'': New chapter Validation.
 \item Chapter \ref{asynchronous_processing}: New chapter Asynchronous Processing.
 \item Appendix \ref{annotation_table}: New section for 2.0 annotations.
 \item Appendix C: New appendix describing filter and interceptor extension points.
