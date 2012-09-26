@@ -841,13 +841,9 @@ public abstract class Response {
          * </p>
          *
          * @return a copy of the ResponseBuilder.
-         * @throws CloneNotSupportedException if the object's class does not support
-         *                                    the Cloneable interface. Subclasses that override
-         *                                    the clone method can also throw this exception to
-         *                                    indicate that an instance cannot be cloned.
          */
         @Override
-        public abstract ResponseBuilder clone() throws CloneNotSupportedException;
+        public abstract ResponseBuilder clone();
 
         /**
          * Set the status on the ResponseBuilder.

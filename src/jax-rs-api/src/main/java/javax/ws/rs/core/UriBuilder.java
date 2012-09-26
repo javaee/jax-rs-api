@@ -305,7 +305,7 @@ public abstract class UriBuilder {
      * @throws IllegalArgumentException if resource is {@code null}, or
      *                                  if resource is not annotated with {@link javax.ws.rs.Path}.
      */
-    public abstract UriBuilder path(Class<?> resource) throws IllegalArgumentException;
+    public abstract UriBuilder path(Class resource) throws IllegalArgumentException;
 
     /**
      * Append the path from a Path-annotated method to the
@@ -324,7 +324,7 @@ public abstract class UriBuilder {
      *                                  or there is more than or less than one variant of the method annotated with
      *                                  {@link javax.ws.rs.Path}.
      */
-    public abstract UriBuilder path(Class<?> resource, String method) throws IllegalArgumentException;
+    public abstract UriBuilder path(Class resource, String method) throws IllegalArgumentException;
 
     /**
      * Append the path from a {@link javax.ws.rs.Path}-annotated method to the
