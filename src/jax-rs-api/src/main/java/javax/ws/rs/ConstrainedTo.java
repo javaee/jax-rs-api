@@ -74,7 +74,7 @@ import java.lang.annotation.Target;
  * <p>
  * It is a configuration error to constraint a JAX-RS provider implementation to
  * a run-time context in which the provider cannot be applied. In such case a JAX-RS
- * runtime SHOULD report a warning and ignore the provider implementation in further
+ * runtime SHOULD inform a user about the issue and ignore the provider implementation in further
  * processing.
  * </p>
  * <p>
