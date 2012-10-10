@@ -65,7 +65,7 @@ import javax.ws.rs.DefaultValue;
  * as early as possible.
  * This default behavior may be overridden by annotating the {@code ParamConverter}
  * implementation class with a {@link Lazy &#64;Lazy} annotation. In such case any default
- * value conversion delegated to the {@code &#64;Lazy}-annotated converter will be deferred
+ * value conversion delegated to the {@code @Lazy}-annotated converter will be deferred
  * to a latest possible moment (i.e. until the injection of such default value is required).
  * </p>
  * <p>
@@ -82,7 +82,7 @@ public interface ParamConverter<T> {
 
     /**
      * Mandates that a conversion of any {@link DefaultValue default value} delegated
-     * to a {@link ParamConverter parameter converter} annotated with {@code &#64;Lazy}
+     * to a {@link ParamConverter parameter converter} annotated with {@code @Lazy}
      * annotation SHOULD occur only once the value is actually required (e.g. to be
      * injected for the first time).
      */
