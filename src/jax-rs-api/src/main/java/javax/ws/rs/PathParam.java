@@ -105,9 +105,9 @@ public @interface PathParam {
      * property. See {@link Path#value()} for a description of the syntax of
      * template parameters.
      *
-     * <p>E.g. a class annotated with: {@code &#64;Path("widgets/&#123;id&#125;")}
+     * <p>E.g. a class annotated with: {@code @Path("widgets/{id}")}
      * can have methods annotated whose arguments are annotated
-     * with {@code &#64;PathParam("id")}.
+     * with {@code @PathParam("id")}.
      */
     String value();
 }
