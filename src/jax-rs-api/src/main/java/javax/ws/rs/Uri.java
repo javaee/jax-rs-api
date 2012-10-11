@@ -84,8 +84,8 @@ public @interface Uri {
      *
      * If used from within a JAX-RS component class (e.g. resource, filter, provider &hellip;),
      * the value can take a form of absolute or relative URI or absolute or relative URI.
-     * A relative URI is resolved using the {@link ApplicationPath application path}
-     * as the base URI. For example:
+     * A relative URI is resolved using the context path of the application as the base URI.
+     * For example:
      * <pre>
      * public class AuditingFilter implements RequestFilter {
      *    &#64;Uri("audit/logs")
