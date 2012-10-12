@@ -89,8 +89,9 @@ An implementation MUST include pre-packaged \MsgRead\ and \MsgWrite\ implementat
 \item[\code{java.io.Reader}] All media types (\code{*/*}).
 \item[\code{java.io.File}] All media types (\code{*/*}).
 \item[\code{javax.activation.DataSource}] All media types (\code{*/*}).
-\item[\code{javax.xml.transform.Source}] XML types (\code{text/xml}, \code{application\-/\-xml} and \code{application\-/\-*+xml}).
-\item[\code{javax.xml.bind.JAXBElement} and application-supplied JAXB classes] XML media types (\code{text\-/\-xml}, \code{application/xml} and \code{application/*+xml}).
+\item[\code{javax.xml.transform.Source}] XML types (\code{text/xml}, \code{application/xml} and media types of the form \code{application/*+xml}).
+\item[\code{javax.xml.bind.JAXBElement} and application-supplied JAXB classes] XML types (\code{text/xml} and \code{application/xml} and media 
+types of the form \code{application/*+xml}).
 \item[\code{MultivaluedMap<String,String>}] Form content (\code{application/x-www-form-urlencoded}).
 \item[\code{StreamingOutput}] All media types (\code{*/*}), \MsgWrite\ only.
 \item[\code{java.lang.Boolean}, \code{java.lang.Character}, \code{java.lang.Number}] Only for \code{text/plain}. Corresponding primitive types supported via boxing/unboxing conversion.

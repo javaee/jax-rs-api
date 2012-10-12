@@ -21,13 +21,14 @@ public class MyResource {
     
     @GET
     public void longRunningOp(@Suspended final AsyncResponse ar) {
-        Executors.newSingleThreadExecutor().submit(
+        executor.submit(
             new Runnable() {
                 public void run() {
                     executeLongRunningOp();
                     ar.resume("Hello async world!");
         } });
     } 
+    ...
 }
 \end{listing}
 
@@ -41,15 +42,16 @@ A timeout value can be specified when suspending a connection to avoid waiting f
 \begin{listing}{1}
     @GET
     public void longRunningOp(@Suspended final AsyncResponse ar) {
-        // Set timeout and register handler for it
-        ar.setTimeout(15, SECONDS);
+        // Register handler and set timeout
         ar.setTimeoutHandler(new TimeoutHandler() {
             public void handleTimeout(AsyncResponse ar) {
                 ar.resume("Operation timed out -- please try again");
             }
         });
+        ar.setTimeout(15, SECONDS);
+        
         // Execute long running operation in new thread
-        Executors.newSingleThreadExecutor().submit(
+        executor.submit(
             new Runnable() {
                 public void run() {
                     executeLongRunningOp();
