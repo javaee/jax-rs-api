@@ -299,7 +299,7 @@ public interface ClientRequestContext {
      * type is required.
      *
      * @param entity      entity object.
-     * @param annotations annotations attached to the entity.
+     * @param annotations annotations attached to the entity instance.
      * @param mediaType   entity media type.
      * @see MessageBodyWriter
      */
@@ -309,9 +309,16 @@ public interface ClientRequestContext {
             final MediaType mediaType);
 
     /**
-     * Get the annotations attached to the entity.
+     * Get the annotations attached to the entity instance.
+     * <p>
+     * Note that the returned annotations array contains only those annotations
+     * explicitly attached to entity instance (such as the ones attached using
+     * {@link Entity#Entity(Object, javax.ws.rs.core.MediaType, java.lang.annotation.Annotation[])} method).
+     * The entity instance annotations array does not include annotations declared on the entity
+     * implementation class or its ancestors.
+     * </p>
      *
-     * @return entity annotations.
+     * @return annotations attached to the entity instance.
      */
     public Annotation[] getEntityAnnotations();
 
