@@ -301,7 +301,7 @@ public final class Link {
      * of a given name and generates a link with the appropriate URI and values
      * for "type" and "rel".</p>
      * <p>The value of "type" is set to be the first media-type in {@code @Produces},
-     * and is omitted if that annotation is not present on the method. The value
+     * and is omitted if that annotation is not present on the method or class. The value
      * of "rel" must be specified as an argument to this method.</p>
      *
      * @param resource resource class.
@@ -325,7 +325,10 @@ public final class Link {
                 if (path != null) {
                     lb.path(m);
                 }
-                final Produces ps = m.getAnnotation(Produces.class);
+                Produces ps = m.getAnnotation(Produces.class);
+                if (ps == null) {
+                    ps = resource.getAnnotation(Produces.class);
+                }
                 if (ps != null) {
                     final String[] values = ps.value();
                     if (values.length > 0) {
@@ -337,6 +340,34 @@ public final class Link {
         }
         throw new IllegalArgumentException("Method '" + method + "' not found in class '"
                 + resource.getName() + "'");
+    }
+
+    /**
+     * <p>Generate a link from a resource class. The value of "type" is set to be
+     * the first media-type in {@code @Produces}, and is omitted if that annotation is
+     * not present on the or class. The value of "rel" must be specified as an argument
+     * to this method.</p>
+     *
+     * @param resource resource class.
+     * @param rel      value of {@code "rel"} parameter.
+     * @return link builder to further configure link.
+     * @throws IllegalArgumentException if any argument is {@code null} or no method is found.
+     */
+    public static Builder fromResource(Class<?> resource, String rel) {
+        if (resource == null || rel == null) {
+            throw new IllegalArgumentException("All parameters must be non-null");
+        }
+
+        Builder lb = Link.fromUri(UriBuilder.fromResource(resource).build());
+        lb.rel(rel);
+        final Produces ps = resource.getAnnotation(Produces.class);
+        if (ps != null) {
+            final String[] values = ps.value();
+            if (values.length > 0) {
+                lb.type(values[0]);     // use first type
+            }
+        }
+        return lb;
     }
 
     /**
