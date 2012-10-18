@@ -46,7 +46,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.RuntimeDelegate;
 import static javax.ws.rs.core.HttpHeaders.RETRY_AFTER;
 import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 /**
  * A runtime exception indicating that the requested resource
@@ -131,7 +130,7 @@ public class ServiceUnavailableException extends ServerErrorException {
      *                                  is not HTTP {@code 503}.
      */
     public ServiceUnavailableException(Response response, Throwable cause) throws IllegalArgumentException {
-        super(validate(response, UNAUTHORIZED), cause);
+        super(validate(response, SERVICE_UNAVAILABLE), cause);
     }
 
     /**
