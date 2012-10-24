@@ -101,10 +101,11 @@ public class HttpMethodOverrideFilter implements ContainerRequestFilter {
 \end{listing}
 
 \section{Entity Interceptors}
+\label{entity_interceptors}
 
 An entity interceptor implements interface \ReaderInterceptor\ or \WriterInterceptor, or both. There is an \emph{interceptor chain} for each kind of entity interceptor. Entity interceptors in a chain are sorted based on their priorities (see Section \ref{priorities}) and are executed in order. 
 
-Entity interceptors wrap calls to the methods \code{readFrom} in classes implementing \code{MessageBodyReader} and \code{writeTo} in classes implementing \code{MessageBodyWriter}. An interceptor SHOULD explicitly call the context method \code{proceed} to continue the execution of the chain. Because of their wrapping nature, failure to call this method will prevent execution of the wrapped method in the corresponding message body reader or message body writer.
+As part of the JAX-RS processing pipeline (see Appendix \ref{processing_pipeline}), entity interceptors wrap calls to the methods \code{readFrom} in classes implementing \code{MessageBodyReader} and \code{writeTo} in classes implementing \code{MessageBodyWriter}. An interceptor SHOULD explicitly call the context method \code{proceed} to continue the execution of the chain. Because of their wrapping nature, failure to call this method will prevent execution of the wrapped method in the corresponding message body reader or message body writer.
 
 The following example shows an implementation of a GZIP entity interceptor that provides deflate and inflate capabilities~\footnote{This class is not intended to be a complete implementation of this interceptor.}.
 
@@ -140,6 +141,8 @@ class GzipInterceptor implements ReaderInterceptor, WriterInterceptor {
 \end{listing}
 
 The context types, \ReaderInterceptorContext\ and \WriterInterceptorContext, provide read and write access to the parameters of the corresponding wrapped methods. In the example shown above, the input and output streams are wrapped and updated in the context object before proceeding. \jaxrs\ implementations MUST use the last parameter values set in the context object when calling the wrapped methods \code{MessageBodyReader.readFrom} and \code{MessageBodyWrite.writeTo}.
+
+It is worth noting that a \code{readFrom} or a \code{writeTo} that is called directly from application code, e.g.~via the injection of a \code{Providers} instance, will \emph{not} trigger the execution of any entity interceptors since it is not part of the normal JAX-RS processing pipeline. 
 
 \section{Lifecycle}
 
