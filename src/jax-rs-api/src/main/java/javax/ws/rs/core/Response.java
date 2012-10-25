@@ -55,9 +55,12 @@ import javax.ws.rs.ext.RuntimeDelegate;
 
 /**
  * Defines the contract between a returned instance and the runtime when
- * an application needs to provide meta-data to the runtime. An application
- * class can extend this class directly or can use one of the static
- * methods to create an instance using a ResponseBuilder.
+ * an application needs to provide meta-data to the runtime.
+ * <p>
+ * An application class should not extend this class directly. {@code Response} class is
+ * reserved for an extension by a JAX-RS implementation providers. An application should use one
+ * of the static methods to create a {@code Response} instance using a ResponseBuilder.
+ * </p>
  * <p>
  * Several methods have parameters of type URI, {@link UriBuilder} provides
  * convenient methods to create such values as does {@link URI#create(java.lang.String)}.
