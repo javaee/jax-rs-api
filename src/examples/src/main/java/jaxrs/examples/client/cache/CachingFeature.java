@@ -42,7 +42,7 @@ package jaxrs.examples.client.cache;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.ws.rs.core.Configurable;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 
 /**
@@ -53,9 +53,9 @@ import javax.ws.rs.core.Feature;
 public class CachingFeature implements Feature {
 
     @Override
-    public boolean configure(Configurable configurable) {
+    public boolean configure(Configuration configuration) {
         final Map<String, CacheEntry> cacheStore = new ConcurrentHashMap<String, CacheEntry>();
-        configurable
+        configuration
                 .register(new CacheEntryLocator(cacheStore))
                 .register(new CacheResponseFilter(cacheStore));
 

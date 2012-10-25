@@ -39,23 +39,24 @@
  */
 package jaxrs.examples.client.webdav;
 
-import javax.ws.rs.core.Configurable;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 
 /**
+ * Test of WebDAV Client API Extension.
+ *
  * @author Marek Potociar
  */
 public class WebDavClientTest {
 
     private WebDavClient createClient() {
-        WebDavClient wdc = new WebDavClient();
-        return wdc;
+        return new WebDavClient();
     }
 
     static class TestFeature implements Feature {
 
         @Override
-        public boolean configure(Configurable configurable) {
+        public boolean configure(Configuration configuration) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
@@ -64,12 +65,12 @@ public class WebDavClientTest {
         WebDavClient client = createClient();
 
         TestFeature testFeature = new TestFeature();
-        client.configuration().register(testFeature);
+        client.register(testFeature);
 
         client.target("http://examples.jaxrs.com/webdav/");
-        client.target("http://examples.jaxrs.com/webdav/").configuration().register(testFeature);
-        client.target("http://examples.jaxrs.com/webdav/").request().configuration().register(testFeature);
-        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().configuration().register(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").register(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").request().register(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().register(testFeature);
 
         // HTTP
         client.target("http://examples.jaxrs.com/webdav/").request().get();

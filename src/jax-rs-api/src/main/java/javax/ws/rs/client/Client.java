@@ -56,10 +56,10 @@ import javax.ws.rs.core.UriBuilder;
  * resources.
  *
  * @author Marek Potociar
- * @see Configuration
+ * @see Configurable
  * @since 2.0
  */
-public interface Client {
+public interface Client extends Configurable {
 
     /**
      * Close client instance and all it's associated resources. Subsequent calls
@@ -71,15 +71,7 @@ public interface Client {
      * produced by the client instance. Invoking any method on such targets once the client
      * is closed would result in an {@link IllegalStateException} being thrown.
      */
-    void close();
-
-    /**
-     * Get access to the underlying {@link Configuration configuration} of the
-     * client instance.
-     *
-     * @return a mutable client configuration.
-     */
-    public Configuration configuration();
+    public void close();
 
     /**
      * Build a new web resource target.
@@ -89,7 +81,7 @@ public interface Client {
      * @throws IllegalArgumentException in case the supplied string is not a valid URI template.
      * @throws NullPointerException     in case the supplied argument is {@code null}.
      */
-    WebTarget target(String uri) throws IllegalArgumentException, NullPointerException;
+    public WebTarget target(String uri) throws IllegalArgumentException, NullPointerException;
 
     /**
      * Build a new web resource target.
@@ -98,7 +90,7 @@ public interface Client {
      * @return web resource target bound to the provided URI.
      * @throws NullPointerException in case the supplied argument is {@code null}.
      */
-    WebTarget target(URI uri) throws NullPointerException;
+    public WebTarget target(URI uri) throws NullPointerException;
 
     /**
      * Build a new web resource target.
@@ -107,7 +99,7 @@ public interface Client {
      * @return web resource target bound to the provided URI.
      * @throws NullPointerException in case the supplied argument is {@code null}.
      */
-    WebTarget target(UriBuilder uriBuilder) throws NullPointerException;
+    public WebTarget target(UriBuilder uriBuilder) throws NullPointerException;
 
     /**
      * Build a new web resource target.
@@ -116,7 +108,7 @@ public interface Client {
      * @return web resource target bound to the linked web resource.
      * @throws NullPointerException in case the supplied argument is {@code null}.
      */
-    WebTarget target(Link link) throws NullPointerException;
+    public WebTarget target(Link link) throws NullPointerException;
 
     /**
      * <p>Build an invocation builder from a link. It uses the URI and the type
@@ -127,6 +119,35 @@ public interface Client {
      * @return newly created invocation builder.
      * @throws NullPointerException     in case link is {@code null}.
      */
-    Invocation.Builder invocation(Link link) throws NullPointerException;
+    public Invocation.Builder invocation(Link link) throws NullPointerException;
 
+    @Override
+    public Client setProperty(String name, Object value);
+
+    @Override
+    public Client register(Class<?> providerClass);
+
+    @Override
+    public Client register(Class<?> providerClass, int bindingPriority);
+
+    @Override
+    public <T> Client register(Class<T> providerClass, Class<? super T>... contracts);
+
+    @Override
+    public <T> Client register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+
+    @Override
+    public Client register(Object provider);
+
+    @Override
+    public Client register(Object provider, int bindingPriority);
+
+    @Override
+    public <T> Client register(Object provider, Class<? super T>... contracts);
+
+    @Override
+    public <T> Client register(Object provider, int bindingPriority, Class<? super T>... contracts);
+
+    @Override
+    public Client updateFrom(Configurable configurable);
 }

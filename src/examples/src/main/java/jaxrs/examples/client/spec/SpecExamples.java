@@ -77,12 +77,12 @@ public class SpecExamples {
     public void clientBootstrapping() {
         // Default client instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
-        defaultClient.configuration().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
+        defaultClient.setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
         assert defaultClient != null;
 
         // Default client instantiation using custom configuration
 
-        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.configuration());
+        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient);
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////

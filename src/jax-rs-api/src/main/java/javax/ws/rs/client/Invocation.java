@@ -61,7 +61,7 @@ import javax.ws.rs.core.Response;
  * @author Marek Potociar
  * @see Invocation.Builder Invocation.Builder
  */
-public interface Invocation {
+public interface Invocation extends Configurable {
 
     /**
      * A client request invocation builder.
@@ -106,7 +106,7 @@ public interface Invocation {
      *           .header("Foo", "bar").async().get(String.class);
      * </pre>
      */
-    public static interface Builder extends SyncInvoker {
+    public static interface Builder extends SyncInvoker, Configurable {
 
         // Invocation builder methods
 
@@ -231,12 +231,36 @@ public interface Invocation {
          */
         public Builder headers(MultivaluedMap<String, Object> headers);
 
-        /**
-         * Get access to the underlying {@link Configuration configuration}.
-         *
-         * @return a mutable configuration bound to the instance.
-         */
-        public Configuration configuration();
+        @Override
+        public Builder setProperty(String name, Object value);
+
+        @Override
+        public Builder register(Class<?> providerClass);
+
+        @Override
+        public Builder register(Class<?> providerClass, int bindingPriority);
+
+        @Override
+        public <T> Builder register(Class<T> providerClass, Class<? super T>... contracts);
+
+        @Override
+        public <T> Builder register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+
+        @Override
+        public Builder register(Object provider);
+
+        @Override
+        public Builder register(Object provider, int bindingPriority);
+
+        @Override
+        public <T> Builder register(Object provider, Class<? super T>... contracts);
+
+        @Override
+        public <T> Builder register(Object provider, int bindingPriority, Class<? super T>... contracts);
+
+        @Override
+        public Builder updateFrom(Configurable configurable);
+
     }
 
     /**
@@ -356,10 +380,33 @@ public interface Invocation {
      */
     public <T> Future<T> submit(InvocationCallback<T> callback);
 
-    /**
-     * Get access to the underlying {@link Configuration configuration}.
-     *
-     * @return a mutable configuration bound to the instance.
-     */
-    public Configuration configuration();
+    @Override
+    public Invocation setProperty(String name, Object value);
+
+    @Override
+    public Invocation register(Class<?> providerClass);
+
+    @Override
+    public Invocation register(Class<?> providerClass, int bindingPriority);
+
+    @Override
+    public <T> Invocation register(Class<T> providerClass, Class<? super T>... contracts);
+
+    @Override
+    public <T> Invocation register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+
+    @Override
+    public Invocation register(Object provider);
+
+    @Override
+    public Invocation register(Object provider, int bindingPriority);
+
+    @Override
+    public <T> Invocation register(Object provider, Class<? super T>... contracts);
+
+    @Override
+    public <T> Invocation register(Object provider, int bindingPriority, Class<? super T>... contracts);
+
+    @Override
+    public Invocation updateFrom(Configurable configurable);
 }

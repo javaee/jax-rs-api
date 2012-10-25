@@ -51,7 +51,7 @@ public class CacheExample {
 
     public void cacheExample() {
         Client client = ClientFactory.newClient();
-        client.configuration().register(CachingFeature.class);
+        client.register(CachingFeature.class);
 
         WebTarget resource = client.target("http://example.com/foo/bar.txt");
 

@@ -40,19 +40,22 @@
 package jaxrs.examples.client.custom;
 
 import java.net.URI;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.Configuration;
-import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
 /**
+ * A custom "throttled" client example.
+ *
  * @author Marek Potociar
  */
 public final class ThrottledClient implements Client {
@@ -67,10 +70,10 @@ public final class ThrottledClient implements Client {
         this.requestQueue = new ArrayBlockingQueue<ClientRequestContext>(queueCapacity);
     }
 
-    public ThrottledClient(Configuration configuration, int queueCapacity) {
+    public ThrottledClient(Configurable configurable, int queueCapacity) {
         this(queueCapacity);
 
-        configuration().updateFrom(configuration);
+        updateFrom(configurable);
     }
 
     @Override
@@ -99,12 +102,77 @@ public final class ThrottledClient implements Client {
     }
 
     @Override
-    public Configuration configuration() {
+    public Invocation.Builder invocation(Link link) throws NullPointerException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Invocation.Builder invocation(Link link) throws NullPointerException {
+    public Map<String, Object> getProperties() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object getProperty(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ThrottledClient setProperty(String name, Object value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Set<Class<?>> getProviderClasses() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Set<Object> getProviderInstances() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ThrottledClient register(Class<?> providerClass) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ThrottledClient register(Class<?> providerClass, int bindingPriority) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> ThrottledClient register(Class<T> providerClass, Class<? super T>... contracts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> ThrottledClient register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ThrottledClient register(Object provider) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ThrottledClient register(Object provider, int bindingPriority) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> ThrottledClient register(Object provider, Class<? super T>... contracts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> ThrottledClient register(Object provider, int bindingPriority, Class<? super T>... contracts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ThrottledClient updateFrom(Configurable configurable) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

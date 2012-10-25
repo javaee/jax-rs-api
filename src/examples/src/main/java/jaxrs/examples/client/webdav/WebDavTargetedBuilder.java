@@ -40,9 +40,11 @@
 package jaxrs.examples.client.webdav;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.client.ClientException;
-import javax.ws.rs.client.Configuration;
+import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.CacheControl;
@@ -52,6 +54,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 /**
+ * Example of Invocation.Builder extension to support WebDAV.
+ *
  * @author Marek Potociar
  */
 public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvoker {
@@ -111,7 +115,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public Invocation.Builder cookie(String name, String value) {
+    public  WebDavTargetedBuilder cookie(String name, String value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -261,7 +265,72 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public Configuration configuration() {
+    public  WebDavTargetedBuilder setProperty(String name, Object value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public  WebDavTargetedBuilder register(Class<?> providerClass) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public  WebDavTargetedBuilder register(Class<?> providerClass, int bindingPriority) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> WebDavTargetedBuilder register(Class<T> providerClass, Class<? super T>... contracts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> WebDavTargetedBuilder register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public  WebDavTargetedBuilder register(Object provider) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public  WebDavTargetedBuilder register(Object provider, int bindingPriority) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> WebDavTargetedBuilder register(Object provider, Class<? super T>... contracts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> WebDavTargetedBuilder register(Object provider, int bindingPriority, Class<? super T>... contracts) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public  WebDavTargetedBuilder updateFrom(Configurable configurable) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object getProperty(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Set<Class<?>> getProviderClasses() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Set<Object> getProviderInstances() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

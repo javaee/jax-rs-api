@@ -51,7 +51,7 @@ import javax.ws.rs.core.UriBuilder;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface WebTarget {
+public interface WebTarget extends Configurable {
 
     /**
      * Get the URI identifying the resource.
@@ -69,13 +69,6 @@ public interface WebTarget {
      * @return the initialized URI builder.
      */
     public UriBuilder getUriBuilder();
-
-    /**
-     * Get access to the underlying {@link Configuration configuration}.
-     *
-     * @return a mutable configuration bound to the instance.
-     */
-    public Configuration configuration();
 
     /**
      * Create a new {@code WebTarget} instance by appending path to the URI of
@@ -312,4 +305,34 @@ public interface WebTarget {
      * @return builder for a request targeted at the URI referenced by this target instance.
      */
     public Invocation.Builder request(MediaType... acceptedResponseTypes);
+
+    @Override
+    public WebTarget setProperty(String name, Object value);
+
+    @Override
+    public WebTarget register(Class<?> providerClass);
+
+    @Override
+    public WebTarget register(Class<?> providerClass, int bindingPriority);
+
+    @Override
+    public <T> WebTarget register(Class<T> providerClass, Class<? super T>... contracts);
+
+    @Override
+    public <T> WebTarget register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+
+    @Override
+    public WebTarget register(Object provider);
+
+    @Override
+    public WebTarget register(Object provider, int bindingPriority);
+
+    @Override
+    public <T> WebTarget register(Object provider, Class<? super T>... contracts);
+
+    @Override
+    public <T> WebTarget register(Object provider, int bindingPriority, Class<? super T>... contracts);
+
+    @Override
+    public WebTarget updateFrom(Configurable configurable);
 }

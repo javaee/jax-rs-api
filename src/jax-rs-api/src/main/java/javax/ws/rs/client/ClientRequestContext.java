@@ -349,7 +349,7 @@ public interface ClientRequestContext {
      *
      * @return request configuration.
      */
-    public Configuration getConfiguration();
+    public Configurable getConfiguration();
 
     /**
      * Abort the filter chain with a response.

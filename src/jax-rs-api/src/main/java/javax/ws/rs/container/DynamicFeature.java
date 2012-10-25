@@ -39,7 +39,7 @@
  */
 package javax.ws.rs.container;
 
-import javax.ws.rs.core.Configurable;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
 
@@ -69,7 +69,7 @@ public interface DynamicFeature {
     /**
      * A callback method called by the JAX-RS runtime during the application
      * deployment to register provider instances or classes in a
-     * {@link Configurable configurable} scope of a particular {@link javax.ws.rs.HttpMethod
+     * {@link javax.ws.rs.core.Configuration runtime configuration} scope of a particular {@link javax.ws.rs.HttpMethod
      * resource or sub-resource method}; i.e. the providers that should be dynamically bound
      * to the method.
      * <p>
@@ -93,16 +93,16 @@ public interface DynamicFeature {
      * Conceptually, this callback method is called during a {@link javax.ws.rs.HttpMethod
      * resource or sub-resource method} discovery phase (typically once per each discovered
      * resource or sub-resource method) to register provider instances or classes in a
-     * {@code configurable} scope of each particular method identified by the supplied
+     * {@code configuration} scope of each particular method identified by the supplied
      * {@link ResourceInfo resource information}.
-     * The responsibility of the feature is to properly update the supplied {@code configurable}
+     * The responsibility of the feature is to properly update the supplied {@code configuration}
      * context.
      * </p>
      *
      * @param resourceInfo resource class and method information.
-     * @param configurable a resource or sub-resource method-level configurable context
+     * @param configuration a resource or sub-resource method-level runtime configuration context
      *                     associated with the {@code resourceInfo} in which the feature
      *                     should be enabled.
      */
-    public void configure(ResourceInfo resourceInfo, Configurable configurable);
+    public void configure(ResourceInfo resourceInfo, Configuration configuration);
 }

@@ -46,7 +46,7 @@ package javax.ws.rs.core;
  * (e.g. filters or interceptors) and/or properties.
  * <p>
  * A {@code Feature} is a special type of JAX-RS configuration provider that, if registered, it's
- * {@link #configure(Configurable)} method is invoked during JAX-RS runtime configuration and bootstrapping
+ * {@link #configure(Configuration)} method is invoked during JAX-RS runtime configuration and bootstrapping
  * phase with goal to further configure the runtime scope in which it has been registered. From within the
  * invoked {@code configure(...)} method a feature may provide additional runtime configuration for the domain
  * it represents, such as registering additional contract providers, including nested features and/or specifying
@@ -60,21 +60,22 @@ public interface Feature {
 
     /**
      * A call-back method called when the feature is to be enabled in a given
-     * configurable scope.
+     * runtime configuration scope.
      *
-     * The responsibility of the feature is to properly update the supplied configurable context
+     * The responsibility of the feature is to properly update the supplied runtime configuration context
      * and return {@code true} if the feature was successfully enabled or {@code false} otherwise.
      * <p>
      * Note that under some circumstances the feature may decide not to enable itself, which
-     * is indicated by returning {@code false}. In such case the configurable context does
-     * not internally register the feature in the {@link javax.ws.rs.core.Configurable#getEnabledFeatures()
-     * collection of enabled features} and the attempt to enable the feature is ignored.
+     * is indicated by returning {@code false}. In such case the configuration context does
+     * not add the feature to the collection of enabled features and a subsequent call to
+     * {@link Configuration#isEnabled(Feature)} or {@link Configuration#isEnabled(Class)} method
+     * would return {@code false}.
      * </p>
      *
      *
-     * @param configurable configurable context in which the feature should be enabled.
+     * @param configuration runtime configuration context in which the feature should be enabled.
      * @return {@code true} if the feature was successfully enabled, {@code false}
      *         otherwise.
      */
-    public boolean configure(Configurable configurable);
+    public boolean configure(Configuration configuration);
 }

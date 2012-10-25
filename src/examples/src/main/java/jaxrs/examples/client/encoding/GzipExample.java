@@ -53,7 +53,7 @@ public class GzipExample {
 
     public void gzipExample() {
         WebTarget target = ClientFactory.newClient().target("http://example.com/foo/bar.txt");
-        target.configuration().register(GzipEntityInterceptor.class);
+        target.register(GzipEntityInterceptor.class);
 
         // getting a gzip encoded body
         String body = target.request("text/plain").get(String.class);

@@ -47,7 +47,7 @@ import javax.ws.rs.client.ClientFactory;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Configurable;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.Form;
@@ -65,6 +65,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import jaxrs.examples.client.custom.ThrottledClient;
 
 /**
+ * Basic client-side examples.
+ *
  * @author Bill Burke
  * @author Marek Potociar
  */
@@ -87,10 +89,13 @@ public class BasicExamples {
     public void clientBootstrapping() {
         // Default client instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
-        defaultClient.configuration().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
+        defaultClient.setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
+        assert defaultClient != null;
 
         // Default client instantiation using custom configuration
-        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.configuration());
+
+        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient);
+        assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
 
@@ -266,7 +271,7 @@ public class BasicExamples {
     public static class TestFeature implements Feature {
 
         @Override
-        public boolean configure(Configurable configurable) {
+        public boolean configure(Configuration configuration) {
             // do nothing
             return true;
         }
@@ -309,10 +314,10 @@ public class BasicExamples {
 
         // Configuration
         TestFeature testFeature = new TestFeature();
-        client.configuration().register(testFeature);
-        client.target("http://examples.jaxrs.com/").configuration().register(testFeature);
-        client.target("http://examples.jaxrs.com/").request("text/plain").configuration().register(testFeature);
-        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().configuration().register(testFeature);
+        client.register(testFeature);
+        client.target("http://examples.jaxrs.com/").register(testFeature);
+        client.target("http://examples.jaxrs.com/").request("text/plain").register(testFeature);
+        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().register(testFeature);
     }
 
     public void invocationFlexibility() {
