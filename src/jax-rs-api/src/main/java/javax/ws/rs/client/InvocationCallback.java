@@ -53,24 +53,29 @@ public interface InvocationCallback<RESPONSE> {
 
     /**
      * Called when the invocation was successfully completed. Note that this does
-     * not necessarily mean the response has bean fully read. This depends on the
-     * expected invocation callback response type.
+     * not necessarily mean the response has bean fully read, which depends on the
+     * parameterized invocation callback response type.
      *
      * @param response response data.
      */
-    public abstract void completed(RESPONSE response);
+    public void completed(RESPONSE response);
 
     /**
      * Called when the invocation has failed for any reason.
-     *
      * <p>
-     * Note that the provided {@link ClientException} may contain a cause represented by nested
-     * {@link javax.ws.rs.WebApplicationException} or one of its subclasses in case the response
-     * status code is not {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL successful}
-     * and the generic callback type is not {@link javax.ws.rs.core.Response}.
+     * Note that the provided {@link Throwable} may be a {@link ClientException} in case the
+     * invocation processing failure has been caused by a client-side runtime component error.
+     * The {@code Throwable} may also be a {@link javax.ws.rs.WebApplicationException} or one
+     * of its subclasses in case the response status code is not
+     * {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL successful} and the generic
+     * callback type is not {@link javax.ws.rs.core.Response}.
+     * A {@link java.util.concurrent.CancellationException} would be indicate that the invocation
+     * has been cancelled.
+     * An {@link InterruptedException} would indicate that the thread executing the invocation has
+     * been interrupted.
      * </p>
      *
-     * @param error contains failure details.
+     * @param throwable contains failure details.
      */
-    public abstract void failed(ClientException error);
+    public void failed(Throwable throwable);
 }

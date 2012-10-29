@@ -51,10 +51,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.ResumeCallback;
+import javax.ws.rs.container.CompletionCallback;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * Asynchronous event-based request processing example.
@@ -64,7 +63,7 @@ import javax.ws.rs.core.Response;
 @Path("/async/nextMessage")
 @Produces(MediaType.TEXT_PLAIN)
 @Consumes(MediaType.TEXT_PLAIN)
-public class AsyncEventResource implements ResumeCallback {
+public class AsyncEventResource implements CompletionCallback {
     private static final BlockingQueue<String> messages = new ArrayBlockingQueue<String>(5);
 
     @GET
@@ -102,12 +101,11 @@ public class AsyncEventResource implements ResumeCallback {
     }
 
     @Override
-    public void onResume(AsyncResponse resuming, Response response) {
-        System.out.println("Resumed with a response.");
-    }
-
-    @Override
-    public void onResume(AsyncResponse resuming, Throwable error) {
-        System.out.println("Resumed with error.");
+    public void onComplete(Throwable throwable) {
+        if (throwable == null) {
+            System.out.println("Completed with a response.");
+        } else {
+            System.out.println("Completed with an unmapped exception.");
+        }
     }
 }

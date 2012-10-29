@@ -43,21 +43,22 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientException;
 import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.core.Configurable;
-import javax.ws.rs.core.Feature;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import static javax.ws.rs.client.Entity.*;
+import static javax.ws.rs.client.Entity.form;
+import static javax.ws.rs.client.Entity.text;
+import static javax.ws.rs.client.Entity.xml;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -87,21 +88,15 @@ public class BasicExamples {
         // Default client instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
         defaultClient.configuration().setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
-        assert defaultClient != null;
 
         // Default client instantiation using custom configuration
-
         Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.configuration());
-        assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
 
         // Custom client instantiation examples
         ThrottledClient myClient = new ThrottledClient();
-        assert myClient != null;
-
         ThrottledClient myConfiguredClient = new ThrottledClient(10);
-        assert myConfiguredClient != null;
     }
 
     public void creatingResourceAndSubResourceUris() {
@@ -207,7 +202,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(ClientException error) {
+            public void failed(Throwable error) {
                 // process error
             }
         });
@@ -221,7 +216,7 @@ public class BasicExamples {
             }
 
             @Override
-            public void failed(ClientException error) {
+            public void failed(Throwable error) {
                 // process error
             }
         });
@@ -235,15 +230,14 @@ public class BasicExamples {
         // invoke a request in background
         Future<Customer> handle = anyCustomerUri.resolveTemplate("id", 123) // Target
                 .request().async().get(new InvocationCallback<Customer>() {
-
                     @Override
                     public void completed(Customer customer) {
-                        // Do something
+                        // do something
                     }
 
                     @Override
-                    public void failed(ClientException error) {
-                        // process error
+                    public void failed(Throwable throwable) {
+                        // do something
                     }
                 });
         handle.cancel(true);
@@ -253,13 +247,13 @@ public class BasicExamples {
                 .request().async().get(new InvocationCallback<Response>() {
 
             @Override
-            public void completed(Response response) {
+            public void completed(Response customer) {
                 // do something
             }
 
             @Override
-            public void failed(ClientException error) {
-                // process error
+            public void failed(Throwable throwable) {
+                // do something
             }
         });
 
