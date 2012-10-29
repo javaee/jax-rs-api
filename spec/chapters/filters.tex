@@ -115,20 +115,25 @@ class GzipInterceptor implements ReaderInterceptor, WriterInterceptor {
 
     @Override
     Object aroundReadFrom(ReaderInterceptorContext ctx) ... {
-        InputStream old = ctx.getInputStream();
-        ctx.setInputStream(new GZIPInputStream(old));
-        try {
+        if (isGzipped(ctx)) {
+            InputStream old = ctx.getInputStream();
+            ctx.setInputStream(new GZIPInputStream(old));
+            try {
+                return ctx.proceed();
+            } finally {
+                ctx.setInputStream(old);
+            }
+        } else {
             return ctx.proceed();
-        } finally {
-            ctx.setInputStream(old);
         }
     }
 
     @Override
-    void aroundWriteTo(WriterInterceptorContext context) ... {
+    void aroundWriteTo(WriterInterceptorContext ctx) ... {
         OutputStream old = ctx.getOutputStream();
         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(old);
         ctx.setOutputStream(gzipOutputStream);
+        updateHeaders(ctx);
         try {
             ctx.proceed();
         } finally {
