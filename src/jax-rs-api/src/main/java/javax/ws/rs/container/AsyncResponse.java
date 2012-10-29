@@ -118,10 +118,11 @@ public interface AsyncResponse {
      * </p>
      *
      * @param response data to be sent back in response to the suspended request.
-     * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
+     * @return {@code true} if the request processing has been resumed, returns {@code false} in case
+     *         the request processing is not {@link #isSuspended() suspended} and could not be resumed.
      * @see #resume(Throwable)
      */
-    public void resume(Object response) throws IllegalStateException;
+    public boolean resume(Object response);
 
     /**
      * Resume the suspended request processing using the provided throwable.
@@ -137,10 +138,11 @@ public interface AsyncResponse {
      *
      * @param response an exception to be raised in response to the suspended
      *                 request.
-     * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
+     * @return {@code true} if the response has been resumed, returns {@code false} in case
+     *         the response is not {@link #isSuspended() suspended} and could not be resumed.
      * @see #resume(Object)
      */
-    public void resume(Throwable response) throws IllegalStateException;
+    public boolean resume(Throwable response);
 
     /**
      * Cancel the suspended request processing.
@@ -154,14 +156,16 @@ public interface AsyncResponse {
      * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
      * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
      * an asynchronous response instance that has already been resumed has no effect and the method
-     * call is ignored. Once the request is canceled, any attempts to suspend or resume the asynchronous
-     * response will result in an {@link IllegalStateException} being thrown.
+     * call is ignored while returning {@code true}.
      * </p>
      *
+     * @return {@code true} if the request processing has been cancelled, returns {@code false} in case
+     *         the request processing is not {@link #isSuspended() suspended} and could not be cancelled
+     *         and is not {@link #isCancelled() cancelled} already.
      * @see #cancel(int)
      * @see #cancel(java.util.Date)
      */
-    public void cancel();
+    public boolean cancel();
 
     /**
      * Cancel the suspended request processing.
@@ -176,17 +180,19 @@ public interface AsyncResponse {
      * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
      * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
      * an asynchronous response instance that has already been resumed has no effect and the method
-     * call is ignored. Once the request is canceled, any attempts to suspend or resume the asynchronous
-     * response will result in an {@link IllegalStateException} being thrown.
+     * call is ignored while returning {@code true}.
      * </p>
      *
      * @param retryAfter a decimal integer number of seconds after the response is sent to the client that
      *                   indicates how long the service is expected to be unavailable to the requesting
      *                   client.
+     * @return {@code true} if the request processing has been cancelled, returns {@code false} in case
+     *         the request processing is not {@link #isSuspended() suspended} and could not be cancelled
+     *         and is not {@link #isCancelled() cancelled} already.
      * @see #cancel
      * @see #cancel(java.util.Date)
      */
-    public void cancel(int retryAfter);
+    public boolean cancel(int retryAfter);
 
     /**
      * Cancel the suspended request processing.
@@ -201,16 +207,18 @@ public interface AsyncResponse {
      * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
      * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
      * an asynchronous response instance that has already been resumed has no effect and the method
-     * call is ignored. Once the request is canceled, any attempts to suspend or resume the asynchronous
-     * response will result in an {@link IllegalStateException} being thrown.
+     * call is ignored while returning {@code true}.
      * </p>
      *
      * @param retryAfter a date that indicates how long the service is expected to be unavailable to the
      *                   requesting client.
+     * @return {@code true} if the request processing has been cancelled, returns {@code false} in case
+     *         the request processing is not {@link #isSuspended() suspended} and could not be cancelled
+     *         and is not {@link #isCancelled() cancelled} already.
      * @see #cancel
      * @see #cancel(int)
      */
-    public void cancel(Date retryAfter);
+    public boolean cancel(Date retryAfter);
 
     /**
      * Check if the asynchronous response instance is in a suspended state.
@@ -298,7 +306,6 @@ public interface AsyncResponse {
      * @return {@code true} if the callback class was recognized and registered, {@code false}
      *         otherwise.
      * @throws NullPointerException in case the callback class is {@code null}.
-     * @see ResumeCallback
      */
     public boolean register(Class<?> callback) throws NullPointerException;
 
@@ -312,7 +319,6 @@ public interface AsyncResponse {
      *         Each value in the array indicate whether the particular callback class was registered
      *         successfully or not.
      * @throws NullPointerException in case any of the callback classes is {@code null}.
-     * @see ResumeCallback
      */
     public boolean[] register(Class<?> callback, Class<?>... callbacks) throws NullPointerException;
 
@@ -325,7 +331,6 @@ public interface AsyncResponse {
      * @return {@code true} if the callback class was recognized and registered, {@code false}
      *         otherwise.
      * @throws NullPointerException in case the callback instance is {@code null}.
-     * @see ResumeCallback
      */
     public boolean register(Object callback) throws NullPointerException;
 
@@ -339,7 +344,6 @@ public interface AsyncResponse {
      *         Each value in the array indicate whether the particular callback was registered
      *         successfully or not.
      * @throws NullPointerException in case any of the callback instances is {@code null}.
-     * @see ResumeCallback
      */
     public boolean[] register(Object callback, Object... callbacks) throws NullPointerException;
 }
