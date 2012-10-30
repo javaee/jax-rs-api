@@ -72,7 +72,6 @@ import java.util.concurrent.TimeUnit;
  *     &#64;GET
  *     public void readMessage(&#64;Suspended AsyncResponse ar) throws InterruptedException {
  *         suspended.put(ar);
- *         return ar;
  *     }
  *
  *     &#64;POST
