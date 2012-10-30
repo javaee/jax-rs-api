@@ -146,4 +146,10 @@ public class GenericTypeTest {
     public void testNullGenericType() {
         new GenericType(null);
     }
+
+    // Regression test for JAX_RS_SPEC-274
+    @Test
+    public void testGenericTypeOfNonGenericArray() {
+        assertEquals(String[].class, new GenericType<String[]>(){}.getRawType());
+    }
 }
