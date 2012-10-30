@@ -57,20 +57,27 @@ public class NotAllowedException extends ClientErrorException {
      * Construct a new method not allowed exception.
      *
      * @param allowedMethods allowed request methods.
+     * @throws IllegalArgumentException in case the allowed methods varargs are {@code null}.
      */
-    public NotAllowedException(String... allowedMethods) {
+    public NotAllowedException(String... allowedMethods) throws IllegalArgumentException {
         super(validateAllow(Response.status(Response.Status.METHOD_NOT_ALLOWED).allow(allowedMethods).build()));
     }
 
     /**
      * Construct a new method not allowed exception.
+     * <p>
+     * Note that this constructor does not validate the presence of HTTP
+     * <code>{@value HttpHeaders#ALLOW}</code> header. I.e. it is possible
+     * to use the constructor to create a client-side exception instance
+     * even for an invalid HTTP {@code 405} response content returned from a server.
+     * </p>
      *
      * @param response error response.
      * @throws IllegalArgumentException in case the status code set in the response
      *                                  is not HTTP {@code 405}.
      */
     public NotAllowedException(Response response) throws IllegalArgumentException {
-        super(validateAllow(validate(response, Response.Status.METHOD_NOT_ALLOWED)));
+        super(validate(response, Response.Status.METHOD_NOT_ALLOWED));
     }
 
     /**
@@ -78,8 +85,9 @@ public class NotAllowedException extends ClientErrorException {
      *
      * @param cause          the underlying cause of the exception.
      * @param allowedMethods allowed request methods.
+     * @throws IllegalArgumentException in case the allowed methods varargs are {@code null}.
      */
-    public NotAllowedException(Throwable cause, String... allowedMethods) {
+    public NotAllowedException(Throwable cause, String... allowedMethods) throws IllegalArgumentException {
         super(validateAllow(Response.status(Response.Status.METHOD_NOT_ALLOWED).allow(allowedMethods).build()), cause);
     }
 
@@ -89,7 +97,8 @@ public class NotAllowedException extends ClientErrorException {
      * @param response error response.
      * @param cause    the underlying cause of the exception.
      * @throws IllegalArgumentException in case the status code set in the response
-     *                                  is not HTTP {@code 405}.
+     *                                  is not HTTP {@code 405} or does not contain
+     *                                  an HTTP <code>{@value HttpHeaders#ALLOW}</code> header.
      */
     public NotAllowedException(Response response, Throwable cause) throws IllegalArgumentException {
         super(validateAllow(validate(response, Response.Status.METHOD_NOT_ALLOWED)), cause);
