@@ -131,10 +131,10 @@ public interface Client extends Configurable {
     public Client register(Class<?> providerClass, int bindingPriority);
 
     @Override
-    public <T> Client register(Class<T> providerClass, Class<? super T>... contracts);
+    public Client register(Class<?> providerClass, Class<?>... contracts);
 
     @Override
-    public <T> Client register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+    public Client register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
 
     @Override
     public Client register(Object provider);
@@ -143,10 +143,10 @@ public interface Client extends Configurable {
     public Client register(Object provider, int bindingPriority);
 
     @Override
-    public <T> Client register(Object provider, Class<? super T>... contracts);
+    public Client register(Object provider, Class<?>... contracts);
 
     @Override
-    public <T> Client register(Object provider, int bindingPriority, Class<? super T>... contracts);
+    public Client register(Object provider, int bindingPriority, Class<?>... contracts);
 
     @Override
     public Client updateFrom(Configurable configurable);

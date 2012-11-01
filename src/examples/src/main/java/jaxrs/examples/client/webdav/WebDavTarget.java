@@ -167,12 +167,12 @@ public class WebDavTarget implements WebTarget {
     }
 
     @Override
-    public <T> WebDavTarget register(Class<T> providerClass, Class<? super T>... contracts) {
+    public WebDavTarget register(Class<?> providerClass, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> WebDavTarget register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts) {
+    public WebDavTarget register(Class<?> providerClass, int bindingPriority, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -187,12 +187,12 @@ public class WebDavTarget implements WebTarget {
     }
 
     @Override
-    public <T> WebDavTarget register(Object provider, Class<? super T>... contracts) {
+    public WebDavTarget register(Object provider, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> WebDavTarget register(Object provider, int bindingPriority, Class<? super T>... contracts) {
+    public WebDavTarget register(Object provider, int bindingPriority, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

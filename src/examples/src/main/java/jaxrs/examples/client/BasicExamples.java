@@ -39,14 +39,19 @@
  */
 package jaxrs.examples.client;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Feature;
@@ -56,6 +61,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ReaderInterceptor;
+import javax.ws.rs.ext.ReaderInterceptorContext;
+import javax.ws.rs.ext.WriterInterceptor;
+import javax.ws.rs.ext.WriterInterceptorContext;
 import static javax.ws.rs.client.Entity.form;
 import static javax.ws.rs.client.Entity.text;
 import static javax.ws.rs.client.Entity.xml;
@@ -329,5 +338,32 @@ public class BasicExamples {
                 .buildPut(text("Hi"));
 
         i.invoke();                                              // Ok, now I can send the updated request
+    }
+
+    public static class MyProvider implements ReaderInterceptor, WriterInterceptor, ContainerRequestFilter {
+
+        @Override
+        public void filter(ContainerRequestContext requestContext) throws IOException {
+            // TODO: implement method.
+        }
+
+        @Override
+        public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
+            return null;  // TODO: implement method.
+        }
+
+        @Override
+        public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
+            // TODO: implement method.
+        }
+    }
+
+    public void customContractRegistration() {
+        Configurable configurable = ClientFactory.newClient();
+
+        configurable.register(MyProvider.class, ContainerRequestContext.class);
+        configurable.register(MyProvider.class, ContainerRequestContext.class, ReaderInterceptor.class);
+        configurable.register(new MyProvider(), WriterInterceptor.class);
+        configurable.register(new MyProvider(), WriterInterceptor.class, ReaderInterceptor.class);
     }
 }

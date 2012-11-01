@@ -280,12 +280,12 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public <T> WebDavTargetedBuilder register(Class<T> providerClass, Class<? super T>... contracts) {
+    public WebDavTargetedBuilder register(Class<?> providerClass, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> WebDavTargetedBuilder register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts) {
+    public WebDavTargetedBuilder register(Class<?> providerClass, int bindingPriority, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -300,12 +300,12 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public <T> WebDavTargetedBuilder register(Object provider, Class<? super T>... contracts) {
+    public WebDavTargetedBuilder register(Object provider, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> WebDavTargetedBuilder register(Object provider, int bindingPriority, Class<? super T>... contracts) {
+    public WebDavTargetedBuilder register(Object provider, int bindingPriority, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

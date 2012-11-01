@@ -142,12 +142,12 @@ public final class ThrottledClient implements Client {
     }
 
     @Override
-    public <T> ThrottledClient register(Class<T> providerClass, Class<? super T>... contracts) {
+    public ThrottledClient register(Class<?> providerClass, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> ThrottledClient register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts) {
+    public ThrottledClient register(Class<?> providerClass, int bindingPriority, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -162,12 +162,12 @@ public final class ThrottledClient implements Client {
     }
 
     @Override
-    public <T> ThrottledClient register(Object provider, Class<? super T>... contracts) {
+    public ThrottledClient register(Object provider, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> ThrottledClient register(Object provider, int bindingPriority, Class<? super T>... contracts) {
+    public ThrottledClient register(Object provider, int bindingPriority, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

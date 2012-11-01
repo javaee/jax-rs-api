@@ -241,10 +241,10 @@ public interface Invocation extends Configurable {
         public Builder register(Class<?> providerClass, int bindingPriority);
 
         @Override
-        public <T> Builder register(Class<T> providerClass, Class<? super T>... contracts);
+        public Builder register(Class<?> providerClass, Class<?>... contracts);
 
         @Override
-        public <T> Builder register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+        public Builder register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
 
         @Override
         public Builder register(Object provider);
@@ -253,10 +253,10 @@ public interface Invocation extends Configurable {
         public Builder register(Object provider, int bindingPriority);
 
         @Override
-        public <T> Builder register(Object provider, Class<? super T>... contracts);
+        public Builder register(Object provider, Class<?>... contracts);
 
         @Override
-        public <T> Builder register(Object provider, int bindingPriority, Class<? super T>... contracts);
+        public Builder register(Object provider, int bindingPriority, Class<?>... contracts);
 
         @Override
         public Builder updateFrom(Configurable configurable);
@@ -390,10 +390,10 @@ public interface Invocation extends Configurable {
     public Invocation register(Class<?> providerClass, int bindingPriority);
 
     @Override
-    public <T> Invocation register(Class<T> providerClass, Class<? super T>... contracts);
+    public Invocation register(Class<?> providerClass, Class<?>... contracts);
 
     @Override
-    public <T> Invocation register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+    public Invocation register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
 
     @Override
     public Invocation register(Object provider);
@@ -402,10 +402,10 @@ public interface Invocation extends Configurable {
     public Invocation register(Object provider, int bindingPriority);
 
     @Override
-    public <T> Invocation register(Object provider, Class<? super T>... contracts);
+    public Invocation register(Object provider, Class<?>... contracts);
 
     @Override
-    public <T> Invocation register(Object provider, int bindingPriority, Class<? super T>... contracts);
+    public Invocation register(Object provider, int bindingPriority, Class<?>... contracts);
 
     @Override
     public Invocation updateFrom(Configurable configurable);

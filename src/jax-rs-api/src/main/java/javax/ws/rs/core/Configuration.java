@@ -187,7 +187,7 @@ public interface Configuration {
 
     /**
      * Register a provider or a {@link Feature feature} class to be instantiated
-     * and used in the scope of the configured instance.
+     * and used in the scope of the configuration instance.
      *
      * The registered class is registered as a provider of all the recognized JAX-RS or
      * implementation-specific extension contracts including {@code Feature} contract.
@@ -201,14 +201,14 @@ public interface Configuration {
      * </p>
      *
      * @param providerClass provider class to be instantiated and used in the scope
-     *                      of the configured instance.
+     *                      of the configuration instance.
      * @return the updated configuration instance.
      */
     public Configuration register(Class<?> providerClass);
 
     /**
      * Register a provider or a {@link Feature feature} class to be instantiated and used
-     * in the scope of the configured instance.
+     * in the scope of the configuration instance.
      * <p>
      * This registration method provides same functionality as {@link #register(Class)}
      * except that any provider binding priority specified on the provider class using
@@ -222,7 +222,7 @@ public interface Configuration {
      * </p>
      *
      * @param providerClass   provider class to be instantiated and used in the scope
-     *                        of the configured instance.
+     *                        of the configuration instance.
      * @param bindingPriority the overriding binding priority for the registered contract(s).
      * @return the updated configuration instance.
      */
@@ -230,7 +230,7 @@ public interface Configuration {
 
     /**
      * Register a provider or a {@link Feature feature} class to be instantiated
-     * and used in the scope of the configured instance.
+     * and used in the scope of the configuration instance.
      * <p>
      * This registration method provides same functionality as {@link #register(Class)}
      * except the provider class is only registered as a provider of the listed
@@ -239,18 +239,18 @@ public interface Configuration {
      * </p>
      *
      * @param providerClass provider class to be instantiated and used in the scope
-     *                      of the configured instance.
-     * @param contracts     the specific set of contracts implemented by the provider class
+     *                      of the configuration instance.
+     * @param contracts     the specific contracts implemented by the provider class
      *                      for which the provider should be registered. If omitted, the
      *                      provider class will be registered as a provider of all recognized
      *                      contracts implemented by the provider class.
      * @return the updated configuration instance.
      */
-    public <T> Configuration register(Class<T> providerClass, Class<? super T>... contracts);
+    public Configuration register(Class<?> providerClass, Class<?>... contracts);
 
     /**
      * Register a provider or a {@link Feature feature} class to be instantiated
-     * and used in the scope of the configured instance.
+     * and used in the scope of the configuration instance.
      * <p>
      * This registration method provides same functionality as {@link #register(Class, Class[])}
      * except that any provider binding priority specified on the provider class using
@@ -264,19 +264,19 @@ public interface Configuration {
      * </p>
      *
      * @param providerClass   provider class to be instantiated and used in the scope
-     *                        of the configured instance.
+     *                        of the configuration instance.
      * @param bindingPriority the overriding binding priority for the registered contract(s).
-     * @param contracts       the specific set of contracts implemented by the provider class
+     * @param contracts       the specific contracts implemented by the provider class
      *                        for which the provider should be registered. If omitted, the
      *                        provider class will be registered as a provider of all recognized
      *                        contracts implemented by the provider class.
      * @return the updated configuration instance.
      */
-    public <T> Configuration register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+    public Configuration register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
 
     /**
      * Register a provider or a {@link Feature feature} ("singleton") instance to be used
-     * in the scope of the configured instance.
+     * in the scope of the configuration instance.
      *
      * The registered instance is registered as a provider of all the recognized JAX-RS or
      * implementation-specific extension contracts including {@code Feature} contract.
@@ -288,7 +288,7 @@ public interface Configuration {
      * the registered instance takes precedence and the registered class will not be
      * instantiated in such case.
      *
-     * @param provider a provider instance to be registered in the scope of the configured
+     * @param provider a provider instance to be registered in the scope of the configuration
      *                 instance.
      * @return the updated configuration instance.
      */
@@ -296,7 +296,7 @@ public interface Configuration {
 
     /**
      * Register a provider or a {@link Feature feature} ("singleton") instance to be used
-     * in the scope of the configured instance.
+     * in the scope of the configuration instance.
      * <p>
      * This registration method provides same functionality as {@link #register(Object)}
      * except that any provider binding priority specified on the provider using
@@ -310,7 +310,7 @@ public interface Configuration {
      * </p>
      *
      * @param provider        provider class to be instantiated and used in the scope
-     *                        of the configured instance.
+     *                        of the configuration instance.
      * @param bindingPriority the overriding binding priority for the registered contract(s).
      * @return the updated configuration instance.
      */
@@ -318,7 +318,7 @@ public interface Configuration {
 
     /**
      * Register a provider or a {@link Feature feature} ("singleton") instance to be used
-     * in the scope of the configured instance.
+     * in the scope of the configuration instance.
      * <p>
      * This registration method provides same functionality as {@link #register(Object)}
      * except the provider is only registered as a provider of the listed
@@ -326,19 +326,19 @@ public interface Configuration {
      * explicitly, the provider is not recognized as a JAX-RS feature.
      * </p>
      *
-     * @param provider  a provider instance to be registered in the scope of the configured
+     * @param provider  a provider instance to be registered in the scope of the configuration
      *                  instance.
-     * @param contracts the specific set of contracts implemented by the provider class
+     * @param contracts the specific contracts implemented by the provider class
      *                  for which the provider should be registered. If omitted, the
      *                  provider class will be registered as a provider of all recognized
      *                  contracts implemented by the provider class.
      * @return the updated configuration instance.
      */
-    public <T> Configuration register(Object provider, Class<? super T>... contracts);
+    public Configuration register(Object provider, Class<?>... contracts);
 
     /**
      * Register a provider or a {@link Feature feature} ("singleton") instance to be used
-     * in the scope of the configured instance.
+     * in the scope of the configuration instance.
      * <p>
      * This registration method provides same functionality as {@link #register(Object, Class[])}
      * except that any provider binding priority specified on the provider using
@@ -351,14 +351,14 @@ public interface Configuration {
      * will be ignored for that contract.
      * </p>
      *
-     * @param provider        a provider instance to be registered in the scope of the configured
+     * @param provider        a provider instance to be registered in the scope of the configuration
      *                        instance.
      * @param bindingPriority the overriding binding priority for the registered contract(s).
-     * @param contracts       the specific set of contracts implemented by the provider class
+     * @param contracts       the specific contracts implemented by the provider class
      *                        for which the provider should be registered. If omitted, the
      *                        provider class will be registered as a provider of all recognized
      *                        contracts implemented by the provider class.
      * @return the updated configuration instance.
      */
-    public <T> Configuration register(Object provider, int bindingPriority, Class<? super T>... contracts);
+    public Configuration register(Object provider, int bindingPriority, Class<?>... contracts);
 }

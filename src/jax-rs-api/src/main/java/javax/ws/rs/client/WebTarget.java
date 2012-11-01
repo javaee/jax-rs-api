@@ -316,10 +316,10 @@ public interface WebTarget extends Configurable {
     public WebTarget register(Class<?> providerClass, int bindingPriority);
 
     @Override
-    public <T> WebTarget register(Class<T> providerClass, Class<? super T>... contracts);
+    public WebTarget register(Class<?> providerClass, Class<?>... contracts);
 
     @Override
-    public <T> WebTarget register(Class<T> providerClass, int bindingPriority, Class<? super T>... contracts);
+    public WebTarget register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
 
     @Override
     public WebTarget register(Object provider);
@@ -328,10 +328,10 @@ public interface WebTarget extends Configurable {
     public WebTarget register(Object provider, int bindingPriority);
 
     @Override
-    public <T> WebTarget register(Object provider, Class<? super T>... contracts);
+    public WebTarget register(Object provider, Class<?>... contracts);
 
     @Override
-    public <T> WebTarget register(Object provider, int bindingPriority, Class<? super T>... contracts);
+    public WebTarget register(Object provider, int bindingPriority, Class<?>... contracts);
 
     @Override
     public WebTarget updateFrom(Configurable configurable);
