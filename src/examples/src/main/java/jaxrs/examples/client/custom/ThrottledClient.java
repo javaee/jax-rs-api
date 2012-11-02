@@ -40,6 +40,7 @@
 package jaxrs.examples.client.custom;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -113,6 +114,11 @@ public final class ThrottledClient implements Client {
 
     @Override
     public Object getProperty(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Collection<String> getPropertyNames() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

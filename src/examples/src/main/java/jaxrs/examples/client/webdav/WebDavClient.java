@@ -40,6 +40,7 @@
 package jaxrs.examples.client.webdav;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -93,6 +94,11 @@ public class WebDavClient implements Client {
 
     @Override
     public Object getProperty(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Collection<String> getPropertyNames() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

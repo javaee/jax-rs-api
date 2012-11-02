@@ -39,6 +39,7 @@
  */
 package jaxrs.examples.client.webdav;
 
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -321,6 +322,11 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
 
     @Override
     public Object getProperty(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Collection<String> getPropertyNames() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
