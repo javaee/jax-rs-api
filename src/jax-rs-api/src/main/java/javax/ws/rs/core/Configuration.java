@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.core;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -106,6 +107,19 @@ public interface Configuration {
      *         if the property with such name is not configured.
      */
     public Object getProperty(String name);
+
+    /**
+     * Returns a {@link java.util.Collection collection} containing the property names
+     * available within the context of the current configuration instance.
+     * <p>
+     * Use the {@link #getProperty} method with a property name to get the value of
+     * a property.
+     * </p>
+     *
+     * @return a {@link java.util.Collection collection} of property names.
+     * @see #getProperty
+     */
+    public Collection<String> getPropertyNames();
 
     /**
      * Set new configuration properties replacing all previously set properties.

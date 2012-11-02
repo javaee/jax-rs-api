@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.client;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -105,6 +106,19 @@ public interface Configurable {
      *         if the property with such name is not configured.
      */
     public Object getProperty(String name);
+
+    /**
+     * Returns a {@link java.util.Collection collection} containing the property names
+     * available within the context of the current configurable instance.
+     * <p>
+     * Use the {@link #getProperty} method with a property name to get the value of
+     * a property.
+     * </p>
+     *
+     * @return a {@link java.util.Collection collection} of property names.
+     * @see #getProperty
+     */
+    public Collection<String> getPropertyNames();
 
     /**
      * Set the new configuration property, if already set, the existing value of

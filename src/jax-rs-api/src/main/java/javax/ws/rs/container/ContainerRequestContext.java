@@ -41,8 +41,8 @@ package javax.ws.rs.container;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -80,8 +80,10 @@ public interface ContainerRequestContext {
      * Custom property names should follow the same convention as package names.
      * </p>
      * <p>
-     * In a Servlet container, the properties are backed by the {@code ServletRequest} and
-     * contain all the attributes available in the {@code ServletRequest}.
+     * In a Servlet container, the properties are synchronized with the {@code ServletRequest}
+     * and expose all the attributes available in the {@code ServletRequest}. Any modifications
+     * of the properties are also reflected in the set of properties of the associated
+     * {@code ServletRequest}.
      * </p>
      *
      * @param name a {@code String} specifying the name of the property.
@@ -91,24 +93,24 @@ public interface ContainerRequestContext {
      */
     public Object getProperty(String name);
 
-
     /**
-     * Returns an {@link Enumeration enumeration} containing the property names
+     * Returns a {@link java.util.Collection collection} containing the property names
      * available within the context of the current request/response exchange context.
      * <p>
      * Use the {@link #getProperty} method with a property name to get the value of
      * a property.
      * </p>
      * <p>
-     * In a Servlet container, the properties are backed by the {@code ServletRequest} and
-     * contain all the attributes available in the {@code ServletRequest}.
+     * In a Servlet container, the properties are synchronized with the {@code ServletRequest}
+     * and expose all the attributes available in the {@code ServletRequest}. Any modifications
+     * of the properties are also reflected in the set of properties of the associated
+     * {@code ServletRequest}.
      * </p>
      *
-     * @return an {@link Enumeration enumeration} of property names.
+     * @return a {@link java.util.Collection collection} of property names.
      * @see #getProperty
      */
-    public Enumeration<String> getPropertyNames();
-
+    public Collection<String> getPropertyNames();
 
     /**
      * Binds an object to a given property name in the current request/response
@@ -127,8 +129,10 @@ public interface ContainerRequestContext {
      * {@link #removeProperty(String)} method.
      * </p>
      * <p>
-     * In a Servlet container, the properties are backed by the {@code ServletRequest} and
-     * contain all the attributes available in the {@code ServletRequest}.
+     * In a Servlet container, the properties are synchronized with the {@code ServletRequest}
+     * and expose all the attributes available in the {@code ServletRequest}. Any modifications
+     * of the properties are also reflected in the set of properties of the associated
+     * {@code ServletRequest}.
      * </p>
      *
      * @param name   a {@code String} specifying the name of the property.
@@ -141,8 +145,10 @@ public interface ContainerRequestContext {
      * exchange context. After removal, subsequent calls to {@link #getProperty}
      * to retrieve the property value will return {@code null}.
      * <p>
-     * In a Servlet container, the properties are backed by the {@code ServletRequest} and
-     * contain all the attributes available in the {@code ServletRequest}.
+     * In a Servlet container, the properties are synchronized with the {@code ServletRequest}
+     * and expose all the attributes available in the {@code ServletRequest}. Any modifications
+     * of the properties are also reflected in the set of properties of the associated
+     * {@code ServletRequest}.
      * </p>
      *
      * @param name a {@code String} specifying the name of the property to be removed.
