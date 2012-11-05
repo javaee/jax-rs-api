@@ -281,9 +281,9 @@ public final class Link {
     }
 
     /**
-     * Generate a link by introspecting a resource method. This method is a shorthand
-     * for {@code fromResourceMethod(resource, method, method)} where the method
-     * name is used as the value of the "rel" parameter.
+     * Generate a relative link by introspecting a resource method. This method is
+     * a shorthand for {@code fromResourceMethod(resource, method, method)} where
+     * the method name is used as the value of the "rel" parameter.
      *
      * @param resource resource class.
      * @param method   name of resource method.
@@ -297,8 +297,8 @@ public final class Link {
     }
 
     /**
-     * <p>Generate a link by introspecting a resource method. Finds the first method
-     * of a given name and generates a link with the appropriate URI and values
+     * <p>Generate a relative link by introspecting a resource method. Finds the first
+     * method of a given name and generates a link with the appropriate URI and values
      * for "type" and "rel".</p>
      * <p>The value of "type" is set to be the first media-type in {@code @Produces},
      * and is omitted if that annotation is not present on the method or class. The value
@@ -309,6 +309,7 @@ public final class Link {
      * @param rel      value of {@code "rel"} parameter.
      * @return link builder to further configure link.
      * @throws IllegalArgumentException if any argument is {@code null} or no method is found.
+     * @see UriBuilder#fromMethod(java.lang.Class, java.lang.String)
      */
     public static Builder fromResourceMethod(Class<?> resource, String method, String rel)
             throws IllegalArgumentException {
@@ -343,7 +344,7 @@ public final class Link {
     }
 
     /**
-     * <p>Generate a link from a resource class. The value of "type" is set to be
+     * <p>Generate a relative link from a resource class. The value of "type" is set to be
      * the first media-type in {@code @Produces}, and is omitted if that annotation is
      * not present on the or class. The value of "rel" must be specified as an argument
      * to this method.</p>
@@ -352,6 +353,7 @@ public final class Link {
      * @param rel      value of {@code "rel"} parameter.
      * @return link builder to further configure link.
      * @throws IllegalArgumentException if any argument is {@code null} or no method is found.
+     * @see UriBuilder#fromResource(java.lang.Class)
      */
     public static Builder fromResource(Class<?> resource, String rel) {
         if (resource == null || rel == null) {
