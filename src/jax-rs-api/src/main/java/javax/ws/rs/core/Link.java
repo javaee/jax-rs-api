@@ -454,7 +454,9 @@ public final class Link {
         }
 
         /**
-         * Set an arbitrary parameter on this link.
+         * Set an arbitrary parameter on this link. Note that link parameters are those
+         * defined in RFC 5988 and should not be confused with URI parameters which can
+         * be specified when calling {@link #build(Object...)}.
          *
          * @param name  the name of the parameter.
          * @param value the value set for the parameter.
