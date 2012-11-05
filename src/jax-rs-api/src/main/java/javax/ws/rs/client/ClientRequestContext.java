@@ -89,14 +89,14 @@ public interface ClientRequestContext {
 
 
     /**
-     * Returns a {@link Collection collection} containing the property names
+     * Returns an immutable {@link Collection collection} containing the property names
      * available within the context of the current request/response exchange context.
      * <p>
      * Use the {@link #getProperty} method with a property name to get the value of
      * a property.
      * </p>
      *
-     * @return a {@link Collection collection} of property names.
+     * @return an immutable {@link Collection collection} of property names.
      * @see #getProperty
      */
     public Collection<String> getPropertyNames();

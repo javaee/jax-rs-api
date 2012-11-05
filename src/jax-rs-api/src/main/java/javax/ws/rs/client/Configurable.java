@@ -108,14 +108,14 @@ public interface Configurable {
     public Object getProperty(String name);
 
     /**
-     * Returns a {@link java.util.Collection collection} containing the property names
-     * available within the context of the current configurable instance.
+     * Returns an immutable {@link java.util.Collection collection} containing the
+     * property names available within the context of the current configurable instance.
      * <p>
      * Use the {@link #getProperty} method with a property name to get the value of
      * a property.
      * </p>
      *
-     * @return a {@link java.util.Collection collection} of property names.
+     * @return an immutable {@link java.util.Collection collection} of property names.
      * @see #getProperty
      */
     public Collection<String> getPropertyNames();
