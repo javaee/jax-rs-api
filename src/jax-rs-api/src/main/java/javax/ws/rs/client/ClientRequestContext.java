@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -345,11 +346,11 @@ public interface ClientRequestContext {
     public Client getClient();
 
     /**
-     * Get the configuration of the request.
+     * Get the immutable configuration of the request.
      *
-     * @return request configuration.
+     * @return immutable request configuration.
      */
-    public Configurable getConfiguration();
+    public Configuration getConfiguration();
 
     /**
      * Abort the filter chain with a response.
