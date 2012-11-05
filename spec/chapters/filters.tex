@@ -227,17 +227,17 @@ The following example defines a dynamic feature that binds the filter \code{Logg
 public class DynamicLoggingFilterFeature implements DynamicFeature {
 
   @Override
-  void configure(ResourceInfo resourceInfo, Configurable configurable) {
+  void configure(ResourceInfo resourceInfo, Configuration config) {
     if (MyResource.class.isAssignableFrom(resourceInfo.getResourceClass())
       && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
-      configurable.register(new LoggingFilter());
+      config.register(new LoggingFilter());
     }
   }
 }
 
 \end{listing}
 
-The overridden method in this provider updates the \code{Configurable} object assigned to each resource method; the information about the resource method is provided in the form of a \code{ResourceInfo} instance.
+The overridden method in this provider updates the \code{Configuration} object assigned to each resource method; the information about the resource method is provided in the form of a \code{ResourceInfo} instance.
 \jaxrs\ implementations SHOULD resolve dynamic features for filters and interceptors once for each resource method. It is RECOMMENDED to process dynamic features at application deployment time.
 
 \subsection{Binding in Client API}

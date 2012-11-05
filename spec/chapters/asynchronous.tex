@@ -62,7 +62,7 @@ A timeout value can be specified when suspending a connection to avoid waiting f
 
 \jaxrs\ implementations are REQUIRED to generate a \code{ServiceUnavailableException}, a subclass of \WebApplicationException\ with its status set to 503, if the timeout value is reached and no timeout handler is registered. The exception MUST be processed as described in section~\ref{method_exc}. If a registered timeout handler resets the timeout value or resumes the connection and returns a response, \jaxrs\ implementations MUST NOT generate an exception.
 
-It is also possible to register callbacks on an instance of \code{AsyncResponse} in order to listen for connection resumption (\code{ResumeCallback}), connection completion (\code{CompletionCallback}) and connection termination (\code{ConnectionCallback}) events. See Javadoc for \code{AsyncResponse} for more information on how to register these callbacks. Note that support \code{ConnectionCallback} is OPTIONAL.
+It is also possible to register callbacks on an instance of \code{AsyncResponse} in order to listen for connection completion (\code{CompletionCallback}) and connection termination (\code{ConnectionCallback}) events. See Javadoc for \code{AsyncResponse} for more information on how to register these callbacks. Note that support \code{ConnectionCallback} is OPTIONAL.
 
 
 \section{EJB Resource Classes}

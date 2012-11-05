@@ -117,7 +117,7 @@ Chapter~\ref{asynchronous_processing} for more information on asynchronous invoc
 \section{Configurable Types}
 \label{configurable_types}
 
-The following Client API types are configurable: \Client, \Invocation, \InvocationBuilder\ and \WebTarget. In all cases, the configuration can be accessed by calling the \code{configuration} method. This interface supports configuration of:
+The following Client API types are configurable: \Client, \Invocation, \InvocationBuilder\ and \WebTarget. Configuration methods are inherited from the \code{Configurable} interface implemented by all these classes. This interface supports configuration of:
 
 \begin{description}
 \item [Features] A special type of provider that implement the \code{Feature} interface and can be used to configure a \jaxrs\ implementation.
