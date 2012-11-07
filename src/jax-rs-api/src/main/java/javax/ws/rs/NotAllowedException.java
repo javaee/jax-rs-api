@@ -67,7 +67,7 @@ public class NotAllowedException extends ClientErrorException {
      * Construct a new method not allowed exception.
      * <p>
      * Note that this constructor does not validate the presence of HTTP
-     * <code>{@value HttpHeaders#ALLOW}</code> header. I.e. it is possible
+     * {@code Allow} header. I.e. it is possible
      * to use the constructor to create a client-side exception instance
      * even for an invalid HTTP {@code 405} response content returned from a server.
      * </p>
@@ -98,7 +98,7 @@ public class NotAllowedException extends ClientErrorException {
      * @param cause    the underlying cause of the exception.
      * @throws IllegalArgumentException in case the status code set in the response
      *                                  is not HTTP {@code 405} or does not contain
-     *                                  an HTTP <code>{@value HttpHeaders#ALLOW}</code> header.
+     *                                  an HTTP {@code Allow} header.
      */
     public NotAllowedException(Response response, Throwable cause) throws IllegalArgumentException {
         super(validateAllow(validate(response, Response.Status.METHOD_NOT_ALLOWED)), cause);
