@@ -40,10 +40,10 @@ The following describes the logical\footnote{Implementations are free to optimiz
 \item Select the set of \MsgRead\ classes that support the media type of the request, see Section \ref{declaring_provider_capabilities}.
 \item\label{findreader} Iterate through the selected \MsgRead\ classes and, utilizing the \code{isReadable} method of each, choose a \MsgRead\ provider that supports the desired Java type.
 \item If step \ref{findreader} locates a suitable \MsgRead\ then use its \code{readFrom} method to map the entity body to the desired Java type.
-\item Else generate a \WebAppExc\ that contains an unsupported media type response (HTTP 415 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
+\item Else generate a \code{NotSupportedException} (415 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
 \end{enumerate}
 
-A \MsgRead\code{.readFrom} method MAY throw \WebAppExc. See Section \ref{exceptions_providers} for more information on exception handling.
+See Section \ref{exceptions_providers} for more information on handling exceptions thrown in \MsgRead\code{.readFrom}.
 
 \subsection{Message Body Writer}
 \label{message_body_writer}
@@ -68,7 +68,7 @@ with respect to \jaxrs\ 1.X. Implementations of this specification are REQUIRED 
 provide a backward compatible flag for those applications that rely on the previous
 ordering. The mechanism defined to enable this flag is implementation dependent.
 
-A \MsgWrite\code{.write} method MAY throw \WebAppExc. See Section \ref{exceptions_providers} for more information on exception handling.
+See Section \ref{exceptions_providers} for more information on handling exceptions thrown in \MsgWrite\code{.write}.
 
 \subsection{Declaring Media Type Capabilities}
 \label{declaring_provider_capabilities}
@@ -97,8 +97,7 @@ types of the form \code{application/*+xml}).
 \item[\code{java.lang.Boolean}, \code{java.lang.Character}, \code{java.lang.Number} \label{primitive_types}] Only for \code{text/plain}. Corresponding primitive types supported via boxing/unboxing conversion.
 \end{description}
 
-When reading zero-length request entities all pre-packaged \MsgRead\ implementations, except the JAXB-related one and those for the (boxed) primitive types above, MUST create a corresponding Java object that represents zero-length data; they MUST NOT return null. The pre-packaged JAXB and the pre-packaged primitive type \MsgRead's MUST throw a \WebAppExc\ with a client error response (HTTP 400) for zero-length request entities. Moreover, all pre-packaged \MsgRead\ implementations SHOULD throw a \WebAppExc\ with a client error response (HTTP 400) if any other error is encountered while
-reading a request entity.
+When reading zero-length request entities all pre-packaged \MsgRead\ implementations, except the JAXB-related one and those for the (boxed) primitive types above, MUST create a corresponding Java object that represents zero-length data; they MUST NOT return null. The pre-packaged JAXB and the pre-packaged primitive type \MsgRead's MUST throw a \code{BadRequestException} (400 status) for zero-length request entities. Moreover, all pre-packaged \MsgRead\ implementations SHOULD throw a \code{BadRequestException} (400 status) if any other error is encountered while reading a request entity.
 
 The implementation-supplied entity provider(s) for \code{javax\-.xml\-.bind\-.JAXBElement} and application-supplied JAXB classes MUST use \code{JAXBContext} instances provided by application-supplied context resolvers, see Section \ref{contextprovider}. If an application does not supply a \code{JAXBContext} for a particular type, the implementation-supplied entity provider MUST use its own default context instead.
 

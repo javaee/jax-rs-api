@@ -38,7 +38,7 @@ When a resource class is instantiated, the values of fields and bean properties 
 
 Because injection occurs at object creation time, use of these annotations (with the exception of \Context) on resource class fields and bean properties is only supported for the default per-request resource class lifecycle. An implementation SHOULD warn if resource classes with other lifecycles use these annotations on resource class fields or bean properties.
 
-An implementation is only required to set the annotated field and bean property values of instances created by the implementation runtime. Objects returned by sub-resource locators (see Section \ref{sub_resources}) are expected to be initialized by their creator and field and bean properties are not modified by the implementation runtime.
+A \jaxrs\ implementation is only required to set the annotated field and bean property values of instances created by the its runtime. Objects returned by sub-resource locators (see Section \ref{sub_resources}) are expected to be initialized by their creator.
 
 Valid parameter types for each of the above annotations are listed in the corresponding Javadoc, however in general (excluding \Context) the following types are supported:
 
@@ -51,7 +51,7 @@ Valid parameter types for each of the above annotations are listed in the corres
 
 The \code{Default\-Value} annotation may be used to supply a default value for some of the above, see the Javadoc for \code{Default\-Value} for usage details and rules for generating a value in the absence of this annotation and the requested data. The \code{Encoded} annotation may be used to disable automatic URI decoding for \MatrixParam, \QueryParam, and \PathParam\ annotated fields and properties.
 
-A \WebAppExc\ thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above is processed directly as described in Section \ref{method_exc}. Other exceptions thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above are treated as client errors: if the field or property is annotated with \MatrixParam, \QueryParam\ or \PathParam\ then an implementation MUST generate a \WebAppExc\ that wraps the thrown exception with a not found response (404 status) and no entity; if the field or property is annotated with \HeaderParam\ or \CookieParam\ then an implementation MUST generate a \WebAppExc\ that wraps the thrown exception with  a client error response (400 status) and no entity. The \WebAppExc\ MUST then be processed as described in Section \ref{method_exc}.
+A \WebAppExc\ thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above is processed directly as described in Section \ref{method_exc}. Other exceptions thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above are treated as client errors: if the field or property is annotated with \MatrixParam, \QueryParam\ or \PathParam\ then an implementation MUST generate an instance of \code{NotFoundException} (404 status) that wraps the thrown exception and no entity; if the field or property is annotated with \HeaderParam\ or \CookieParam\ then an implementation MUST generate an instance of \code{BadRequestException} (400 status) that wraps the thrown exception and no entity. Exceptions MUST be processed as described in Section \ref{method_exc}.
 
 \section{Resource Methods}
 \label{resource_method}
@@ -399,7 +399,7 @@ annotated with the same URI path template (modulo variable names).
 \item Remove members for which the final regular expression capturing group (henceforth simply referred to as a capturing group) value is neither empty nor \lq/\rq\ and the class $Z$ has no sub-resource methods or locators.
 \end{itemize}
 
-\item If $E$ is empty then no matching resource can be found, the algorithm terminates and an implementation MUST generate a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. 
+\item If $E$ is empty then no matching resource can be found, the algorithm terminates and an implementation MUST generate a \code{NotFoundException} (404 status) and no entity. 
 
 \item Sort $E$ using the number of literal characters\footnote{Here, literal characters means those not resulting from template variable substitution.} in each member as the primary key (descending order), the number of capturing groups as a secondary key (descending order) and the number of capturing groups with non-default regular expressions (i.e. not \lq([\^{ }/]+?)\rq) as the tertiary key (descending order).
 
@@ -436,7 +436,7 @@ and go to step \ref{find_method} if $M \neq \{\}$
 \item Remove members derived from $T_D$ (those added in step \ref{t_method_items}) for which the final capturing group value is neither empty nor \lq/\rq.
 \end{itemize}
 
-\item If $E$ is empty, then no matching resource can be found and the algorithm terminates by generating a \WebAppExc\ with a not found response (HTTP 404 status) and no entity. 
+\item If $E$ is empty, then no matching resource can be found and the algorithm terminates by generating a \code{NotFoundException} (404 status) and no entity. 
 
 \item Sort $E$ using the number of literal characters in each member as the primary key (descending order), the number of capturing groups as a secondary key (descending order), the number of capturing groups with non-default regular expressions (i.e. not \lq([\^{ }/]+?)\rq) as the tertiary key (descending order), and the source of each member as quaternary key sorting those derived from sub-resource methods ahead of those derived from sub-resource locators.
 
@@ -463,9 +463,9 @@ and go to step \ref{find_method} if $M \neq \{\}$.
 \begin{enumerate}
 \item \label{filter_methods} Filter $M$ by removing members that do not meet the following criteria:
 \begin{itemize}
-\item The request method is supported. If no methods support the request method an implementation MUST generate a \WebAppExc\ with a method not allowed response (HTTP 405 status) and no entity. Note the additional support for \code{HEAD} and \code{OPTIONS} described in Section \ref{head_and_options}.
-\item The media type of the request entity body (if any) is a supported input data format (see Section \ref{declaring_method_capabilities}). If no methods support the media type of the request entity body an implementation MUST generate a \WebAppExc\ with an unsupported media type response (HTTP 415 status) and no entity.
-\item At least one of the acceptable response entity body media types is a supported output data format (see Section \ref{declaring_method_capabilities}). If no methods support one of the acceptable response entity body media types an implementation MUST generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity.
+\item The request method is supported. If no methods support the request method an implementation MUST generate a \code{NotAllowedException} (405 status) and no entity. Note the additional support for \code{HEAD} and \code{OPTIONS} described in Section \ref{head_and_options}.
+\item The media type of the request entity body (if any) is a supported input data format (see Section \ref{declaring_method_capabilities}). If no methods support the media type of the request entity body an implementation MUST generate a \code{NotSupportedException} (415 status) and no entity.
+\item At least one of the acceptable response entity body media types is a supported output data format (see Section \ref{declaring_method_capabilities}). If no methods support one of the acceptable response entity body media types an implementation MUST generate a \code{NotAcceptableException} (406 status) and no entity.
 \end{itemize} 
 
 \newcommand{\bottom}{\perp}
@@ -594,7 +594,7 @@ In many cases it is not possible to statically determine the media type of a res
 \end{itemize}
 \end{itemize}
 
-\item If $M = \{\}$ then generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}. Finish.
+\item If $M = \{\}$ then generate a \code{NotAcceptableException} (406 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}. Finish.
 
 \item Sort $M$ in descending order, with a primary key of specificity ($\mbox{n/m} > \mbox{n/*} > \mbox{*/*}$), a secondary key of q-value and a tertiary key of qs-value.
 
@@ -605,7 +605,7 @@ In many cases it is not possible to statically determine the media type of a res
 
 \item If $M$ contains \lq*/*\rq\ or \lq application/*\rq, set $M_{\mbox{selected}} = \mbox{\lq application/octet-stream\rq}$, finish.
 
-\item Generate a \WebAppExc\ with a not acceptable response (HTTP 406 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}. Finish.
+\item Generate a \code{NotAcceptableException} (406 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}. Finish.
 \end{enumerate}
 
 Note that the above renders a response with a default media type of \lq application/octet-stream\rq\ when a concrete type cannot be determined. It is RECOMMENDED that \MsgWrite\ implementations specify at least one concrete type via \Produces.
