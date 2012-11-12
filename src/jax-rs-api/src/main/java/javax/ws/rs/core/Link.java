@@ -267,6 +267,19 @@ public final class Link {
     }
 
     /**
+     * Create a new builder instance initialized from a URI builder.
+     *
+     * @param uriBuilder instance of URI builder.
+     * @return a new builder.
+     * @since 2.0
+     */
+    public static Builder fromUriBuilder(UriBuilder uriBuilder) {
+        Builder b = new Builder();
+        b.uriBuilder(uriBuilder);
+        return b;
+    }
+
+    /**
      * Create a new builder instance initialized from another link.
      *
      * @param link other link used for initialization.
@@ -317,7 +330,7 @@ public final class Link {
             throw new IllegalArgumentException("All parameters must be non-null");
         }
 
-        Builder lb = Link.fromUri(UriBuilder.fromResource(resource).build());
+        Builder lb = Link.fromUriBuilder(UriBuilder.fromResource(resource));
         lb.rel(rel);
         Method[] methods = resource.getMethods();
         for (Method m : methods) {
@@ -411,6 +424,18 @@ public final class Link {
          */
         public Builder uri(String uri) throws IllegalArgumentException {
             uriBuilder = UriBuilder.fromUri(uri);
+            return this;
+        }
+
+        /**
+         * Set underlying URI builder representing the URI template for the link
+         * being constructed.
+         *
+         * @param uriBuilder underlying URI builder.
+         * @return the updated builder.
+         */
+        public Builder uriBuilder(UriBuilder uriBuilder) {
+            this.uriBuilder = uriBuilder;
             return this;
         }
 
