@@ -42,6 +42,8 @@ package javax.ws.rs.core;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.ws.rs.RuntimeType;
+
 /**
  * A JAX-RS runtime configuration context.
  *
@@ -92,6 +94,14 @@ import java.util.Map;
  * @since 2.0
  */
 public interface Configuration {
+
+    /**
+     * Get the runtime type of this configuration context.
+     *
+     * @return configuration context runtime type.
+     */
+    public RuntimeType getRuntimeType();
+
     /**
      * Get the immutable bag of configuration properties.
      *
