@@ -40,17 +40,15 @@
 package jaxrs.examples.client.custom;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
@@ -71,10 +69,10 @@ public final class ThrottledClient implements Client {
         this.requestQueue = new ArrayBlockingQueue<ClientRequestContext>(queueCapacity);
     }
 
-    public ThrottledClient(Configurable configurable, int queueCapacity) {
+    public ThrottledClient(Configuration config, int queueCapacity) {
         this(queueCapacity);
 
-        updateFrom(configurable);
+        replaceWith(config);
     }
 
     @Override
@@ -108,77 +106,57 @@ public final class ThrottledClient implements Client {
     }
 
     @Override
-    public Map<String, Object> getProperties() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Object getProperty(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Collection<String> getPropertyNames() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public ThrottledClient setProperty(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<Class<?>> getProviderClasses() {
+    public ThrottledClient register(Class<?> componentClass) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Set<Object> getProviderInstances() {
+    public ThrottledClient register(Class<?> componentClass, int bindingPriority) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ThrottledClient register(Class<?> providerClass) {
+    public ThrottledClient register(Class<?> componentClass, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ThrottledClient register(Class<?> providerClass, int bindingPriority) {
+    public ThrottledClient register(Class<?> providerClass, Map<Class<?>, Integer> contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ThrottledClient register(Class<?> providerClass, Class<?>... contracts) {
+    public ThrottledClient register(Object component) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ThrottledClient register(Class<?> providerClass, int bindingPriority, Class<?>... contracts) {
+    public ThrottledClient register(Object component, int bindingPriority) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ThrottledClient register(Object provider) {
+    public ThrottledClient register(Object component, Class<?>... contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ThrottledClient register(Object provider, int bindingPriority) {
+    public ThrottledClient register(Object provider, Map<Class<?>, Integer> contracts) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ThrottledClient register(Object provider, Class<?>... contracts) {
+    public ThrottledClient replaceWith(Configuration config) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ThrottledClient register(Object provider, int bindingPriority, Class<?>... contracts) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public ThrottledClient updateFrom(Configurable configurable) {
+    public Configuration getConfiguration() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

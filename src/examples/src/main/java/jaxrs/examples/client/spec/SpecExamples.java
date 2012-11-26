@@ -82,7 +82,7 @@ public class SpecExamples {
 
         // Default client instantiation using custom configuration
 
-        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient);
+        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.getConfiguration());
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////

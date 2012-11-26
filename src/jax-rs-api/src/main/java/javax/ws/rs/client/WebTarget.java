@@ -42,6 +42,7 @@ package javax.ws.rs.client;
 import java.net.URI;
 import java.util.Map;
 
+import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
@@ -51,7 +52,7 @@ import javax.ws.rs.core.UriBuilder;
  * @author Marek Potociar
  * @since 2.0
  */
-public interface WebTarget extends Configurable {
+public interface WebTarget extends Configurable<WebTarget> {
 
     /**
      * Get the URI identifying the resource.
@@ -305,34 +306,4 @@ public interface WebTarget extends Configurable {
      * @return builder for a request targeted at the URI referenced by this target instance.
      */
     public Invocation.Builder request(MediaType... acceptedResponseTypes);
-
-    @Override
-    public WebTarget setProperty(String name, Object value);
-
-    @Override
-    public WebTarget register(Class<?> providerClass);
-
-    @Override
-    public WebTarget register(Class<?> providerClass, int bindingPriority);
-
-    @Override
-    public WebTarget register(Class<?> providerClass, Class<?>... contracts);
-
-    @Override
-    public WebTarget register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
-
-    @Override
-    public WebTarget register(Object provider);
-
-    @Override
-    public WebTarget register(Object provider, int bindingPriority);
-
-    @Override
-    public WebTarget register(Object provider, Class<?>... contracts);
-
-    @Override
-    public WebTarget register(Object provider, int bindingPriority, Class<?>... contracts);
-
-    @Override
-    public WebTarget updateFrom(Configurable configurable);
 }

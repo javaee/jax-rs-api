@@ -45,20 +45,25 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>Filters and interceptors are grouped in chains for each of the extension
+ * Defines binding priority for the JAX-RS components that are supposed to be
+ * chained when used or applied by JAX-RS runtime.
+ * <p>
+ * Filters and interceptors are grouped in chains for each of the extension
  * points: Pre, PreMatch, Post as well as ReadFrom and WriteTo.
  * Each of these chains is sorted by binding priorities which are represented
  * as integer numbers.
  * All chains except Post are sorted in ascending order; the lower
  * the number the higher the priority. The Post filter chain is sorted
  * in descending order to ensure that response filters are executed in
- * <em>reverse order</em>.</p>
- *
- * <p>This class defines a few built-in priority classes. Filters and interceptors
- * that belong to the same priority class (same integer value) are executed
- * in an implementation-defined manner. By default, i.e. when
+ * <em>reverse order</em>.
+ * </p>
+ * <p>
+ * This class defines constants for a few built-in priority levels. Filters
+ * and interceptors that belong to the same priority class (same integer value)
+ * are executed in an implementation-defined manner. By default, i.e. when
  * this annotation is absent, a filter or interceptor is defined in the
- * {@link #USER} class.</p>
+ * {@link #USER} class.
+ * </p>
  *
  * @author Santiago Pericas-Geertsen
  * @since 2.0
@@ -66,7 +71,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface BindingPriority {
-
     /**
      * Security authentication filter/interceptor priority.
      */
@@ -89,7 +93,8 @@ public @interface BindingPriority {
     public static final int USER = 7000;
 
     /**
-     * Priority defined for a filter or interceptor.
+     * Priority defined as a positive number for chainable providers
+     * such as filters or interceptors.
      */
     int value();
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,26 +37,13 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package jaxrs.examples.client.cache;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+package javax.ws.rs.core;
 
 /**
- * Example caching feature.
+ * A configurable context passed to {@link Feature} and {@link javax.ws.rs.container.DynamicFeature}
+ * instances by JAX-RS runtime during the phase of their configuration.
  *
- * @author Marek Potociar
+ * @author Marek Potociar (marek.potociar at oracle.com)
  */
-public class CachingFeature implements Feature {
-
-    @Override
-    public boolean configure(FeatureContext context) {
-        final Map<String, CacheEntry> cacheStore = new ConcurrentHashMap<String, CacheEntry>();
-        context.register(new CacheEntryLocator(cacheStore)).register(new CacheResponseFilter(cacheStore));
-
-        return true;
-    }
+public interface FeatureContext extends Configurable<FeatureContext> {
 }

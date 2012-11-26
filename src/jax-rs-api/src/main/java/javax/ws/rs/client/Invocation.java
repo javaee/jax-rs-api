@@ -44,6 +44,7 @@ import java.util.concurrent.Future;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -61,7 +62,7 @@ import javax.ws.rs.core.Response;
  * @author Marek Potociar
  * @see Invocation.Builder Invocation.Builder
  */
-public interface Invocation extends Configurable {
+public interface Invocation extends Configurable<Invocation> {
 
     /**
      * A client request invocation builder.
@@ -106,7 +107,7 @@ public interface Invocation extends Configurable {
      *           .header("Foo", "bar").async().get(String.class);
      * </pre>
      */
-    public static interface Builder extends SyncInvoker, Configurable {
+    public static interface Builder extends SyncInvoker, Configurable<Builder> {
 
         // Invocation builder methods
 
@@ -230,37 +231,6 @@ public interface Invocation extends Configurable {
          * @return the updated builder.
          */
         public Builder headers(MultivaluedMap<String, Object> headers);
-
-        @Override
-        public Builder setProperty(String name, Object value);
-
-        @Override
-        public Builder register(Class<?> providerClass);
-
-        @Override
-        public Builder register(Class<?> providerClass, int bindingPriority);
-
-        @Override
-        public Builder register(Class<?> providerClass, Class<?>... contracts);
-
-        @Override
-        public Builder register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
-
-        @Override
-        public Builder register(Object provider);
-
-        @Override
-        public Builder register(Object provider, int bindingPriority);
-
-        @Override
-        public Builder register(Object provider, Class<?>... contracts);
-
-        @Override
-        public Builder register(Object provider, int bindingPriority, Class<?>... contracts);
-
-        @Override
-        public Builder updateFrom(Configurable configurable);
-
     }
 
     /**
@@ -379,34 +349,4 @@ public interface Invocation extends Configurable {
      *         request invocation.
      */
     public <T> Future<T> submit(InvocationCallback<T> callback);
-
-    @Override
-    public Invocation setProperty(String name, Object value);
-
-    @Override
-    public Invocation register(Class<?> providerClass);
-
-    @Override
-    public Invocation register(Class<?> providerClass, int bindingPriority);
-
-    @Override
-    public Invocation register(Class<?> providerClass, Class<?>... contracts);
-
-    @Override
-    public Invocation register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
-
-    @Override
-    public Invocation register(Object provider);
-
-    @Override
-    public Invocation register(Object provider, int bindingPriority);
-
-    @Override
-    public Invocation register(Object provider, Class<?>... contracts);
-
-    @Override
-    public Invocation register(Object provider, int bindingPriority, Class<?>... contracts);
-
-    @Override
-    public Invocation updateFrom(Configurable configurable);
 }

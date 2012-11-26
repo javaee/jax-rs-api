@@ -41,6 +41,8 @@ package javax.ws.rs.client;
 
 import java.net.URL;
 
+import javax.ws.rs.core.Configuration;
+
 /**
  * Main entry point to the client API used to bootstrap {@link javax.ws.rs.client.Client}
  * instances.
@@ -105,12 +107,12 @@ public abstract class ClientFactory {
      * Create new configured client instance using the default client builder factory
      * provided by the JAX-RS implementation provider.
      *
-     * @param configurable data used to provide initial configuration for the new
+     * @param configuration data used to provide initial configuration for the new
      *                      client instance.
      * @return new configured client instance.
      */
-    public static Client newClient(final Configurable configurable) {
-        return getFactory().getClient(configurable);
+    public static Client newClient(final Configuration configuration) {
+        return getFactory().getClient(configuration);
     }
 
     /**
@@ -123,9 +125,9 @@ public abstract class ClientFactory {
     /**
      * Get a new pre-configured client instance.
      *
-     * @param configurable data used to provide initial configuration for
+     * @param configuration data used to provide initial configuration for
      *                      the new client instance.
      * @return a new client instance.
      */
-    protected abstract Client getClient(final Configurable configurable);
+    protected abstract Client getClient(final Configuration configuration);
 }

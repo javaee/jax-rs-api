@@ -56,7 +56,7 @@
  * <h2>Client API Bootstrapping and Configuration</h2>
  * The main entry point to the API is a {@link javax.ws.rs.client.ClientFactory}
  * that is used to bootstrap {@link javax.ws.rs.client.Client} instances -
- * {@link javax.ws.rs.client.Configurable configurable}, heavy-weight objects
+ * {@link javax.ws.rs.core.Configurable configurable}, heavy-weight objects
  * that manage the underlying communication infrastructure and serve as the root
  * objects for accessing any Web resource. The following example illustrates the
  * bootstrapping and configuration of a {@code Client} instance:

@@ -39,8 +39,8 @@
  */
 package jaxrs.examples.client.webdav;
 
-import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.FeatureContext;
 
 /**
  * Test of WebDAV Client API Extension.
@@ -56,7 +56,7 @@ public class WebDavClientTest {
     static class TestFeature implements Feature {
 
         @Override
-        public boolean configure(Configuration configuration) {
+        public boolean configure(FeatureContext context) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

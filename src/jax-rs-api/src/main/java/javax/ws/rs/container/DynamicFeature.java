@@ -39,18 +39,17 @@
  */
 package javax.ws.rs.container;
 
-import javax.ws.rs.core.Configuration;
+import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
 
 /**
- * A JAX-RS provider for dynamic registration of <i>post-matching</i> providers
+ * A JAX-RS meta-provider for dynamic registration of <i>post-matching</i> providers
  * during a JAX-RS application setup at deployment time.
  *
- * Dynamic feature provider is used by JAX-RS runtime to register providers
- * that shall be applied to a particular resource class and method and
- * overrides any annotation-based binding definitions defined on any registered
- * resource filter or interceptor instance.
+ * Dynamic feature is used by JAX-RS runtime to register providers that shall be applied
+ * to a particular resource class and method and overrides any annotation-based binding
+ * definitions defined on any registered resource filter or interceptor instance.
  * <p>
  * Providers implementing this interface MAY be annotated with
  * {@link javax.ws.rs.ext.Provider &#64;Provider} annotation in order to be
@@ -81,6 +80,7 @@ public interface DynamicFeature {
      * <li>{@link ContainerResponseFilter}</li>
      * <li>{@link ReaderInterceptor}</li>
      * <li>{@link WriterInterceptor}</li>
+     * <li>{@link javax.ws.rs.core.Feature}</li>
      * </ul>
      * <p>
      * A provider instance or class that does not implement any of the interfaces
@@ -100,9 +100,8 @@ public interface DynamicFeature {
      * </p>
      *
      * @param resourceInfo resource class and method information.
-     * @param configuration a resource or sub-resource method-level runtime configuration context
+     * @param context      configurable resource or sub-resource method-level runtime context
      *                     associated with the {@code resourceInfo} in which the feature
-     *                     should be enabled.
      */
-    public void configure(ResourceInfo resourceInfo, Configuration configuration);
+    public void configure(ResourceInfo resourceInfo, FeatureContext context);
 }

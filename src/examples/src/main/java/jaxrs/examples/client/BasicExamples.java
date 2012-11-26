@@ -46,15 +46,15 @@ import java.util.concurrent.Future;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientFactory;
-import javax.ws.rs.client.Configurable;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.Configuration;
+import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -103,7 +103,7 @@ public class BasicExamples {
 
         // Default client instantiation using custom configuration
 
-        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient);
+        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.getConfiguration());
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
@@ -280,7 +280,7 @@ public class BasicExamples {
     public static class TestFeature implements Feature {
 
         @Override
-        public boolean configure(Configuration configuration) {
+        public boolean configure(FeatureContext context) {
             // do nothing
             return true;
         }

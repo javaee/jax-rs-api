@@ -41,6 +41,7 @@ package javax.ws.rs.client;
 
 import java.net.URI;
 
+import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
@@ -56,10 +57,10 @@ import javax.ws.rs.core.UriBuilder;
  * resources.
  *
  * @author Marek Potociar
- * @see Configurable
+ * @see javax.ws.rs.core.Configurable
  * @since 2.0
  */
-public interface Client extends Configurable {
+public interface Client extends Configurable<Client> {
 
     /**
      * Close client instance and all it's associated resources. Subsequent calls
@@ -120,34 +121,4 @@ public interface Client extends Configurable {
      * @throws NullPointerException     in case link is {@code null}.
      */
     public Invocation.Builder invocation(Link link) throws NullPointerException;
-
-    @Override
-    public Client setProperty(String name, Object value);
-
-    @Override
-    public Client register(Class<?> providerClass);
-
-    @Override
-    public Client register(Class<?> providerClass, int bindingPriority);
-
-    @Override
-    public Client register(Class<?> providerClass, Class<?>... contracts);
-
-    @Override
-    public Client register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
-
-    @Override
-    public Client register(Object provider);
-
-    @Override
-    public Client register(Object provider, int bindingPriority);
-
-    @Override
-    public Client register(Object provider, Class<?>... contracts);
-
-    @Override
-    public Client register(Object provider, int bindingPriority, Class<?>... contracts);
-
-    @Override
-    public Client updateFrom(Configurable configurable);
 }

@@ -42,7 +42,7 @@ package jaxrs.examples.filter.logging;
 import javax.ws.rs.GET;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Configuration;
+import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
 
 /**
@@ -58,10 +58,10 @@ import javax.ws.rs.ext.Provider;
 public final class DynamicLoggingFilterFeature implements DynamicFeature {
 
     @Override
-    public void configure(ResourceInfo resourceInfo, Configuration configuration) {
+    public void configure(ResourceInfo resourceInfo, FeatureContext context) {
         if (MyResourceClass.class.isAssignableFrom(resourceInfo.getResourceClass())
                 && resourceInfo.getResourceMethod().isAnnotationPresent(GET.class)) {
-            configuration.register(new LoggingFilter());
+            context.register(new LoggingFilter());
         }
     }
 }

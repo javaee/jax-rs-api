@@ -41,53 +41,19 @@ package javax.ws.rs.core;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.RuntimeType;
 
 /**
- * A JAX-RS runtime configuration context.
- *
- * The exact scope of the runtime configuration context is typically determined by a
- * use case scenario in which the context is accessed.
+ * A configuration state associated with a {@link Configurable configurable} JAX-RS context.
+ * Defines the components as well as additional meta-data for the configured context.
  * <p>
- * A runtime configuration context may be used to retrieve or updated configuration
- * of the bound run-time component. The modification of the context typically
- * involves setting properties or registering new providers and/or features.
- * </p>
- * <h3>Registering providers and/or features.</h3>
- * <p>
- * In some situations a provider class or instance may implement multiple contracts
- * recognized by a JAX-RS implementation (e.g. filter, interceptor or entity provider).
- * By default, the JAX-RS implementation will register the provider as
- * a provider for all the recognized implemented contracts. For example:
- * </p>
- * <pre>
- * public class MyProvider
- *         implements ReaderInterceptor, WriterInterceptor { ... }
- *
- * ...
- *
- * // register MyProvider as a ReaderInterceptor
- * // as well as a WriterInterceptor
- * configuration.register(MyProvider.class);
- * </pre>
- * <p>
- * However there are some situations when the default registration to all the recognized
- * contracts is not desirable. In such case the users may use a version of the {@code register(...)}
- * method that allows to explicitly list the {@code contracts} for which the provider class should
- * be registered, effectively limiting the scope of the provider. For example:
- * </p>
- * <p>
- * <pre>
- * public class ClientLoggingFilter
- *         implements ClientRequestFilter, ClientResponseFilter { ... }
- *
- * ...
- *
- * ClientLoggingFilter loggingFilter = ...;
- * // register loggingFilter as a ClientResponseFilter only
- * configuration.register(loggingFilter, ClientResponseFilter.class);
- * </pre>
+ * A configuration state may be used to retrieve configuration information about
+ * of the associated JAX-RS context (e.g. application, resource method, etc.) or component
+ * (e.g. {@link javax.ws.rs.client.Client}, {@link javax.ws.rs.client.WebTarget}, etc.).
+ * Configuration information consists of properties, registered JAX-RS component classes
+ * and/or instances.
  * </p>
  *
  * @author Marek Potociar
@@ -132,259 +98,108 @@ public interface Configuration {
     public Collection<String> getPropertyNames();
 
     /**
-     * Set new configuration properties replacing all previously set properties.
-     *
-     * @param properties new set of configuration properties. The content of
-     *                   the map will replace any existing properties set on the configuration
-     *                   instance.
-     * @return the updated configuration instance.
-     */
-    public Configuration setProperties(Map<String, ?> properties);
-
-    /**
-     * Set the new configuration property, if already set, the existing value of
-     * the property will be updated. Setting a {@code null} value into a property
-     * effectively removes the property from the property bag.
-     *
-     * @param name  property name.
-     * @param value (new) property value. {@code null} value removes the property
-     *              with the given name.
-     * @return the updated configuration instance.
-     */
-    public Configuration setProperty(String name, Object value);
-
-    /**
-     * Check if a particular {@link Feature feature} instance has been previously enabled in the runtime
-     * configuration context.
+     * Check if a particular {@link Feature feature} instance has been previously
+     * enabled in the runtime configuration context.
      * <p>
-     * Method returns {@code true} only in case an instance equal to the {@code feature} instance is
-     * already present among the features previously successfully enabled in the configuration context.
+     * Method returns {@code true} only in case an instance equal to the {@code feature}
+     * instance is already present among the features previously successfully enabled in
+     * the configuration context.
      * </p>
      *
      * @param feature a feature instance to test for.
-     * @return {@code true} if the feature instance has been previously enabled in this configuration context,
-     *         {@code false} otherwise.
+     * @return {@code true} if the feature instance has been previously enabled in this
+     *         configuration context, {@code false} otherwise.
      */
     public boolean isEnabled(Feature feature);
 
     /**
-     * Check if a {@link Feature feature} instance of {@code featureClass} class has been previously enabled
-     * in the runtime configuration context.
+     * Check if a {@link Feature feature} instance of {@code featureClass} class has been
+     * previously enabled in the runtime configuration context.
      * <p>
      * Method returns {@code true} in case any instance of the {@code featureClass} class is
-     * already present among the features previously successfully enabled in the configuration context.
+     * already present among the features previously successfully enabled in the configuration
+     * context.
      * </p>
      *
      * @param featureClass a feature class to test for.
-     * @return {@code true} if a feature of a given class has been previously enabled in this configuration context,
-     *         {@code false} otherwise.
+     * @return {@code true} if a feature of a given class has been previously enabled in this
+     *         configuration context, {@code false} otherwise.
      */
     public boolean isEnabled(Class<? extends Feature> featureClass);
 
     /**
-     * Check if a particular {@code provider} instance (including {@link Feature features}) has been previously
-     * registered in the runtime configuration context.
+     * Check if a particular JAX-RS {@code component} instance (such as providers or
+     * {@link Feature features}) has been previously registered in the runtime configuration context.
      * <p>
-     * Method returns {@code true} only in case an instance equal to the {@code provider} instance is
-     * already present among the providers previously registered in the configuration context.
+     * Method returns {@code true} only in case an instance equal to the {@code component}
+     * instance is already present among the components previously registered in the configuration
+     * context.
      * </p>
      *
-     * @param provider a provider instance to test for.
-     * @return {@code true} if the provider instance has been previously registered in this configuration context,
-     *         {@code false} otherwise.
+     * @param component a component instance to test for.
+     * @return {@code true} if the component instance has been previously registered in this
+     *         configuration context, {@code false} otherwise.
      * @see #isEnabled(Feature)
      */
-    public boolean isRegistered(Object provider);
+    public boolean isRegistered(Object component);
 
     /**
-     * Check if a provider (or {@link Feature feature}) of the supplied {@code providerClass} class has been
-     * previously registered in the runtime configuration context.
+     * Check if a JAX-RS component of the supplied {@code componentClass} class has been previously
+     * registered in the runtime configuration context.
      * <p>
-     * Method returns {@code true} in case a provider of the supplied {@code providerClass} class is
-     * already present among the providers previously registered in the configuration context.
+     * Method returns {@code true} in case a component of the supplied {@code componentClass} class
+     * is already present among the previously registered component classes or instances
+     * in the configuration context.
      * </p>
      *
-     * @param providerClass a provider class to test for.
-     * @return {@code true} if a provider of a given class has been previously registered in this configuration context,
-     *         {@code false} otherwise.
+     * @param componentClass a component class to test for.
+     * @return {@code true} if a component of a given class has been previously registered in this
+     *         configuration context, {@code false} otherwise.
      * @see #isEnabled(Class)
      */
-    public boolean isRegistered(Class<?> providerClass);
+    public boolean isRegistered(Class<?> componentClass);
 
     /**
-     * Register a provider or a {@link Feature feature} class to be instantiated
-     * and used in the scope of the configuration instance.
+     * Get the extension contract registration information for a component of a given class.
      *
-     * The registered class is registered as a provider of all the recognized JAX-RS or
-     * implementation-specific extension contracts including {@code Feature} contract.
-     * <p>
-     * As opposed to the instances registered via {@link #register(Object)} method, classes
-     * registered using this method are instantiated and properly injected
-     * by the JAX-RS implementation provider. In case of a conflict between
-     * a registered feature and/or provider instance and instantiated registered class,
-     * the registered instance takes precedence and the registered class will not be
-     * instantiated in such case.
-     * </p>
+     * For component classes that are not configured in this configuration context the method returns
+     * an empty {@code Map}. Method does not return {@code null}.
      *
-     * @param providerClass provider class to be instantiated and used in the scope
-     *                      of the configuration instance.
-     * @return the updated configuration instance.
+     * @return map of extension contracts and their binding priorities for which the component class
+     *         is registered.
+     *         May return an empty map in case the component has not been registered for any
+     *         extension contract supported by the implementation.
      */
-    public Configuration register(Class<?> providerClass);
+    public Map<Class<?>, Integer> getContracts(Class<?> componentClass);
 
     /**
-     * Register a provider or a {@link Feature feature} class to be instantiated and used
-     * in the scope of the configuration instance.
+     * Get the immutable set of registered JAX-RS component (such as provider or
+     * {@link Feature feature}) classes to be instantiated, injected and utilized in the scope
+     * of the configurable instance.
      * <p>
-     * This registration method provides same functionality as {@link #register(Class)}
-     * except that any provider binding priority specified on the provider class using
-     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
-     * with the supplied {@code bindingPriority} value.
-     * </p>
-     * <p>
-     * Note that in case the binding priority is not applicable to any particular provider
-     * contract registered for the provider class, the supplied {@code bindingPriority} value
-     * will be ignored for that contract.
+     * For each component type, there can be only a single class-based or instance-based registration
+     * present in the configuration context at any given time.
      * </p>
      *
-     * @param providerClass   provider class to be instantiated and used in the scope
-     *                        of the configuration instance.
-     * @param bindingPriority the overriding binding priority for the registered contract(s).
-     * @return the updated configuration instance.
+     * @return the immutable set of registered JAX-RS component classes. The returned
+     *         value may be empty but will never be {@code null}.
+     * @see #getInstances
      */
-    public Configuration register(Class<?> providerClass, int bindingPriority);
+    public Set<Class<?>> getClasses();
 
     /**
-     * Register a provider or a {@link Feature feature} class to be instantiated
-     * and used in the scope of the configuration instance.
+     * Get the immutable set of registered JAX-RS component (such as provider or
+     * {@link Feature feature}) instances to be utilized by the configurable instance.
+     * Fields and properties of returned instances are injected with their declared dependencies
+     * (see {@link Context}) by the runtime prior to use.
      * <p>
-     * This registration method provides same functionality as {@link #register(Class)}
-     * except the provider class is only registered as a provider of the listed
-     * {@code contracts}. Note that in case the {@link Feature} interface is not listed
-     * explicitly, the provider class is not recognized as a JAX-RS feature.
+     * For each component type, there can be only a single class-based or instance-based registration
+     * present in the configuration context at any given time.
      * </p>
      *
-     * @param providerClass provider class to be instantiated and used in the scope
-     *                      of the configuration instance.
-     * @param contracts     the specific contracts implemented by the provider class
-     *                      for which the provider should be registered. If omitted, the
-     *                      provider class will be registered as a provider of all recognized
-     *                      contracts implemented by the provider class.
-     * @return the updated configuration instance.
+     * @return the immutable set of registered JAX-RS component instances. The returned
+     *         value may be empty but will never be {@code null}.
+     * @see #getClasses
      */
-    public Configuration register(Class<?> providerClass, Class<?>... contracts);
-
-    /**
-     * Register a provider or a {@link Feature feature} class to be instantiated
-     * and used in the scope of the configuration instance.
-     * <p>
-     * This registration method provides same functionality as {@link #register(Class, Class[])}
-     * except that any provider binding priority specified on the provider class using
-     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
-     * with the supplied {@code bindingPriority} value.
-     * </p>
-     * <p>
-     * Note that in case the binding priority is not applicable to any particular provider
-     * contract registered for the provider class, the supplied {@code bindingPriority} value
-     * will be ignored for that contract.
-     * </p>
-     *
-     * @param providerClass   provider class to be instantiated and used in the scope
-     *                        of the configuration instance.
-     * @param bindingPriority the overriding binding priority for the registered contract(s).
-     * @param contracts       the specific contracts implemented by the provider class
-     *                        for which the provider should be registered. If omitted, the
-     *                        provider class will be registered as a provider of all recognized
-     *                        contracts implemented by the provider class.
-     * @return the updated configuration instance.
-     */
-    public Configuration register(Class<?> providerClass, int bindingPriority, Class<?>... contracts);
-
-    /**
-     * Register a provider or a {@link Feature feature} ("singleton") instance to be used
-     * in the scope of the configuration instance.
-     *
-     * The registered instance is registered as a provider of all the recognized JAX-RS or
-     * implementation-specific extension contracts including {@code Feature} contract.
-     * <p>
-     * As opposed to the instances registered via {@link #register(Class)} method, classes
-     * registered using this method used "as is", i.e. are not managed or
-     * injected by the JAX-RS implementation provider. In case of a conflict between
-     * a registered feature and/or provider instance and instantiated registered class,
-     * the registered instance takes precedence and the registered class will not be
-     * instantiated in such case.
-     *
-     * @param provider a provider instance to be registered in the scope of the configuration
-     *                 instance.
-     * @return the updated configuration instance.
-     */
-    public Configuration register(Object provider);
-
-    /**
-     * Register a provider or a {@link Feature feature} ("singleton") instance to be used
-     * in the scope of the configuration instance.
-     * <p>
-     * This registration method provides same functionality as {@link #register(Object)}
-     * except that any provider binding priority specified on the provider using
-     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
-     * with the supplied {@code bindingPriority} value.
-     * </p>
-     * <p>
-     * Note that in case the binding priority is not applicable to any particular provider
-     * contract registered for the provider, the supplied {@code bindingPriority} value
-     * will be ignored for that contract.
-     * </p>
-     *
-     * @param provider        provider class to be instantiated and used in the scope
-     *                        of the configuration instance.
-     * @param bindingPriority the overriding binding priority for the registered contract(s).
-     * @return the updated configuration instance.
-     */
-    public Configuration register(Object provider, int bindingPriority);
-
-    /**
-     * Register a provider or a {@link Feature feature} ("singleton") instance to be used
-     * in the scope of the configuration instance.
-     * <p>
-     * This registration method provides same functionality as {@link #register(Object)}
-     * except the provider is only registered as a provider of the listed
-     * {@code contracts}. Note that in case the {@link Feature} interface is not listed
-     * explicitly, the provider is not recognized as a JAX-RS feature.
-     * </p>
-     *
-     * @param provider  a provider instance to be registered in the scope of the configuration
-     *                  instance.
-     * @param contracts the specific contracts implemented by the provider class
-     *                  for which the provider should be registered. If omitted, the
-     *                  provider class will be registered as a provider of all recognized
-     *                  contracts implemented by the provider class.
-     * @return the updated configuration instance.
-     */
-    public Configuration register(Object provider, Class<?>... contracts);
-
-    /**
-     * Register a provider or a {@link Feature feature} ("singleton") instance to be used
-     * in the scope of the configuration instance.
-     * <p>
-     * This registration method provides same functionality as {@link #register(Object, Class[])}
-     * except that any provider binding priority specified on the provider using
-     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
-     * with the supplied {@code bindingPriority} value.
-     * </p>
-     * <p>
-     * Note that in case the binding priority is not applicable to any particular provider
-     * contract registered for the provider, the supplied {@code bindingPriority} value
-     * will be ignored for that contract.
-     * </p>
-     *
-     * @param provider        a provider instance to be registered in the scope of the configuration
-     *                        instance.
-     * @param bindingPriority the overriding binding priority for the registered contract(s).
-     * @param contracts       the specific contracts implemented by the provider class
-     *                        for which the provider should be registered. If omitted, the
-     *                        provider class will be registered as a provider of all recognized
-     *                        contracts implemented by the provider class.
-     * @return the updated configuration instance.
-     */
-    public Configuration register(Object provider, int bindingPriority, Class<?>... contracts);
+    public Set<Object> getInstances();
 }
