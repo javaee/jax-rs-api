@@ -182,30 +182,32 @@ public interface Configuration {
     public boolean isEnabled(Class<? extends Feature> featureClass);
 
     /**
-     * Check if a particular {@code provider} instance has been previously registered in the runtime
-     * configuration context. Any providers only implementing {@link Feature} API are excluded from the test.
+     * Check if a particular {@code provider} instance (including {@link Feature features}) has been previously
+     * registered in the runtime configuration context.
      * <p>
      * Method returns {@code true} only in case an instance equal to the {@code provider} instance is
-     * already present among the providers previously successfully registered in the configuration context.
+     * already present among the providers previously registered in the configuration context.
      * </p>
      *
      * @param provider a provider instance to test for.
      * @return {@code true} if the provider instance has been previously registered in this configuration context,
      *         {@code false} otherwise.
+     * @see #isEnabled(Feature)
      */
     public boolean isRegistered(Object provider);
 
     /**
-     * Check if a provider instance of {@code providerClass} class has been previously registered in the runtime
-     * configuration context. Any providers only implementing {@link Feature} API are excluded from the test.
+     * Check if a provider (or {@link Feature feature}) of the supplied {@code providerClass} class has been
+     * previously registered in the runtime configuration context.
      * <p>
-     * Method returns {@code true} in case any instance of the {@code providerClass} class is
-     * already present among the providers previously successfully registered in the configuration context.
+     * Method returns {@code true} in case a provider of the supplied {@code providerClass} class is
+     * already present among the providers previously registered in the configuration context.
      * </p>
      *
      * @param providerClass a provider class to test for.
      * @return {@code true} if a provider of a given class has been previously registered in this configuration context,
      *         {@code false} otherwise.
+     * @see #isEnabled(Class)
      */
     public boolean isRegistered(Class<?> providerClass);
 
