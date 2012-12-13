@@ -43,6 +43,7 @@ import java.lang.reflect.ReflectPermission;
 import java.net.URL;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
@@ -260,4 +261,12 @@ public abstract class RuntimeDelegate {
          */
         public String toString(T value) throws IllegalArgumentException;
     }
+
+    /**
+     * Create a new instance of a {@link javax.ws.rs.core.Link.Builder}.
+     *
+     * @return new {@code Link.Builder} instance.
+     * @see javax.ws.rs.core.Link.Builder
+     */
+    public abstract Link.Builder createLinkBuilder();   
 }

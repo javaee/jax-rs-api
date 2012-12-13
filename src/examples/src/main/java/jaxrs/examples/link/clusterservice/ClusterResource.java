@@ -44,8 +44,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import jaxrs.examples.link.clusterservice.Cluster.Status;
 
@@ -56,6 +58,9 @@ import jaxrs.examples.link.clusterservice.Cluster.Status;
  */
 @Path("/cluster")
 public class ClusterResource {
+
+    @Context
+    private UriInfo uriInfo;
 
     private Cluster cluster = Model.getCluster();
 
@@ -82,11 +87,11 @@ public class ClusterResource {
     }
 
     private Link[] getTransitionalLinks() {
-        Link self = Link.fromResourceMethod(getClass(), "self").build();
-        Link item = Link.fromResourceMethod(MachineResource.class, "self").rel("item").build();
-        Link onliner = Link.fromResourceMethod(getClass(), "onliner").build();
-        Link offliner = Link.fromResourceMethod(getClass(), "offliner").build();
-
+        Link self = Link.fromMethod(getClass(), "self").rel("self").buildRelativized(uriInfo);
+        Link item = Link.fromMethod(MachineResource.class, "self").rel("item").buildRelativized(uriInfo);
+        Link onliner = Link.fromMethod(getClass(), "onliner").rel("onliner").buildRelativized(uriInfo);
+        Link offliner = Link.fromMethod(getClass(), "offliner").rel("offliner").buildRelativized(uriInfo);
+        
         return cluster.getStatus() == Status.ONLINE ?
                 new Link[] {self, item, offliner} : new Link[] {self, item, onliner};
     }

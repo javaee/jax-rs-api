@@ -42,8 +42,10 @@ package jaxrs.examples.link;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Link.JaxbAdapter;
+import javax.ws.rs.core.UriInfo;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -57,10 +59,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @Path("/myresource")
 public class ResourceExample {
 
+    @Context
+    private UriInfo uriInfo;
+
     @GET
     @Produces({"application/xml", "application/json"})
     public MyModel getIt() {
-        Link self = Link.fromResourceMethod(getClass(), "getIt", "self").build();
+        Link self = Link.fromMethod(getClass(), "getIt").rel("self").buildRelativized(uriInfo);
         MyModel m = new MyModel();
         m.setLink(self);
         m.setAtomLink(self);

@@ -39,6 +39,7 @@
  */
 package javax.ws.rs.core;
 
+import javax.ws.rs.core.Link.Builder;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
 import javax.ws.rs.ext.RuntimeDelegate;
@@ -67,6 +68,11 @@ public class RuntimeDelegateStub extends RuntimeDelegate {
 
     @Override
     public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
+        return null;
+    }
+
+    @Override
+    public Builder createLinkBuilder() {
         return null;
     }
 }

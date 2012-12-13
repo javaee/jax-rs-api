@@ -46,8 +46,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import jaxrs.examples.link.clusterservice.Machine.Status;
 
@@ -58,6 +60,9 @@ import jaxrs.examples.link.clusterservice.Machine.Status;
  */
 @Path("/cluster/machine/{name}")
 public class MachineResource {
+
+    @Context
+    private UriInfo uriInfo;
 
     private Machine machine;
 
@@ -106,10 +111,10 @@ public class MachineResource {
     private Link[] getTransitionalLinks() {
         String name = machine.getName();
 
-        Link self = Link.fromResourceMethod(getClass(), "self").build(name);
-        Link starter = Link.fromResourceMethod(getClass(), "starter").build(name);
-        Link stopper = Link.fromResourceMethod(getClass(), "stopper").build(name);
-        Link suspender = Link.fromResourceMethod(getClass(), "suspender").build(name);
+        Link self = Link.fromMethod(getClass(), "self").rel("self").buildRelativized(uriInfo, name);
+        Link starter = Link.fromMethod(getClass(), "starter").rel("starter").buildRelativized(uriInfo, name);
+        Link stopper = Link.fromMethod(getClass(), "stopper").rel("stopper").buildRelativized(uriInfo, name);
+        Link suspender = Link.fromMethod(getClass(), "suspender").rel("suspender").buildRelativized(uriInfo, name);
 
         switch (machine.getStatus()) {
             case STOPPED:
