@@ -489,7 +489,7 @@ public abstract class Link {
      * <p>An implementation of JAXB {@link javax.xml.bind.annotation.adapters.XmlAdapter} 
      * that maps the JAX-RS {@link javax.ws.rs.core.Link} type to a value that can be
      * marshalled and unmarshalled by JAXB. The following example shows how to use
-     * this adpater on a JAXB bean class:</p>
+     * this adapter on a JAXB bean class:</p>
      *
      * <pre>
      * &#64;XmlRootElement
