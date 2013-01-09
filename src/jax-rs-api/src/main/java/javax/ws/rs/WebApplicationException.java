@@ -113,12 +113,22 @@ public class WebApplicationException extends RuntimeException {
      * @param cause    the underlying cause of the exception.
      */
     public WebApplicationException(final Throwable cause, final Response response) {
-        super(cause);
+        super(computeExceptionMessage(response), cause);
         if (response == null) {
             this.response = Response.serverError().build();
         } else {
             this.response = response;
         }
+    }
+
+    private static String computeExceptionMessage(Response response) {
+        final Response.StatusType statusInfo;
+        if (response != null) {
+            statusInfo = response.getStatusInfo();
+        } else {
+            statusInfo = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        return "HTTP " + statusInfo.getStatusCode() + ' ' + statusInfo.getReasonPhrase();
     }
 
     /**
