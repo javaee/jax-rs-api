@@ -435,23 +435,47 @@ public abstract class Link {
         private URI uri;
         private Map<QName, Object> params;
 
+        /**
+         * Default constructor needed during unmarshalling.
+         */
         public JaxbLink() {
         }
 
+        /**
+         * Construct an instance from a URI and no parameters.
+         *
+         * @param uri underlying URI.
+         */
         public JaxbLink(URI uri) {
             this.uri = uri;
         }
 
+        /**
+         * Construct an instance from URI and a some parameters.
+         *
+         * @param uri underlying URI.
+         * @param params parameters of this link.
+         */
         public JaxbLink(URI uri, Map<QName, Object> params) {
             this.uri = uri;
             this.params = params;
         }
 
+        /**
+         * Get the underlying URI for this link.
+         *
+         * @return underlying URI.
+         */
         @XmlAttribute(name = "href")
         public URI getUri() {
             return uri;
         }
 
+        /**
+         * Get the parameter map for this link.
+         *
+         * @return parameter map.
+         */
         @XmlAnyAttribute
         public Map<QName, Object> getParams() {
             if (params == null) {
@@ -464,15 +488,37 @@ public abstract class Link {
     /**
      * <p>An implementation of JAXB {@link javax.xml.bind.annotation.adapters.XmlAdapter} 
      * that maps the JAX-RS {@link javax.ws.rs.core.Link} type to a value that can be
-     * marshalled and unmarshalled by JAXB.</p>
+     * marshalled and unmarshalled by JAXB. The following example shows how to use
+     * this adpater on a JAXB bean class:</p>
+     *
+     * <pre>
+     * &#64;XmlRootElement
+     * public class MyModel {
+     *
+     *   private Link link;
+     *
+     *   &#64;XmlElement(name="link")
+     *   &#64;XmlJavaTypeAdapter(JaxbAdapter.class)
+     *   public Link getLink() {
+     *     return link;
+     *   }
+     *   ...
+     * }
+     * </pre>
      *
      * @see javax.ws.rs.core.Link.JaxbLink
      * @since 2.0
      */
     public static class JaxbAdapter extends XmlAdapter<JaxbLink, Link> {
 
+        /**
+         * Convert a {@link JaxbLink} into a {@link Link}.
+         *
+         * @param v instance of type {@link JaxbLink}.
+         * @return mapped instance of type {@link JaxbLink}
+         */
         @Override
-        public Link unmarshal(JaxbLink v) throws Exception {
+        public Link unmarshal(JaxbLink v) {
             Link.Builder lb = Link.fromUri(v.getUri());
             for (Entry<QName, Object> e : v.getParams().entrySet()) {
                 lb.param(e.getKey().getLocalPart(), e.getValue().toString());
@@ -480,8 +526,14 @@ public abstract class Link {
             return lb.build();
         }
 
+        /**
+         * Convert a {@link Link} into a {@link JaxbLink}.
+         *
+         * @param v instance of type {@link Link}.
+         * @return mapped instance of type {@link JaxbLink}.
+         */
         @Override
-        public JaxbLink marshal(Link v) throws Exception {
+        public JaxbLink marshal(Link v) {
             JaxbLink jl = new JaxbLink(v.getUri());
             for (Entry<String, String> e : v.getParams().entrySet()) {
                 final String name = e.getKey();
