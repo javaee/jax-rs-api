@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -373,7 +373,7 @@ public interface UriInfo {
     public URI resolve(URI uri);
 
     /**
-     * Resolve a relative URI with respect to a base URI. The resolved URI returned by 
+     * Resolve a relative URI with respect to a base URI. The resolved URI returned by
      * this method is normalized. If the supplied URI is already resolved, it is just returned.
      *
      * @param baseUri base URI used for resolution.
@@ -386,13 +386,13 @@ public interface UriInfo {
     /**
      * Relativize a URI with respect to the current request URI. This method
      * is a shorthand for {@code uriInfo.relativize(uriInfo.getRequestUri(), uri)}.
-     * 
+     *
      * @param uri URI to relativize against the request URI.
      * @return newly relativized URI.
      * @throws java.lang.IllegalStateException if called outside the scope of a request.
      * @since 2.0
      */
-    public URI relativize(URI uri) throws IllegalStateException;
+    public URI relativize(URI uri);
 
     /**
      * <p>Relativize a URI as follows:

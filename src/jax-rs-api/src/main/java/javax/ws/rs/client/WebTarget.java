@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -89,7 +89,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      * @return a new target instance.
      * @throws NullPointerException if path is {@code null}.
      */
-    public WebTarget path(String path) throws NullPointerException;
+    public WebTarget path(String path);
 
     /**
      * Create a new {@code WebTarget} instance by resolving a URI template with a given {@code name}
@@ -108,7 +108,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      * @return a new target instance.
      * @throws NullPointerException if the resolved template name or value is {@code null}.
      */
-    public WebTarget resolveTemplate(String name, Object value) throws NullPointerException;
+    public WebTarget resolveTemplate(String name, Object value);
 
     /**
      * Create a new {@code WebTarget} instance by resolving a URI template with a given {@code name}
@@ -131,7 +131,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      * @return a new target instance.
      * @throws NullPointerException if the resolved template name or value is {@code null}.
      */
-    public WebTarget resolveTemplate(String name, Object value, boolean encodeSlashInPath) throws NullPointerException;
+    public WebTarget resolveTemplate(String name, Object value, boolean encodeSlashInPath);
 
     /**
      * Create a new {@code WebTarget} instance by resolving a URI template with a given {@code name}
@@ -155,7 +155,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      * @return a new target instance.
      * @throws NullPointerException if the resolved template name or value is {@code null}.
      */
-    public WebTarget resolveTemplateFromEncoded(String name, Object value) throws NullPointerException;
+    public WebTarget resolveTemplateFromEncoded(String name, Object value);
 
     /**
      * Create a new {@code WebTarget} instance by resolving one or more URI templates
@@ -175,7 +175,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      * @throws NullPointerException if the name-value map or any of the names or values in the map
      *                              is {@code null}.
      */
-    public WebTarget resolveTemplates(Map<String, Object> templateValues) throws NullPointerException;
+    public WebTarget resolveTemplates(Map<String, Object> templateValues);
     /**
      * Create a new {@code WebTarget} instance by resolving one or more URI templates
      * in the URI of the current target instance using supplied name-value pairs.
@@ -199,7 +199,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      * @throws NullPointerException if the name-value map or any of the names or values in the map
      *                              is {@code null}.
      */
-    public WebTarget resolveTemplates(Map<String, Object> templateValues, boolean encodeSlashInPath) throws NullPointerException;
+    public WebTarget resolveTemplates(Map<String, Object> templateValues, boolean encodeSlashInPath);
 
     /**
      * Create a new {@code WebTarget} instance by resolving one or more URI templates
@@ -226,7 +226,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      * @throws NullPointerException if the name-value map or any of the names or encoded values in the map
      *                              is {@code null}.
      */
-    public WebTarget resolveTemplatesFromEncoded(Map<String, Object> templateValues) throws NullPointerException;
+    public WebTarget resolveTemplatesFromEncoded(Map<String, Object> templateValues);
 
     /**
      * Create a new {@code WebTarget} instance by appending a matrix parameter to
@@ -257,7 +257,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      *                              values present and any of those values is {@code null}.
      * @see <a href="http://www.w3.org/DesignIssues/MatrixURIs.html">Matrix URIs</a>
      */
-    public WebTarget matrixParam(String name, Object... values) throws NullPointerException;
+    public WebTarget matrixParam(String name, Object... values);
 
     /**
      * Create a new {@code WebTarget} instance by configuring a query parameter on the URI
@@ -280,7 +280,7 @@ public interface WebTarget extends Configurable<WebTarget> {
      * @throws NullPointerException if the parameter name is {@code null} or if there are multiple
      *                              values present and any of those values is {@code null}.
      */
-    public WebTarget queryParam(String name, Object... values) throws NullPointerException;
+    public WebTarget queryParam(String name, Object... values);
 
     /**
      * Start building a request to the targeted web resource.

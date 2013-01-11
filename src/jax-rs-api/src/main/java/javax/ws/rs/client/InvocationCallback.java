@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -63,12 +63,15 @@ public interface InvocationCallback<RESPONSE> {
     /**
      * Called when the invocation has failed for any reason.
      * <p>
-     * Note that the provided {@link Throwable} may be a {@link ClientException} in case the
+     * Note that the provided {@link Throwable} may be a {@link javax.ws.rs.ProcessingException} in case the
      * invocation processing failure has been caused by a client-side runtime component error.
      * The {@code Throwable} may also be a {@link javax.ws.rs.WebApplicationException} or one
      * of its subclasses in case the response status code is not
      * {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL successful} and the generic
      * callback type is not {@link javax.ws.rs.core.Response}.
+     * In case a processing of a properly received response fails, the wrapped processing exception
+     * will be of {@link ResponseProcessingException} type and will contain the {@link javax.ws.rs.core.Response}
+     * instance whose processing has failed.
      * A {@link java.util.concurrent.CancellationException} would be indicate that the invocation
      * has been cancelled.
      * An {@link InterruptedException} would indicate that the thread executing the invocation has

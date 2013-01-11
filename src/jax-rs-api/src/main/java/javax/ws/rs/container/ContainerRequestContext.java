@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -181,7 +181,7 @@ public interface ContainerRequestContext {
      *                               request filter.
      * @see #setRequestUri(java.net.URI, java.net.URI)
      */
-    public void setRequestUri(URI requestUri) throws IllegalStateException;
+    public void setRequestUri(URI requestUri);
 
     /**
      * Set a new request URI using a new base URI to resolve the application-specific
@@ -199,7 +199,7 @@ public interface ContainerRequestContext {
      *                               request filter.
      * @see #setRequestUri(java.net.URI)
      */
-    public void setRequestUri(URI baseUri, URI requestUri) throws IllegalStateException;
+    public void setRequestUri(URI baseUri, URI requestUri);
 
     /**
      * Get the injectable request information.
@@ -229,7 +229,7 @@ public interface ContainerRequestContext {
      *                               request filter.
      * @see javax.ws.rs.HttpMethod
      */
-    public void setMethod(String method) throws IllegalStateException;
+    public void setMethod(String method);
 
     /**
      * Get the mutable request headers multivalued map.
@@ -330,7 +330,7 @@ public interface ContainerRequestContext {
      * @param input new entity input stream.
      * @throws IllegalStateException in case the method is invoked from a response filter.
      */
-    public void setEntityStream(InputStream input) throws IllegalStateException;
+    public void setEntityStream(InputStream input);
 
     /**
      * Get the injectable security context information for the current request.
@@ -351,7 +351,7 @@ public interface ContainerRequestContext {
      * @param context new injectable request security context information.
      * @throws IllegalStateException in case the method is invoked from a response filter.
      */
-    public void setSecurityContext(SecurityContext context) throws IllegalStateException;
+    public void setSecurityContext(SecurityContext context);
 
     /**
      * Abort the filter chain with a response.
@@ -363,5 +363,5 @@ public interface ContainerRequestContext {
      * @param response response to be sent back to the client.
      * @throws IllegalStateException in case the method is invoked from a response filter.
      */
-    public void abortWith(Response response) throws IllegalStateException;
+    public void abortWith(Response response);
 }

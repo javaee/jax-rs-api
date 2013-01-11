@@ -91,7 +91,7 @@ public class WebApplicationException extends RuntimeException {
      * @param status the HTTP status code that will be returned to the client.
      * @throws IllegalArgumentException if status is {@code null}.
      */
-    public WebApplicationException(final Response.Status status) throws IllegalArgumentException {
+    public WebApplicationException(final Response.Status status) {
         this(null, status);
     }
 
@@ -172,7 +172,7 @@ public class WebApplicationException extends RuntimeException {
      * @throws IllegalArgumentException if the response validation failed.
      * @since 2.0
      */
-    static Response validate(final Response response, Response.Status expectedStatus) throws IllegalArgumentException {
+    static Response validate(final Response response, Response.Status expectedStatus) {
         if (expectedStatus.getStatusCode() != response.getStatus()) {
             throw new IllegalArgumentException(String.format("Invalid response status code. Expected [%d], was [%d].",
                     expectedStatus.getStatusCode(), response.getStatus()));
@@ -190,9 +190,7 @@ public class WebApplicationException extends RuntimeException {
      * @throws IllegalArgumentException if the response validation failed.
      * @since 2.0
      */
-    static Response validate(final Response response, Response.Status.Family expectedStatusFamily)
-            throws IllegalArgumentException {
-
+    static Response validate(final Response response, Response.Status.Family expectedStatusFamily) {
         if (response.getStatusInfo().getFamily() != expectedStatusFamily) {
             throw new IllegalArgumentException(String.format(
                     "Status code of the supplied response [%d] is not from the required status code family \"%s\".",

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,7 +42,7 @@ package jaxrs.examples.client.webdav;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.ws.rs.client.ClientException;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.CacheControl;
@@ -134,127 +134,127 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public Response get() throws ClientException {
+    public Response get() throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T get(Class<T> responseType) throws ClientException {
+    public <T> T get(Class<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T get(GenericType<T> responseType) throws ClientException {
+    public <T> T get(GenericType<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Response put(Entity<?> entity) throws ClientException {
+    public Response put(Entity<?> entity) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T put(Entity<?> entity, Class<T> responseType) throws ClientException {
+    public <T> T put(Entity<?> entity, Class<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T put(Entity<?> entity, GenericType<T> responseType) throws ClientException {
+    public <T> T put(Entity<?> entity, GenericType<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Response post(Entity<?> entity) throws ClientException {
+    public Response post(Entity<?> entity) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T post(Entity<?> entity, Class<T> responseType) throws ClientException {
+    public <T> T post(Entity<?> entity, Class<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T post(Entity<?> entity, GenericType<T> responseType) throws ClientException {
+    public <T> T post(Entity<?> entity, GenericType<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Response delete() throws ClientException {
+    public Response delete() throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T delete(Class<T> responseType) throws ClientException {
+    public <T> T delete(Class<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T delete(GenericType<T> responseType) throws ClientException {
+    public <T> T delete(GenericType<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Response head() throws ClientException {
+    public Response head() throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Response options() throws ClientException {
+    public Response options() throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T options(Class<T> responseType) throws ClientException {
+    public <T> T options(Class<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T options(GenericType<T> responseType) throws ClientException {
+    public <T> T options(GenericType<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Response trace() throws ClientException {
+    public Response trace() throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T trace(Class<T> responseType) throws ClientException {
+    public <T> T trace(Class<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T trace(GenericType<T> responseType) throws ClientException {
+    public <T> T trace(GenericType<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Response method(String name) throws ClientException {
+    public Response method(String name) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T method(String name, Class<T> responseType) throws ClientException {
+    public <T> T method(String name, Class<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T method(String name, GenericType<T> responseType) throws ClientException {
+    public <T> T method(String name, GenericType<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public Response method(String name, Entity<?> entity) throws ClientException {
+    public Response method(String name, Entity<?> entity) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T method(String name, Entity<?> entity, Class<T> responseType) throws ClientException {
+    public <T> T method(String name, Entity<?> entity, Class<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T method(String name, Entity<?> entity, GenericType<T> responseType) throws ClientException {
+    public <T> T method(String name, Entity<?> entity, GenericType<T> responseType) throws ProcessingException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

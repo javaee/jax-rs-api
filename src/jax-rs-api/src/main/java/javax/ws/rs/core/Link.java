@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.ws.rs.Path;
 
 import javax.ws.rs.ext.RuntimeDelegate;
 
@@ -56,7 +55,7 @@ import javax.xml.namespace.QName;
 /**
  * <p>Class representing hypermedia links. A hypermedia link may include additional
  * parameters beyond its underlying URI. Parameters such as {@code rel} or {@code type}
- * provide additional meta-data. Links in responses can be <emph>followed</emph> by 
+ * provide additional meta-data. Links in responses can be <emph>followed</emph> by
  * creating an {@link javax.ws.rs.client.Invocation.Builder} or a
  * {@link javax.ws.rs.client.WebTarget}.</p>
  *
@@ -95,7 +94,7 @@ public abstract class Link {
     public abstract URI getUri();
 
     /**
-     * Convenience method that returns a {@link javax.ws.rs.core.UriBuilder} 
+     * Convenience method that returns a {@link javax.ws.rs.core.UriBuilder}
      * initialized with this link's underlying URI.
      *
      * @return UriBuilder initialized using underlying URI.
@@ -135,7 +134,7 @@ public abstract class Link {
     public abstract String getType();
 
     /**
-     * Returns an immutable map that includes all the link parameters 
+     * Returns an immutable map that includes all the link parameters
      * defined on this link. If defined, this map will include entries
      * for {@code rel}, {@code title} and {@code type}.
      *
@@ -144,7 +143,7 @@ public abstract class Link {
     public abstract Map<String, String> getParams();
 
     /**
-     * Returns a string representation as a link header (RFC 5988). 
+     * Returns a string representation as a link header (RFC 5988).
      * All link params are serialized as link-param="value" where value
      * is a quoted-string. For example,
      *
@@ -169,7 +168,7 @@ public abstract class Link {
      * @throws IllegalArgumentException if a syntax error is found.
      * @see Link.Builder#link(java.lang.String)
      */
-    public static Link valueOf(String value) throws IllegalArgumentException {
+    public static Link valueOf(String value) {
         Builder b = RuntimeDelegate.getInstance().createLinkBuilder();
         b.link(value);
         return b.build();
@@ -182,7 +181,7 @@ public abstract class Link {
      * @return a new builder.
      * @throws IllegalArgumentException if uri is {@code null}.
      */
-    public static Builder fromUri(URI uri) throws IllegalArgumentException {
+    public static Builder fromUri(URI uri) {
         Builder b = RuntimeDelegate.getInstance().createLinkBuilder();
         b.uri(uri);
         return b;
@@ -195,7 +194,7 @@ public abstract class Link {
      * @return a new builder.
      * @throws IllegalArgumentException if uri is {@code null}.
      */
-    public static Builder fromUri(String uri) throws IllegalArgumentException {
+    public static Builder fromUri(String uri) {
         Builder b = RuntimeDelegate.getInstance().createLinkBuilder();
         b.uri(uri);
         return b;
@@ -234,7 +233,7 @@ public abstract class Link {
      * @return a new Link.Builder.
      * @throws IllegalArgumentException if path is {@code null}.
      */
-    public static Builder fromPath(String path) throws IllegalArgumentException {
+    public static Builder fromPath(String path) {
         return fromUriBuilder(UriBuilder.fromPath(path));
     }
 
@@ -243,13 +242,13 @@ public abstract class Link {
      * {@code fromUriBuilder(UriBuilder.fromResource(resource))}. Note that path
      * created from resource is relative to the application's root resource.
      *
-     * @param resource a root resource whose {@link javax.ws.rs.Path} value will be used 
+     * @param resource a root resource whose {@link javax.ws.rs.Path} value will be used
      *                 to initialize the builder.
      * @return a new Link.Builder.
-     * @throws IllegalArgumentException if resource is not annotated with {@link javax.ws.rs.Path} 
+     * @throws IllegalArgumentException if resource is not annotated with {@link javax.ws.rs.Path}
      *                                  or resource is {@code null}.
      */
-    public static Builder fromResource(Class<?> resource) throws IllegalArgumentException {
+    public static Builder fromResource(Class<?> resource) {
         return fromUriBuilder(UriBuilder.fromResource(resource));
     }
 
@@ -259,14 +258,14 @@ public abstract class Link {
      * created from resource method is relative to the application's root resource.
      *
      * @param resource the resource containing the method.
-     * @param method the name of the method whose {@link javax.ws.rs.Path} value will be used 
+     * @param method the name of the method whose {@link javax.ws.rs.Path} value will be used
      *               to obtain the path to append.
      * @return the updated Link.Builder.
-     * @throws IllegalArgumentException if resource or method is {@code null}, or there is more 
+     * @throws IllegalArgumentException if resource or method is {@code null}, or there is more
      *                                  than or less than one variant of the method annotated with
      *                                  {@link javax.ws.rs.Path}.
      */
-    public static Builder fromMethod(Class<?> resource, String method) throws IllegalArgumentException {
+    public static Builder fromMethod(Class<?> resource, String method) {
         return fromUriBuilder(UriBuilder.fromMethod(resource, method));
     }
 
@@ -301,7 +300,7 @@ public abstract class Link {
          * @return the updated builder.
          * @throws IllegalArgumentException if string representation of URI is invalid.
          */
-        public Builder link(String link) throws IllegalArgumentException;
+        public Builder link(String link);
 
         /**
          * Set underlying URI template for the link being constructed.
@@ -318,7 +317,7 @@ public abstract class Link {
          * @return the updated builder.
          * @throws IllegalArgumentException if string representation of URI is invalid.
          */
-        public Builder uri(String uri) throws IllegalArgumentException;
+        public Builder uri(String uri);
 
         /**
          * Set underlying URI builder representing the URI template for the link being constructed.
@@ -359,7 +358,7 @@ public abstract class Link {
         public Builder type(String type);
 
         /**
-         * Set an arbitrary parameter on this link. Note that link parameters are those 
+         * Set an arbitrary parameter on this link. Note that link parameters are those
          * defined in RFC 5988 and should not be confused with URI parameters which can
          * be specified when calling {@link #build(Object...)}.
          *
@@ -368,7 +367,7 @@ public abstract class Link {
          * @return the updated builder.
          * @throws IllegalArgumentException if either the name or value are {@code null}.
          */
-        public Builder param(String name, String value) throws IllegalArgumentException;
+        public Builder param(String name, String value);
 
         /**
          * Finish building this link using the supplied values as URI parameters.
@@ -377,10 +376,10 @@ public abstract class Link {
          * @return newly built link.
          * @throws IllegalArgumentException if there are any URI template parameters
          *                                  without a supplied value, or if a value is {@code null}.
-         * @throws UriBuilderException if a URI cannot be constructed based on the 
+         * @throws UriBuilderException if a URI cannot be constructed based on the
          *                             current state of the underlying URI builder.
          */
-        public Link build(Object... values) throws UriBuilderException;
+        public Link build(Object... values);
 
         /**
          * <p>Finish building this link using the supplied values as URI parameters
@@ -395,13 +394,12 @@ public abstract class Link {
          * @return newly built link.
          * @throws IllegalArgumentException if there are any URI template parameters
          *                                  without a supplied value, or if a value is {@code null}.
-         * @throws UriBuilderException if a URI cannot be constructed based on the current 
+         * @throws UriBuilderException if a URI cannot be constructed based on the current
          *                             state of the underlying URI builder.
          * @throws IllegalStateException if the request URI is not available in context.
          * @see UriInfo#relativize(java.net.URI)
          */
-        public Link buildRelativized(UriInfo uriInfo, Object... values) 
-                throws IllegalArgumentException, UriBuilderException, IllegalStateException;
+        public Link buildRelativized(UriInfo uriInfo, Object... values);
 
         /**
          * <p>Finish building this link using the supplied values as URI parameters
@@ -419,8 +417,7 @@ public abstract class Link {
          *                             state of the underlying URI builder
          * @see UriInfo#resolve(java.net.URI)
          */
-        public Link buildResolved(UriInfo uriInfo, Object... values)
-                throws IllegalArgumentException, UriBuilderException;
+        public Link buildResolved(UriInfo uriInfo, Object... values);
     }
 
     /**
@@ -486,7 +483,7 @@ public abstract class Link {
     }
 
     /**
-     * <p>An implementation of JAXB {@link javax.xml.bind.annotation.adapters.XmlAdapter} 
+     * <p>An implementation of JAXB {@link javax.xml.bind.annotation.adapters.XmlAdapter}
      * that maps the JAX-RS {@link javax.ws.rs.core.Link} type to a value that can be
      * marshalled and unmarshalled by JAXB. The following example shows how to use
      * this adapter on a JAXB bean class:</p>

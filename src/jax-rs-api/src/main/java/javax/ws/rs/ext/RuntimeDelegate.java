@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -162,7 +162,7 @@ public abstract class RuntimeDelegate {
      * @throws SecurityException if there is a security manager and the permission
      *                           ReflectPermission("suppressAccessChecks") has not been granted.
      */
-    public static void setInstance(final RuntimeDelegate rd) throws SecurityException {
+    public static void setInstance(final RuntimeDelegate rd) {
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkPermission(suppressAccessChecksPermission);
@@ -249,7 +249,7 @@ public abstract class RuntimeDelegate {
          * @throws IllegalArgumentException if the supplied string cannot be
          *                                  parsed or is {@code null}.
          */
-        public T fromString(String value) throws IllegalArgumentException;
+        public T fromString(String value);
 
         /**
          * Convert the supplied value to a String.
@@ -259,7 +259,7 @@ public abstract class RuntimeDelegate {
          * @throws IllegalArgumentException if the supplied object cannot be
          *                                  serialized or is {@code null}.
          */
-        public String toString(T value) throws IllegalArgumentException;
+        public String toString(T value);
     }
 
     /**
@@ -268,5 +268,5 @@ public abstract class RuntimeDelegate {
      * @return new {@code Link.Builder} instance.
      * @see javax.ws.rs.core.Link.Builder
      */
-    public abstract Link.Builder createLinkBuilder();   
+    public abstract Link.Builder createLinkBuilder();
 }

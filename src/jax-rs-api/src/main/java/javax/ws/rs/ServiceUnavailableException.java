@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -93,7 +93,7 @@ public class ServiceUnavailableException extends ServerErrorException {
      * @throws IllegalArgumentException in case the status code set in the response
      *                                  is not HTTP {@code 503}.
      */
-    public ServiceUnavailableException(Response response) throws IllegalArgumentException {
+    public ServiceUnavailableException(Response response) {
         super(validate(response, SERVICE_UNAVAILABLE));
     }
 
@@ -129,7 +129,7 @@ public class ServiceUnavailableException extends ServerErrorException {
      * @throws IllegalArgumentException in case the status code set in the response
      *                                  is not HTTP {@code 503}.
      */
-    public ServiceUnavailableException(Response response, Throwable cause) throws IllegalArgumentException {
+    public ServiceUnavailableException(Response response, Throwable cause) {
         super(validate(response, SERVICE_UNAVAILABLE), cause);
     }
 

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -82,7 +82,7 @@ public interface Client extends Configurable<Client> {
      * @throws IllegalArgumentException in case the supplied string is not a valid URI template.
      * @throws NullPointerException     in case the supplied argument is {@code null}.
      */
-    public WebTarget target(String uri) throws IllegalArgumentException, NullPointerException;
+    public WebTarget target(String uri);
 
     /**
      * Build a new web resource target.
@@ -91,7 +91,7 @@ public interface Client extends Configurable<Client> {
      * @return web resource target bound to the provided URI.
      * @throws NullPointerException in case the supplied argument is {@code null}.
      */
-    public WebTarget target(URI uri) throws NullPointerException;
+    public WebTarget target(URI uri);
 
     /**
      * Build a new web resource target.
@@ -100,7 +100,7 @@ public interface Client extends Configurable<Client> {
      * @return web resource target bound to the provided URI.
      * @throws NullPointerException in case the supplied argument is {@code null}.
      */
-    public WebTarget target(UriBuilder uriBuilder) throws NullPointerException;
+    public WebTarget target(UriBuilder uriBuilder);
 
     /**
      * Build a new web resource target.
@@ -109,7 +109,7 @@ public interface Client extends Configurable<Client> {
      * @return web resource target bound to the linked web resource.
      * @throws NullPointerException in case the supplied argument is {@code null}.
      */
-    public WebTarget target(Link link) throws NullPointerException;
+    public WebTarget target(Link link);
 
     /**
      * <p>Build an invocation builder from a link. It uses the URI and the type
@@ -120,5 +120,5 @@ public interface Client extends Configurable<Client> {
      * @return newly created invocation builder.
      * @throws NullPointerException     in case link is {@code null}.
      */
-    public Invocation.Builder invocation(Link link) throws NullPointerException;
+    public Invocation.Builder invocation(Link link);
 }

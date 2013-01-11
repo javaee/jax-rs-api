@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -274,7 +274,7 @@ public interface AsyncResponse {
      * @param unit suspend timeout value time unit.
      * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
      */
-    public void setTimeout(long time, TimeUnit unit) throws IllegalStateException;
+    public void setTimeout(long time, TimeUnit unit);
 
     /**
      * Set/replace a time-out handler for the suspended asynchronous response.
@@ -306,7 +306,7 @@ public interface AsyncResponse {
      *         otherwise.
      * @throws NullPointerException in case the callback class is {@code null}.
      */
-    public boolean register(Class<?> callback) throws NullPointerException;
+    public boolean register(Class<?> callback);
 
     /**
      * Register asynchronous processing lifecycle callback classes to receive lifecycle
@@ -319,7 +319,7 @@ public interface AsyncResponse {
      *         successfully or not.
      * @throws NullPointerException in case any of the callback classes is {@code null}.
      */
-    public boolean[] register(Class<?> callback, Class<?>... callbacks) throws NullPointerException;
+    public boolean[] register(Class<?> callback, Class<?>... callbacks);
 
     /**
      * Register an asynchronous processing lifecycle callback instance to receive lifecycle
@@ -331,7 +331,7 @@ public interface AsyncResponse {
      *         otherwise.
      * @throws NullPointerException in case the callback instance is {@code null}.
      */
-    public boolean register(Object callback) throws NullPointerException;
+    public boolean register(Object callback);
 
     /**
      * Register an asynchronous processing lifecycle callback instances to receive lifecycle
@@ -344,5 +344,5 @@ public interface AsyncResponse {
      *         successfully or not.
      * @throws NullPointerException in case any of the callback instances is {@code null}.
      */
-    public boolean[] register(Object callback, Object... callbacks) throws NullPointerException;
+    public boolean[] register(Object callback, Object... callbacks);
 }
