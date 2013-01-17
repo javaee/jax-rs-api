@@ -39,7 +39,9 @@
  */
 package javax.ws.rs.container;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -272,9 +274,10 @@ public interface AsyncResponse {
      * @param time suspend timeout value in the give time {@code unit}. Value lower
      *             or equal to 0 causes the context to suspend indefinitely.
      * @param unit suspend timeout value time unit.
-     * @throws IllegalStateException in case the response is not {@link #isSuspended() suspended}.
+     * @return {@code true} if the suspend time out has been set, returns {@code false} in case
+     *         the request processing is not in the {@link #isSuspended() suspended} state.
      */
-    public void setTimeout(long time, TimeUnit unit);
+    public boolean setTimeout(long time, TimeUnit unit);
 
     /**
      * Set/replace a time-out handler for the suspended asynchronous response.
@@ -302,11 +305,12 @@ public interface AsyncResponse {
      * events for the asynchronous response based on the implemented callback interfaces.
      *
      * @param callback callback class.
-     * @return {@code true} if the callback class was recognized and registered, {@code false}
-     *         otherwise.
+     * @return collection of registered callback interfaces. If the callback class does not
+     *         implement any recognized callback interfaces, the returned collection will be
+     *         empty.
      * @throws NullPointerException in case the callback class is {@code null}.
      */
-    public boolean register(Class<?> callback);
+    public Collection<Class<?>> register(Class<?> callback);
 
     /**
      * Register asynchronous processing lifecycle callback classes to receive lifecycle
@@ -314,12 +318,12 @@ public interface AsyncResponse {
      *
      * @param callback  callback class.
      * @param callbacks additional callback classes.
-     * @return a {@code boolean} array of the size equal to the number of registered callback classes.
-     *         Each value in the array indicate whether the particular callback class was registered
-     *         successfully or not.
+     * @return map of registered classes and the callback interfaces registered for each class.
+     *         If a callback class does not implement any recognized callback interfaces, the
+     *         associated collection of registered interfaces for the class will be empty.
      * @throws NullPointerException in case any of the callback classes is {@code null}.
      */
-    public boolean[] register(Class<?> callback, Class<?>... callbacks);
+    public Map<Class<?>, Collection<Class<?>>> register(Class<?> callback, Class<?>... callbacks);
 
     /**
      * Register an asynchronous processing lifecycle callback instance to receive lifecycle
@@ -327,11 +331,12 @@ public interface AsyncResponse {
      *
      * @param callback callback instance implementing one or more of the recognized callback
      *                 interfaces.
-     * @return {@code true} if the callback class was recognized and registered, {@code false}
-     *         otherwise.
+     * @return collection of registered callback interfaces. If the callback class does not
+     *         implement any recognized callback interfaces, the returned collection will be
+     *         empty.
      * @throws NullPointerException in case the callback instance is {@code null}.
      */
-    public boolean register(Object callback);
+    public Collection<Class<?>> register(Object callback);
 
     /**
      * Register an asynchronous processing lifecycle callback instances to receive lifecycle
@@ -339,10 +344,10 @@ public interface AsyncResponse {
      *
      * @param callback  callback instance.
      * @param callbacks additional callback instances.
-     * @return a {@code boolean} array of the size equal to the number of registered callbacks.
-     *         Each value in the array indicate whether the particular callback was registered
-     *         successfully or not.
+     * @return map of registered classes and the callback interfaces registered for each class.
+     *         If a callback class does not implement any recognized callback interfaces, the
+     *         associated collection of registered interfaces for the class will be empty.
      * @throws NullPointerException in case any of the callback instances is {@code null}.
      */
-    public boolean[] register(Object callback, Object... callbacks);
+    public Map<Class<?>, Collection<Class<?>>> register(Object callback, Object... callbacks);
 }
