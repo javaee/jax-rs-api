@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -41,12 +41,14 @@ package jaxrs.examples.filter.caching;
 
 import java.io.IOException;
 
-import javax.ws.rs.BindingPriority;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+
+import javax.annotation.Priority;
 
 /**
  * ServerCachingFilter class.
@@ -54,7 +56,7 @@ import javax.ws.rs.ext.Provider;
  * @author Santiago Pericas-Geertsen
  */
 @Provider
-@BindingPriority(BindingPriority.USER)
+@Priority(Priorities.USER)
 public class ServerCachingFilter implements ContainerRequestFilter {
 
     @Override

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -95,7 +95,7 @@ import java.util.Map;
  * <p>
  * For example:
  * <pre>
- * &#64;BindingPriority(ENTITY_CODER)
+ * &#64;Priority(ENTITY_CODER)
  * public class GzipInterceptor
  *         implements ReaderInterceptor, WriterInterceptor { ... }
  *
@@ -110,17 +110,17 @@ import java.util.Map;
  * There are however situations when the default registration of a JAX-RS component to all the
  * recognized provider contracts is not desirable. In such cases users may use other versions of the
  * {@code register(...)} method to explicitly specify the collection of the provider contracts
- * for which the JAX-RS component should be registered and/or the binding priority of each registered
+ * for which the JAX-RS component should be registered and/or the priority of each registered
  * provider contract.
  * </p>
  * <p>
  * For example:
  * <pre>
- * &#64;BindingPriority(USER)
+ * &#64;Priority(USER)
  * public class ClientLoggingFilter
  *         implements ClientRequestFilter, ClientResponseFilter { ... }
  *
- * &#64;BindingPriority(ENTITY_CODER)
+ * &#64;Priority(ENTITY_CODER)
  * public class GzipInterceptor
  *         implements ReaderInterceptor, WriterInterceptor { ... }
  *
@@ -129,7 +129,7 @@ import java.util.Map;
  * // register ClientLoggingFilter as a ClientResponseFilter only
  * config.register(ClientLoggingFilter.class, ClientResponseFilter.class);
  *
- * // override the binding priority of registered GzipInterceptor
+ * // override the priority of registered GzipInterceptor
  * // and both of it's provider contracts
  * config.register(GzipInterceptor.class, 6500);
  * </pre>
@@ -221,23 +221,23 @@ public interface Configurable<C extends Configurable> {
      * and used in the scope of this configurable context.
      * <p>
      * This registration method provides the same functionality as {@link #register(Class)}
-     * except that any binding priority specified on the registered JAX-RS component class via
-     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
-     * with the supplied {@code bindingPriority} value.
+     * except that any priority specified on the registered JAX-RS component class via
+     * {@link javax.annotation.Priority &#64;Priority} annotation is overridden
+     * with the supplied {@code priority} value.
      * </p>
      * <p>
-     * Note that in case the binding priority is not applicable to a particular
+     * Note that in case the priority is not applicable to a particular
      * provider contract implemented by the class of the registered component, the supplied
-     * {@code bindingPriority} value will be ignored for that contract.
+     * {@code priority} value will be ignored for that contract.
      * </p>
      *
-     * @param componentClass  JAX-RS component class to be configured in the scope of this
-     *                        configurable context.
-     * @param bindingPriority the overriding binding priority for the registered component
-     *                        and all the provider contracts the component implements.
+     * @param componentClass JAX-RS component class to be configured in the scope of this
+     *                       configurable context.
+     * @param priority       the overriding priority for the registered component
+     *                       and all the provider contracts the component implements.
      * @return the updated configurable context.
      */
-    public C register(Class<?> componentClass, int bindingPriority);
+    public C register(Class<?> componentClass, int priority);
 
     /**
      * Register a class of a custom JAX-RS component (such as an extension provider or
@@ -272,21 +272,21 @@ public interface Configurable<C extends Configurable> {
      * and used in the scope of this configurable context.
      * <p>
      * This registration method provides same functionality as {@link #register(Class, Class[])}
-     * except that any binding priority specified on the registered JAX-RS component class using
-     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
-     * for each extension provider contract type separately with an integer binding priority value
+     * except that any priority specified on the registered JAX-RS component class using
+     * {@link javax.annotation.Priority &#64;Priority} annotation is overridden
+     * for each extension provider contract type separately with an integer priority value
      * specified as a value in the supplied map of [contract type, priority] pairs.
      * </p>
      * <p>
-     * Note that in case a binding priority is not applicable to a provider contract registered
-     * for the JAX-RS component, the supplied binding priority value is ignored for such
+     * Note that in case a priority is not applicable to a provider contract registered
+     * for the JAX-RS component, the supplied priority value is ignored for such
      * contract.
      * </p>
      *
      * @param componentClass JAX-RS component class to be configured in the scope of this
      *                       configurable context.
      * @param contracts      map of the specific extension provider and meta-provider contracts
-     *                       and their associated binding priorities for which the JAX-RS component
+     *                       and their associated priorities for which the JAX-RS component
      *                       is registered.
      *                       All contracts in the map must represent a class or an interface
      *                       implemented or extended by the JAX-RS component. Contracts that are
@@ -333,23 +333,23 @@ public interface Configurable<C extends Configurable> {
      * and used in the scope of this configurable context.
      * <p>
      * This registration method provides the same functionality as {@link #register(Object)}
-     * except that any binding priority specified on the registered JAX-RS component class via
-     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
-     * with the supplied {@code bindingPriority} value.
+     * except that any priority specified on the registered JAX-RS component class via
+     * {@link javax.annotation.Priority &#64;Priority} annotation is overridden
+     * with the supplied {@code priority} value.
      * </p>
      * <p>
-     * Note that in case the binding priority is not applicable to a particular
+     * Note that in case the priority is not applicable to a particular
      * provider contract implemented by the class of the registered component, the supplied
-     * {@code bindingPriority} value will be ignored for that contract.
+     * {@code priority} value will be ignored for that contract.
      * </p>
      *
-     * @param component       JAX-RS component instance to be configured in the scope of this
-     *                        configurable context.
-     * @param bindingPriority the overriding binding priority for the registered component
-     *                        and all the provider contracts the component implements.
+     * @param component JAX-RS component instance to be configured in the scope of this
+     *                  configurable context.
+     * @param priority  the overriding priority for the registered component
+     *                  and all the provider contracts the component implements.
      * @return the updated configurable context.
      */
-    public C register(Object component, int bindingPriority);
+    public C register(Object component, int priority);
 
     /**
      * Register an instance of a custom JAX-RS component (such as an extension provider or
@@ -384,27 +384,27 @@ public interface Configurable<C extends Configurable> {
      * and used in the scope of this configurable context.
      * <p>
      * This registration method provides same functionality as {@link #register(Object, Class[])}
-     * except that any binding priority specified on the registered JAX-RS component class using
-     * {@link javax.ws.rs.BindingPriority &#64;BindingPriority} annotation is overridden
-     * for each extension provider contract type separately with an integer binding priority value
+     * except that any priority specified on the registered JAX-RS component class using
+     * {@link javax.annotation.Priority &#64;Priority} annotation is overridden
+     * for each extension provider contract type separately with an integer priority value
      * specified as a value in the supplied map of [contract type, priority] pairs.
      * </p>
      * <p>
-     * Note that in case a binding priority is not applicable to a provider contract registered
-     * for the JAX-RS component, the supplied binding priority value is ignored for such
+     * Note that in case a priority is not applicable to a provider contract registered
+     * for the JAX-RS component, the supplied priority value is ignored for such
      * contract.
      * </p>
      *
      * @param component JAX-RS component instance to be configured in the scope of this
      *                  configurable context.
-     * @param contracts      map of the specific extension provider and meta-provider contracts
-     *                       and their associated binding priorities for which the JAX-RS component
-     *                       is registered.
-     *                       All contracts in the map must represent a class or an interface
-     *                       implemented or extended by the JAX-RS component. Contracts that are
-     *                       not {@link Class#isAssignableFrom(Class) assignable from} the registered
-     *                       component class MUST be ignored and implementations SHOULD raise a warning
-     *                       to inform users about the ignored contract(s).
+     * @param contracts map of the specific extension provider and meta-provider contracts
+     *                  and their associated priorities for which the JAX-RS component
+     *                  is registered.
+     *                  All contracts in the map must represent a class or an interface
+     *                  implemented or extended by the JAX-RS component. Contracts that are
+     *                  not {@link Class#isAssignableFrom(Class) assignable from} the registered
+     *                  component class MUST be ignored and implementations SHOULD raise a warning
+     *                  to inform users about the ignored contract(s).
      * @return the updated configurable context.
      */
     public C register(Object component, Map<Class<?>, Integer> contracts);

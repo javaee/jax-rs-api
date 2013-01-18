@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -165,7 +165,7 @@ public interface Configuration {
      * For component classes that are not configured in this configuration context the method returns
      * an empty {@code Map}. Method does not return {@code null}.
      *
-     * @return map of extension contracts and their binding priorities for which the component class
+     * @return map of extension contracts and their priorities for which the component class
      *         is registered.
      *         May return an empty map in case the component has not been registered for any
      *         extension contract supported by the implementation.

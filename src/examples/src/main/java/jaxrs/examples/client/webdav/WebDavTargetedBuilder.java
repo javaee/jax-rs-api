@@ -114,7 +114,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public  WebDavTargetedBuilder cookie(String name, String value) {
+    public WebDavTargetedBuilder cookie(String name, String value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -264,17 +264,17 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public  WebDavTargetedBuilder setProperty(String name, Object value) {
+    public WebDavTargetedBuilder setProperty(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public  WebDavTargetedBuilder register(Class<?> componentClass) {
+    public WebDavTargetedBuilder register(Class<?> componentClass) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public  WebDavTargetedBuilder register(Class<?> componentClass, int bindingPriority) {
+    public WebDavTargetedBuilder register(Class<?> componentClass, int priority) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -289,12 +289,12 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public  WebDavTargetedBuilder register(Object component) {
+    public WebDavTargetedBuilder register(Object component) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public  WebDavTargetedBuilder register(Object component, int bindingPriority) {
+    public WebDavTargetedBuilder register(Object component, int priority) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
