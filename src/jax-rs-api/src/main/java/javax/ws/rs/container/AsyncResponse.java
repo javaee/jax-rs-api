@@ -156,8 +156,10 @@ public interface AsyncResponse {
      * <p>
      * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
      * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
-     * an asynchronous response instance that has already been resumed has no effect and the method
-     * call is ignored while returning {@code true}.
+     * an asynchronous response instance that has already been cancelled or resumed has no effect and the
+     * method call is ignored while returning {@code true}, in case the request has been cancelled previously.
+     * Otherwise, in case the request has been resumed regularly (using a {@code resume(...) method}) or
+     * resumed due to a time-out, method returns {@code false}.
      * </p>
      *
      * @return {@code true} if the request processing has been cancelled, returns {@code false} in case
@@ -180,8 +182,10 @@ public interface AsyncResponse {
      * <p>
      * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
      * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
-     * an asynchronous response instance that has already been resumed has no effect and the method
-     * call is ignored while returning {@code true}.
+     * an asynchronous response instance that has already been cancelled or resumed has no effect and the
+     * method call is ignored while returning {@code true}, in case the request has been cancelled previously.
+     * Otherwise, in case the request has been resumed regularly (using a {@code resume(...) method}) or
+     * resumed due to a time-out, method returns {@code false}.
      * </p>
      *
      * @param retryAfter a decimal integer number of seconds after the response is sent to the client that
@@ -207,8 +211,10 @@ public interface AsyncResponse {
      * <p>
      * Invoking a {@code cancel(...)} method multiple times to cancel request processing has the same
      * effect as canceling the request processing only once. Invoking a {@code cancel(...)} method on
-     * an asynchronous response instance that has already been resumed has no effect and the method
-     * call is ignored while returning {@code true}.
+     * an asynchronous response instance that has already been cancelled or resumed has no effect and the
+     * method call is ignored while returning {@code true}, in case the request has been cancelled previously.
+     * Otherwise, in case the request has been resumed regularly (using a {@code resume(...) method}) or
+     * resumed due to a time-out, method returns {@code false}.
      * </p>
      *
      * @param retryAfter a date that indicates how long the service is expected to be unavailable to the
