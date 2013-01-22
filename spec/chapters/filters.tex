@@ -202,9 +202,33 @@ According to the semantics of \code{LoggingFilter}, the request will be logged b
 public @interface Logged { }
 \end{listing}
 
-Binding annotations that decorate resource classes apply to all the resource methods defined in them. A filter or interceptor class can be decorated with multiple binding annotations. Similarly, a resource method can be decorated with multiple binding annotations.  Each binding annotation instance in a resource method denotes a set of filters and interceptors whose class definitions are decorated with that annotation (possibly among others). The final set of (static) filters and interceptors is the union of all these sets \footnote{By definition of {\em set}, any duplicate filters or interceptors in each individual set or the final set are eliminated.}; this set must be sorted based on priorities as explained in Section \ref{priorities}. 
+Multiple filters and interceptors can be bound to a single resource method using additional annotations. For example, given the following filter:
 
-Name binding annotations can also be applied to \code{Application} subclasses for the purpose of binding a filter or interceptor globally for that application. For example,
+\begin{listing}{1}
+@Provider
+@Authenticated
+class AuthenticationFilter implements ContainerRequestFilter {
+    ...
+}
+\end{listing}
+
+method \code{hello} above could be decorated with \code{@Logged} and \code{@Authenticated} in order to provide both logging and authentication capabilities to the resource.
+
+A filter or interceptor class can be decorated with multiple binding annotations. In this case, in accordance with the semantics described in CDI~\cite{jsr299}, all those annotations must be present in the resource class or method for the binding to be established. For example, if \code{LoggingFilter} is defined as follows:
+
+\begin{listing}{1}
+@Provider
+@Logged @Verbose
+class LoggingFilter implements ContainerRequestFilter, 
+                               ContainerResponseFilter {
+    ...
+}
+\end{listing}
+
+then method \code{hello} above must be annotated with both \code{@Logged} and \code{@Verbose} for the binding to be in effect.
+
+Binding annotations can also be applied to resource classes and  \code{Application} subclasses. Binding annotations that decorate resource classes apply to \emph{all} resource methods defined in them. 
+Binding annotations that decorate \code{Application} subclasses can also be used to bind filters and interceptors globally, even if other annotations are present. For example, \code{LoggingFilter} as defined at the beginning of this section can be bound globally as follows:
 
 \begin{listing}{1}
 @Logged
@@ -213,7 +237,7 @@ public class MyApplication extends Application {
 }
 \end{listing}
 
-Note that returning filters or interceptors from the methods \code{getClasses} or \code{getSingletons} in an application subclass will bind them globally only if they are \emph{not} decorated with a name binding annotation. If they are decorated with at least one name binding annotation, the application subclass must be annotated as shown above in order for those filters or interceptors to be globally bound. See Chapter \ref{applications} for more information on \jaxrs\ applications.
+Note that returning filters or interceptors from the methods \code{getClasses} or \code{getSingletons} in an application subclass will bind them globally only if they are \emph{not} decorated with a name binding annotation. If they are decorated with at least one name binding annotation, the application subclass must be annotated as shown above in order for those filters or interceptors to be bound globally. See Chapter \ref{applications} for more information on \jaxrs\ applications.
 
 \subsection{Dynamic Binding}
 \label{dynamic_binding}
