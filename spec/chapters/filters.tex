@@ -272,21 +272,21 @@ Binding in the Client API is accomplished via API calls instead of annotations. 
 \section{Priorities}
 \label{priorities}
 
-The order in which filters and interceptors are executed as part of their corresponding chains is controlled by the \BindingPriority\ annotation.
+The order in which filters and interceptors are executed as part of their corresponding chains is controlled by the \Priority\ annotation defined in \cite{jsr250}.
 Priorities are represented by integer numbers. Execution chains for extension points \ContainerRequest, \PreMatchContainerRequest, \ClientRequest, \ReadFrom\ and \WriteTo\ are sorted in \emph{ascending order}; the lower the number the higher the priority. Execution chains for extension points \ContainerResponse\ and \ClientResponse\ are sorted in \emph{descending order}; the higher the number the higher the priority. These rules ensure that response filters are executed in reversed order of request filters.
 
-The \code{BindingPriority} class defines a set of built-in priorities for security, header decorators, decoders and encoders. The default binding priority is \code{BindingPriority.USER}. For example, the priority of an authentication filter can be set as follows:
+The \code{Priorities} class in JAX-RS defines a set of built-in priorities for security, header decorators, decoders and encoders. The default binding priority is \code{Priorities.USER}. For example, the priority of an authentication filter can be set as follows:
 
 \begin{listing}{1}
 @Provider
 @Authenticated
-@BindingPriority(BindingPriority.SECURITY)
+@Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
     ...
 }
 \end{listing}
 
-Note that even though, as explained in Section \ref{binding_in_client_api}, annotations are not used for binding in the Client API, they are still used to define priorities. Therefore, if a priority other than the default is required, the \BindingPriority\ annotation must be used for a filter or interceptor registered using the Client API. 
+Note that even though, as explained in Section \ref{binding_in_client_api}, annotations are not used for binding in the Client API, they are still used to define priorities. Therefore, if a priority other than the default is required, the \Priority\ annotation must be used for a filter or interceptor registered with the Client API. 
 
 The order in which filters and interceptors that belong to the same priority class are executed is implementation dependent.
 
