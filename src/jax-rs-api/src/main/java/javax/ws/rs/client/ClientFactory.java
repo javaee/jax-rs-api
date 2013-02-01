@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -94,40 +94,41 @@ public abstract class ClientFactory {
     }
 
     /**
-     * Create new client instance using the default client builder factory provided
-     * by the JAX-RS implementation provider.
+     * Create a new {@link Client} instance using the default client factory implementation
+     * class provided by the JAX-RS implementation provider.
      *
      * @return new client instance.
      */
     public static Client newClient() {
-        return getFactory().getClient();
+        return getFactory().getClientBuilder().build();
     }
 
     /**
-     * Create new configured client instance using the default client builder factory
-     * provided by the JAX-RS implementation provider.
+     * Create a new custom-configured {@link Client} instance using the default client factory
+     * implementation class provided by the JAX-RS implementation provider.
      *
      * @param configuration data used to provide initial configuration for the new
      *                      client instance.
      * @return new configured client instance.
      */
     public static Client newClient(final Configuration configuration) {
-        return getFactory().getClient(configuration);
+        return getFactory().getClientBuilder().configuration(configuration).build();
     }
 
     /**
-     * Get a new client instance.
+     * Create a new {@link ClientBuilder client builder} instance using the default client
+     * factory implementation class provided by the JAX-RS implementation provider.
      *
-     * @return a new client instance.
+     * @return new client builder instance.
      */
-    protected abstract Client getClient();
+    public static ClientBuilder newClientBuilder() {
+        return getFactory().getClientBuilder();
+    }
 
     /**
-     * Get a new pre-configured client instance.
+     * Get a new {@link ClientBuilder} instance with a default configuration settings.
      *
-     * @param configuration data used to provide initial configuration for
-     *                      the new client instance.
-     * @return a new client instance.
+     * @return a new client builder instance.
      */
-    protected abstract Client getClient(final Configuration configuration);
+    protected abstract ClientBuilder getClientBuilder();
 }

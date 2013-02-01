@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -69,6 +69,7 @@ import static javax.ws.rs.client.Entity.form;
 import static javax.ws.rs.client.Entity.text;
 import static javax.ws.rs.client.Entity.xml;
 
+import javax.net.ssl.SSLContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import jaxrs.examples.client.custom.ThrottledClient;
@@ -95,11 +96,12 @@ public class BasicExamples {
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void clientBootstrapping() {
         // Default client instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
-        defaultClient.setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
         assert defaultClient != null;
+        defaultClient.setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
 
         // Default client instantiation using custom configuration
 
@@ -129,6 +131,16 @@ public class BasicExamples {
 
         Response response = client.target("http://jaxrs.examples.org/jaxrsApplication/customers").request(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
         assert response.getStatus() == 200;
+    }
+
+    public void creatingClientInstanceUsingClientBuilder() {
+        final SSLContext sslContext = null;
+        // ...initialize SSL context...
+        final Client client = ClientFactory.newClientBuilder()
+                .sslContext(sslContext)
+                .build();
+
+        assert client != null;
     }
 
     public void creatingResourceUriRequestsAndInvocations() {
@@ -359,7 +371,7 @@ public class BasicExamples {
     }
 
     public void customContractRegistration() {
-        Configurable configurable = ClientFactory.newClient();
+        Configurable<?> configurable = ClientFactory.newClient();
 
         configurable.register(MyProvider.class, ContainerRequestContext.class);
         configurable.register(MyProvider.class, ContainerRequestContext.class, ReaderInterceptor.class);

@@ -59,6 +59,7 @@ import javax.ws.rs.core.UriBuilder;
  */
 public final class ThrottledClient implements Client {
 
+    @SuppressWarnings({"FieldCanBeLocal", "UnusedDeclaration", "MismatchedQueryAndUpdateOfCollection"})
     private final BlockingQueue<ClientRequestContext> requestQueue;
 
     public ThrottledClient() {
