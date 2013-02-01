@@ -52,6 +52,8 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
+import javax.net.ssl.SSLContext;
+
 /**
  * A custom "throttled" client example.
  *
@@ -158,6 +160,11 @@ public final class ThrottledClient implements Client {
 
     @Override
     public Configuration getConfiguration() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public SSLContext getSslContext() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
