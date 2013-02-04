@@ -180,7 +180,7 @@ public interface Invocation extends Configurable<Invocation> {
         /**
          * Add acceptable languages.
          *
-         * @param locales an array of the acceptable languages
+         * @param locales an array of the acceptable languages.
          * @return the updated builder.
          */
         public Builder acceptLanguage(Locale... locales);
@@ -188,10 +188,18 @@ public interface Invocation extends Configurable<Invocation> {
         /**
          * Add acceptable languages.
          *
-         * @param locales an array of the acceptable languages
+         * @param locales an array of the acceptable languages.
          * @return the updated builder.
          */
         public Builder acceptLanguage(String... locales);
+
+        /**
+         * Add acceptable encodings.
+         *
+         * @param encodings an array of the acceptable encodings.
+         * @return the updated builder.
+         */
+        public Builder acceptEncoding(String... encodings);
 
         /**
          * Add a cookie to be set.

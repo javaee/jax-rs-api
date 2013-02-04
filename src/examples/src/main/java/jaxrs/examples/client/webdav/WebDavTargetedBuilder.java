@@ -109,6 +109,11 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
+    public Invocation.Builder acceptEncoding(String... encodings) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public WebDavTargetedBuilder cookie(Cookie cookie) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
