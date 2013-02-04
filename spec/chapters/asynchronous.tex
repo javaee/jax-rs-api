@@ -32,7 +32,9 @@ public class MyResource {
 }
 \end{listing}
 
-A resource method that elects to produce a response asynchronously must inject as a method parameter an instance of the class \code{AsyncResponse} using the special annotation \Suspended. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method forks a (non-request) thread to execute a long running operation and returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling \code{resume} on the injected instance of \code{AsyncResponse}.
+A resource method that elects to produce a response asynchronously must inject as a method parameter an instance of the class \code{AsyncResponse} using the special annotation \Suspended. In the example above, the method \code{longRunningOp} is called upon receiving a \code{GET} request. Rather than producing a response immediately, this method forks a (non-request) thread to execute a long running operation and returns immediately. Once the execution of the long running operation is complete, the connection is resumed and the response returned by calling \code{resume} on the injected instance of \code{AsyncResponse}. 
+
+For more information on executors, concurrency and thread management in a Java EE environment, the reader is referred to JSR 236 \cite{concurrencyee}.
 
 \subsection{Timeouts and Callbacks}
 \label{suspend_annotation} %% Update label here
