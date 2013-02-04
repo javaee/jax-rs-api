@@ -293,13 +293,13 @@ The order in which filters and interceptors that belong to the same priority cla
 \section{Exceptions}
 \label{exceptions_filters_and_interceptors}
 
-When a filter or interceptor method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping. 
+When a filter or interceptor method throws an exception, the \jaxrs\ runtime will attempt to map the exception as described in Section \ref{exceptions_providers}.  As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping. At most one exception mapper MUST be used in a single request processing cycle to avoid potentially infinite loops. 
 
-At most one exception mapper will be used in a single request processing cycle to avoid potentially infinite loops. A response mapped from an exception MUST be filtered as follows:
+A response mapped from an exception MUST be processed using the \ContainerResponse\ filter chain and the \WriteTo\ interceptor chain (if an entity is present in the mapped response). The number of entries in these chains depends on whether a resource method has been matched or not at the time the exception is thrown. There are two cases:
 
 \begin{enumerate}
-\item If a web resource had been matched before the exception was thrown, then all the filters in the \ContainerResponse\ chain for that resource MUST be invoked;
-\item\label{no_matching} Otherwise, only globally bound filters in the \ContainerResponse\ chain MUST be invoked. 
+\item If a web resource has been matched before the exception was thrown, then the filters in \ContainerResponse\ and the interceptors in \WriteTo\ will include everything that has been bound to the method as well as globally;
+\item\label{no_matching} Otherwise, only global filters and interceptors will be included.
 \end{enumerate}
 
-Note that a filter invoked in step \ref{no_matching} will not have access to resource-dependent information such as that returned by an injectable instance of \code{ResourceInfo}.
+Note that a filter or interceptor invoked in case \ref{no_matching} will not have access to resource-dependent information, such as that returned by an injectable instance of \code{ResourceInfo}.
