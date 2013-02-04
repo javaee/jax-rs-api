@@ -101,7 +101,7 @@ public class BasicExamples {
         // Default client instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
         assert defaultClient != null;
-        defaultClient.setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
+        defaultClient.property("CUSTOM_PROPERTY", "CUSTOM_VALUE");
 
         // Default client instantiation using custom configuration
 

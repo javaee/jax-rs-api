@@ -131,7 +131,7 @@ public class WebDavTarget implements WebTarget {
     }
 
     @Override
-    public WebDavTarget setProperty(String name, Object value) {
+    public WebDavTarget property(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

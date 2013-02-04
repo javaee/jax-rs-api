@@ -264,7 +264,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public WebDavTargetedBuilder setProperty(String name, Object value) {
+    public WebDavTargetedBuilder property(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

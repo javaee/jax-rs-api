@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -77,7 +77,7 @@ public class SpecExamples {
     public void clientBootstrapping() {
         // Default client instantiation using default configuration
         Client defaultClient = ClientFactory.newClient();
-        defaultClient.setProperty("CUSTOM_PROPERTY", "CUSTOM_VALUE");
+        defaultClient.property("CUSTOM_PROPERTY", "CUSTOM_VALUE");
         assert defaultClient != null;
 
         // Default client instantiation using custom configuration

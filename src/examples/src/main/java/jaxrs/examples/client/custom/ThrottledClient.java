@@ -109,7 +109,7 @@ public final class ThrottledClient implements Client {
     }
 
     @Override
-    public ThrottledClient setProperty(String name, Object value) {
+    public ThrottledClient property(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

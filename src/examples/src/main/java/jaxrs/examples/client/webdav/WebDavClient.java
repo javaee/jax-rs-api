@@ -88,7 +88,7 @@ public class WebDavClient implements Client {
     }
 
     @Override
-    public WebDavClient setProperty(String name, Object value) {
+    public WebDavClient property(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
