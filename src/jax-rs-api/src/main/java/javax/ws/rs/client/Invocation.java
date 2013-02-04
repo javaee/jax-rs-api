@@ -125,7 +125,10 @@ public interface Invocation extends Configurable<Invocation> {
          * request entity.
          *
          * @param method request method name.
-         * @param entity request entity.
+         * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+         *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+         *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+         *               the entity variant information.
          * @return invocation encapsulating the built request.
          */
         public Invocation build(String method, Entity<?> entity);
@@ -147,7 +150,10 @@ public interface Invocation extends Configurable<Invocation> {
         /**
          * Build a POST request invocation.
          *
-         * @param entity request entity
+         * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+         *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+         *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+         *               the entity variant information.
          * @return invocation encapsulating the built POST request.
          */
         public Invocation buildPost(Entity<?> entity);
@@ -155,7 +161,10 @@ public interface Invocation extends Configurable<Invocation> {
         /**
          * Build a PUT request invocation.
          *
-         * @param entity request entity
+         * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+         *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+         *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+         *               the entity variant information.
          * @return invocation encapsulating the built PUT request.
          */
         public Invocation buildPut(Entity<?> entity);
