@@ -116,6 +116,13 @@ If an \code{Exception\-Mapper} for a \code{EJBException} or subclass is not incl
 
 See Section \ref{async_ejbs} for more information on asynchronous EJB methods and Section \ref{additional_reqs} for additional requirements on EJBs.
 
+\subsection{Java API for JSON Processing}
+\label{jsonp}
+
+In a product that supports the Java API for JSON Processing (JSON-P) \cite{jsonp}, implementations MUST support entity providers for the following types: \code{JsonStructure}, \code{JsonObject} and \code{JsonArray}. Therefore, the standard set of entity providers from Section~\ref{standard_entity_providers} is extended to support these types in combinations with the \code{application/json} media type.
+
+Note that other types from the JSON-P API such as \code{JsonParser}, \code{JsonGenerator}, \code{JsonReader} and \code{JsonWriter} can also be integrated into JAX-RS applications using the entity providers for \code{InputStream} and \code{StreamingOutput}. 
+
 \subsection{Additional Requirements}
 \label{additional_reqs}
 
