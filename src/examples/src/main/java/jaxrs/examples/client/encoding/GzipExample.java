@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,7 +39,7 @@
  */
 package jaxrs.examples.client.encoding;
 
-import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import static javax.ws.rs.client.Entity.text;
 
@@ -52,7 +52,7 @@ import jaxrs.examples.filter.compression.GzipEntityInterceptor;
 public class GzipExample {
 
     public void gzipExample() {
-        WebTarget target = ClientFactory.newClient().target("http://example.com/foo/bar.txt");
+        WebTarget target = ClientBuilder.newClient().target("http://example.com/foo/bar.txt");
         target.register(GzipEntityInterceptor.class);
 
         // getting a gzip encoded body

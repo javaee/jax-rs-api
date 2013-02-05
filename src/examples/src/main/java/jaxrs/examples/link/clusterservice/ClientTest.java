@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,7 +40,7 @@
 package jaxrs.examples.link.clusterservice;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.Response;
 
@@ -52,7 +52,7 @@ import javax.ws.rs.core.Response;
 public class ClientTest {
 
     public void test() {
-        Client client = ClientFactory.newClient();
+        Client client = ClientBuilder.newClient();
 
         // Get cluster representation -- entry point
         Response rc = client.target("/cluster").request("application/json").get();

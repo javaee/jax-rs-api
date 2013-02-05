@@ -43,7 +43,7 @@ import java.util.concurrent.Future;
 
 import javax.ws.rs.client.AsyncInvoker;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.client.WebTarget;
@@ -76,13 +76,13 @@ public class SpecExamples {
 
     public void clientBootstrapping() {
         // Default client instantiation using default configuration
-        Client defaultClient = ClientFactory.newClient();
+        Client defaultClient = ClientBuilder.newClient();
         defaultClient.property("CUSTOM_PROPERTY", "CUSTOM_VALUE");
         assert defaultClient != null;
 
         // Default client instantiation using custom configuration
 
-        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.getConfiguration());
+        Client defaultConfiguredClient = ClientBuilder.newClient(defaultClient.getConfiguration());
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
@@ -96,7 +96,7 @@ public class SpecExamples {
     }
 
     public void fluentMethodChaining() {
-        Client client = ClientFactory.newClient();
+        Client client = ClientBuilder.newClient();
         Response res = client.target("http://example.org/hello")
                 .request("text/plain").get();
 
@@ -108,7 +108,7 @@ public class SpecExamples {
     }
 
     public void typeRelationships() {
-        Client client = ClientFactory.newClient();
+        Client client = ClientBuilder.newClient();
         WebTarget uri = client.target("");
         Invocation.Builder builder = uri.request("text/plain");
 
@@ -125,7 +125,7 @@ public class SpecExamples {
     }
 
     public void benefitsOfResourceUri() {
-        Client client = ClientFactory.newClient();
+        Client client = ClientBuilder.newClient();
         WebTarget base = client.target("http://example.org/");
         WebTarget hello = base.path("hello").path("{whom}");
         final WebTarget whomToGreet = hello.resolveTemplate("whom", "world");
@@ -133,7 +133,7 @@ public class SpecExamples {
     }
 
     public void gettingAndPostingCustomers() {
-        Client client = ClientFactory.newClient();
+        Client client = ClientBuilder.newClient();
         Customer c = client.target("http://examples.org/customers/123")
                 .request("application/xml").get(Customer.class);
         Response res = client.target("http://examples.org/premium-customers/")
@@ -141,7 +141,7 @@ public class SpecExamples {
     }
 
     public void asyncSamples() throws Exception {
-        Client client = ClientFactory.newClient();
+        Client client = ClientBuilder.newClient();
         Future<Customer> fc = client.target("http://examples.org/customers/123")
                 .request("application/xml").async().get(Customer.class);
         Customer c = fc.get();

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,41 +39,157 @@
  */
 package javax.ws.rs.client;
 
+import java.net.URL;
+import java.security.KeyStore;
+
+import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
 /**
- * A client instance builder contract.
+ * Main entry point to the client API used to bootstrap {@link javax.ws.rs.client.Client}
+ * instances.
  *
- * A client builder is produced by {@link ClientFactory} and provides a way
- * of configuring various client runtime aspects (such as SSL configuration)
- * prior to building an actual client instance.
- *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  * @since 2.0
  */
-public interface ClientBuilder {
+public abstract class ClientBuilder implements Configurable<ClientBuilder> {
+
+    /**
+     * Name of the property identifying the {@link ClientBuilder} implementation
+     * to be returned from {@link ClientBuilder#newBuilder()}.
+     */
+    public static final String JAXRS_DEFAULT_CLIENT_BUILDER_PROPERTY =
+            "javax.ws.rs.client.ClientBuilder";
+    /**
+     * Default client builder implementation class name.
+     */
+    private static final String JAXRS_DEFAULT_CLIENT_BUILDER =
+            "org.glassfish.jersey.client.JerseyClientBuilder";
+
+    /**
+     * Allows custom implementations to extend the {@code ClientBuilder} class.
+     */
+    protected ClientBuilder() {
+    }
+
+    /**
+     * Create a new {@code ClientBuilder} instance using the default client builder
+     * implementation class provided by the JAX-RS implementation provider.
+     *
+     * @return new client builder instance.
+     */
+    public static ClientBuilder newBuilder() {
+        try {
+            Object delegate =
+                    FactoryFinder.find(JAXRS_DEFAULT_CLIENT_BUILDER_PROPERTY,
+                            JAXRS_DEFAULT_CLIENT_BUILDER);
+            if (!(delegate instanceof ClientBuilder)) {
+                Class pClass = ClientBuilder.class;
+                String classnameAsResource = pClass.getName().replace('.', '/') + ".class";
+                ClassLoader loader = pClass.getClassLoader();
+                if (loader == null) {
+                    loader = ClassLoader.getSystemClassLoader();
+                }
+                URL targetTypeURL = loader.getResource(classnameAsResource);
+                throw new LinkageError("ClassCastException: attempting to cast"
+                        + delegate.getClass().getClassLoader().getResource(classnameAsResource)
+                        + " to " + targetTypeURL);
+            }
+            return (ClientBuilder) delegate;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * Create a new {@link Client} instance using the default client builder implementation
+     * class provided by the JAX-RS implementation provider.
+     *
+     * @return new client instance.
+     */
+    public static Client newClient() {
+        return newBuilder().build();
+    }
+
+    /**
+     * Create a new custom-configured {@link Client} instance using the default client builder
+     * implementation class provided by the JAX-RS implementation provider.
+     *
+     * @param configuration data used to provide initial configuration for the new
+     *                      client instance.
+     * @return new configured client instance.
+     */
+    public static Client newClient(final Configuration configuration) {
+        return newBuilder().replaceWith(configuration).build();
+    }
+
     /**
      * Set the SSL context that will be used when creating secured transport connections
      * to server endpoints from {@link WebTarget web targets} created by the client
-     * instance that is using this SSL context.
+     * instance that is using this SSL context. The SSL context is expected to have all the
+     * security infrastructure initialized, including the key and trust managers.
      *
      * @param sslContext secure socket protocol implementation which acts as a factory
      *                   for secure socket factories or {@link javax.net.ssl.SSLEngine
      *                   SSL engines}.
      * @return an updated client builder instance.
+     * @throws IllegalStateException in case either a {@link #keyStore(java.security.KeyStore, char[]) key store}
+     *                               or {@link #trustStore(java.security.KeyStore) trust store} has been previously
+     *                               set.
      */
-    public ClientBuilder sslContext(final SSLContext sslContext);
+    public abstract ClientBuilder sslContext(final SSLContext sslContext);
 
     /**
-     * Set the initial configuration for the client instance that is being built.
+     * Set the client-side key store. Key store contains client's private keys, and the certificates with their
+     * corresponding public keys.
      *
-     * @param configuration data used to provide initial configuration for
-     *                      the new client instance.
+     * @param keyStore client-side key store.
+     * @param password client key password.
+     * @return an updated client builder instance.
+     * @throws IllegalStateException in case the {@link #sslContext(javax.net.ssl.SSLContext) SSL context}
+     *                               has been previously set.
+     */
+    public abstract ClientBuilder keyStore(final KeyStore keyStore, char[] password);
+
+    /**
+     * Set the client-side key store. Key store contains client's private keys, and the certificates with their
+     * corresponding public keys.
+     * <p>
+     * Note that for improved security of working with password data and avoid storing passwords in Java string
+     * objects, the {@link #keyStore(java.security.KeyStore, char[])} version of the method can be utilized.
+     * </p>
+     *
+     * @param keyStore client-side key store.
+     * @param password client key password.
+     * @return an updated client builder instance.
+     * @throws IllegalStateException in case the {@link #sslContext(javax.net.ssl.SSLContext) SSL context}
+     *                               has been previously set.
+     */
+    public abstract ClientBuilder keyStore(final KeyStore keyStore, String password);
+
+    /**
+     * Set the client-side trust store. Trust store is expected to contain certificates from other parties
+     * the client is you expect to communicate with, or from Certificate Authorities that are trusted to
+     * identify other parties.
+     *
+     * @param trustStore client-side trust store.
+     * @return an updated client builder instance.
+     * @throws IllegalStateException in case the {@link #sslContext(javax.net.ssl.SSLContext) SSL context}
+     *                               has been previously set.
+     */
+    public abstract ClientBuilder trustStore(final KeyStore trustStore);
+
+    /**
+     * Set the hostname verifier to be used by the client to verify the endpoint's hostname against it's
+     * identification information.
+     *
+     * @param verifier hostname verifier.
      * @return an updated client builder instance.
      */
-    public ClientBuilder configuration(final Configuration configuration);
+    public abstract ClientBuilder hostnameVerifier(final HostnameVerifier verifier);
 
     /**
      * Build a new client instance using all the configuration previously specified
@@ -81,5 +197,5 @@ public interface ClientBuilder {
      *
      * @return a new client instance.
      */
-    public Client build();
+    public abstract Client build();
 }

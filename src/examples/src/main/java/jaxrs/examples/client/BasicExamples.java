@@ -45,7 +45,7 @@ import java.util.concurrent.Future;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.InvocationCallback;
 import javax.ws.rs.client.WebTarget;
@@ -99,13 +99,13 @@ public class BasicExamples {
     @SuppressWarnings("UnusedDeclaration")
     public void clientBootstrapping() {
         // Default client instantiation using default configuration
-        Client defaultClient = ClientFactory.newClient();
+        Client defaultClient = ClientBuilder.newClient();
         assert defaultClient != null;
         defaultClient.property("CUSTOM_PROPERTY", "CUSTOM_VALUE");
 
         // Default client instantiation using custom configuration
 
-        Client defaultConfiguredClient = ClientFactory.newClient(defaultClient.getConfiguration());
+        Client defaultConfiguredClient = ClientBuilder.newClient(defaultClient.getConfiguration());
         assert defaultConfiguredClient != null;
 
         ///////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ public class BasicExamples {
 
     public void creatingResourceAndSubResourceUris() {
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/ )
-        WebTarget customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
+        WebTarget customersUri = ClientBuilder.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/{id}/ )
         WebTarget anyCustomerUri = customersUri.path("{id}");
         // Target( http://jaxrs.examples.org/jaxrsApplication/customers/123/ )
@@ -127,7 +127,7 @@ public class BasicExamples {
     }
 
     public void creatingClientRequestsAndInvocations() {
-        final Client client = ClientFactory.newClient();
+        final Client client = ClientBuilder.newClient();
 
         Response response = client.target("http://jaxrs.examples.org/jaxrsApplication/customers").request(MediaType.APPLICATION_XML).header("Foo", "Bar").get();
         assert response.getStatus() == 200;
@@ -136,7 +136,7 @@ public class BasicExamples {
     public void creatingClientInstanceUsingClientBuilder() {
         final SSLContext sslContext = null;
         // ...initialize SSL context...
-        final Client client = ClientFactory.newClientBuilder()
+        final Client client = ClientBuilder.newBuilder()
                 .sslContext(sslContext)
                 .build();
 
@@ -144,7 +144,7 @@ public class BasicExamples {
     }
 
     public void creatingResourceUriRequestsAndInvocations() {
-        final Client client = ClientFactory.newClient();
+        final Client client = ClientBuilder.newClient();
         final WebTarget customersUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
         // Create target request, customize it and invoke using newClient
@@ -156,7 +156,7 @@ public class BasicExamples {
         Customer customer;
         Response response;
 
-        final WebTarget customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
+        final WebTarget customersUri = ClientBuilder.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
 
         response = customersUri.path("{id}").resolveTemplate("id", 123).request().get();
         customer = response.readEntity(Customer.class);
@@ -167,14 +167,14 @@ public class BasicExamples {
     }
 
     public void typedResponse() {
-        Customer customer = ClientFactory.newClient()
+        Customer customer = ClientBuilder.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .resolveTemplate("id", 123).request().get(Customer.class);
         assert customer != null;
     }
 
     public void typedGenericResponse() {
-        List<Customer> customers = ClientFactory.newClient()
+        List<Customer> customers = ClientBuilder.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers")
                 .request().get(new GenericType<List<Customer>>() {
                 });
@@ -182,7 +182,7 @@ public class BasicExamples {
     }
 
     public void responseUsingSubResourceClient() {
-        WebTarget customersUri = ClientFactory.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
+        WebTarget customersUri = ClientBuilder.newClient().target("http://jaxrs.examples.org/jaxrsApplication/customers");
         WebTarget customer = customersUri.path("{id}");
 
         // Create a customer
@@ -201,7 +201,7 @@ public class BasicExamples {
     }
 
     public void asyncResponse() throws Exception {
-        Future<Response> future = ClientFactory.newClient()
+        Future<Response> future = ClientBuilder.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .resolveTemplate("id", 123).request().async().get();
 
@@ -211,14 +211,14 @@ public class BasicExamples {
     }
 
     public void typedAsyncResponse() throws Exception {
-        Future<Customer> customer = ClientFactory.newClient()
+        Future<Customer> customer = ClientBuilder.newClient()
                 .target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}")
                 .resolveTemplate("id", 123).request().async().get(Customer.class);
         assert customer.get() != null;
     }
 
     public void asyncCallback() {
-        final Client client = ClientFactory.newClient();
+        final Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
         target.resolveTemplate("id", 123).request().async().get(new InvocationCallback<Customer>() {
 
@@ -250,7 +250,7 @@ public class BasicExamples {
     }
 
     public void asyncCallbackUsingSubResourceClient() throws Exception {
-        final Client client = ClientFactory.newClient();
+        final Client client = ClientBuilder.newClient();
         WebTarget anyCustomerUri = client.target("http://jaxrs.examples.org/jaxrsApplication/customers/{id}");
 
         // invoke a request in background
@@ -299,7 +299,7 @@ public class BasicExamples {
     }
 
     public void commonFluentUseCases() {
-        Client client = ClientFactory.newClient();
+        Client client = ClientBuilder.newClient();
 
         // Invocation
         client.target("http://examples.jaxrs.com/");
@@ -343,7 +343,7 @@ public class BasicExamples {
 
     public void invocationFlexibility() {
         // For users who really need it...
-        Invocation i = ClientFactory.newClient()
+        Invocation i = ClientBuilder.newClient()
                 .target("http://examples.jaxrs.com/greeting")
                 .request("text/plain")
                 .header("custom-name", "custom_value")
@@ -371,7 +371,7 @@ public class BasicExamples {
     }
 
     public void customContractRegistration() {
-        Configurable<?> configurable = ClientFactory.newClient();
+        Configurable<?> configurable = ClientBuilder.newClient();
 
         configurable.register(MyProvider.class, ContainerRequestContext.class);
         configurable.register(MyProvider.class, ContainerRequestContext.class, ReaderInterceptor.class);

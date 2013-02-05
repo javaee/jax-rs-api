@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -98,7 +98,7 @@ public class ValidatorExample {
         }
     }
 //    public void annotationBasedRequestResponseValidation() {
-//        Client c = ClientFactory.newClient();
+//        Client c = ClientBuilder.newClient();
 //
 //        HttpResponse response = c.target("http://example.com/foo/").post().entity("marek.potociar@oracle.com", new EmailImpl()).invoke();
 //
@@ -106,7 +106,7 @@ public class ValidatorExample {
 //        System.out.println("User id = " + userId);
 //    }
 //    public void annotationBasedRequestParameterValidation() {
-//        Client c = ClientFactory.newClient();
+//        Client c = ClientBuilder.newClient();
 //
 //        final Target rootResource = c.target("http://example.com/foo");
 //        String userId = rootResource.get().queryParam("email", "marek.potociar@oracle.com", new EmailImpl()).invoke(String.class);
@@ -120,7 +120,7 @@ public class ValidatorExample {
 //        assert r2.getStatus() == Response.Status.OK;
 //    }
 //    public void example2() {
-//        Client c = ClientFactory.newClient();
+//        Client c = ClientBuilder.newClient();
 //        /*
 //        String response = c.resourceUri("http://example.com/foo/")
 //        .put()

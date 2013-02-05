@@ -74,7 +74,7 @@ public interface Invocation extends Configurable<Invocation> {
      * the invocation builder can be either used to build an {@link Invocation}
      * with a generic execution interface:
      * <pre>
-     *   Client client = ClientFactory.newClient();
+     *   Client client = ClientBuilder.newClient();
      *   WebTarget resourceTarget = client.target("http://examples.jaxrs.com/");
      *
      *   // Build a HTTP GET request that accepts "text/plain" response type
@@ -89,7 +89,7 @@ public interface Invocation extends Configurable<Invocation> {
      * methods} can be used to invoke the prepared request and return the server
      * response in a single step, e.g.:
      * <pre>
-     *   Client client = ClientFactory.newClient();
+     *   Client client = ClientBuilder.newClient();
      *   WebTarget resourceTarget = client.target("http://examples.jaxrs.com/");
      *
      *   // Build and invoke the get request in a single step
@@ -100,7 +100,7 @@ public interface Invocation extends Configurable<Invocation> {
      * {@link AsyncInvoker asynchronous invocation} mode is possible by
      * calling the {@link #async() } method on the builder, e.g.:
      * <pre>
-     *   Client client = ClientFactory.newClient();
+     *   Client client = ClientBuilder.newClient();
      *   WebTarget resourceTarget = client.target("http://examples.jaxrs.com/");
      *
      *   // Build and invoke the get request asynchronously in a single step
