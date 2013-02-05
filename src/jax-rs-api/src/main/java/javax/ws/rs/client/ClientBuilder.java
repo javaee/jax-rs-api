@@ -152,7 +152,7 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * @throws IllegalStateException in case the {@link #sslContext(javax.net.ssl.SSLContext) SSL context}
      *                               has been previously set.
      */
-    public abstract ClientBuilder keyStore(final KeyStore keyStore, char[] password);
+    public abstract ClientBuilder keyStore(final KeyStore keyStore, final char[] password);
 
     /**
      * Set the client-side key store. Key store contains client's private keys, and the certificates with their
@@ -168,7 +168,9 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * @throws IllegalStateException in case the {@link #sslContext(javax.net.ssl.SSLContext) SSL context}
      *                               has been previously set.
      */
-    public abstract ClientBuilder keyStore(final KeyStore keyStore, String password);
+    public ClientBuilder keyStore(final KeyStore keyStore, final String password) {
+        return keyStore(keyStore, password.toCharArray());
+    }
 
     /**
      * Set the client-side trust store. Trust store is expected to contain certificates from other parties
