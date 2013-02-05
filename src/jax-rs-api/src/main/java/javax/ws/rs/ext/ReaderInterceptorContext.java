@@ -75,15 +75,17 @@ public interface ReaderInterceptorContext extends InterceptorContext {
     public Object proceed() throws IOException, WebApplicationException;
 
     /**
-     * Get the input stream of the object to be read.
+     * Get the input stream of the object to be read. The JAX-RS runtime is responsible
+     * for closing the input stream.
      *
      * @return input stream of the object to be read
      */
     public InputStream getInputStream();
 
     /**
-     * Update the input stream of the object to be read.
-     * For example, by wrapping it with another input stream
+     * Update the input stream of the object to be read. For example, by wrapping
+     * it with another input stream. The JAX-RS runtime is responsible for closing
+     * the input stream.
      *
      * @param is new input stream
      */

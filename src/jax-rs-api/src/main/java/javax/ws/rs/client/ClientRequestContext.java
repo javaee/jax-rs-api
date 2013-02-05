@@ -325,14 +325,16 @@ public interface ClientRequestContext {
 
 
     /**
-     * Get the entity output stream.
+     * Get the entity output stream. The JAX-RS runtime is responsible for
+     * closing the output stream.
      *
      * @return entity output stream.
      */
     public OutputStream getEntityStream();
 
     /**
-     * Set a new entity output stream.
+     * Set a new entity output stream. The JAX-RS runtime is responsible for
+     * closing the output stream.
      *
      * @param outputStream new entity output stream.
      */

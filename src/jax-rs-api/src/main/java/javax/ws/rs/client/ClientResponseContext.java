@@ -230,14 +230,16 @@ public interface ClientResponseContext {
     public boolean hasEntity();
 
     /**
-     * Get the entity input stream.
+     * Get the entity input stream. The JAX-RS runtime is responsible for
+     * closing the input stream.
      *
      * @return entity input stream.
      */
     public InputStream getEntityStream();
 
     /**
-     * Set a new entity input stream.
+     * Set a new entity input stream. The JAX-RS runtime is responsible for
+     * closing the input stream.
      *
      * @param input new entity input stream.
      */

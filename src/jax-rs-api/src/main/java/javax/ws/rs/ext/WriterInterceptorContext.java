@@ -88,14 +88,16 @@ public interface WriterInterceptorContext extends InterceptorContext {
     void setEntity(Object entity);
 
     /**
-     * Get the output stream for the object to be written.
+     * Get the output stream for the object to be written. The JAX-RS runtime
+     * is responsible for closing the output stream.
      *
      * @return output stream for the object to be written.
      */
     OutputStream getOutputStream();
 
     /**
-     * Update the output stream for the object to be written.
+     * Update the output stream for the object to be written. The JAX-RS
+     * runtime is responsible for closing the output stream.
      *
      * @param os new output stream for the object to be written.
      */
