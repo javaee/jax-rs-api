@@ -146,6 +146,9 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * Set the client-side key store. Key store contains client's private keys, and the certificates with their
      * corresponding public keys.
      *
+     * A custom key store is only required if you want to enable a custom setup of a 2-way SSL connections
+     * (client certificate authentication).
+     *
      * @param keyStore client-side key store.
      * @param password client key password.
      * @return an updated client builder instance.
@@ -157,6 +160,9 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
     /**
      * Set the client-side key store. Key store contains client's private keys, and the certificates with their
      * corresponding public keys.
+     *
+     * A custom key store is only required if you want to enable a custom setup of a 2-way SSL connections
+     * (client certificate authentication).
      * <p>
      * Note that for improved security of working with password data and avoid storing passwords in Java string
      * objects, the {@link #keyStore(java.security.KeyStore, char[])} version of the method can be utilized.
@@ -176,6 +182,10 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * Set the client-side trust store. Trust store is expected to contain certificates from other parties
      * the client is you expect to communicate with, or from Certificate Authorities that are trusted to
      * identify other parties.
+     * <p>
+     * In case a custom trust store or custom SSL context is not specified, the trust management will be
+     * configured to use the default Java runtime settings.
+     * </p>
      *
      * @param trustStore client-side trust store.
      * @return an updated client builder instance.
