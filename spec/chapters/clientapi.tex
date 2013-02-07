@@ -5,11 +5,11 @@ The Client API is used to access Web resources. It provides a higher-level API t
 
 \section{Bootstrapping a Client Instance}
 
-An instance of \Client\ is required to access a Web resource using the Client API. The default instance of \Client\ can be obtained by calling \code{newClient} on \ClientFactory. \Client\ instances can be configured using methods inherited from \code{Configurable} as follows:
+An instance of \Client\ is required to access a Web resource using the Client API. The default instance of \Client\ can be obtained by calling \code{newClient} on \ClientBuilder. \Client\ instances can be configured using methods inherited from \code{Configurable} as follows:
 
 \begin{listing}{1}
 // Default instance of client
-Client client = ClientFactory.newClient();
+Client client = ClientBuilder.newClient();
 
 // Additional configuration of default client
 client.setProperty("MyProperty", "MyValue")
@@ -25,7 +25,7 @@ See Chapter \ref{providers} for more information on providers. Properties are si
 A Web resource can be accessed using a fluent API in which method	 invocations are chained to build and ultimately submit an HTTP request. The following example gets a \code{text/plain} representation of the resource identified by \code{http://example.org/hello}:
 
 \begin{listing}{1}
-Client client = ClientFactory.newClient();
+Client client = ClientBuilder.newClient();
 Response res = client.target("http://example.org/hello")
     .request("text/plain").get();
 \end{listing}
@@ -132,7 +132,7 @@ As explained in Chapter \ref{filters_and_interceptors}, filters and interceptors
 
 \begin{listing}{1}
 // Create client and register logging filter
-Client client = ClientFactory.newClient().register(LoggingFilter.class);
+Client client = ClientBuilder.newClient().register(LoggingFilter.class);
 
 // Executes logging filter from client and caching filter from target
 WebTarget wt = client.target("http://examples.org/customers/123");

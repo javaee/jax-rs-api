@@ -102,7 +102,7 @@ the response is produced by calling \code{resume} on the injected \code{AsyncRes
 The fluent API supports asynchronous invocations as part of the invocation building process. By default, invocations are synchronous but can be set to run asynchronously by calling the \code{async} method and (optionally) registering an instance of \code{InvocationCallback} as shown next:
 
 \begin{listing}{1}
-Client client = ClientFactory.newClient();
+Client client = ClientBuilder.newClient();
 Target target = client.target("http://example.org/customers/{id}");
 target.pathParam("id", 123).request().async().get(
     new InvocationCallback<Customer>() {
