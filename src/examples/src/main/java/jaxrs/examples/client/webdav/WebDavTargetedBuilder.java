@@ -49,6 +49,7 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
@@ -95,6 +96,16 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
 
     @Override
     public WebDavAsyncInvoker async() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Invocation.Builder accept(String... mediaTypes) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Invocation.Builder accept(MediaType... mediaTypes) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
