@@ -199,9 +199,17 @@ public interface HttpHeaders {
      */
     public static final String CACHE_CONTROL = "Cache-Control";
     /**
+     * See {@link <a href="http://tools.ietf.org/html/rfc2183">IETF RFC-2183</a>}.
+     */
+    public static final String CONTENT_DISPOSITION = "Content-Disposition";
+    /**
      * See {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11">HTTP/1.1 documentation</a>}.
      */
     public static final String CONTENT_ENCODING = "Content-Encoding";
+    /**
+     * See {@link <a href="http://tools.ietf.org/html/rfc2392">IETF RFC-2392</a>}.
+     */
+    public static final String CONTENT_ID = "Content-ID";
     /**
      * See {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.12">HTTP/1.1 documentation</a>}.
      */
