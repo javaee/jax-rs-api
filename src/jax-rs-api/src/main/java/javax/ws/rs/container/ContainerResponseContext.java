@@ -92,7 +92,8 @@ public interface ContainerResponseContext {
     public Response.StatusType getStatusInfo();
 
     /**
-     * Set the complete status information associated with the response.
+     * Set the complete status information (status code and reason phrase) associated
+     * with the response.
      *
      * @param statusInfo the response status information.
      */
