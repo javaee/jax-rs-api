@@ -80,7 +80,7 @@ It is RECOMMENDED that implementations support the Servlet 3 framework pluggabil
 
 \end{itemize}
 
-When an \code{Application} subclass is present in the archive, if both \code{Application.getClasses} and \code{Application.getSingletons} return an empty list then all root resource classes and providers packaged in the web application MUST be included and the JAX-RS implementation is REQUIRED to discover them automatically. If either \code{getClasses} or \code{getSingletons} returns a non-empty list then only those classes or singletons returned MUST be included in the published \jaxrs\ application. 
+When an \code{Application} subclass is present in the archive, if both \code{Application.getClasses} and \code{Application.getSingletons} return an empty collection then all root resource classes and providers packaged in the web application MUST be included and the JAX-RS implementation is REQUIRED to discover them automatically by scanning a \code{.war} file as described above. If either \code{getClasses} or \code{getSingletons} returns a non-empty collection then only those classes or singletons returned MUST be included in the published \jaxrs\ application. 
 \end{itemize}
 
 The following table summarizes the Servlet 3 framework pluggability mechanism:
