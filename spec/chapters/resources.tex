@@ -38,11 +38,12 @@ When a resource class is instantiated, the values of fields and bean properties 
 
 Because injection occurs at object creation time, use of these annotations (with the exception of \Context) on resource class fields and bean properties is only supported for the default per-request resource class lifecycle. An implementation SHOULD warn if resource classes with other lifecycles use these annotations on resource class fields or bean properties.
 
-A \jaxrs\ implementation is only required to set the annotated field and bean property values of instances created by the its runtime. Objects returned by sub-resource locators (see Section \ref{sub_resources}) are expected to be initialized by their creator.
+A \jaxrs\ implementation is only required to set the annotated field and bean property values of instances created by its runtime. Objects returned by sub-resource locators (see Section \ref{sub_resources}) are expected to be initialized by their creator.
 
 Valid parameter types for each of the above annotations are listed in the corresponding Javadoc, however in general (excluding \Context) the following types are supported:
 
 \begin{enumerate}
+\item Types for which a \ParamConverter\ is available via a registered \ParamConverterProvider. See Javadoc for these classes for more information.
 \item Primitive types.
 \item\label{stringctor} Types that have a constructor that accepts a single \code{String} argument.
 \item\label{valueofmethod} Types that have a static method named \code{valueOf} or \code{fromString} with a single \code{String} argument that return an instance of the type. If both methods are present then \code{valueOf} MUST be used unless the type is an enum in which case \code{fromString} MUST be used\footnote{Due to limitations of the built-in \code{valueOf} method that is part of all Java enumerations, a \code{fromString} method is often defined by the enum writers. Consequently, the \code{fromString} method is preferred when available.}.
