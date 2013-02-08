@@ -118,6 +118,13 @@ public class Application {
      * passed to the server-side features or injected into server-side JAX-RS components.
      * </p>
      * <p>
+     * The set of returned properties may be further extended or customized at deployment time
+     * using container-specific features and deployment descriptors. For example, in a Servlet-based
+     * deployment scenario, web application's {@code <context-param>} and Servlet {@code <init-param>}
+     * values may be used to extend or override values of the properties programmatically returned
+     * by this method.
+     * </p>
+     * <p>
      * The default implementation returns an empty set.
      * </p>
      *
