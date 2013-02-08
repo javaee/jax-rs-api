@@ -171,6 +171,28 @@ class MyResourceClass {
 
 Note that \code{@PremiumUser} is explicitly listed and \code{@StandardUser} is triggered by the presence of the \Valid\ annotation ---see definition of \code{User} class earlier in this section.
 
+\section{Default Validation Mode}
+\label{default_validation_mode}
+
+According to \cite{bv11}, validation is enabled by default only for the so called {\em constrained} methods. Getter methods as defined by the Java Beans specification are not constrained methods, so they will not be validated by default. The special annotation \code{@ExecutableType} defined in \cite{bv11} can be used to selectively enable and disable validation. For example, you can enable validation on method \code{getEmail} shown above as follows:
+
+\begin{listing}{1}
+@Path("/")
+@ValidateExecutable(type=GETTER_METHODS)
+class MyResourceClass {
+
+  @Email
+  public String getEmail() {
+    return email;
+  }
+  ...
+}
+\end{listing}
+
+The annotation \code{@ValidateExecutable} can be applied to the class, as shown above, or directly to the method in question. See \cite{bv11} for more information on other uses of this annotation.
+
+Note that any {\em resource method} whose name and signature matches that of a getter will still be validated since resource methods are not getter methods as far as the JAX-RS runtime is concerned.
+
 \section{Annotation Inheritance}
 \label{annotation_inheritance}
 
