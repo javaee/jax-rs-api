@@ -149,7 +149,7 @@ class MyResourceClass {
 }
 \end{listing}
 
-In the example above, \code{@PremiumUser} rather than \code{@StandardUser} will be used to validate the request entity. These two ways in which validation of entities can be triggered can also be combined by including \Valid\ in the list of constraints. The presence of \Valid\ will trigger validation of \emph{all} the constraint annotations (in the \code{Default} processing group) decorating a Java bean class.
+In the example above, \code{@PremiumUser} rather than \code{@StandardUser} will be used to validate the request entity. These two ways in which validation of entities can be triggered can also be combined by including \Valid\ in the list of constraints. The presence of \Valid\ will trigger validation of \emph{all} the constraint annotations decorating a Java bean class. This validation will take place in the \code{Default} processing group unless the \code{@ConvertGroup} annotation is present. See \cite{bv11} for more information on \code{@ConvertGroup}.
 
 Response entity bodies returned from resource methods can be validated in a similar manner by annotating the resource method itself. To exemplify, assuming both \code{@StandardUser} and \code{@PremiumUser} are required to be checked before returning a user, the \code{getUser} method can be annotated as shown next:
 
