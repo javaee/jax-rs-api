@@ -82,8 +82,8 @@ public @interface Uri {
      * }
      * </pre>
      *
-     * If used from within a JAX-RS component class (e.g. resource, filter, provider &hellip;),
-     * the value can take a form of absolute or relative URI or absolute or relative URI.
+     * If used from within a JAX-RS component class (e.g. resource, filter, provider&nbsp;&hellip;&nbsp;),
+     * the value can take a form of absolute or relative URI.
      * A relative URI is resolved using the context path of the application as the base URI.
      * For example:
      * <pre>
@@ -99,7 +99,7 @@ public @interface Uri {
      * </pre>
      *
      * In case the annotation is used from a JAX-RS resource class, an absolute
-     * or relative URI template value may be provided. The template parameter (e.g. {id})
+     * or relative URI template value may be provided. The template parameter (e.g. {@code {id}})
      * values are resolved in the context of the enclosing resource class
      * {@link Path path template} as well as the context of the processed request.
      * For example:
