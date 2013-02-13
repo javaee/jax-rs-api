@@ -174,7 +174,7 @@ Note that \code{@PremiumUser} is explicitly listed and \code{@StandardUser} is t
 \section{Default Validation Mode}
 \label{default_validation_mode}
 
-According to \cite{bv11}, validation is enabled by default only for the so called {\em constrained} methods. Getter methods as defined by the Java Beans specification are not constrained methods, so they will not be validated by default. The special annotation \code{@ExecutableType} defined in \cite{bv11} can be used to selectively enable and disable validation. For example, you can enable validation on method \code{getEmail} shown above as follows:
+According to \cite{bv11}, validation is enabled by default only for the so called {\em constrained} methods. Getter methods as defined by the Java Beans specification are not constrained methods, so they will not be validated by default. The special annotation \code{@ValidateExecutable} defined in \cite{bv11} can be used to selectively enable and disable validation. For example, you can enable validation on method \code{getEmail} shown above as follows:
 
 \begin{listing}{1}
 @Path("/")
@@ -205,7 +205,18 @@ The goal of this specification is to enable validation of \jaxrs\ resources by l
 
 Constraint annotations are allowed in the same locations as the following annotations: \MatrixParam, \QueryParam, \PathParam, \CookieParam, \HeaderParam\ and \Context, {\em except} in class constructors and property setters. Specifically, they are allowed in resource method parameters, fields and property getters as well as resource classes, entity parameters and resource methods (return values). 
 
-\jaxrs\ implementations are REQUIRED to follow the rules for validation described in \cite{bv11}. The exception model in \cite{bv11} defines a base class \code{javax.validation.ValidationException} and a few subclasses to report errors that are specific to constraint definitions, constraint declarations, group definitions and constraint violations. \jaxrs\ implementations MUST provide a default exception mapper (see Section~\ref{exceptionmapper}) for \code{javax.validation.ValidationException} according to the following rules:
+The default resource class instance lifecycle is per-request in JAX-RS. Implementations MAY support other lifecycles; the same caveats related to the use of other JAX-RS annotations in resource classes apply to constraint annotations. For example, a constraint validation annotating a constructor parameter in a resource class whose lifecycle is singleton will only be executed once.
+
+\jaxrs\ implementations SHOULD use the following process to validate resource class instances after they have been instantiated:
+
+\begin{description}
+\item[Phase 1] Inject field values and initialize bean properties as described in Section \ref{resource_field}.
+\item[Phase 2] Validate annotations on resource classes, fields and property getters. The order in which these validations are executed is implementation dependent.
+\item[Phase 3] Validate annotations on parameters passed to the resource method matched. 
+\item[Phase 4] If no constraint violations found thus far, invoke resource method and validate returned value. 
+\end{description}
+
+The exception model in \cite{bv11} defines a base class \code{javax.validation.ValidationException} and a few subclasses to report errors that are specific to constraint definitions, constraint declarations, group definitions and constraint violations. \jaxrs\ implementations MUST provide a default exception mapper (see Section~\ref{exceptionmapper}) for \code{javax.validation.ValidationException} according to the following rules:
 
 \begin{enumerate}
 \item If the exception is of type \code{javax.validation.ValidationException} or any of its subclasses {\em excluding} \code{javax.validation.ConstraintViolationException}, then it is mapped to a response with status code 500 (Internal Server Error).
