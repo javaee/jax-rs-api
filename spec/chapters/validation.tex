@@ -191,7 +191,7 @@ class MyResourceClass {
 
 The annotation \code{@ValidateExecutable} can be applied to the class, as shown above, or directly to the method in question. See \cite{bv11} for more information on other uses of this annotation.
 
-Note that any {\em resource method} whose name and signature matches that of a getter will still be validated since resource methods are not getter methods as far as the JAX-RS runtime is concerned.
+Note that if validation for getter methods is {\em enabled} and a resource method's signature obeys the rules for getters, the resource method may be (unintentionally) invoked during validation. Conversely, if validation for getter methods is {\em disabled} and the {\em matching} resource method's signature obeys the rules for getters, the resource method will still be validated before invocation.
 
 \section{Annotation Inheritance}
 \label{annotation_inheritance}
@@ -211,7 +211,7 @@ The default resource class instance lifecycle is per-request in JAX-RS. Implemen
 
 \begin{description}
 \item[Phase 1] Inject field values and initialize bean properties as described in Section \ref{resource_field}.
-\item[Phase 2] Validate annotations on resource classes, fields and property getters. The order in which these validations are executed is implementation dependent.
+\item[Phase 2] Validate annotations on resource classes, fields and property getters (if enabled). The order in which these validations are executed is implementation dependent.
 \item[Phase 3] Validate annotations on parameters passed to the resource method matched. 
 \item[Phase 4] If no constraint violations found thus far, invoke resource method and validate returned value. 
 \end{description}
