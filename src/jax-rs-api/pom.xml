@@ -392,7 +392,7 @@
     </dependencies>
 
     <properties>
-        <javax.annotation.api.version>1.2-b01</javax.annotation.api.version>
+        <javax.annotation.api.version>1.2-b02</javax.annotation.api.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
