@@ -109,7 +109,7 @@ Collection<Response> ress =
                  return inv.invoke(); } });
 \end{listing}
 
-In this example, two invocations are prepared and stored in a collection by the creator. The submitter then traverses the collection applying a transformation that maps an \Invocation\ to a \Response. The mapping calls \code{Invocation.invoke()} to execute the invocation synchronously; asynchronous execution is also supported by calling \code{Invocation.submit()}. Refer to
+In this example, two invocations are prepared and stored in a collection by the creator. The submitter then traverses the collection applying a transformation that maps an \Invocation\ to a \Response. The mapping calls \code{Invocation.invoke} to execute the invocation synchronously; asynchronous execution is also supported by calling \code{Invocation.submit}. Refer to
 Chapter~\ref{asynchronous_processing} for more information on asynchronous invocations.
 
 \section{Configurable Types}

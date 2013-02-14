@@ -27,7 +27,7 @@ See Section \ref{servlet} for more information Web application packaging.
 
 It is RECOMMENDED for a \jaxrs\ implementation to provide asynchronous processing support, as defined in Chapter \ref{asynchronous_processing}, by enabling asynchronous processing (i.e., \code{asyncSupported=true}) in the underlying Servlet 3 container. It is OPTIONAL for a \jaxrs\ implementation to support asynchronous processing when running on a Servlet container whose version is prior to 3.
 
-As explained in Section \ref{servlet_container}, injection of Servlet-defined types is possible using the \Context\ annotation. Additionally, web application's \code{<context-param>} and servlet's \code{<init-param>} can be used to define application properties passed to server-side features or injected into server-side JAX-RS components. See Javadoc for \code{Application.getProperties()} for more information.
+As explained in Section \ref{servlet_container}, injection of Servlet-defined types is possible using the \Context\ annotation. Additionally, web application's \code{<context-param>} and servlet's \code{<init-param>} can be used to define application properties passed to server-side features or injected into server-side JAX-RS components. See Javadoc for \code{Application.getProperties} for more information.
 
 \subsection{Managed Beans}
 \label{managed_beans}

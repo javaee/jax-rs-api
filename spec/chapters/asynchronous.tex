@@ -141,7 +141,7 @@ if (!ff.isDone()) {
 } 
 \end{listing}
 
-Even though it is recommended to pass an instance of \code{InvocationCallback} when executing an asynchronous call, it is not mandated. When omitted, the \code{Future<T>} returned by the invocation can be used to gain access to the response by calling the method \code{Future.get()}, which will return an instance of \code{T} if the invocation was successful or \code{null} if the invocation failed.
+Even though it is recommended to pass an instance of \code{InvocationCallback} when executing an asynchronous call, it is not mandated. When omitted, the \code{Future<T>} returned by the invocation can be used to gain access to the response by calling the method \code{Future.get}, which will return an instance of \code{T} if the invocation was successful or \code{null} if the invocation failed.
 
 
 
