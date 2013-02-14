@@ -191,7 +191,7 @@ class MyResourceClass {
 
 The annotation \code{@ValidateExecutable} can be applied to the class, as shown above, or directly to the method in question. See \cite{bv11} for more information on other uses of this annotation.
 
-Note that if validation for getter methods is {\em enabled} and a resource method's signature obeys the rules for getters, the resource method may be (unintentionally) invoked during validation. Conversely, if validation for getter methods is {\em disabled} and the {\em matching} resource method's signature obeys the rules for getters, the resource method will still be validated before invocation.
+Note that if validation for getter methods is {\em enabled} and a resource method's signature obeys the rules for getters, the resource method may be (unintentionally) invoked during validation. Conversely, if validation for getter methods is {\em disabled} and the {\em matching} resource method's signature obeys the rules for getters, the resource method will be validated before being invoked by the JAX-RS runtime.
 
 \section{Annotation Inheritance}
 \label{annotation_inheritance}
