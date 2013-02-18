@@ -40,6 +40,7 @@
 
 package jaxrs.examples.link.clusterservice;
 
+import java.net.URI;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -110,11 +111,12 @@ public class MachineResource {
 
     private Link[] getTransitionalLinks() {
         String name = machine.getName();
-
-        Link self = Link.fromMethod(getClass(), "self").rel("self").buildRelativized(uriInfo, name);
-        Link starter = Link.fromMethod(getClass(), "starter").rel("starter").buildRelativized(uriInfo, name);
-        Link stopper = Link.fromMethod(getClass(), "stopper").rel("stopper").buildRelativized(uriInfo, name);
-        Link suspender = Link.fromMethod(getClass(), "suspender").rel("suspender").buildRelativized(uriInfo, name);
+        URI uri = uriInfo.getRequestUri();
+        
+        Link self = Link.fromMethod(getClass(), "self").rel("self").buildRelativized(uri, name);
+        Link starter = Link.fromMethod(getClass(), "starter").rel("starter").buildRelativized(uri, name);
+        Link stopper = Link.fromMethod(getClass(), "stopper").rel("stopper").buildRelativized(uri, name);
+        Link suspender = Link.fromMethod(getClass(), "suspender").rel("suspender").buildRelativized(uri, name);
 
         switch (machine.getStatus()) {
             case STOPPED:

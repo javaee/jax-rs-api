@@ -40,6 +40,7 @@
 
 package jaxrs.examples.link.clusterservice;
 
+import java.net.URI;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -87,10 +88,11 @@ public class ClusterResource {
     }
 
     private Link[] getTransitionalLinks() {
-        Link self = Link.fromMethod(getClass(), "self").rel("self").buildRelativized(uriInfo);
-        Link item = Link.fromMethod(MachineResource.class, "self").rel("item").buildRelativized(uriInfo);
-        Link onliner = Link.fromMethod(getClass(), "onliner").rel("onliner").buildRelativized(uriInfo);
-        Link offliner = Link.fromMethod(getClass(), "offliner").rel("offliner").buildRelativized(uriInfo);
+        URI uri = uriInfo.getRequestUri();
+        Link self = Link.fromMethod(getClass(), "self").rel("self").buildRelativized(uri);
+        Link item = Link.fromMethod(MachineResource.class, "self").rel("item").buildRelativized(uri);
+        Link onliner = Link.fromMethod(getClass(), "onliner").rel("onliner").buildRelativized(uri);
+        Link offliner = Link.fromMethod(getClass(), "offliner").rel("offliner").buildRelativized(uri);
         
         return cluster.getStatus() == Status.ONLINE ?
                 new Link[] {self, item, offliner} : new Link[] {self, item, onliner};
