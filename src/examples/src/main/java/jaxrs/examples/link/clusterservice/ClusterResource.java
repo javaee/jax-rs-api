@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,10 +37,10 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-
 package jaxrs.examples.link.clusterservice;
 
 import java.net.URI;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -93,9 +93,9 @@ public class ClusterResource {
         Link item = Link.fromMethod(MachineResource.class, "self").rel("item").buildRelativized(uri);
         Link onliner = Link.fromMethod(getClass(), "onliner").rel("onliner").buildRelativized(uri);
         Link offliner = Link.fromMethod(getClass(), "offliner").rel("offliner").buildRelativized(uri);
-        
+
         return cluster.getStatus() == Status.ONLINE ?
-                new Link[] {self, item, offliner} : new Link[] {self, item, onliner};
+                new Link[]{self, item, offliner} : new Link[]{self, item, onliner};
     }
 
 }
