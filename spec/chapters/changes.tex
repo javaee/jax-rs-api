@@ -9,6 +9,7 @@
 \item Section \ref{standard_entity_providers}: Special case for zero-length entities and primitive types.
 \item Chapter \ref{client_api}: Updated samples and text related to the configuration of Client API types. Method \code{configuration} has been removed in favor of the \code{Configurable} interface.
 \item Chapter \ref{client_api}: \code{ClientFactory} renamed to \code{ClientBuilder}.
+\item Chapter \ref{client_api}: Dropped support for \code{@Uri} annotation.
 \item Section \ref{entity_interceptors}: New paragraph clarifying that entity interceptors are not called if a \code{readFrom} or \code{writeTo} method is called directly from application code.
 \item Section \ref{entity_interceptors}: Improved \code{GzipInterceptor} sample.
 \item Section \ref{Name_Binding}: Clarified name binding with multiple annotations. Made semantics compatible with CDI interceptor binding. Name binding with \code{Application} subclasses.
@@ -20,6 +21,7 @@
 \item Section \ref{default_validation_mode}: New section about default validation and \code{@ValidateExecutable}.
 \item Section \ref{validation_and_error_reporting}: Restored validation phases.
 \item Section \ref{jsonp}: New section about integration with JSON-P.
+
 \end{itemize}
 
 \section{Changes Since 2.0 Early Draft (Third Edition)}
@@ -34,7 +36,6 @@
 \item Section \ref{entity_providers}: Removed steps that required the use of the JavaBeans Activation Framework\cite{jaf} to map objects to representations and vice-versa. The EG deemed this feature to be confusing and not portable across implementations.
 \item Section \ref{standard_entity_providers}: Support for pre-packaged readers and writers for Java types \code{java.lang.Boolean}, \code{java.lang.Character}, \code{java.lang.Number} and media type \code{text/plain}.
 \item Section \ref{standard_entity_providers}: Detailed behavior for readers and zero-length request entities.
-\item Section \ref{uri_annotation}: New section that explains the use of the \code{@Uri} annotation.
 \item Section \ref{dynamic_binding}: \code{DynamicBinder} replaced by \code{DynamicFeature}.
 \item Section \ref{exceptions_filters_and_interceptors}: Clarified processing of responses mapped using exception mappers. 
 %\item Section \ref{annotations_and_validators}: Explained notion of processing groups and use of \code{Default} group.
