@@ -449,7 +449,7 @@ public abstract class Link {
         }
 
         /**
-         * Construct an instance from URI and a some parameters.
+         * Construct an instance from a URI and some parameters.
          *
          * @param uri underlying URI.
          * @param params parameters of this link.
