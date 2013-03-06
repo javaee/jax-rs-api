@@ -1,4 +1,4 @@
-\chapter{Filters and Interceptors}
+M\chapter{Filters and Interceptors}
 \label{filters_and_interceptors}
 
 Filters and entity interceptors can be registered for execution at well-defined extension points in \jaxrs\ implementations. They are used to extend an implementation in order to provide capabilities such as logging, confidentiality, authentication, entity compression, etc. 
@@ -145,7 +145,7 @@ class GzipInterceptor implements ReaderInterceptor, WriterInterceptor {
 }
 \end{listing}
 
-The context types, \ReaderInterceptorContext\ and \WriterInterceptorContext, provide read and write access to the parameters of the corresponding wrapped methods. In the example shown above, the input and output streams are wrapped and updated in the context object before proceeding. \jaxrs\ implementations MUST use the last parameter values set in the context object when calling the wrapped methods \code{MessageBodyReader.readFrom} and \code{MessageBodyWrite.writeTo}.
+The context types, \ReaderInterceptorContext\ and \WriterInterceptorContext, provide read and write access to the parameters of the corresponding wrapped methods. In the example shown above, the input and output streams are wrapped and updated in the context object before proceeding. \jaxrs\ implementations MUST use the last parameter values set in the context object when calling the wrapped methods \code{MessageBodyReader.readFrom} and \code{MessageBodyWriter.writeTo}.
 
 It is worth noting that a \code{readFrom} or a \code{writeTo} that is called directly from application code, e.g.~via the injection of a \code{Providers} instance, will \emph{not} trigger the execution of any entity interceptors since it is not part of the normal JAX-RS processing pipeline. 
 
