@@ -51,7 +51,7 @@ The benefits of using a \WebTarget\ become apparent when building complex URIs, 
 \begin{listing}{1}
 WebTarget base = client.target("http://example.org/");
 WebTarget hello = base.path("hello").path("{whom}");   
-Response res = hello.pathParam("whom", "world").request("...").get();
+Response res = hello.resolveTemplate("whom", "world").request("...").get();
 \end{listing}
 
 Note the use of the URI template parameter~\code{\{whom\}}. The example above gets a representation for the resource identified by \code{http://example.org/hello/world}.

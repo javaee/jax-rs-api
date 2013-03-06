@@ -123,8 +123,8 @@ The response type is specified as a type parameter to \code{InvocationCallback}.
 All asynchronous invocations return an instance of \code{Future<T>} here the type parameter \code{T} matches the type specified in \code{InvocationCallback}. This instance can be used to monitor or cancel the asynchronous invocation:
 
 \begin{listing}{1}
-Future<Customer> ff = target.pathParam("id", 123).request().async().get(
-    new InvocationCallback<Customer>() {
+Future<Customer> ff = target.resolveTemplate("id", 123).request().async()
+    .get(new InvocationCallback<Customer>() {
         @Override
         public void completed(Customer customer) {
             // Do something
