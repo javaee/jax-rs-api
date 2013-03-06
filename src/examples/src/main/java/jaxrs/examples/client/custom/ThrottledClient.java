@@ -52,6 +52,7 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
 /**
@@ -165,6 +166,11 @@ public final class ThrottledClient implements Client {
 
     @Override
     public SSLContext getSslContext() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public HostnameVerifier getHostnameVerifier() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
