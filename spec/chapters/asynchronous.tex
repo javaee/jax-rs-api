@@ -47,13 +47,14 @@ A timeout value can be specified when suspending a connection to avoid waiting f
         // Register handler and set timeout
         ar.setTimeoutHandler(new TimeoutHandler() {
             public void handleTimeout(AsyncResponse ar) {
-                ar.resume("Operation timed out -- please try again");
-            }
+                ar.resume(Response.status(SERVICE_UNAVAILABLE).entity(
+                    "Operation timed out -- please try again").build());                    
+                }
         });
         ar.setTimeout(15, SECONDS);
         
         // Execute long running operation in new thread
-        executor.submit(
+        executor.execute(
             new Runnable() {
                 public void run() {
                     executeLongRunningOp();
