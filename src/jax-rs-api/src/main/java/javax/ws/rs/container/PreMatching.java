@@ -53,6 +53,8 @@ import java.lang.annotation.Target;
  * The JAX-RS runtime will apply the filters marked with the {@code @PreMatching}
  * annotation globally to all resources, before the incoming request has been matched
  * to a particular resource method.
+ * Any {@link javax.ws.rs.NameBinding named binding annotations} will be ignored on
+ * a component annotated with the {@code @PreMatching} annotation.
  * </p>
  *
  * @author Marek Potociar
