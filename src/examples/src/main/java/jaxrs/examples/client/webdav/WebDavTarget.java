@@ -176,11 +176,6 @@ public class WebDavTarget implements WebTarget {
     }
 
     @Override
-    public WebDavTarget replaceWith(Configuration config) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Configuration getConfiguration() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

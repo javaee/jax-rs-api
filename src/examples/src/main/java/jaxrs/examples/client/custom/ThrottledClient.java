@@ -73,12 +73,6 @@ public final class ThrottledClient implements Client {
         this.requestQueue = new ArrayBlockingQueue<ClientRequestContext>(queueCapacity);
     }
 
-    public ThrottledClient(Configuration config, int queueCapacity) {
-        this(queueCapacity);
-
-        replaceWith(config);
-    }
-
     @Override
     public void close() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -151,11 +145,6 @@ public final class ThrottledClient implements Client {
 
     @Override
     public ThrottledClient register(Object provider, Map<Class<?>, Integer> contracts) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public ThrottledClient replaceWith(Configuration config) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

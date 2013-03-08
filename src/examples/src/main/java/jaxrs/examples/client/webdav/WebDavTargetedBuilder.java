@@ -324,12 +324,6 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
-    @Override
-    public WebDavTargetedBuilder replaceWith(Configuration config) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Override
     public Configuration getConfiguration() {
         throw new UnsupportedOperationException("Not supported yet.");
