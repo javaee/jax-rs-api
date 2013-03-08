@@ -112,11 +112,16 @@ public class MachineResource {
     private Link[] getTransitionalLinks() {
         String name = machine.getName();
         URI uri = uriInfo.getRequestUri();
+        URI baseUri = uriInfo.getBaseUri();
 
-        Link self = Link.fromMethod(getClass(), "self").rel("self").buildRelativized(uri, name);
-        Link starter = Link.fromMethod(getClass(), "starter").rel("starter").buildRelativized(uri, name);
-        Link stopper = Link.fromMethod(getClass(), "stopper").rel("stopper").buildRelativized(uri, name);
-        Link suspender = Link.fromMethod(getClass(), "suspender").rel("suspender").buildRelativized(uri, name);
+        Link self = Link.fromMethod(getClass(), "self").baseUri(baseUri)
+                .rel("self").buildRelativized(uri, name);
+        Link starter = Link.fromMethod(getClass(), "starter").baseUri(baseUri)
+                .rel("starter").buildRelativized(uri, name);
+        Link stopper = Link.fromMethod(getClass(), "stopper").baseUri(baseUri)
+                .rel("stopper").buildRelativized(uri, name);
+        Link suspender = Link.fromMethod(getClass(), "suspender").baseUri(baseUri)
+                .rel("suspender").buildRelativized(uri, name);
 
         switch (machine.getStatus()) {
             case STOPPED:

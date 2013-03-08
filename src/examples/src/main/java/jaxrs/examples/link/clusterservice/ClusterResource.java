@@ -89,10 +89,11 @@ public class ClusterResource {
 
     private Link[] getTransitionalLinks() {
         URI uri = uriInfo.getRequestUri();
-        Link self = Link.fromMethod(getClass(), "self").rel("self").buildRelativized(uri);
-        Link item = Link.fromMethod(MachineResource.class, "self").rel("item").buildRelativized(uri);
-        Link onliner = Link.fromMethod(getClass(), "onliner").rel("onliner").buildRelativized(uri);
-        Link offliner = Link.fromMethod(getClass(), "offliner").rel("offliner").buildRelativized(uri);
+        URI baseUri = uriInfo.getBaseUri();
+        Link self = Link.fromMethod(getClass(), "self").baseUri(baseUri).rel("self").buildRelativized(uri);
+        Link item = Link.fromMethod(MachineResource.class, "self").baseUri(baseUri).rel("item").buildRelativized(uri);
+        Link onliner = Link.fromMethod(getClass(), "onliner").baseUri(baseUri).rel("onliner").buildRelativized(uri);
+        Link offliner = Link.fromMethod(getClass(), "offliner").baseUri(baseUri).rel("offliner").buildRelativized(uri);
 
         return cluster.getStatus() == Status.ONLINE ?
                 new Link[]{self, item, offliner} : new Link[]{self, item, onliner};
