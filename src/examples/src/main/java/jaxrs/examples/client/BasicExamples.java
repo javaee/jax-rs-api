@@ -337,8 +337,8 @@ public class BasicExamples {
         TestFeature testFeature = new TestFeature();
         client.register(testFeature);
         client.target("http://examples.jaxrs.com/").register(testFeature);
-        client.target("http://examples.jaxrs.com/").request("text/plain").register(testFeature);
-        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().register(testFeature);
+        client.target("http://examples.jaxrs.com/").request("text/plain").property("foo", "bar");
+        client.target("http://examples.jaxrs.com/").request("text/plain").buildGet().property("foo", "bar");
     }
 
     public void invocationFlexibility() {

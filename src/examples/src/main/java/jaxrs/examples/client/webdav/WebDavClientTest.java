@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -69,8 +69,8 @@ public class WebDavClientTest {
 
         client.target("http://examples.jaxrs.com/webdav/");
         client.target("http://examples.jaxrs.com/webdav/").register(testFeature);
-        client.target("http://examples.jaxrs.com/webdav/").request().register(testFeature);
-        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().register(testFeature);
+        client.target("http://examples.jaxrs.com/webdav/").request().property("foo", "bar");
+        client.target("http://examples.jaxrs.com/webdav/").request().buildGet().property("foo", "bar");
 
         // HTTP
         client.target("http://examples.jaxrs.com/webdav/").request().get();

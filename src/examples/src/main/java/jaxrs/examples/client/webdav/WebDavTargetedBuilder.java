@@ -40,13 +40,11 @@
 package jaxrs.examples.client.webdav;
 
 import java.util.Locale;
-import java.util.Map;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -281,51 +279,6 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
 
     @Override
     public WebDavTargetedBuilder property(String name, Object value) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Class<?> componentClass) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Class<?> componentClass, int priority) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Class<?> componentClass, Class<?>... contracts) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Class<?> providerClass, Map<Class<?>, Integer> contracts) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Object component) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Object component, int priority) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Object component, Class<?>... contracts) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public WebDavTargetedBuilder register(Object provider, Map<Class<?>, Integer> contracts) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Configuration getConfiguration() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
