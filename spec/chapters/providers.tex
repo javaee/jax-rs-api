@@ -32,7 +32,7 @@ Entity providers supply mapping services between representations and their assoc
 
 The \MsgRead\ interface defines the contract between the \jaxrs\ runtime and components that provide mapping services from representations to a corresponding Java type. A class wishing to provide such a service implements the \MsgRead\ interface and may be annotated with \Provider\ for automatic discovery.
 
-The following describes the logical\footnote{Implementations are free to optimize their processing provided the results are equivalent to those that would be obtained if these steps are followed.} steps taken by a \jaxrs\ implementation when mapping a request entity body to a Java method parameter:
+The following describes the logical\footnote{Implementations are free to optimize their processing provided the results are equivalent to those that would be obtained if these steps are followed.} steps taken by a \jaxrs\ implementation when mapping a message entity body to a Java method parameter:
 
 \begin{enumerate}
 \item Obtain the media type of the request. If the request does not contain a \code{Content-Type} header then use \code{application/octet-stream}.
@@ -50,12 +50,12 @@ See Section \ref{exceptions_providers} for more information on handling exceptio
 
 The \MsgWrite\ interface defines the contract between the \jaxrs\ runtime and components that provide mapping services from a Java type to a representation. A class wishing to provide such a service implements the \MsgWrite\ interface and may be annotated with \Provider\ for automatic discovery.
 
-The following describes the logical steps taken by a \jaxrs\ implementation when mapping a return value to a response entity body:
+The following describes the logical steps taken by a \jaxrs\ implementation when mapping a return value to a message entity body:
 
 \begin{enumerate}
-\item Obtain the object that will be mapped to the response entity body. For a return type of \Response\ or subclasses, the object is the value of the \code{entity} property, for other return types it is the returned object.
+\item Obtain the object that will be mapped to the message entity body. For a return type of \Response\ or subclasses, the object is the value of the \code{entity} property, for other return types it is the returned object.
 \item Determine the media type of the response, see Section \ref{determine_response_type}.
-\item Select the set of \MsgWrite\ providers that support (see Section \ref{declaring_provider_capabilities}) the object and media type of the response entity body.
+\item Select the set of \MsgWrite\ providers that support (see Section \ref{declaring_provider_capabilities}) the object and media type of the message entity body.
 \item\label{item_sort} Sort the selected \MsgWrite\ providers with a primary key of generic type where providers whose generic type is the nearest superclass of the object class are sorted first and a secondary key of media type (see Section \ref{declaring_provider_capabilities}).
 \item\label{findwriter} Iterate through the sorted \MsgWrite\ providers and, utilizing the \code{isWriteable} method of each, choose an \MsgWrite\ that supports the object that will be mapped to the entity body.
 \item If step \ref{findwriter} locates a suitable \MsgWrite\ then use its \code{writeTo} method to map the object to the entity body. 
@@ -97,7 +97,7 @@ types of the form \code{application/*+xml}).
 \item[\code{java.lang.Boolean}, \code{java.lang.Character}, \code{java.lang.Number} \label{primitive_types}] Only for \code{text/plain}. Corresponding primitive types supported via boxing/unboxing conversion.
 \end{description}
 
-When reading zero-length request entities all pre-packaged \MsgRead\ implementations, except the JAXB-related one and those for the (boxed) primitive types above, MUST create a corresponding Java object that represents zero-length data; they MUST NOT return null. The pre-packaged JAXB and the pre-packaged primitive type \MsgRead's MUST throw a \code{BadRequestException} (400 status) for zero-length request entities. Moreover, all pre-packaged \MsgRead\ implementations SHOULD throw a \code{BadRequestException} (400 status) if any other error is encountered while reading a request entity.
+When reading zero-length message entities all pre-packaged \MsgRead\ implementations, except the JAXB-related one and those for the (boxed) primitive types above, MUST create a corresponding Java object that represents zero-length data; they MUST NOT return null. The pre-packaged JAXB and the pre-packaged primitive type \MsgRead's MUST throw a \code{BadRequestException} (400 status) for zero-length message entities. Moreover, all pre-packaged \MsgRead\ implementations SHOULD throw a \code{BadRequestException} (400 status) if any other error is encountered while reading a message entity.
 
 The implementation-supplied entity provider(s) for \code{javax\-.xml\-.bind\-.JAXBElement} and application-supplied JAXB classes MUST use \code{JAXBContext} instances provided by application-supplied context resolvers, see Section \ref{contextprovider}. If an application does not supply a \code{JAXBContext} for a particular type, the implementation-supplied entity provider MUST use its own default context instead.
 
