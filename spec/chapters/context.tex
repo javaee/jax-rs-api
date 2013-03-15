@@ -120,3 +120,29 @@ public class WidgetResource {
 \end{listing}
 
 Note that the instance returned by the resource locator \code{findWidget} in \code{WidgetsResource} is initialized using the injected \code{ResourceContext} before it is returned. Without this step, the \code{headers} field in \code{WidgetResource} will not be properly initialized.
+
+\subsection{Configuration}
+\label{configuration_injection}
+
+Both the client and the server runtime configurations are available for injection via \Context. These configurations are available for injection in providers (client or server) and resource classes (server only). 
+
+As an example, consider the case of a client logging filter that not only logs messages but also logs information about certain features enabled during the processing of a request:
+
+\begin{listing}{1}
+public class LoggingFilter implements ClientRequestFilter {
+
+  @Context
+  private Configuration config;
+
+  @Override
+  public void filter(ClientRequestContext ctx) throws IOException {
+    if (config.isEnabled(MyFeature.class)) {
+      logMyFeatureEnabled(ctx);
+    }
+    logMessage(ctx);
+  }
+  ...
+}
+\end{listing}
+
+A client runtime configuration is injected in the filter shown above and its \code{isEnabled} method called to check if \code{MyFeature} is enabled.
