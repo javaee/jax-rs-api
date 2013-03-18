@@ -37,7 +37,7 @@ A resource method that elects to produce a response asynchronously must inject a
 For more information on executors, concurrency and thread management in a Java EE environment, the reader is referred to JSR 236 \cite{concurrencyee}.
 
 \subsection{Timeouts and Callbacks}
-\label{suspend_annotation} %% Update label here
+\label{timeouts_and_callbacks}
 
 A timeout value can be specified when suspending a connection to avoid waiting for a response indefinitely. The default unit is milliseconds, but any unit of type \code{java.util.concurrent.TimeUnit} can be used. The following example sets a timeout of 15 seconds and registers an instance of \code{TimeoutHandler} in case the timeout is reached before the connection is resumed.
 
