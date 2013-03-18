@@ -174,14 +174,14 @@ Note that \code{@PremiumUser} is explicitly listed and \code{@StandardUser} is t
 \section{Default Validation Mode}
 \label{default_validation_mode}
 
-According to \cite{bv11}, validation is enabled by default only for the so called {\em constrained} methods. Getter methods as defined by the Java Beans specification are not constrained methods, so they will not be validated by default. The special annotation \code{@ValidateExecutable} defined in \cite{bv11} can be used to selectively enable and disable validation. For example, you can enable validation on method \code{getEmail} shown above as follows:
+According to \cite{bv11}, validation is enabled by default only for the so called {\em constrained} methods. Getter methods as defined by the Java Beans specification are not constrained methods, so they will not be validated by default. The special annotation \code{@ValidateOnExecution} defined in \cite{bv11} can be used to selectively enable and disable validation. For example, you can enable validation on method \code{getEmail} shown above as follows:
 
 \begin{listing}{1}
 @Path("/")
-@ValidateExecutable(type=GETTER_METHODS)
 class MyResourceClass {
 
   @Email
+  @ValidateOnExecution
   public String getEmail() {
     return email;
   }
@@ -189,9 +189,9 @@ class MyResourceClass {
 }
 \end{listing}
 
-The annotation \code{@ValidateExecutable} can be applied to the class, as shown above, or directly to the method in question. See \cite{bv11} for more information on other uses of this annotation.
+The default value for the \code{type} attribute of \code{@ValidateOnExecution} is \code{IMPLICIT} which, in the example above, results in method \code{getEmail} being validated. See \cite{bv11} for more information on other uses of this annotation. 
 
-Note that if validation for getter methods is {\em enabled} and a resource method's signature obeys the rules for getters, the resource method may be (unintentionally) invoked during validation. Conversely, if validation for getter methods is {\em disabled} and the {\em matching} resource method's signature obeys the rules for getters, the resource method will be validated before being invoked by the JAX-RS runtime.
+Note that if validation for getter methods is {\em enabled} and a resource method's signature obeys the rules for getters, the resource method may be (unintentionally) invoked during validation. Conversely, if validation for getter methods is {\em disabled} and the {\em matching} resource method's signature obeys the rules for getters, the JAX-RS runtime will still validate the method (i.e., the validation preference will be ignored) before invocation.
 
 \section{Annotation Inheritance}
 \label{annotation_inheritance}
@@ -211,7 +211,7 @@ The default resource class instance lifecycle is per-request in JAX-RS. Implemen
 
 \begin{description}
 \item[Phase 1] Inject field values and initialize bean properties as described in Section \ref{resource_field}.
-\item[Phase 2] Validate annotations on resource classes, fields and property getters (if enabled). The order in which these validations are executed is implementation dependent.
+\item[Phase 2] Validate annotations on fields, property getters (if enabled) and the resource class. The order in which these validations are executed is implementation dependent.
 \item[Phase 3] Validate annotations on parameters passed to the resource method matched. 
 \item[Phase 4] If no constraint violations found thus far, invoke resource method and validate returned value. 
 \end{description}
