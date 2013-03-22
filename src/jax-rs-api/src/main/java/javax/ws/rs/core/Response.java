@@ -137,14 +137,16 @@ public abstract class Response {
      *
      * @param <T>        entity instance Java type.
      * @param entityType the type of entity.
-     * @return the message entity; for a zero-length response entities returns {@code null}
-     *         or a corresponding Java object that represents zero-length data.
-     * @throws ProcessingException if the content of the message cannot be
-     *                                    mapped to an entity of the requested type.
-     * @throws IllegalStateException      if the entity is not backed by an input stream,
-     *                                    the response has been {@link #close() closed} already,
-     *                                    or if the entity input stream has been fully consumed already and has
-     *                                    not been buffered prior consuming.
+     * @return the message entity; for a zero-length response entities returns a corresponding
+     *         Java object that represents zero-length data. In case no zero-length representation
+     *         is defined for the Java type, a {@link ProcessingException} wrapping the
+     *         underlying {@link NoContentException} is thrown.
+     * @throws ProcessingException   if the content of the message cannot be
+     *                               mapped to an entity of the requested type.
+     * @throws IllegalStateException if the entity is not backed by an input stream,
+     *                               the response has been {@link #close() closed} already,
+     *                               or if the entity input stream has been fully consumed already and has
+     *                               not been buffered prior consuming.
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
@@ -174,14 +176,16 @@ public abstract class Response {
      *
      * @param <T>        entity instance Java type.
      * @param entityType the type of entity; may be generic.
-     * @return the message entity; for a zero-length response entities returns {@code null}
-     *         or a corresponding Java object that represents zero-length data.
-     * @throws ProcessingException if the content of the message cannot be
-     *                                    mapped to an entity of the requested type.
-     * @throws IllegalStateException      if the entity is not backed by an input stream,
-     *                                    the response has been {@link #close() closed} already,
-     *                                    or if the entity input stream has been fully consumed already and has
-     *                                    not been buffered prior consuming.
+     * @return the message entity; for a zero-length response entities returns a corresponding
+     *         Java object that represents zero-length data. In case no zero-length representation
+     *         is defined for the Java type, a {@link ProcessingException} wrapping the
+     *         underlying {@link NoContentException} is thrown.
+     * @throws ProcessingException   if the content of the message cannot be
+     *                               mapped to an entity of the requested type.
+     * @throws IllegalStateException if the entity is not backed by an input stream,
+     *                               the response has been {@link #close() closed} already,
+     *                               or if the entity input stream has been fully consumed already and has
+     *                               not been buffered prior consuming.
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
@@ -212,14 +216,16 @@ public abstract class Response {
      * @param <T>         entity instance Java type.
      * @param entityType  the type of entity.
      * @param annotations annotations that will be passed to the {@link MessageBodyReader}.
-     * @return the message entity; for a zero-length response entities returns {@code null}
-     *         or a corresponding Java object that represents zero-length data.
-     * @throws ProcessingException if the content of the message cannot be
-     *                                    mapped to an entity of the requested type.
-     * @throws IllegalStateException      if the entity is not backed by an input stream,
-     *                                    the response has been {@link #close() closed} already,
-     *                                    or if the entity input stream has been fully consumed already and has
-     *                                    not been buffered prior consuming.
+     * @return the message entity; for a zero-length response entities returns a corresponding
+     *         Java object that represents zero-length data. In case no zero-length representation
+     *         is defined for the Java type, a {@link ProcessingException} wrapping the
+     *         underlying {@link NoContentException} is thrown.
+     * @throws ProcessingException   if the content of the message cannot be
+     *                               mapped to an entity of the requested type.
+     * @throws IllegalStateException if the entity is not backed by an input stream,
+     *                               the response has been {@link #close() closed} already,
+     *                               or if the entity input stream has been fully consumed already and has
+     *                               not been buffered prior consuming.
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
@@ -250,14 +256,16 @@ public abstract class Response {
      * @param <T>         entity instance Java type.
      * @param entityType  the type of entity; may be generic.
      * @param annotations annotations that will be passed to the {@link MessageBodyReader}.
-     * @return the message entity; for a zero-length response entities returns {@code null}
-     *         or a corresponding Java object that represents zero-length data.
-     * @throws ProcessingException if the content of the message cannot be
-     *                                    mapped to an entity of the requested type.
-     * @throws IllegalStateException      if the entity is not backed by an input stream,
-     *                                    the response has been {@link #close() closed} already,
-     *                                    or if the entity input stream has been fully consumed already and has
-     *                                    not been buffered prior consuming.
+     * @return the message entity; for a zero-length response entities returns a corresponding
+     *         Java object that represents zero-length data. In case no zero-length representation
+     *         is defined for the Java type, a {@link ProcessingException} wrapping the
+     *         underlying {@link NoContentException} is thrown.
+     * @throws ProcessingException   if the content of the message cannot be
+     *                               mapped to an entity of the requested type.
+     * @throws IllegalStateException if the entity is not backed by an input stream,
+     *                               the response has been {@link #close() closed} already,
+     *                               or if the entity input stream has been fully consumed already and has
+     *                               not been buffered prior consuming.
      * @see javax.ws.rs.ext.MessageBodyReader
      * @since 2.0
      */
@@ -307,9 +315,9 @@ public abstract class Response {
      * @return {@code true} if the message entity input stream was available and
      *         was buffered successfully, returns {@code false} if the entity stream
      *         was not available.
-     * @throws ProcessingException if there was an error while buffering the entity
-     *                                    input stream.
-     * @throws IllegalStateException      in case the response has been {@link #close() closed}.
+     * @throws ProcessingException   if there was an error while buffering the entity
+     *                               input stream.
+     * @throws IllegalStateException in case the response has been {@link #close() closed}.
      * @since 2.0
      */
     public abstract boolean bufferEntity();
