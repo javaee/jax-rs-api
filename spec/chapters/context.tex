@@ -10,7 +10,7 @@ Context is specific to a particular request but instances of certain \jaxrs\ com
 \section{Context Types}
 \label{contexttypes}
 
-This section describes the types of context available to resource classes, providers and \code{Application} subclasses.
+This section describes the types of context available to providers (client and server) as well as resource classes and \code{Application} subclasses (server only). Except for \code{Configuration} and \code{Providers}, which are injectable in both client and server-side providers, all the other types are server-side only.
 
 \subsection{Application}
 
@@ -87,7 +87,7 @@ The \SecurityContext\ interface provides access to information about the securit
 
 The \code{Providers} interface allows for lookup of provider instances based on a set of search criteria. An instance of \code{Providers} can be injected into a class field or method parameter using the \Context\ annotation.
 
-This interface is expected to be primarily of interest to provider authors wishing to use other providers functionality.
+This interface is expected to be primarily of interest to provider authors wishing to use other providers functionality. It is injectable in both client and server providers.
 
 \subsection{Resource Context}
 \label{resource_context}

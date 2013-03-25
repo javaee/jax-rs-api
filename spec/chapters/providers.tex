@@ -40,7 +40,7 @@ The following describes the logical\footnote{Implementations are free to optimiz
 \item Select the set of \MsgRead\ classes that support the media type of the request, see Section \ref{declaring_provider_capabilities}.
 \item\label{findreader} Iterate through the selected \MsgRead\ classes and, utilizing the \code{isReadable} method of each, choose a \MsgRead\ provider that supports the desired Java type.
 \item If step \ref{findreader} locates a suitable \MsgRead\ then use its \code{readFrom} method to map the entity body to the desired Java type.
-\item Else generate a \code{NotSupportedException} (415 status) and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
+\item Otherwise, the server runtime MUST generate a \code{NotSupportedException} (415 status) and no entity (to be processed as described in Section \ref{method_exc}) and the client runtime MUST generate an instance of \code{ProcessingException}.
 \end{enumerate}
 
 See Section \ref{exceptions_providers} for more information on handling exceptions thrown in \MsgRead\code{.readFrom}.
@@ -59,7 +59,8 @@ The following describes the logical steps taken by a \jaxrs\ implementation when
 \item\label{item_sort} Sort the selected \MsgWrite\ providers with a primary key of generic type where providers whose generic type is the nearest superclass of the object class are sorted first and a secondary key of media type (see Section \ref{declaring_provider_capabilities}).
 \item\label{findwriter} Iterate through the sorted \MsgWrite\ providers and, utilizing the \code{isWriteable} method of each, choose an \MsgWrite\ that supports the object that will be mapped to the entity body.
 \item If step \ref{findwriter} locates a suitable \MsgWrite\ then use its \code{writeTo} method to map the object to the entity body. 
-\item Else generate an \code{InternalServerErrorException}, a subclass of \WebAppExc\ with its status set to 500, and no entity. The exception MUST be processed as described in Section \ref{method_exc}.
+\item Otherwise, the server runtime MUST generate a generate an \code{InternalServerErrorException}, a subclass of \WebAppExc\ with its status set to 500, and no entity (to be processed as described in Section \ref{method_exc}) and the client runtime MUST generate a \code{ProcessingException}.
+
 \end{enumerate}
 
 Experience gained in the field has resulted in the reversal of the sorting keys in step
@@ -97,7 +98,9 @@ types of the form \code{application/*+xml}).
 \item[\code{java.lang.Boolean}, \code{java.lang.Character}, \code{java.lang.Number} \label{primitive_types}] Only for \code{text/plain}. Corresponding primitive types supported via boxing/unboxing conversion.
 \end{description}
 
-When reading zero-length message entities all pre-packaged \MsgRead\ implementations, except the JAXB-related one and those for the (boxed) primitive types above, MUST create a corresponding Java object that represents zero-length data; they MUST NOT return null. The pre-packaged JAXB and the pre-packaged primitive type \MsgRead's MUST throw a \code{BadRequestException} (400 status) for zero-length message entities. Moreover, all pre-packaged \MsgRead\ implementations SHOULD throw a \code{BadRequestException} (400 status) if any other error is encountered while reading a message entity.
+When reading zero-length message entities all pre-packaged \MsgRead\ implementations, except the JAXB one and those for the (boxed) primitive types above, MUST create a corresponding Java object that represents zero-length data. The pre-packaged JAXB and the pre-packaged primitive type \MsgRead\ implementations MUST throw a \code{NoContentException} for zero-length message entities. 
+
+When a \code{NoContentException} is thrown while reading a server request entity from a \MsgRead\, it MUST be translated by the server runtime into a \code{BadRequestException} wrapping the original \code{NoContentException} and re-thrown to be processed by any registered exception mappers.
 
 The implementation-supplied entity provider(s) for \code{javax\-.xml\-.bind\-.JAXBElement} and application-supplied JAXB classes MUST use \code{JAXBContext} instances provided by application-supplied context resolvers, see Section \ref{contextprovider}. If an application does not supply a \code{JAXBContext} for a particular type, the implementation-supplied entity provider MUST use its own default context instead.
 
@@ -144,13 +147,20 @@ Note that exception mapping providers are {\em not} supported as part of the Cli
 \section{Exceptions}
 \label{exceptions_providers}
 
-When a provider method throws an exception, the \jaxrs\ runtime will attempt to map the exception to a suitable HTTP response in the same way as described for methods and locators in Section \ref{method_exc}. If the exception is thrown
+Exception handling differs depending on whether a provider is part of the client runtime or server runtime. This is covered in the next two sections.
+
+\subsection{Server Runtime}
+\label{exceptions_providers_server}
+
+When a provider method throws an exception, the \jaxrs\ server runtime will attempt to map the exception to a suitable HTTP response in the same way as described for methods and locators in Section \ref{method_exc}. If the exception is thrown
 while generating a response, \jaxrs\ implementations are required to map the exception {\em only when} the response has not been committed yet.
 
 As explained in Section \ref{exceptionmapper}, an application can supply exception mapping providers to customize this mapping, but these exception mappers will be ignored during the processing of a {\em previously mapped} response to avoid entering a potentially infinite loop. For example, suppose a method in a message body reader throws an exception that is mapped to a response via an exception mapping provider; if the message body writer throws an exception while trying to write the mapped response, \jaxrs\ implementations will not attempt to map the exception again.
 
+\subsection{Client Runtime}
+\label{exceptions_providers_client}
 
+When a provider method throws an exception, the \jaxrs\ client runtime will map it to an instance of \code{ProcessingException} if thrown while processing a request, and to a \code{ResponseProcessingException} if thrown while processing a response. 
 
-
-
+Note that the client runtime will only throw an instance of \WebApplicationException\ (or any of its subclasses) as a result of a response from the server with status codes 3xx, 4xx or 5xx.
 
