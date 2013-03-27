@@ -59,8 +59,8 @@ public interface ClientRequestFilter {
      * Filter method called before a request has been dispatched to a client
      * transport layer.
      *
-     * Filters in the filter chain are ordered according to their priority
-     * (see {@link javax.annotation.Priority}).
+     * Filters in the filter chain are ordered according to their {@code javax.annotation.Priority}
+     * class-level annotation value.
      *
      * @param requestContext request context.
      * @throws IOException if an I/O exception occurs.
