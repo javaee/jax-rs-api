@@ -42,8 +42,8 @@
  *
  * The JAX-RS client API is a Java based API used to access Web resources.
  * It is not restricted to resources implemented using JAX-RS.
- * It's goal is to provide a higher-level abstraction compared to a {@link java.net.HttpURLConnection
- * plain HTTP communication API} as well as integration with the existing JAX-RS
+ * It provides a higher-level abstraction compared to a {@link java.net.HttpURLConnection
+ * plain HTTP communication API} as well as integration with the JAX-RS extension
  * providers, in order to enable concise and efficient implementation of
  * reusable client-side solutions that leverage existing and well
  * established client-side implementations of HTTP-based communication.
