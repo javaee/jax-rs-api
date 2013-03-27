@@ -106,7 +106,7 @@ public abstract class Response {
      * </p>
      *
      * @return the message entity or {@code null} if message does not contain an
-     *         entity body.
+     *         entity body (i.e. when {@link #hasEntity()} returns {@code false}).
      * @throws IllegalStateException if the entity was previously fully consumed
      *                               as an {@link InputStream input stream}, or
      *                               if the response has been {@link #close() closed}.
@@ -125,8 +125,7 @@ public abstract class Response {
      * without {@link #bufferEntity() buffering} the entity data prior consuming.
      * </p>
      * <p>
-     * If the message does not contain an entity body {@code null} is returned.
-     * A non-null message instance returned from this method will be cached for
+     * A message instance returned from this method will be cached for
      * subsequent retrievals via {@link #getEntity()}. Unless the supplied entity
      * type is an {@link java.io.InputStream input stream}, this method automatically
      * {@link #close() closes} the an unconsumed original response entity data stream
@@ -164,8 +163,7 @@ public abstract class Response {
      * without {@link #bufferEntity() buffering} the entity data prior consuming.
      * </p>
      * <p>
-     * If the message does not contain an entity body {@code null} is returned.
-     * A non-null message instance returned from this method will be cached for
+     * A message instance returned from this method will be cached for
      * subsequent retrievals via {@link #getEntity()}. Unless the supplied entity
      * type is an {@link java.io.InputStream input stream}, this method automatically
      * {@link #close() closes} the an unconsumed original response entity data stream
@@ -203,8 +201,7 @@ public abstract class Response {
      * without {@link #bufferEntity() buffering} the entity data prior consuming.
      * </p>
      * <p>
-     * If the message does not contain an entity body {@code null} is returned.
-     * A non-null message instance returned from this method will be cached for
+     * A message instance returned from this method will be cached for
      * subsequent retrievals via {@link #getEntity()}. Unless the supplied entity
      * type is an {@link java.io.InputStream input stream}, this method automatically
      * {@link #close() closes} the an unconsumed original response entity data stream
@@ -243,8 +240,7 @@ public abstract class Response {
      * without {@link #bufferEntity() buffering} the entity data prior consuming.
      * </p>
      * <p>
-     * If the message does not contain an entity body {@code null} is returned.
-     * A non-null message instance returned from this method will be cached for
+     * A message instance returned from this method will be cached for
      * subsequent retrievals via {@link #getEntity()}. Unless the supplied entity
      * type is an {@link java.io.InputStream input stream}, this method automatically
      * {@link #close() closes} the an unconsumed original response entity data stream
@@ -274,6 +270,15 @@ public abstract class Response {
     /**
      * Check if there is an entity available in the response. The method returns
      * {@code true} if the entity is present, returns {@code false} otherwise.
+     * <p>
+     * Note that the method may return {@code true} also for response messages with
+     * a zero-length content, in case the <tt>{@value javax.ws.rs.core.HttpHeaders#CONTENT_LENGTH}</tt> and
+     * <tt>{@value javax.ws.rs.core.HttpHeaders#CONTENT_TYPE}</tt> headers are specified in the message.
+     * In such case, an attempt to read the entity using one of the {@code readEntity(...)}
+     * methods will return a corresponding instance representing a zero-length entity for a
+     * given Java type or produce a {@link ProcessingException} in case no such instance
+     * is available for the Java type.
+     * </p>
      *
      * @return {@code true} if there is an entity present in the message,
      *         {@code false} otherwise.
