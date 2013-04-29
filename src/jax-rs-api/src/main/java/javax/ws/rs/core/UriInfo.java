@@ -383,15 +383,15 @@ public interface UriInfo {
      * </ol>
      * </p>
      *
-     * <p>Examples (for base URI {@code http://host:port/app/root/}):
+     * <p>Examples (for base URI {@code http://example.com:8080/app/root/}):
      * <br/>
-     * <br/><b>Request URI:</b> <tt>http://host:port/app/root/a/b/c</tt>
-     * <br/><b>Supplied URI:</b> <tt>a/b/c/d/e</tt>
-     * <br/><b>Returned URI:</b> <tt>d/e</tt>
+     * <br/><b>Request URI:</b> <tt>http://example.com:8080/app/root/a/b/c/resource.html</tt>
+     * <br/><b>Supplied URI:</b> <tt>a/b/c/d/file.txt</tt>
+     * <br/><b>Returned URI:</b> <tt>d/file.txt</tt>
      * <br/>
-     * <br/><b>Request URI:</b> <tt>http://host1:port1/app/root/a/b/c</tt>
-     * <br/><b>Supplied URI:</b> <tt>http://host2:port2/app2/root2/a/d/e</tt>
-     * <br/><b>Returned URI:</b> <tt>http://host2:port2/app2/root2/a/d/e</tt>
+     * <br/><b>Request URI:</b> <tt>http://example.com:8080/app/root/a/b/c/resource.html</tt>
+     * <br/><b>Supplied URI:</b> <tt>http://example2.com:9090/app2/root2/a/d/file.txt</tt>
+     * <br/><b>Returned URI:</b> <tt>http://example2.com:9090/app2/root2/a/d/file.txt</tt>
      * </p>
      *
      * <p>In the second example, the supplied URI is returned given that it is absolute
