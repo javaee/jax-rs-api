@@ -333,6 +333,23 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.3.2</version>
+                    <!--
+                        To release a non-final version:
+                        ===============================
+                        mvn release:prepare -DdryRun=false -DreleaseVersion=<release-version> \
+                                -DdevelopmentVersion=<next-dev-version> -Dtag=<release-version> -Prelease
+
+                        mvn release:perform -DconnectionUrl="scm:git:file://<path-to-local-jaxrs-repo>" -Dtag=<release-version> \
+                                -Prelease,skip-tests
+
+                        To release a final version:
+                        ===========================
+                        mvn release:prepare -DdryRun=false -DreleaseVersion=<release-version> \
+                                -DdevelopmentVersion=<next-dev-version> -Dtag=<release-version> -Prelease,final
+
+                        mvn release:perform -DconnectionUrl="scm:git:file://<path-to-local-jaxrs-repo>" -Dtag=<release-version> \
+                                -Prelease,skip-tests,final
+                    -->
                     <configuration>
                         <arguments>-Dmaven.test.skip=${skip.release.tests} ${release.arguments}</arguments>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
