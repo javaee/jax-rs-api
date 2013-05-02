@@ -95,6 +95,7 @@
         <connection>scm:git:git://java.net/jax-rs-spec~git</connection>
         <developerConnection>scm:git:ssh://git.java.net/jax-rs-spec~git</developerConnection>
         <url>http://java.net/projects/jax-rs-spec/sources/git/show</url>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
@@ -132,9 +133,19 @@
             </activation>
             <properties>
                 <!-- Final API bundle version properties -->
-                <bundle.version>${last.final.spec.version}</bundle.version>
-                <bundle.specversion>${last.final.spec.version}</bundle.specversion>
-                <bundle.spec.version>${last.final.spec.version}</bundle.spec.version>
+                <spec.version>${next.final.spec.version}</spec.version>
+                <new.spec.version />
+                <milestone.number />
+                <non.final>false</non.final>
+            </properties>
+        </profile>
+        <profile>
+            <id>skip-tests</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <skip.release.tests>true</skip.release.tests>
             </properties>
         </profile>
         <profile>
@@ -180,6 +191,7 @@
                     <version>2.4</version>
                 </plugin>
                 <plugin>
+                    <!-- This plugin generates the buildNumber property used in maven-bundle-plugin -->
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>buildnumber-maven-plugin</artifactId>
                     <version>1.1</version>
@@ -199,25 +211,49 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <!-- This plugin generates the spec.* properties used in maven-bundle-plugin -->
+                    <groupId>org.glassfish.build</groupId>
+                    <artifactId>spec-version-maven-plugin</artifactId>
+                    <version>1.2</version>
+                    <configuration>
+                        <spec>
+                            <nonFinal>${non.final}</nonFinal>
+                            <jarType>api</jarType>
+                            <specVersion>${spec.version}</specVersion>
+                            <newSpecVersion>${new.spec.version}</newSpecVersion>
+                            <specBuild>${milestone.number}</specBuild>
+                            <specImplVersion>${project.version}</specImplVersion>
+                            <apiPackage>${project.groupId}</apiPackage>
+                        </spec>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>set-spec-properties</goal>
+                                <goal>check-module</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>2.3.7</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
-                            <Specification-Title>Java API for RESTful Web Services (JAX-RS)</Specification-Title>
-                            <Specification-Vendor>Oracle Corporation</Specification-Vendor>
-                            <Specification-Version>${bundle.spec.version}</Specification-Version>
-                            <Implementation-Version>${project.version}</Implementation-Version>
-                            <Extension-Name>${project.groupId}</Extension-Name>
                             <Build-Id>${buildNumber}</Build-Id>
                             <Bundle-Description>Java API for RESTful Web Services (JAX-RS)</Bundle-Description>
-                            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                            <Bundle-Version>${bundle.version}</Bundle-Version>
-                            <specversion>${bundle.specversion}</specversion>
+                            <Bundle-Version>${spec.bundle.version}</Bundle-Version>
+                            <Bundle-SymbolicName>${spec.bundle.symbolic-name}</Bundle-SymbolicName>
+                            <DynamicImport-Package>*</DynamicImport-Package>
+                            <Extension-Name>${spec.extension.name}</Extension-Name>
+                            <Implementation-Version>${spec.implementation.version}</Implementation-Version>
+                            <Specification-Version>${spec.specification.version}</Specification-Version>
+                            <Specification-Vendor>Oracle Corporation</Specification-Vendor>
+                            <specversion>${spec.specification.version}</specversion>
                             <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
                             <_nodefaultversion>false</_nodefaultversion>
-                            <DynamicImport-Package>*</DynamicImport-Package>
                         </instructions>
                     </configuration>
                     <executions>
@@ -278,9 +314,8 @@
                     <executions>
                         <execution>
                             <id>attach-sources</id>
-                            <phase>validate</phase>
                             <goals>
-                                <goal>jar</goal>
+                                <goal>jar-no-fork</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -298,7 +333,7 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.3.2</version>
                     <configuration>
-                        <arguments>${release.arguments}</arguments>
+                        <arguments>-Dmaven.test.skip=${skip.release.tests} ${release.arguments}</arguments>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <mavenExecutorId>forked-path</mavenExecutorId>
                         <preparationGoals>clean install</preparationGoals>
@@ -397,6 +432,10 @@
                 <groupId>org.glassfish.copyright</groupId>
                 <artifactId>glassfish-copyright-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>spec-version-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
@@ -411,14 +450,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <last.final.spec.version>2.0</last.final.spec.version>
+        <last.final.spec.version>1.1</last.final.spec.version>
         <milestone.number>01</milestone.number>
-
-        <!-- Non Final API bundle version properties -->
-        <bundle.version>${last.final.spec.version}.99.m${milestone.number}</bundle.version>
-        <bundle.specversion>${last.final.spec.version}.99.m${milestone.number}</bundle.specversion>
-        <bundle.spec.version>${last.final.spec.version}.99.${milestone.number}</bundle.spec.version>
+        <next.final.spec.version>2.0</next.final.spec.version>
+        <new.spec.version>${next.final.spec.version}</new.spec.version>
+        <non.final>true</non.final>
+        <skip.release.tests>false</skip.release.tests>
+        <spec.version>${last.final.spec.version}</spec.version>
     </properties>
 
 </project>
