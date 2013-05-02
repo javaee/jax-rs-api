@@ -46,12 +46,12 @@
     <parent>
         <groupId>net.java</groupId>
         <artifactId>jvnet-parent</artifactId>
-        <version>1</version>
+        <version>4</version>
     </parent>
 
     <groupId>javax.ws.rs</groupId>
     <artifactId>javax.ws.rs-api</artifactId>
-    <version>2.0</version>
+    <version>2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>javax.ws.rs-api</name>
 
@@ -95,7 +95,7 @@
         <connection>scm:git:git://java.net/jax-rs-spec~git</connection>
         <developerConnection>scm:git:ssh://git.java.net/jax-rs-spec~git</developerConnection>
         <url>http://java.net/projects/jax-rs-spec/sources/git/show</url>
-        <tag>2.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
@@ -140,6 +140,7 @@
             </properties>
         </profile>
         <profile>
+            <!-- Use it with release-perform goal to skip another test run. -->
             <id>skip-tests</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -450,9 +451,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <last.final.spec.version>1.1</last.final.spec.version>
+        <last.final.spec.version>2.0</last.final.spec.version>
         <milestone.number>01</milestone.number>
-        <next.final.spec.version>2.0</next.final.spec.version>
+        <next.final.spec.version>2.1</next.final.spec.version>
         <new.spec.version>${next.final.spec.version}</new.spec.version>
         <non.final>true</non.final>
         <skip.release.tests>false</skip.release.tests>
