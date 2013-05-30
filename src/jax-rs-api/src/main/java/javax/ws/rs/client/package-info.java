@@ -65,7 +65,7 @@
  *
  *   client.property("MyProperty", "MyValue")
  *         .register(MyProvider.class)
- *         .enable(MyFeature.class);
+ *         .register(MyFeature.class);
  * </pre>
  *
  * <h2>Accessing Web Resources</h2>
@@ -97,8 +97,11 @@
  *   // Parent target for all messages
  *   WebTarget messages = client.target("http://example.org/messages/{id}");
  *
- *   WebTarget msg123 = messages.resolveTemplate("id", 123); // New target for http://example.org/messages/123
- *   WebTarget msg456 = messages.resolveTemplate("id", 456); // New target for http://example.org/messages/456
+ *   // New target for http://example.org/messages/123
+ *   WebTarget msg123 = messages.resolveTemplate("id", 123);
+ *
+ *   // New target for http://example.org/messages/456
+ *   WebTarget msg456 = messages.resolveTemplate("id", 456);
  * </pre>
  *
  *<h2>Generic Invocations</h2>
