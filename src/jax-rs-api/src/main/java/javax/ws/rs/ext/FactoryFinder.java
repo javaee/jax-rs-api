@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,6 +42,7 @@ package javax.ws.rs.ext;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.AccessController;
@@ -55,6 +56,7 @@ import java.util.logging.Logger;
  *
  * @author Paul Sandoz
  * @author Marc Hadley
+ * @author Marek Potociar
  * @since 1.0
  */
 final class FactoryFinder {
@@ -95,8 +97,7 @@ final class FactoryFinder {
      * @throws ClassNotFoundException if the given class could not be found
      *                                or could not be instantiated.
      */
-    private static Object newInstance(final String className,
-                                      final ClassLoader classLoader) throws ClassNotFoundException {
+    private static Object newInstance(final String className, final ClassLoader classLoader) throws ClassNotFoundException {
         try {
             Class spiClass;
             if (classLoader == null) {
@@ -140,13 +141,15 @@ final class FactoryFinder {
      *                          there is no fallback class name.
      * @return the {@code Class} object of the specified message factory;
      *         may not be {@code null}.
-     * @throws ClassNotFoundException if there is an error.
+     * @throws ClassNotFoundException if the given class could not be found
+     *                                or could not be instantiated.
      */
     static Object find(final String factoryId, final String fallbackClassName) throws ClassNotFoundException {
         ClassLoader classLoader = getContextClassLoader();
 
         String serviceId = "META-INF/services/" + factoryId;
         // try to find services in CLASSPATH
+        BufferedReader reader = null;
         try {
             InputStream is;
             if (classLoader == null) {
@@ -156,37 +159,52 @@ final class FactoryFinder {
             }
 
             if (is != null) {
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
-                String factoryClassName = rd.readLine();
-                rd.close();
-
+                String factoryClassName = reader.readLine();
                 if (factoryClassName != null && !"".equals(factoryClassName)) {
                     return newInstance(factoryClassName, classLoader);
                 }
             }
         } catch (Exception ex) {
             LOGGER.log(Level.FINER, "Failed to load service " + factoryId + " from " + serviceId, ex);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ex) {
+                    LOGGER.log(Level.FINER, String.format("Error closing %s file.", serviceId), ex);
+                }
+            }
         }
 
 
         // try to read from $java.home/lib/jaxrs.properties
+        FileInputStream inputStream = null;
+        String configFile = null;
         try {
             String javah = System.getProperty("java.home");
-            String configFile = javah + File.separator
-                    + "lib" + File.separator + "jaxrs.properties";
+            configFile = javah + File.separator + "lib" + File.separator + "jaxrs.properties";
             File f = new File(configFile);
             if (f.exists()) {
                 Properties props = new Properties();
-                props.load(new FileInputStream(f));
+                inputStream = new FileInputStream(f);
+                props.load(inputStream);
                 String factoryClassName = props.getProperty(factoryId);
                 return newInstance(factoryClassName, classLoader);
             }
         } catch (Exception ex) {
             LOGGER.log(Level.FINER, "Failed to load service " + factoryId
                     + " from $java.home/lib/jaxrs.properties", ex);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ex) {
+                    LOGGER.log(Level.FINER, String.format("Error closing %s file.", configFile), ex);
+                }
+            }
         }
-
 
         // Use the system property
         try {
