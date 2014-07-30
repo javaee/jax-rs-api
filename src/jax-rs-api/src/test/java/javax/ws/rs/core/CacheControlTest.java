@@ -50,7 +50,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * {@link javax.ws.rs.core.CacheControl} unit tests.
  *
- * @author Marek Potociar (marek.potociar at oracle.com)
+ * @author Marek Potociar
  */
 public class CacheControlTest {
 

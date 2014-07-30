@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -50,7 +50,9 @@ import javax.ws.rs.DefaultValue;
 /**
  * Defines a contract for a delegate responsible for converting between a
  * {@code String} form of a message parameter value and the corresponding custom
- * Java type {@code T}. Conversion of message parameter values injected via
+ * Java type {@code T}.
+ *
+ * Conversion of message parameter values injected via
  * {@link javax.ws.rs.PathParam &#64;PathParam}, {@link javax.ws.rs.QueryParam &#64;QueryParam},
  * {@link javax.ws.rs.MatrixParam &#64;MatrixParam}, {@link javax.ws.rs.FormParam &#64;FormParam},
  * {@link javax.ws.rs.CookieParam &#64;CookieParam} and {@link javax.ws.rs.HeaderParam &#64;HeaderParam}
@@ -76,6 +78,7 @@ import javax.ws.rs.DefaultValue;
  *
  * @param <T> the supported Java type convertible to/from a {@code String} format.
  * @author Marek Potociar
+ * @since 2.0
  */
 public interface ParamConverter<T> {
 
@@ -84,17 +87,21 @@ public interface ParamConverter<T> {
      * to a {@link ParamConverter parameter converter} annotated with {@code @Lazy}
      * annotation SHOULD occur only once the value is actually required (e.g. to be
      * injected for the first time).
+     *
+     * @since 2.0
      */
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
-    public static @interface Lazy {}
+    public static @interface Lazy {
+    }
 
     /**
      * Parse the supplied value and create an instance of {@code T}.
      *
      * @param value the string value.
      * @return the newly created instance of {@code T}.
+     *
      * @throws IllegalArgumentException if the supplied string cannot be
      *                                  parsed or is {@code null}.
      */
@@ -110,6 +117,7 @@ public interface ParamConverter<T> {
      *
      * @param value the value of type {@code T}.
      * @return a String representation of the value.
+     *
      * @throws IllegalArgumentException if the supplied object cannot be
      *                                  serialized or is {@code null}.
      */
