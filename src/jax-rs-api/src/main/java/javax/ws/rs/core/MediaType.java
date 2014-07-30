@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -66,104 +66,104 @@ public class MediaType {
      */
     public static final String CHARSET_PARAMETER = "charset";
     /**
-     * The value of a type or subtype wildcard "{@value #MEDIA_TYPE_WILDCARD}".
+     * The value of a type or subtype wildcard {@value #MEDIA_TYPE_WILDCARD}.
      */
     public static final String MEDIA_TYPE_WILDCARD = "*";
     // Common media type constants
     /**
-     * A {@code String} constant representing wildcard "{@value #WILDCARD}" media type .
+     * A {@code String} constant representing wildcard {@value #WILDCARD} media type .
      */
     public final static String WILDCARD = "*/*";
     /**
-     * A {@link MediaType} constant representing wildcard "{@value #WILDCARD}" media type.
+     * A {@link MediaType} constant representing wildcard {@value #WILDCARD} media type.
      */
     public final static MediaType WILDCARD_TYPE = new MediaType();
     /**
-     * A {@code String} constant representing "{@value #APPLICATION_XML}" media type.
+     * A {@code String} constant representing {@value #APPLICATION_XML} media type.
      */
     public final static String APPLICATION_XML = "application/xml";
     /**
-     * A {@link MediaType} constant representing "{@value #APPLICATION_XML}" media type.
+     * A {@link MediaType} constant representing {@value #APPLICATION_XML} media type.
      */
     public final static MediaType APPLICATION_XML_TYPE = new MediaType("application", "xml");
     /**
-     * A {@code String} constant representing "{@value #APPLICATION_ATOM_XML}" media type.
+     * A {@code String} constant representing {@value #APPLICATION_ATOM_XML} media type.
      */
     public final static String APPLICATION_ATOM_XML = "application/atom+xml";
     /**
-     * A {@link MediaType} constant representing "{@value #APPLICATION_ATOM_XML}" media type.
+     * A {@link MediaType} constant representing {@value #APPLICATION_ATOM_XML} media type.
      */
     public final static MediaType APPLICATION_ATOM_XML_TYPE = new MediaType("application", "atom+xml");
     /**
-     * A {@code String} constant representing "{@value #APPLICATION_XHTML_XML}" media type.
+     * A {@code String} constant representing {@value #APPLICATION_XHTML_XML} media type.
      */
     public final static String APPLICATION_XHTML_XML = "application/xhtml+xml";
     /**
-     * A {@link MediaType} constant representing "{@value #APPLICATION_XHTML_XML}" media type.
+     * A {@link MediaType} constant representing {@value #APPLICATION_XHTML_XML} media type.
      */
     public final static MediaType APPLICATION_XHTML_XML_TYPE = new MediaType("application", "xhtml+xml");
     /**
-     * A {@code String} constant representing "{@value #APPLICATION_SVG_XML}" media type.
+     * A {@code String} constant representing {@value #APPLICATION_SVG_XML} media type.
      */
     public final static String APPLICATION_SVG_XML = "application/svg+xml";
     /**
-     * A {@link MediaType} constant representing "{@value #APPLICATION_SVG_XML}" media type.
+     * A {@link MediaType} constant representing {@value #APPLICATION_SVG_XML} media type.
      */
     public final static MediaType APPLICATION_SVG_XML_TYPE = new MediaType("application", "svg+xml");
     /**
-     * A {@code String} constant representing "{@value #APPLICATION_JSON}" media type.
+     * A {@code String} constant representing {@value #APPLICATION_JSON} media type.
      */
     public final static String APPLICATION_JSON = "application/json";
     /**
-     * A {@link MediaType} constant representing "{@value #APPLICATION_JSON}" media type.
+     * A {@link MediaType} constant representing {@value #APPLICATION_JSON} media type.
      */
     public final static MediaType APPLICATION_JSON_TYPE = new MediaType("application", "json");
     /**
-     * A {@code String} constant representing "{@value #APPLICATION_FORM_URLENCODED}" media type.
+     * A {@code String} constant representing {@value #APPLICATION_FORM_URLENCODED} media type.
      */
     public final static String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
     /**
-     * A {@link MediaType} constant representing "{@value #APPLICATION_FORM_URLENCODED}" media type.
+     * A {@link MediaType} constant representing {@value #APPLICATION_FORM_URLENCODED} media type.
      */
     public final static MediaType APPLICATION_FORM_URLENCODED_TYPE = new MediaType("application", "x-www-form-urlencoded");
     /**
-     * A {@code String} constant representing "{@value #MULTIPART_FORM_DATA}" media type.
+     * A {@code String} constant representing {@value #MULTIPART_FORM_DATA} media type.
      */
     public final static String MULTIPART_FORM_DATA = "multipart/form-data";
     /**
-     * A {@link MediaType} constant representing "{@value #MULTIPART_FORM_DATA}" media type.
+     * A {@link MediaType} constant representing {@value #MULTIPART_FORM_DATA} media type.
      */
     public final static MediaType MULTIPART_FORM_DATA_TYPE = new MediaType("multipart", "form-data");
     /**
-     * A {@code String} constant representing "{@value #APPLICATION_OCTET_STREAM}" media type.
+     * A {@code String} constant representing {@value #APPLICATION_OCTET_STREAM} media type.
      */
     public final static String APPLICATION_OCTET_STREAM = "application/octet-stream";
     /**
-     * A {@link MediaType} constant representing "{@value #APPLICATION_OCTET_STREAM}" media type.
+     * A {@link MediaType} constant representing {@value #APPLICATION_OCTET_STREAM} media type.
      */
     public final static MediaType APPLICATION_OCTET_STREAM_TYPE = new MediaType("application", "octet-stream");
     /**
-     * A {@code String} constant representing "{@value #TEXT_PLAIN}" media type.
+     * A {@code String} constant representing {@value #TEXT_PLAIN} media type.
      */
     public final static String TEXT_PLAIN = "text/plain";
     /**
-     * A {@link MediaType} constant representing "{@value #TEXT_PLAIN}" media type.
+     * A {@link MediaType} constant representing {@value #TEXT_PLAIN} media type.
      */
     public final static MediaType TEXT_PLAIN_TYPE = new MediaType("text", "plain");
     /**
-     * A {@code String} constant representing "{@value #TEXT_XML}" media type.
+     * A {@code String} constant representing {@value #TEXT_XML} media type.
      */
     public final static String TEXT_XML = "text/xml";
     /**
-     * A {@link MediaType} constant representing "{@value #TEXT_XML}" media type.
+     * A {@link MediaType} constant representing {@value #TEXT_XML} media type.
      */
     public final static MediaType TEXT_XML_TYPE = new MediaType("text", "xml");
     /**
-     * A {@code String} constant representing "{@value #TEXT_HTML}" media type.
+     * A {@code String} constant representing {@value #TEXT_HTML} media type.
      */
     public final static String TEXT_HTML = "text/html";
     /**
-     * A {@link MediaType} constant representing "{@value #TEXT_HTML}" media type.
+     * A {@link MediaType} constant representing {@value #TEXT_HTML} media type.
      */
     public final static MediaType TEXT_HTML_TYPE = new MediaType("text", "html");
 
@@ -224,14 +224,14 @@ public class MediaType {
 
     /**
      * Creates a new instance of {@code MediaType} with the supplied type, subtype and
-     * "{@value #CHARSET_PARAMETER}" parameter.
+     * {@value #CHARSET_PARAMETER} parameter.
      *
      * @param type    the primary type, {@code null} is equivalent to
      *                {@link #MEDIA_TYPE_WILDCARD}
      * @param subtype the subtype, {@code null} is equivalent to
      *                {@link #MEDIA_TYPE_WILDCARD}
-     * @param charset the "{@value #CHARSET_PARAMETER}" parameter value. If {@code null} or empty
-     *                the "{@value #CHARSET_PARAMETER}" parameter will not be set.
+     * @param charset the {@value #CHARSET_PARAMETER} parameter value. If {@code null} or empty
+     *                the {@value #CHARSET_PARAMETER} parameter will not be set.
      */
     public MediaType(String type, String subtype, String charset) {
         this(type, subtype, charset, null);
@@ -313,11 +313,11 @@ public class MediaType {
 
     /**
      * Create a new {@code MediaType} instance with the same type, subtype and parameters
-     * copied from the original instance and the supplied "{@value #CHARSET_PARAMETER}" parameter.
+     * copied from the original instance and the supplied {@value #CHARSET_PARAMETER} parameter.
      *
-     * @param charset the "{@value #CHARSET_PARAMETER}" parameter value. If {@code null} or empty
-     *                the "{@value #CHARSET_PARAMETER}" parameter will not be set or updated.
-     * @return copy of the current {@code MediaType} instance with the "{@value #CHARSET_PARAMETER}"
+     * @param charset the {@value #CHARSET_PARAMETER} parameter value. If {@code null} or empty
+     *                the {@value #CHARSET_PARAMETER} parameter will not be set or updated.
+     * @return copy of the current {@code MediaType} instance with the {@value #CHARSET_PARAMETER}
      *         parameter set to the supplied value.
      * @since 2.0
      */
