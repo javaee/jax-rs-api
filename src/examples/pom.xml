@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2011-2014 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -52,7 +52,7 @@
 
     <groupId>javax.ws.rs</groupId>
     <artifactId>javax.ws.rs-examples</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>javax.ws.rs-examples</name>
 
@@ -135,7 +135,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.5.1</version>
+                    <version>3.1</version>
                     <configuration>
                         <source>1.6</source>
                         <target>1.6</target>
@@ -144,19 +144,13 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.4</version>
-                    <configuration>
-                        <archive>
-                            <manifestEntries>
-                                <Build-Id>${buildNumber}</Build-Id>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
+                    <version>2.5</version>
                 </plugin>
                 <plugin>
+                    <!-- This plugin generates the buildNumber property used in maven-bundle-plugin -->
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>buildnumber-maven-plugin</artifactId>
-                    <version>1.1</version>
+                    <version>1.3</version>
                     <configuration>
                         <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
                         <items>
@@ -175,28 +169,34 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9</version>
+                    <version>2.9.1</version>
                     <configuration>
-                        <doctitle>JAX-RS ${project.version} API Specification Examples</doctitle>
-                        <bottom>Copyright &#169; 2007-2012 Oracle Corporation. All Rights Reserved. Use is subject to license terms.</bottom>
-                    <!--javaApiLinks>
-                        <property>
-                            <name>api_1.3</name>
-                            <value>http://download.oracle.com/javase/1.3/docs/api/</value>
-                        </property>
-                        <property>
-                            <name>api_1.4</name>
-                            <value>http://download.oracle.com/javase/1.4.2/docs/api/</value>
-                        </property>
-                        <property>
-                            <name>api_1.5</name>
-                            <value>http://download.oracle.com/javase/1.5.0/docs/api/</value>
-                        </property>
-                        <property>
-                            <name>api_1.6</name>
-                            <value>http://download.oracle.com/javase/6/docs/api/</value>
-                        </property>
-                    </javaApiLinks-->
+                        <doctitle>JAX-RS ${project.version} API Specification</doctitle>
+                        <bottom>
+                            <![CDATA[Copyright &#169; 1996-2014,
+                                <a href="http://www.oracle.com">Oracle</a>
+                                and/or its affiliates. All Rights Reserved.
+                                Use is subject to
+                                <a href="{@docRoot}/doc-files/spec-license.html" target="_top">license terms</a>.]]>
+                        </bottom>
+                        <!--javaApiLinks>
+                            <property>
+                                <name>api_1.3</name>
+                                <value>http://download.oracle.com/javase/1.3/docs/api/</value>
+                            </property>
+                            <property>
+                                <name>api_1.4</name>
+                                <value>http://download.oracle.com/javase/1.4.2/docs/api/</value>
+                            </property>
+                            <property>
+                                <name>api_1.5</name>
+                                <value>http://download.oracle.com/javase/1.5.0/docs/api/</value>
+                            </property>
+                            <property>
+                                <name>api_1.6</name>
+                                <value>http://download.oracle.com/javase/6/docs/api/</value>
+                            </property>
+                        </javaApiLinks-->
                     </configuration>
                     <executions>
                         <execution>
@@ -209,19 +209,13 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.7</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.1.2</version>
+                    <version>2.3</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
-                            <phase>validate</phase>
                             <goals>
-                                <goal>jar</goal>
+                                <goal>jar-no-fork</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -242,7 +236,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.9.1</version>
+                    <version>2.12.1</version>
                     <configuration>
                         <outputDirectory>${project.build.directory}/checkstyle</outputDirectory>
                         <outputFile>${project.build.directory}/checkstyle/checkstyle-result.xml</outputFile>
@@ -260,7 +254,7 @@
                 <plugin>
                     <groupId>org.glassfish.copyright</groupId>
                     <artifactId>glassfish-copyright-maven-plugin</artifactId>
-                    <version>1.28</version>
+                    <version>1.39</version>
                     <configuration>
                         <excludeFile>${basedir}/../etc/config/copyright-exclude</excludeFile>
                         <!--svn|mercurial|git - defaults to svn-->
@@ -316,94 +310,17 @@
         </plugins>
     </build>
 
-    <!--
-    <repositories>
-        <repository>
-            <id>glassfish.java.net</id>
-            <url>http://download.java.net/maven/glassfish</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>m2.java.net</id>
-            <url>http://download.java.net/maven/2</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>public.maven.java.net</id>
-            <url>https://maven.java.net/content/groups/public/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>releases.maven.java.net</id>
-            <url>https://maven.java.net/content/repositories/releases/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>staging.maven.java.net</id>
-            <url>https://maven.java.net/content/groups/staging/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>snapshots.maven.java.net</id>
-            <url>https://maven.java.net/content/repositories/snapshots/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
-    -->
-
     <dependencies>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>2.1-SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <version>1.2-b02</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-        </dependency>
-        <dependency>
-            <artifactId>cdi-api</artifactId>
-            <groupId>javax.enterprise</groupId>
-            <type>jar</type>
-            <version>1.0-SP1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jboss-interceptor-api</artifactId>
-                    <groupId>org.jboss.interceptor</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jsr250-api</artifactId>
-                    <groupId>javax.annotation</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>javax.inject</artifactId>
-                    <groupId>javax.inject</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>bean-validator</artifactId>
-            <version>3.0-JBoss-4.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>6.0</version>
+            <version>7.0</version>
         </dependency>
     </dependencies>
 
