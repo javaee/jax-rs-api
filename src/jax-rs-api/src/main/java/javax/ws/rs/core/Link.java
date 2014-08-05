@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -503,13 +503,65 @@ public abstract class Link {
             }
             return params;
         }
+
+        /**
+         * Set the underlying URI for this link.
+         *
+         * This setter is needed for JAXB unmarshalling.
+         */
+        void setUri(URI uri) {
+            this.uri = uri;
+        }
+
+        /**
+         * Set the parameter map for this link.
+         *
+         * This setter is needed for JAXB unmarshalling.
+         */
+        void setParams(Map<QName, Object> params) {
+            this.params = params;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof JaxbLink)) return false;
+
+            JaxbLink jaxbLink = (JaxbLink) o;
+
+            if (uri != null ? !uri.equals(jaxbLink.uri) : jaxbLink.uri != null) {
+                return false;
+            }
+
+            if (params == jaxbLink.params) {
+                return true;
+            }
+            if (params == null) {
+                // if this.params is 'null', consider other.params equal to empty
+                return jaxbLink.params.isEmpty();
+            }
+            if (jaxbLink.params == null) {
+                // if other.params is 'null', consider this.params equal to empty
+                return params.isEmpty();
+            }
+
+            return params.equals(jaxbLink.params);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = uri != null ? uri.hashCode() : 0;
+            result = 31 * result + (params != null && !params.isEmpty() ? params.hashCode() : 0);
+            return result;
+        }
+
     }
 
     /**
-     * <p>An implementation of JAXB {@link javax.xml.bind.annotation.adapters.XmlAdapter}
+     * An implementation of JAXB {@link javax.xml.bind.annotation.adapters.XmlAdapter}
      * that maps the JAX-RS {@link javax.ws.rs.core.Link} type to a value that can be
      * marshalled and unmarshalled by JAXB. The following example shows how to use
-     * this adapter on a JAXB bean class:</p>
+     * this adapter on a JAXB bean class:
      *
      * <pre>
      * &#64;XmlRootElement

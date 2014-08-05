@@ -111,22 +111,16 @@ public class CacheControlTest {
 
         second.getCacheExtension(); // trigger lazy initialization
         assertThat(first.hashCode(), equalTo(second.hashCode()));
-        assertThat(second.hashCode(), equalTo(first.hashCode()));
 
         CacheControl third = new CacheControl();
         third.getNoCacheFields(); // trigger lazy initialization
         assertThat(first.hashCode(), equalTo(third.hashCode()));
-        assertThat(third.hashCode(), equalTo(first.hashCode()));
         assertThat(second.hashCode(), equalTo(third.hashCode()));
-        assertThat(third.hashCode(), equalTo(second.hashCode()));
 
         CacheControl fourth = new CacheControl();
         fourth.getPrivateFields(); // trigger lazy initialization
         assertThat(first.hashCode(), equalTo(fourth.hashCode()));
-        assertThat(fourth.hashCode(), equalTo(first.hashCode()));
         assertThat(second.hashCode(), equalTo(fourth.hashCode()));
-        assertThat(fourth.hashCode(), equalTo(second.hashCode()));
         assertThat(third.hashCode(), equalTo(fourth.hashCode()));
-        assertThat(fourth.hashCode(), equalTo(third.hashCode()));
     }
 }
