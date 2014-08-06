@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -323,9 +323,60 @@ public interface ContainerResponseContext {
      * Note that the returned annotations array contains only those annotations
      * explicitly attached to entity instance (such as the ones attached using
      * {@link javax.ws.rs.core.Response.ResponseBuilder#entity(Object, java.lang.annotation.Annotation[])} method
-     * or the ones attached to the resource method that returned the response).
+     * as well as the ones attached to the resource method that has returned the response).
      * The entity instance annotations array does not include annotations declared on the entity
      * implementation class or its ancestors.
+     * </p>
+     * <p>
+     * Note that container response filters invoked earlier in the filter chain may modify the entity annotations value,
+     * in which case this getter method would return the last annotations value set by a container response filter invoked
+     * earlier in the filter chain.
+     * </p>
+     * <p>
+     * For example:
+     * </p>
+     * <pre>
+     * &#64;Path("my-resource")
+     * public class MyResource {
+     *   private final Annotations[] extras = ... ;
+     *
+     *   &#64;GET
+     *   &#64;Custom
+     *   public String getAnnotatedMe() {
+     *     return Response.ok().entity("Annotated me", extras).build();
+     *   }
+     *   ...
+     * }
+     * </pre>
+     * <p>
+     * The container response context for a response returned from the {@code getMe()} method above would contain all
+     * the annotations declared on the {@code getAnnotatedMe()} method (<tt>&#64;GET, &#64;Custom</tt>) as well as all
+     * the annotations from the {@code extras} field, provided this value has not been replaced by any container response filter
+     * invoked earlier.
+     * </p>
+     * <p>
+     * Similarly:
+     * </p>
+     * <pre>
+     * &#64;Custom
+     * public class AnnotatedMe { ... }
+     *
+     * &#64;Path("my-resource")
+     * public class MyResource {
+     *   private final Annotations[] extras = ... ;
+     *
+     *   &#64;GET
+     *   public AnnotatedMe getMe() {
+     *     return Response.ok().entity(new AnnotatedMe(), extras).build();
+     *   }
+     *   ...
+     * }
+     * </pre>
+     * <p>
+     * Provided that the value has not been replaced by any container response filter invoked earlier,
+     * the container response context for a response returned from the {@code getMe()} method above would contain all
+     * the annotations on the {@code getMe()} method (<tt>&#64;GET</tt>) as well as all the annotations from the
+     * {@code extras} field. It would however not contain any annotations declared on the {@code AnnotatedMe} class.
      * </p>
      *
      * @return annotations attached to the entity instance.

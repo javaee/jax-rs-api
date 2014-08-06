@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2013 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2014 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -937,7 +937,9 @@ public abstract class Response {
          * methods.
          *
          * @param entity      the request entity.
-         * @param annotations annotations that will be passed to the {@link MessageBodyWriter}.
+         * @param annotations annotations that will be passed to the {@link MessageBodyWriter},
+         *                    (in addition to any annotations declared directly on a resource
+         *                    method that returns the built response).
          * @return updated response builder instance.
          * @see #entity(java.lang.Object)
          * @see #type(javax.ws.rs.core.MediaType)
