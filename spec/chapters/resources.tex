@@ -43,16 +43,16 @@ A \jaxrs\ implementation is only required to set the annotated field and bean pr
 Valid parameter types for each of the above annotations are listed in the corresponding Javadoc, however in general (excluding \Context) the following types are supported:
 
 \begin{enumerate}
-\item Types for which a \ParamConverter\ is available via a registered \ParamConverterProvider. See Javadoc for these classes for more information.
+\item\label{paramconverter} Types for which a \ParamConverter\ is available via a registered \ParamConverterProvider. See Javadoc for these classes for more information.
 \item Primitive types.
 \item\label{stringctor} Types that have a constructor that accepts a single \code{String} argument.
 \item\label{valueofmethod} Types that have a static method named \code{valueOf} or \code{fromString} with a single \code{String} argument that return an instance of the type. If both methods are present then \code{valueOf} MUST be used unless the type is an enum in which case \code{fromString} MUST be used\footnote{Due to limitations of the built-in \code{valueOf} method that is part of all Java enumerations, a \code{fromString} method is often defined by the enum writers. Consequently, the \code{fromString} method is preferred when available.}.
-\item \code{List<{\em T}>}, \code{Set<{\em T}>}, or \code{SortedSet<{\em T}>}, where \code{{\em T}} satisfies \ref{stringctor} or \ref{valueofmethod} above.
+\item \code{List<{\em T}>}, \code{Set<{\em T}>}, or \code{SortedSet<{\em T}>}, where \code{{\em T}} satisfies \ref{paramconverter}, \ref{stringctor} or \ref{valueofmethod} above.
 \end{enumerate}
 
 The \code{Default\-Value} annotation may be used to supply a default value for some of the above, see the Javadoc for \code{Default\-Value} for usage details and rules for generating a value in the absence of this annotation and the requested data. The \code{Encoded} annotation may be used to disable automatic URI decoding for \MatrixParam, \QueryParam, and \PathParam\ annotated fields and properties.
 
-A \WebAppExc\ thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above is processed directly as described in Section \ref{method_exc}. Other exceptions thrown during construction of field or property values using \ref{stringctor} or \ref{valueofmethod} above are treated as client errors: if the field or property is annotated with \MatrixParam, \QueryParam\ or \PathParam\ then an implementation MUST generate an instance of \code{NotFoundException} (404 status) that wraps the thrown exception and no entity; if the field or property is annotated with \HeaderParam\ or \CookieParam\ then an implementation MUST generate an instance of \code{BadRequestException} (400 status) that wraps the thrown exception and no entity. Exceptions MUST be processed as described in Section \ref{method_exc}.
+A \WebAppExc\ thrown during construction of field or property values using any of the 5 steps listed above is processed directly as described in Section \ref{method_exc}. Other exceptions thrown during construction of field or property values using any of the 5 steps listed above are treated as client errors: if the field or property is annotated with \MatrixParam, \QueryParam\ or \PathParam\ then an implementation MUST generate an instance of \code{NotFoundException} (404 status) that wraps the thrown exception and no entity; if the field or property is annotated with \HeaderParam\ or \CookieParam\ then an implementation MUST generate an instance of \code{BadRequestException} (400 status) that wraps the thrown exception and no entity. Exceptions MUST be processed as described in Section \ref{method_exc}.
 
 \section{Resource Methods}
 \label{resource_method}
