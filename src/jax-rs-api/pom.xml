@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2011-2014 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2011-2015 Oracle and/or its affiliates. All rights reserved.
 
     The contents of this file are subject to the terms of either the GNU
     General Public License Version 2 only ("GPL") or the Common Development
@@ -69,8 +69,8 @@
 
     <mailingLists>
         <mailingList>
-            <name>JSR339 Expert Group List</name>
-            <archive>jsr339-experts@jax-rs-spec.java.net</archive>
+            <name>JSR370 Expert Group List</name>
+            <archive>jsr370-experts@jax-rs-spec.java.net</archive>
         </mailingList>
         <mailingList>
             <name>JAX-RS Users List</name>
@@ -106,7 +106,7 @@
             <organization>Oracle</organization>
             <organizationUrl>http://jax-rs-spec.java.net</organizationUrl>
             <roles>
-                <role>JAX-RS 2.0 Spec Lead</role>
+                <role>JAX-RS Spec Lead</role>
             </roles>
             <timezone>CET</timezone>
             <url>http://marek.potociar.net/topics/web-services/rest/</url>
@@ -118,7 +118,7 @@
             <organization>Oracle</organization>
             <organizationUrl>http://jax-rs-spec.java.net</organizationUrl>
             <roles>
-                <role>JAX-RS 2.0 Spec Lead</role>
+                <role>JAX-RS Spec Lead</role>
             </roles>
             <timezone>EST</timezone>
             <url>http://www.java.net/blogs/spericas/</url>
@@ -272,7 +272,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.9.1</version>
                     <configuration>
-                        <doctitle>JAX-RS ${project.version} API Specification</doctitle>
+                        <doctitle>${apidocs.title}</doctitle>
                         <bottom>
                             <![CDATA[Copyright &#169; 1996-2014,
                                 <a href="http://www.oracle.com">Oracle</a>
@@ -476,6 +476,8 @@
         <non.final>true</non.final>
         <skip.release.tests>false</skip.release.tests>
         <spec.version>${last.final.spec.version}</spec.version>
+        <spec.version.revision></spec.version.revision> <!-- e.g. (Rev a) -->
+        <apidocs.title>JAX-RS ${spec.version} API Specification ${spec.version.revision}</apidocs.title>
     </properties>
 
 </project>
