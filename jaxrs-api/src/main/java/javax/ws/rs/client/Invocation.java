@@ -41,6 +41,8 @@
 package javax.ws.rs.client;
 
 import java.util.Locale;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import javax.ws.rs.ProcessingException;
@@ -62,6 +64,7 @@ import javax.ws.rs.core.Response;
  * be executed (synchronously or asynchronously) and when.
  *
  * @author Marek Potociar
+ * @author Santiago Pericas-Geertsen
  * @see Invocation.Builder Invocation.Builder
  */
 public interface Invocation {
@@ -285,6 +288,60 @@ public interface Invocation {
          * @see Invocation#property(String, Object)
          */
         public Builder property(String name, Object value);
+
+        /**
+         * Access the default reactive invoker based on {@link java.util.concurrent.CompletionStage}.
+         * Equivalent to calling {@code rx(CompletionStageRxInvoker.class)}.
+         *
+         * @return default reactive invoker instance.
+         * @since 2.1
+         * @see javax.ws.rs.client.Invocation.Builder#rx(Class)
+         */
+        public CompletionStageRxInvoker rx();
+
+        /**
+         * Access the default reactive invoker based on {@link java.util.concurrent.CompletionStage}
+         * and provide an {@link java.util.concurrent.ExecutorService} for it. Note that not
+         * all executor services are supported in all runtime environments. For example, only
+         * executor services provided by JSR 236 should be supported in a Java EE environment.
+         *
+         * @param executorService executor service to use.
+         * @throws java.lang.IllegalArgumentException if the executor service provided is not
+         *                                            supported by the runtime environment.
+         * @return default reactive invoker instance.
+         * @since 2.1
+         * @see javax.ws.rs.client.Invocation.Builder#rx()
+         */
+        public CompletionStageRxInvoker rx(ExecutorService executorService);
+
+        /**
+         * Access a reactive invoker based on an implementation of {@link javax.ws.rs.client.RxInvoker}
+         * provided. This method is an extension point for JAX-RS implementations to support other types
+         * representing asynchronous computations.
+         *
+         * @param clazz implementation of reactive invoker.
+         * @return reactive invoker instance.
+         * @since 2.1
+         * @see javax.ws.rs.client.Invocation.Builder#rx(Class, ExecutorService)
+         */
+        public <T extends RxInvoker> T rx(Class<T> clazz);
+
+        /**
+         * Access a reactive invoker based on an implementation of {@link javax.ws.rs.client.RxInvoker}
+         * and the executor service provided. This method is an extension point for JAX-RS implementations
+         * to support other types representing asynchronous computations. Note that not
+         * all executor services are supported in all runtime environments. For example, only
+         * executor services provided by JSR 236 should be supported in a Java EE environment.
+         *
+         * @param clazz implementation of reactive invoker.
+         * @param executorService executor service to use.
+         * @throws java.lang.IllegalArgumentException if the executor service provided is not
+         *                                            supported by the runtime environment.
+         * @return default reactive invoker instance.
+         * @since 2.1
+         * @see javax.ws.rs.client.Invocation.Builder#rx()
+         */
+        public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService);
     }
 
     /**
