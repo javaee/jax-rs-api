@@ -1213,16 +1213,6 @@ public abstract class Response {
          * @since 2.0
          */
         public abstract ResponseBuilder link(String uri, String rel);
-
-        /**
-         * Register an async writer that is called whenever it is possible to write
-         * some entity data to the output without blocking.
-         *
-         * @param writer asynchronous writer.
-         * @return the updated response builder.
-         * @since 2.1
-         */
-        public abstract ResponseBuilder onWritePossible(NioWriterHandler writer);
     }
 
     /**
