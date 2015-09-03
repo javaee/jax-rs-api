@@ -40,11 +40,6 @@
 
 package javax.ws.rs.client;
 
-import java.util.Locale;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.CacheControl;
@@ -53,6 +48,9 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * A client request invocation.
@@ -342,6 +340,14 @@ public interface Invocation {
          * @see javax.ws.rs.client.Invocation.Builder#rx()
          */
         public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService);
+
+        /**
+         * Access the NIO uniform request invocation interface to use non-blocking I/O
+         * to read/write entities.
+         *
+         * @return NIO uniform request invocation interface.
+         */
+        public NioInvoker nio();
     }
 
     /**

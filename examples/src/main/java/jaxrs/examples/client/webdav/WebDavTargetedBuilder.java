@@ -40,17 +40,20 @@
 
 package jaxrs.examples.client.webdav;
 
-import java.util.Locale;
-
 import javax.ws.rs.ProcessingException;
+import javax.ws.rs.client.CompletionStageRxInvoker;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.NioInvoker;
+import javax.ws.rs.client.RxInvoker;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Example of Invocation.Builder extension to support WebDAV.
@@ -281,5 +284,30 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     @Override
     public WebDavTargetedBuilder property(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public CompletionStageRxInvoker rx() {
+        return null;
+    }
+
+    @Override
+    public CompletionStageRxInvoker rx(ExecutorService executorService) {
+        return null;
+    }
+
+    @Override
+    public <T extends RxInvoker> T rx(Class<T> clazz) {
+        return null;
+    }
+
+    @Override
+    public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService) {
+        return null;
+    }
+
+    @Override
+    public NioInvoker nio() {
+        return null;
     }
 }
