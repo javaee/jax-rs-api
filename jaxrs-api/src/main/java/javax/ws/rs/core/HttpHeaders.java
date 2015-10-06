@@ -295,4 +295,11 @@ public interface HttpHeaders {
      * See {@link <a href="http://www.ietf.org/rfc/rfc2109.txt">IETF RFC 2109</a>}.
      */
     public static final String SET_COOKIE = "Set-Cookie";
+    /**
+     * {@code "Last-Event-ID"} HTTP request header name as defined by
+     * <a href="http://www.w3.org/TR/eventsource/#last-event-id">SSE specification</a>.
+     *
+     * @since 2.1
+     */
+    public static final String LAST_EVENT_ID_HEADER = "Last-Event-ID";
 }

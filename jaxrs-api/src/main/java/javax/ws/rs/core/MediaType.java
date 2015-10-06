@@ -167,6 +167,14 @@ public class MediaType {
      * A {@link MediaType} constant representing {@value #TEXT_HTML} media type.
      */
     public final static MediaType TEXT_HTML_TYPE = new MediaType("text", "html");
+    /**
+     * {@link String} representation of Server sent events media type. ("{@value}").
+     */
+    public static final String SERVER_SENT_EVENTS = "text/event-stream";
+    /**
+     * Server sent events media type.
+     */
+    public static final MediaType SERVER_SENT_EVENTS_TYPE = new MediaType("text", "event-stream");
 
     /**
      * Creates a new instance of {@code MediaType} by parsing the supplied string.

@@ -106,6 +106,29 @@ public class GenericType<T> {
     private final Class<?> rawType;
 
     /**
+     * Create a {@link javax.ws.rs.core.GenericType generic type} information for a given
+     * Java {@code instance}.
+     * <p>
+     * If the supplied instance is an instance of {@link javax.ws.rs.core.GenericEntity}, the generic type
+     * information will be computed using the {@link javax.ws.rs.core.GenericEntity#getType()}
+     * information. Otherwise the {@code instance.getClass()} will be used.
+     * </p>
+     *
+     * @param instance Java instance for which the {@code GenericType} description should be created.
+     * @return {@code GenericType} describing the Java {@code instance}.
+     * @since 2.1
+     */
+    public static GenericType forInstance(final Object instance) {
+        final GenericType genericType;
+        if (instance instanceof GenericEntity) {
+            genericType = new GenericType(((GenericEntity) instance).getType());
+        } else {
+            genericType = (instance == null) ? null : new GenericType(instance.getClass());
+        }
+        return genericType;
+    }
+
+    /**
      * Constructs a new generic type, deriving the generic type and class from
      * type parameter. Note that this constructor is protected, users should create
      * a (usually anonymous) subclass as shown above.
