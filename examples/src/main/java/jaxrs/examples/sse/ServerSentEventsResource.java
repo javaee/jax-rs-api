@@ -109,15 +109,15 @@ public class ServerSentEventsResource {
                     output.write(sseContext.newEvent().name("domain-progress")
                             .data(String.class, "starting domain " + id + " ...").build());
                     Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data(String.class, "50%").build());
+                    output.write(sseContext.newEvent().name("domain-progress").data("50%").build());
                     Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data(String.class, "60%").build());
+                    output.write(sseContext.newEvent().name("domain-progress").data("60%").build());
                     Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data(String.class, "70%").build());
+                    output.write(sseContext.newEvent().name("domain-progress").data("70%").build());
                     Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data(String.class, "99%").build());
+                    output.write(sseContext.newEvent().name("domain-progress").data("99%").build());
                     Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data(String.class, "done").build());
+                    output.write(sseContext.newEvent().name("domain-progress").data("Done.").build());
                     output.close();
 
                 } catch (final InterruptedException | IOException e) {
