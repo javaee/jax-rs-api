@@ -40,6 +40,10 @@
 
 package javax.ws.rs.core;
 
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.RuntimeDelegate;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URI;
@@ -48,11 +52,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.RuntimeDelegate;
 
 /**
  * Defines the contract between a returned instance and the runtime when
@@ -924,6 +923,35 @@ public abstract class Response {
          * @see #type(java.lang.String)
          */
         public abstract ResponseBuilder entity(Object entity);
+
+        /**
+         * <p>Set the response entity to be a NIO handler that will write the data to
+         * an NIO stream in a non-blocking manner. The handler must be called only
+         * when writing data is possible without blocking and should write a single
+         * chunk of data.</p>
+         *
+         * <p>Any error or exception encountered during the writing process will be
+         * thrown and processed by the JAX-RS runtime.</p>
+         *
+         * @param writer the NIO writer.
+         * @return updated response builder instance.
+         */
+        public abstract ResponseBuilder entity(NioWriterHandler writer);
+
+        /**
+         * <p>Set the response entity to be a NIO handler that will write the data to
+         * an NIO stream in a non-blocking manner. The handler must be called only
+         * when writing data is possible without blocking and should write a single
+         * chunk of data.</p>
+         *
+         * <p>Any error or exception encountered during the writing process must be
+         * reported to the error handler.</p>
+         *
+         * @param writer the NIO writer.
+         * @param error the NIO error handler.
+         * @return updated response builder instance.
+         */
+        public abstract ResponseBuilder entity(NioWriterHandler writer, NioErrorHandler error);
 
         /**
          * Set the response entity in the builder.
