@@ -155,6 +155,22 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <!-- Enables step-by-step staging deployment -->
+                            <groupId>org.sonatype.plugins</groupId>
+                            <artifactId>nexus-staging-maven-plugin</artifactId>
+                            <version>1.6.7</version>
+                        </plugin>
+                        <plugin>
+                            <!-- Newer version then in parent -->
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-gpg-plugin</artifactId>
+                            <version>1.6</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -167,6 +183,26 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip> <!-- To prefer nexus-staging-maven-plugin -->
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-deploy</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <serverId>jvnet-nexus-staging</serverId>
+                            <nexusUrl>https://maven.java.net/</nexusUrl>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
