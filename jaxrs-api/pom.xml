@@ -51,7 +51,7 @@
 
     <groupId>javax.ws.rs</groupId>
     <artifactId>javax.ws.rs-api</artifactId>
-    <version>2.1-SNAPSHOT</version>
+    <version>2.1-m01</version>
     <packaging>jar</packaging>
     <name>javax.ws.rs-api</name>
 
@@ -95,7 +95,7 @@
         <connection>scm:git:git://java.net/jax-rs-spec~git</connection>
         <developerConnection>scm:git:ssh://git.java.net/jax-rs-spec~git</developerConnection>
         <url>http://java.net/projects/jax-rs-spec/sources/git/show</url>
-        <tag>HEAD</tag>
+        <tag>2.1-m01</tag>
     </scm>
 
     <developers>
@@ -518,7 +518,7 @@
         <non.final>true</non.final>
         <skip.release.tests>false</skip.release.tests>
         <spec.version>${last.final.spec.version}</spec.version>
-        <spec.version.revision></spec.version.revision> <!-- e.g. (Rev a) -->
+        <spec.version.revision /> <!-- e.g. (Rev a) -->
         <apidocs.title>JAX-RS ${spec.version} API Specification ${spec.version.revision}</apidocs.title>
     </properties>
 
