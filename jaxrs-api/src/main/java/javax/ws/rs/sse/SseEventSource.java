@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,7 +42,9 @@ package javax.ws.rs.sse;
 import java.net.URL;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.client.WebTarget;
 
 /**
@@ -52,14 +54,11 @@ import javax.ws.rs.client.WebTarget;
  * {@link #target(javax.ws.rs.client.WebTarget) SseEventSource.target(endpoint)} factory method to get
  * a new event source builder that can be further customised and eventually used to create a new SSE
  * event source.
- * </p>
  * <p>
  * Once a {@link SseEventSource} is created, it can be used to {@link #open open a connection}
  * to the associated {@link WebTarget web target}. After establishing the connection, the event source starts
  * processing any incoming inbound events. Whenever a new event is received, an
- * {@link javax.ws.rs.sse.SseEventSource.Listener#onEvent(InboundSseEvent)} method is invoked on any
- * registered {@link SseEventSource.Listener event listeners}.
- * </p>
+ * {@link Consumer<InboundSseEvent>#accept(InboundSseEvent)} method is invoked on any registered event consumers.
  * <h3>Reconnect support</h3>
  * <p>
  * The {@code EventSource} supports automated recuperation from a connection loss, including
@@ -71,14 +70,12 @@ import javax.ws.rs.client.WebTarget;
  * endpoint that supports this negotiation facility is expected to replay all missed events. Note however, that this is a
  * best-effort mechanism which does not provide any guaranty that all events would be delivered without a loss. You should
  * therefore not rely on receiving every single event and design your client application code accordingly.
- * </p>
  * <p>
  * By default, when a connection the the SSE endpoint is lost, the event source will wait 500&nbsp;ms
  * before attempting to reconnect to the SSE endpoint. The SSE endpoint can however control the client-side retry delay
  * by including a special {@code retry} field value in the any send event. JAX-RS {@code SseEventSource} tracks any
  * received SSE event {@code retry} field values set by the endpoint and adjusts the reconnect delay accordingly,
  * using the last received {@code retry} field value as the reconnect delay.
- * </p>
  * <p>
  * In addition to handling the standard connection loss failures, JAX-RS {@code SseEventSource} automatically deals with any
  * {@code HTTP 503 Service Unavailable} responses from an SSE endpoint, that contain a
@@ -88,26 +85,11 @@ import javax.ws.rs.client.WebTarget;
  * In case a <tt>HTTP 503 + {@value javax.ws.rs.core.HttpHeaders#RETRY_AFTER}</tt> response is received in return to a connection
  * request, JAX-RS SSE event source will automatically schedule a new reconnect attempt and use the received
  * <tt>{@value javax.ws.rs.core.HttpHeaders#RETRY_AFTER}</tt> HTTP header value as a one-time override of the reconnect delay.
- * </p>
  *
  * @author Marek Potociar
  * @since 2.1
  */
-public interface SseEventSource extends AutoCloseable {
-
-    /**
-     * {@code SseEventSource} listener that can be registered to listen for newly received
-     * {@link InboundSseEvent} notifications.
-     */
-    interface Listener {
-
-        /**
-         * Called when a new {@link InboundSseEvent} is received by an event source.
-         *
-         * @param event received inbound SSE event.
-         */
-        void onEvent(InboundSseEvent event);
-    }
+public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSseEvent> {
 
     /**
      * JAX-RS {@link SseEventSource} builder class.
@@ -122,7 +104,6 @@ public interface SseEventSource extends AutoCloseable {
      *                             .reconnectingEvery(5, SECONDS)
      *                             .open();
      * </pre>
-     * </p>
      */
     abstract class Builder {
 
@@ -180,7 +161,6 @@ public interface SseEventSource extends AutoCloseable {
          * At present, custom event source name is mainly useful to be able to distinguish different event source
          * event processing threads from one another. If not set, a default name will be generated using the
          * SSE endpoint URI.
-         * </p>
          *
          * @param name custom event source name.
          * @return updated event source builder instance.
@@ -193,7 +173,6 @@ public interface SseEventSource extends AutoCloseable {
          * Note that this value may be later overridden by the SSE endpoint using either a {@code retry} SSE event field
          * or <tt>HTTP 503 + {@value javax.ws.rs.core.HttpHeaders#RETRY_AFTER}</tt> mechanism as described
          * in the {@link SseEventSource} javadoc.
-         * </p>
          *
          * @param delay the default time to wait before attempting to recover from a connection loss.
          * @param unit  time unit of the reconnect delay parameter.
@@ -202,38 +181,16 @@ public interface SseEventSource extends AutoCloseable {
         public abstract Builder reconnectingEvery(long delay, TimeUnit unit);
 
         /**
-         * Register new {@link SseEventSource.Listener event listener} to receive all streamed {@link InboundSseEvent SSE events}.
-         *
-         * @param listener event listener to be registered with the event source.
-         * @see #register(SseEventSource.Listener, String, String...)
-         */
-        public abstract Builder register(SseEventSource.Listener listener);
-
-        /**
-         * Add name-bound {@link SseEventSource.Listener event listener} which will be called only for incoming SSE
-         * {@link InboundSseEvent events} whose {@link InboundSseEvent#getName() name} is equal to the specified
-         * name(s).
-         *
-         * @param listener   event listener to register with this event source.
-         * @param eventName  inbound event name.
-         * @param eventNames additional event names.
-         * @see #register(SseEventSource.Listener)
-         */
-        public abstract Builder register(SseEventSource.Listener listener, String eventName, String... eventNames);
-
-        /**
          * Build new SSE event source pointing at a SSE streaming {@link WebTarget web target}.
          * <p>
          * The returned event source is ready, but not {@link SseEventSource#open() connected} to the SSE endpoint.
          * It is expected that you will manually invoke its {@link #open()} method once you are ready to start
          * receiving SSE events. In case you want to build an event source instance that is already connected
          * to the SSE endpoint, use the event source builder {@link #open()} method instead.
-         * </p>
          * <p>
          * Once the event source is open, the incoming events are processed by the event source in an
          * asynchronous task that runs in an internal single-threaded {@link ScheduledExecutorService
          * scheduled executor service}.
-         * </p>
          *
          * @return new event source instance, ready to be connected to the SSE endpoint.
          * @see #open()
@@ -247,17 +204,38 @@ public interface SseEventSource extends AutoCloseable {
          * and is processing any new incoming events. In case you want to build an event source instance
          * that is already ready, but not automatically connected to the SSE endpoint, use the event source
          * builder {@link #build()} method instead.
-         * </p>
          * <p>
          * The incoming events are processed by the event source in an asynchronous task that runs in an
          * internal single-threaded {@link ScheduledExecutorService scheduled executor service}.
-         * </p>
          *
+         * @param onBuilt {@link SseEventSource} consumer, called after {@code SseEventSource} is built. The
+         *                consumer is expected to subscribe to the event stream.
          * @return new event source instance, already connected to the SSE endpoint.
          * @see #build()
          */
-        public abstract SseEventSource open();
+        public abstract SseEventSource open(Consumer<SseEventSource> onBuilt);
     }
+
+    /**
+     * Adds the given Subscriber if possible.  If already
+     * subscribed, or the attempt to subscribe fails due to policy
+     * violations or errors, the Subscriber's {@code onError}
+     * method is invoked with an {@link IllegalStateException}.
+     * Otherwise, the Subscriber's {@code onSubscribe} method is
+     * invoked with a new {@link Flow.Subscription}.  Subscribers may
+     * enable receiving items by invoking the {@code request}
+     * method of this Subscription, and may unsubscribe by
+     * invoking its {@code cancel} method.
+     * <p>
+     * The Subscriber is subscribed only to events whose {@link InboundSseEvent#getName() name} is equal to the
+     * specified name(s).
+     *
+     * @param subscriber the subscriber
+     * @param eventName  inbound event name.
+     * @param eventNames additional event names.
+     * @throws NullPointerException if subscriber is null
+     */
+    public abstract void subscribe(Flow.Subscriber<InboundSseEvent> subscriber, String eventName, String... eventNames);
 
     /**
      * Create a new {@link SseEventSource.Builder event source builder} that provides convenient way how to
@@ -302,11 +280,9 @@ public interface SseEventSource extends AutoCloseable {
      * The method blocks until the event processing task has completed execution after a shutdown
      * request, or until the timeout occurs, or the current thread is interrupted, whichever happens
      * first.
-     * </p>
      * <p>
      * In case the waiting for the event processing task has been interrupted, this method restores
      * the {@link Thread#interrupted() interrupt} flag on the thread before returning {@code false}.
-     * </p>
      *
      * @param timeout the maximum time to wait.
      * @param unit    the time unit of the timeout argument.

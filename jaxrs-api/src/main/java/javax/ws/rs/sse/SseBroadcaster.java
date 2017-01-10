@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,71 +40,66 @@
 
 package javax.ws.rs.sse;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import javax.ws.rs.Flow;
+
 /**
  * Server-Sent Events broadcasting facility.
  * <p>
- * TODO: more javadoc.
+ * Broadcaster can be used to manage multiple {@link SseEventOutput SseEventOutputs}. It enables
+ * sending events to all registered event outputs and provides facility to effectively handle
+ * exceptions and closures of individual registered event outputs.
  *
  * @author Marek Potociar
  * @since 2.1
  */
-public interface SseBroadcaster extends AutoCloseable {
+public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSseEvent> {
 
     /**
-     * Listener interface that can be implemented to listen to events fired by {@link SseBroadcaster} object.
-     * <p>
-     * To listen to events, implementation of this interface needs to register with a particular {@link SseBroadcaster} instance
-     * using {@link SseBroadcaster#register(Listener)}.
-     */
-    interface Listener {
-
-        /**
-         * Called when exception was thrown by a given SSE event output when trying to write to it or close it.
-         *
-         * @param output    output instance that threw exception.
-         * @param exception thrown exception.
-         */
-        void onException(SseEventOutput output, Exception exception);
-
-        /**
-         * Called when the SSE event output has been closed (either by client closing the connection or by calling
-         * {@link SseEventOutput#close()} on the server side.
-         *
-         * @param output output instance that has been closed.
-         */
-        void onClose(SseEventOutput output);
-    }
-
-    /**
-     * Register {@link SseBroadcaster.Listener} that will receive {@code SseBroadcaster} lifecycle events.
+     * Register a listener, which will be called when an exception was thrown by a given SSE event output when trying
+     * to write to it or close it.
      * <p>
      * This operation is potentially slow, especially if large number of listeners get registered in the broadcaster.
      * The {@code Broadcaster} implementation is optimized to efficiently handle small amounts of
      * concurrent listener registrations and removals and large amounts of registered listener notifications.
-     * </p>
      *
-     * @param listener listener to be registered.
-     * @return {@code true} if registered, {@code false} otherwise.
+     * @param onException bi-consumer, taking two parameters: {@link SseEventOutput}, which is the source of the
+     *                    exception and the actual {@link Exception}.
      */
-    boolean register(Listener listener);
+    void onException(BiConsumer<SseEventOutput, Exception> onException);
 
     /**
-     * Register {@link SseEventOutput} to this {@code SseBroadcaster} instance.
+     * Register a listener, which will be called when the SSE event output has been closed (either by client closing
+     * the connection or by calling {@link SseEventOutput#close()} on the server side.
+     * <p>
+     * This operation is potentially slow, especially if large number of listeners get registered in the broadcaster.
+     * The {@code Broadcaster} implementation is optimized to efficiently handle small amounts of
+     * concurrent listener registrations and removals and large amounts of registered listener notifications.
      *
-     * @param output {@link SseEventOutput} to register.
-     * @return {@code true} if the instance was successfully registered, {@code false} otherwise.
+     * @param onClose consumer taking single parameter, a {@link SseEventOutput}, which was closed.
      */
-    boolean register(final SseEventOutput output);
+    void onClose(Consumer<SseEventOutput> onClose);
 
     /**
-     * Broadcast an SSE event to all registered {@link SseEventOutput} instances.
+     * Subscribe {@link OutboundSseEvent} subscriber (i.e. {@link SseEventOutput})
+     * to this {@code SseBroadcaster} instance.
+     *
+     * @param subscriber {@link Flow.Subscriber Subscriber&lt;OutboundSseEvent&gt;} to register.
+     */
+    @Override
+    void subscribe(Flow.Subscriber<? super OutboundSseEvent> subscriber);
+
+    /**
+     * Broadcast an SSE event to all subscribed {@link SseEventOutput} instances.
      *
      * @param event SSE event to be broadcast.
      */
     void broadcast(final OutboundSseEvent event);
 
     /**
-     * Close all registered {@link SseEventOutput} instances.
+     * Close all subscribed {@link SseEventOutput} instances.
      */
     @Override
     void close();

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,10 +39,12 @@
  */
 package jaxrs.examples.sse;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.sse.InboundSseEvent;
 import javax.ws.rs.sse.SseEventInput;
 import javax.ws.rs.sse.SseEventSource;
 
@@ -56,16 +58,38 @@ public class SseClient {
     public static final WebTarget target = ClientBuilder.newClient().target("server-sent-events");
 
     public static void main(String[] args) {
-        consumeEventsViaPushModel();
+        consumeEventsViaSubscription();
 
         consumeEventsViaPullModel();
     }
 
-    private static void consumeEventsViaPushModel() {
-        try (final SseEventSource eventSource = SseEventSource.target(target)
-                .register(event -> System.out.println(event.readData())).build()) {
+    private static void consumeEventsViaSubscription() {
+        AbstractSubscriber subscriber = new AbstractSubscriber() {
+            @Override
+            public void onNext(InboundSseEvent item) {
+                System.out.println(item);
+            }
+        };
 
+        // explicit open
+        try (final SseEventSource eventSource = SseEventSource.target(target).build()) {
+
+            eventSource.subscribe(subscriber);
             eventSource.open();
+
+            for (int counter = 0; counter < 5; counter++) {
+                target.request().post(Entity.text("message " + counter));
+            }
+
+            Thread.sleep(500); // make sure all the events have time to arrive
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // open from builder
+        try (final SseEventSource eventSource =
+                     SseEventSource.target(target)
+                                   .open(sseEventSource -> sseEventSource.subscribe(subscriber))) {
 
             for (int counter = 0; counter < 5; counter++) {
                 target.request().post(Entity.text("message " + counter));
@@ -85,6 +109,24 @@ public class SseClient {
             target.request().post(Entity.text("message " + counter));
 
             System.out.println(eventInput.read().readData());
+        }
+    }
+
+    private static abstract class AbstractSubscriber implements Flow.Subscriber<InboundSseEvent> {
+
+        @Override
+        public void onSubscribe(Flow.Subscription subscription) {
+
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+
+        }
+
+        @Override
+        public void onComplete() {
+
         }
     }
 }
