@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,13 +40,17 @@
 
 package javax.ws.rs.core;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.CompletionStageRxInvoker;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.RxInvokerProvider;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Class RxClientTest.
@@ -72,12 +76,13 @@ public class RxClientTest {
                         .rx()                               // gets CompletionStageRxInvoker
                         .get(new GenericType<List<String>>() {
                         });
-        cs.thenAccept(l -> System.out.println(l));
+
+        cs.thenAccept(System.out::println);
     }
 
     /**
      * Shows how other reactive invokers could be plugged in using the class instance
-     * as an argument in {@link javax.ws.rs.client.Invocation.Builder#rx(Class)}.
+     * as an argument in {@link javax.ws.rs.client.Invocation.Builder#rx(RxInvokerProvider)}.
      */
     @Test
     @Ignore
@@ -87,9 +92,36 @@ public class RxClientTest {
                         .resolveTemplate("destination", "mars")
                         .request()
                         .header("Rx-User", "Java8")
-                        .rx(CompletionStageRxInvoker.class)     // passes RxInvoker
+                        .rx(new CompletionStageRxInvokerProvider())
                         .get(new GenericType<List<String>>() {
                         });
-        cs.thenAccept(l -> System.out.println(l));
+
+        cs.thenAccept(System.out::println);
+    }
+
+    /**
+     * Shows how other reactive invokers could be plugged in using the class instance
+     * as an argument in {@link javax.ws.rs.client.Invocation.Builder#rx(Class)}.
+     */
+    @Test
+    @Ignore
+    public void testRxClient3() {
+        CompletionStage<List<String>> cs =
+                client.target("remote/forecast/{destination}")
+                        .resolveTemplate("destination", "mars")
+                        .request()
+                        .header("Rx-User", "Java8")
+                        .rx(CompletionStageRxInvokerProvider.class)
+                        .get(new GenericType<List<String>>() {
+                        });
+
+        cs.thenAccept(System.out::println);
+    }
+
+    public static class CompletionStageRxInvokerProvider implements RxInvokerProvider<CompletionStageRxInvoker> {
+        @Override
+        public CompletionStageRxInvoker getRxInvoker(Invocation.Builder invocationBuilder, ExecutorService executorService) {
+            return null;
+        }
     }
 }
