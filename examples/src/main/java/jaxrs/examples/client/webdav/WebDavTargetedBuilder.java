@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,20 +40,22 @@
 
 package jaxrs.examples.client.webdav;
 
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.CompletionStageRxInvoker;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.NioInvoker;
 import javax.ws.rs.client.RxInvoker;
+import javax.ws.rs.client.RxInvokerProvider;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import java.util.Locale;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Example of Invocation.Builder extension to support WebDAV.
@@ -297,17 +299,27 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public <T extends RxInvoker> T rx(Class<T> clazz) {
-        return null;
+    public <T extends RxInvoker> T rx(RxInvokerProvider<T> rxInvokerProvider) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService) {
-        return null;
+    public <T extends RxInvoker> T rx(Class<? extends RxInvokerProvider<T>> clazz) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T extends RxInvoker> T rx(RxInvokerProvider<T> rxInvokerProvider, ExecutorService executorService) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T extends RxInvoker> T rx(Class<? extends RxInvokerProvider<T>> clazz, ExecutorService executorService) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public NioInvoker nio() {
-        return null;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
