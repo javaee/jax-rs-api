@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,22 +37,29 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package javax.ws.rs.core;
+
+package javax.ws.rs.ext;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
+
+import javax.ws.rs.Flow;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
- * Class NioCompletionHandler.
- *
- * @author Santiago Pericas-Geertsen
+ * @author Pavel Bucek (pavel.bucek at oracle.com)
  */
-@FunctionalInterface
-public interface NioCompletionHandler {
+public interface NioBodyReader<T> {
 
-    /**
-     * Method called when all data has been read. The value of {@code in.isFinished()}
-     * must be {@code true} when called.
-     *
-     * @param in input stream.
-     */
-    public void complete(NioInputStream in);
+    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType);
+
+    // TODO: what will be passed as a type param? Actual resource method parameter? (is that possible?;
+    // TODO: what about a client?)
+    public Flow.Publisher<T> readFrom(Flow.Publisher<ByteBuffer> entity, Class<T> type, Type genericType,
+                                      Annotation[] annotations, MediaType mediaType,
+                                      MultivaluedMap<String, String> httpHeaders);
+
+    // provide Executor / ExecutorService?
 }
-

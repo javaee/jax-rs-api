@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,9 +40,10 @@
 
 package javax.ws.rs.client;
 
-import javax.ws.rs.core.NioErrorHandler;
-import javax.ws.rs.core.NioReaderHandler;
-import javax.ws.rs.core.NioWriterHandler;
+import java.nio.ByteBuffer;
+import java.util.function.Consumer;
+
+import javax.ws.rs.Flow;
 import javax.ws.rs.core.Response;
 
 /**
@@ -53,23 +54,38 @@ import javax.ws.rs.core.Response;
  */
 public interface NioInvoker {
 
-    // GET
-
-    Response get(NioReaderHandler reader);
-
-    Response get(NioReaderHandler reader, NioErrorHandler error);
-
-    // PUT
-
-    Response put(NioWriterHandler writer);
-
-    Response put(NioWriterHandler writer, NioErrorHandler error);
-
     // POST
+    Response post(Consumer<Flow.Subscriber<ByteBuffer>> writeHandler);
 
-    Response post(NioWriterHandler writer);
+    // returning publisher might not work well; it could lose some data if the responseEntity
+    // is not subscribed before there publisher is notified about the first chunk of response
+    // entity
+    void post(Flow.Publisher<ByteBuffer> requestEntity, Flow.Subscriber<ByteBuffer> responseEntity);
 
-    Response post(NioWriterHandler writer, NioErrorHandler error);
+    // sending a stream of pojos
+    Response post(Flow.Publisher<?> requestEntity);
 
-    // TODO - other methods and operations
+    // consuming a stream of pojos -- lazy publishers (not sure whether this approach is correct in all possible scenarios)
+    <T> Flow.Publisher<T> post(Class<T> entityType);
+
+    // consuming a stream of pojos
+    <T> void post(Class<T> entityType, Flow.Subscriber<T> entitySubscriber);
+    <T> void post(Class<T> entityType, Flow.Subscriber<T> entitySubscriber, Flow.Subscriber<T>... subscribers);
+
+    Response get();
+
+    Response put(Consumer<Flow.Subscriber<ByteBuffer>> writeHandler);
+
+    Response delete();
+
+    Response head();
+
+    Response options();
+
+    Response trace();
+
+    Response method(String name);
+
+    Response method(String name, Consumer<Flow.Subscriber<ByteBuffer>> writeHandler);
+
 }

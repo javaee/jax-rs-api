@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,15 +39,24 @@
  */
 package jaxrs.examples.nio;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.ws.rs.Flow;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * FileResourceClient class.
@@ -56,50 +65,87 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FileResourceClient {
 
+    private static final Logger LOGGER = Logger.getLogger(FileResource.class.getName());
     private static final int FOUR_KB = 4 * 1024;
 
-    private static Map<String, byte[]> files = new ConcurrentHashMap<String, byte[]>();
+    private final Map<String, byte[]> files = new ConcurrentHashMap<>();
+
+    private static ExecutorService executorService = Executors.newCachedThreadPool();
 
     public void uploadClient(String path) {
         final Client client = ClientBuilder.newClient();
         final ByteArrayInputStream in = new ByteArrayInputStream(files.get(path));
         final byte[] buffer = new byte[FOUR_KB];
 
-        client.target("/file").request(MediaType.APPLICATION_OCTET_STREAM).nio().post(
-                out -> {              // writer handler
-                    try {
-                        final int n = in.read(buffer);
-                        if (n >= 0) {
-                            out.write(buffer, 0, n);
-                            return true;    // more to write
-                        }
-                        in.close();
-                        return false;       // we're done
-                    } catch (IOException e) {
-                        throw new WebApplicationException(e);
-                    }
-                });
+        Response response =
+                client.target("/file")
+                      .request(MediaType.APPLICATION_OCTET_STREAM)
+                      .nio()
+                      .post(
+                              // should we define that this always runs on another thread? if so, we don't need executor
+                              // service here
+                              (Consumer<Flow.Subscriber<ByteBuffer>>) nioOutputStream -> executorService.execute(() -> {
+                                  try {
+                                      final int n = in.read(buffer);
+                                      if (n >= 0) {
+                                          nioOutputStream.onNext(ByteBuffer.wrap(buffer, 0, n));
+                                      }
+                                      nioOutputStream.onComplete();
+                                  } catch (IOException e) {
+                                      LOGGER.log(Level.WARNING, "Exception caught while sending a file.", e);
+                                  }
+                              })
+                      );
     }
 
     public void downloadClient(String path) {
+
         final Client client = ClientBuilder.newClient();
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final byte[] buffer = new byte[FOUR_KB];
 
-        client.target("/file").request().accept(MediaType.APPLICATION_OCTET_STREAM).nio().get(
-                in -> {                     // reader handler
-                    try {
-                        if (in.isFinished()) {
-                            files.put(path, out.toByteArray());
-                            out.close();
-                        } else {
-                            final int n = in.read(buffer);
-                            out.write(buffer, 0, n);
-                        }
-                    } catch (IOException e) {
-                        throw new WebApplicationException(e);
-                    }
-                });
+        Response response = client.target("/file")
+                                  .request()
+                                  .accept(MediaType.APPLICATION_OCTET_STREAM)
+                                  .nio()
+                                  .get();
 
+        // TODO: don't promote GenericType - add "shortcut", something like <T> Publisher<T> nioReadEntity(Class<T>)
+        response.readEntity(new GenericType<Flow.Publisher<ByteBuffer>>() {}).subscribe(new Flow.Subscriber<ByteBuffer>() {
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                subscription.request(Long.MAX_VALUE);
+            }
+
+            @Override
+            public void onNext(ByteBuffer item) {
+                while (item.remaining() > 0) {
+                    int remaining = item.remaining();
+
+                    if (remaining >= buffer.length) {
+                        ByteBuffer byteBuffer = item.get(buffer, 0, buffer.length);
+                        out.write(buffer, 0, buffer.length);
+                    } else {
+                        ByteBuffer byteBuffer = item.get(buffer, 0, remaining);
+                        out.write(buffer, 0, remaining);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                LOGGER.log(Level.WARNING, throwable.getMessage(), throwable);
+            }
+
+            @Override
+            public void onComplete() {
+                try {
+                    out.close();
+                    files.put(path, out.toByteArray());
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Exception thrown while closing an output file.", e);
+                }
+            }
+        });
     }
 }

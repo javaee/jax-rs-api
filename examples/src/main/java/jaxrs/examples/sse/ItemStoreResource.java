@@ -158,7 +158,7 @@ public class ItemStoreResource {
      *
      * @param lastEventId Value of custom SSE HTTP <tt>{@value javax.ws.rs.core.HttpHeaders#LAST_EVENT_ID_HEADER}</tt> header.
      *                    Defaults to {@code -1} if not set.
-     * @param serverSink new SSE server sink stream representing the (re-)established SSE client connection.
+     * @param eventSink new SSE server sink stream representing the (re-)established SSE client connection.
      * @throws InternalServerErrorException in case replaying missed events to the reconnected output stream fails.
      * @throws ServiceUnavailableException  in case the reconnect delay is set to a positive value.
      */
@@ -167,7 +167,11 @@ public class ItemStoreResource {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void itemEvents(
             @HeaderParam(HttpHeaders.LAST_EVENT_ID_HEADER) @DefaultValue("-1") int lastEventId,
-            @Context SseEventSink serverSink) {
+            @Context SseEventSink eventSink) {
+
+
+
+
 
         if (lastEventId >= 0) {
             LOGGER.info("Received last event id :" + lastEventId);
@@ -179,14 +183,14 @@ public class ItemStoreResource {
                 throw new ServiceUnavailableException(delay);
             } else {
                 LOGGER.info("Zero reconnect delay - reconnecting.");
-                replayMissedEvents(lastEventId, serverSink);
+                replayMissedEvents(lastEventId, eventSink);
             }
         }
 
-        broadcaster.subscribe(serverSink);
+        broadcaster.subscribe(eventSink);
     }
 
-    private void replayMissedEvents(final int lastEventId, final SseEventSink eventOutput) {
+    private void replayMissedEvents(final int lastEventId, final SseEventSink eventSink) {
         try {
             storeLock.readLock().lock();
             final int firstUnreceived = lastEventId + 1;
@@ -195,7 +199,7 @@ public class ItemStoreResource {
                 LOGGER.info("Replaying events - starting with id " + firstUnreceived);
                 final ListIterator<String> it = itemStore.subList(firstUnreceived, itemStore.size()).listIterator();
                 while (it.hasNext()) {
-                    eventOutput.onNext(createItemEvent(it.nextIndex() + firstUnreceived, it.next()));
+                    eventSink.onNext(createItemEvent(it.nextIndex() + firstUnreceived, it.next()));
                 }
             } else {
                 LOGGER.info("No events to replay.");

@@ -42,12 +42,14 @@ package javax.ws.rs.container;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -334,6 +336,8 @@ public interface ContainerRequestContext {
      * @throws IllegalStateException in case the method is invoked from a response filter.
      */
     public void setEntityStream(InputStream input);
+
+    public void addProcessor(Flow.Processor<ByteBuffer, ByteBuffer> processor);
 
     /**
      * Get the injectable security context information for the current request.

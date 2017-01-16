@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,24 +39,27 @@
  */
 package jaxrs.examples.nio;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Flow;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NioInputStream;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * FileResource class.
@@ -66,9 +69,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Path("/file")
 public class FileResource {
 
+    private static final Logger LOGGER = Logger.getLogger(FileResource.class.getName());
     private static final int FOUR_KB = 4 * 1024;
 
-    private static Map<String, byte[]> files = new ConcurrentHashMap<String, byte[]>();
+    private static Map<String, byte[]> files = new ConcurrentHashMap<>();
+    // or @Resource ManagedExecutorService on Java EE container
+    // private static ExecutorService executorService = Executors.newCachedThreadPool();
 
     /**
      * Resource that reads input file from byte array and registers an NioWriterHandler
@@ -86,61 +92,47 @@ public class FileResource {
         final byte[] buffer = new byte[FOUR_KB];
 
         return Response.ok().entity(
-                out -> {                    // writer handler
+                out -> {
+                    // Are we sure this is running on another thread? if not, we need to have this passed to an executor
+                    // service.
                     try {
-                        final int n = in.read(buffer);
-                        if (n >= 0) {
-                            out.write(buffer, 0, n);
-                            return true;    // more to write
+                        int n;
+                        while ((n = in.read(buffer)) > 0) {
+                            out.onNext(ByteBuffer.wrap(buffer, 0, n));
                         }
+                        // we're done
                         in.close();
-                        return false;       // we're done
+                        out.onComplete();
                     } catch (IOException e) {
-                        throw new WebApplicationException(e);
+                        // do something with the exception.
+                        // re-throwing it doesn't really help, since at this point, the code is executed on another
+                        // thread.
+                        LOGGER.log(Level.WARNING, "Exception thrown while writing a response.", e);
                     }
                 }).build();
+    }
+
+    /**
+     * Subscribing to a given publisher.
+     * <p>
+     * The consumer in entity can be the adaptation layer - for example between flow and org.ractivestreams ifaces.
+     */
+    @GET
+    @Path("download2")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response download2(@QueryParam("path") String path) {
+        Flow.Publisher<ByteBuffer> entityPublisher = null; // ...
+
+        // Subscriber is provided by the implementation and it is subscribed to "any" publisher of ByteBuffer.
+        return Response.ok().entity(entityPublisher::subscribe).build();
     }
 
     /**
      * Resource that reads input file from byte array and registers an NioWriterHandler
      * to write response non-blockingly. The NioWriterHandler is called if and only
-     * if write is possible and last call returned {@code true}. An error handler
-     * is also registered for logging purposes.
-     *
-     * @param path path to file.
-     * @return response with AsyncWriter.
-     */
-    @GET
-    @Path("downloadError")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response downloadError(@QueryParam("path") String path) {
-        final ByteArrayInputStream in = new ByteArrayInputStream(files.get(path));
-        final byte[] buffer = new byte[FOUR_KB];
-
-        return Response.ok().entity(
-                out -> {                    // writer handler
-                    try {
-                        final int n = in.read(buffer);
-                        if (n >= 0) {
-                            out.write(buffer, 0, n);
-                            return true;    // more to write
-                        }
-                        in.close();
-                        return false;       // we're done
-                    } catch (IOException e) {
-                        throw new WebApplicationException(e);
-                    }
-                },
-                throwable -> {              // error handler
-                    System.out.println("Problem found: " + throwable.getMessage());
-                    throw throwable;
-                }).build();
-    }
-
-    /**
-     * Resource that registers an NioReaderHandler to read the entity non-blockingly
-     * and writes the result to a byte array. The handler check the end of stream
-     * by calling {@code isFinished()}.
+     * if write is possible and last call returned {@code true}. Any error occurred during
+     * upload is returned back to the client, errors related to closing the stream might
+     * be only logged.
      *
      * @param path     path to file.
      * @param request  injected request to read from.
@@ -149,105 +141,54 @@ public class FileResource {
     @POST
     @Path("upload")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public void upload(@QueryParam("path") String path, @Context Request request,
+    public void upload(@QueryParam("path") String path,
+                       @Context Request request,
                        @Context AsyncResponse response) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final byte[] buffer = new byte[FOUR_KB];
 
-        request.entity(
-                in -> {                     // reader handler
-                    try {
-                        if (in.isFinished()) {
-                            files.put(path, out.toByteArray());
-                            out.close();
-                            response.resume("Upload completed");
-                        } else {
-                            final int n = in.read(buffer);
-                            out.write(buffer, 0, n);
-                        }
-                    } catch (IOException e) {
-                        throw new WebApplicationException(e);
-                    }
-                });
-    }
+        request.entity().subscribe(new Flow.Subscriber<ByteBuffer>() {
+            @Override
+            public void onSubscribe(Flow.Subscription subscription) {
+                subscription.request(Long.MAX_VALUE);
+            }
 
-    /**
-     * Resource that registers an NioReaderHandler to read the entity non-blockingly
-     * and writes the result to a byte array. A completion handler is also registered
-     * to finish the upload process.
-     *
-     * @param path     path to file.
-     * @param request  injected request to read from.
-     * @param response async response to inform completion.
-     */
-    @POST
-    @Path("uploadCompletion")
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public void uploadCompletion(@QueryParam("path") String path, @Context Request request,
-                                 @Context AsyncResponse response) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        final byte[] buffer = new byte[FOUR_KB];
+            @Override
+            public void onNext(ByteBuffer item) {
+                while (item.remaining() > 0) {
+                    int remaining = item.remaining();
 
-        request.entity(
-                in -> {                     // reader handler
-                    try {
-                        final int n = in.read(buffer);
-                        out.write(buffer, 0, n);
-                    } catch (IOException e) {
-                        throw new WebApplicationException(e);
+                    if (remaining >= buffer.length) {
+                        ByteBuffer byteBuffer = item.get(buffer, 0, buffer.length);
+                        out.write(buffer, 0, buffer.length);
+                    } else {
+                        ByteBuffer byteBuffer = item.get(buffer, 0, remaining);
+                        out.write(buffer, 0, remaining);
                     }
-                },
-                (NioInputStream in) -> {    // completion handler
-                    try {
-                        assert in.isFinished();
-                        files.put(path, out.toByteArray());
-                        out.close();
-                        response.resume("Upload completed");
-                    } catch (IOException e) {
-                        throw new WebApplicationException(e);
-                    }
-                });
-    }
+                }
+            }
 
-    /**
-     * Resource that registers an NioReaderHandler to read the entity non-blockingly
-     * and writes the result to a byte array. A completion and an error handlers are
-     * also registered.
-     *
-     * @param path     path to file.
-     * @param request  injected request to read from.
-     * @param response async response to inform completion.
-     */
-    @POST
-    @Path("uploadCompletionError")
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public void uploadCompletionError(@QueryParam("path") String path, @Context Request request,
-                                      @Context AsyncResponse response) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        final byte[] buffer = new byte[FOUR_KB];
+            @Override
+            public void onError(Throwable throwable) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Exception thrown while closing an output file.", e);
+                }
+                response.resume(throwable);
+            }
 
-        request.entity(
-                in -> {                     // reader handler
-                    try {
-                        final int n = in.read(buffer);
-                        out.write(buffer, 0, n);
-                    } catch (IOException e) {
-                        throw new WebApplicationException(e);
-                    }
-                },
-                (NioInputStream in) -> {    // completion handler
-                    try {
-                        assert in.isFinished();
-                        files.put(path, out.toByteArray());
-                        out.close();
-                        response.resume("Upload completed");
-                    } catch (IOException e) {
-                        throw new WebApplicationException(e);
-                    }
-                },
-                throwable -> {              // error handler
-                    System.out.println("Problem found: " + throwable.getMessage());
-                    throw throwable;
-                });
+            @Override
+            public void onComplete() {
+                try {
+                    files.put(path, out.toByteArray());
+                    out.close();
+                    response.resume("Upload complete.");
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Exception thrown while closing an output file.", e);
+                    response.resume(e);
+                }
+            }
+        });
     }
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -42,7 +42,9 @@ package javax.ws.rs.ext;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -95,6 +97,8 @@ public interface WriterInterceptorContext extends InterceptorContext {
      * @return output stream for the object to be written.
      */
     OutputStream getOutputStream();
+
+    public void addProcessor(Flow.Processor<ByteBuffer, ByteBuffer> processor);
 
     /**
      * Set a new output stream for the object to be written. For example, by wrapping
