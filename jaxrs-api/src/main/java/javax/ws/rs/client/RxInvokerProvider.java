@@ -52,16 +52,24 @@ import java.util.concurrent.ExecutorService;
 public interface RxInvokerProvider<T extends RxInvoker> {
 
     /**
+     * Find out whether current instance provides given {@link RxInvoker} subclass.
+     *
+     * @param clazz {@code RxInvoker} subclass.
+     * @return {@code true} when this provider provides given {@code RxInvoker} subclass, {@code false} otherwise.
+     */
+    public boolean isProviderFor(Class<?> clazz);
+
+    /**
      * Get {@link RxInvoker} implementation instance.
      * <p>
      * The returned instance has to be thread safe.
      *
-     * @param invocationBuilder {@code Invocation.Builder} from the previous stage of client builder.
+     * @param syncInvoker {@code SyncInvoker} used to execute current request.
      * @param executorService   executor service, which should be used for executing reactive callbacks invocations.
      *                          It can be {@code null}; in that case it's up to the implementation to choose the best
      *                          {@code ExecutorService} in given environment.
      * @return instance of the {@code RxInvoker} subclass.
      */
-    public T getRxInvoker(Invocation.Builder invocationBuilder, ExecutorService executorService);
+    public T getRxInvoker(SyncInvoker syncInvoker, ExecutorService executorService);
 
 }

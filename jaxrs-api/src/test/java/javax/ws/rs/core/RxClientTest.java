@@ -46,8 +46,8 @@ import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.CompletionStageRxInvoker;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.RxInvokerProvider;
+import javax.ws.rs.client.SyncInvoker;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -70,29 +70,31 @@ public class RxClientTest {
     public void testRxClient() {
         CompletionStage<List<String>> cs =
                 client.target("remote/forecast/{destination}")
-                        .resolveTemplate("destination", "mars")
-                        .request()
-                        .header("Rx-User", "Java8")
-                        .rx()                               // gets CompletionStageRxInvoker
-                        .get(new GenericType<List<String>>() {
-                        });
+                      .resolveTemplate("destination", "mars")
+                      .request()
+                      .header("Rx-User", "Java8")
+                      .rx()                               // gets CompletionStageRxInvoker
+                      .get(new GenericType<List<String>>() {
+                      });
 
         cs.thenAccept(System.out::println);
     }
 
     /**
-     * Shows how other reactive invokers could be plugged in using the class instance
-     * as an argument in {@link javax.ws.rs.client.Invocation.Builder#rx(RxInvokerProvider)}.
+     * Shows how other reactive invokers could be plugged in using the class
+     * as an argument in {@link javax.ws.rs.client.Invocation.Builder#rx(Class)}.
      */
     @Test
     @Ignore
     public void testRxClient2() {
+        Client rxClient = client.register(CompletionStageRxInvokerProvider.class, RxInvokerProvider.class);
+
         CompletionStage<List<String>> cs =
-                client.target("remote/forecast/{destination}")
+                rxClient.target("remote/forecast/{destination}")
                         .resolveTemplate("destination", "mars")
                         .request()
                         .header("Rx-User", "Java8")
-                        .rx(new CompletionStageRxInvokerProvider())
+                        .rx(CompletionStageRxInvoker.class)
                         .get(new GenericType<List<String>>() {
                         });
 
@@ -106,21 +108,31 @@ public class RxClientTest {
     @Test
     @Ignore
     public void testRxClient3() {
-        CompletionStage<List<String>> cs =
-                client.target("remote/forecast/{destination}")
+        Client rxClient = client.register(CompletionStageRxInvokerProvider.class, RxInvokerProvider.class);
+
+        CompletionStage<String> cs =
+                rxClient.target("remote/forecast/{destination}")
                         .resolveTemplate("destination", "mars")
                         .request()
                         .header("Rx-User", "Java8")
-                        .rx(CompletionStageRxInvokerProvider.class)
-                        .get(new GenericType<List<String>>() {
-                        });
+                        .rx(CompletionStageRxInvoker.class)
+                        .get(String.class);
 
         cs.thenAccept(System.out::println);
     }
 
+    /**
+     * RxInvokerProvider provided by the app/other framework.
+     */
     public static class CompletionStageRxInvokerProvider implements RxInvokerProvider<CompletionStageRxInvoker> {
+
         @Override
-        public CompletionStageRxInvoker getRxInvoker(Invocation.Builder invocationBuilder, ExecutorService executorService) {
+        public boolean isProviderFor(Class<?> clazz) {
+            return CompletionStageRxInvoker.class.equals(clazz);
+        }
+
+        @Override
+        public CompletionStageRxInvoker getRxInvoker(SyncInvoker syncInvoker, ExecutorService executorService) {
             return null;
         }
     }

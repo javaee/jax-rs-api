@@ -313,62 +313,40 @@ public interface Invocation {
         public CompletionStageRxInvoker rx(ExecutorService executorService);
 
         /**
-         * Access a reactive invoker based on an implementation of {@link RxInvokerProvider}
-         * provided. This method is an extension point for JAX-RS implementations to support other types
+         * Access a reactive invoker based on provider {@link RxInvoker} subclass. Note
+         * that corresponding {@link RxInvokerProvider} must be registered to client runtime.
+         * <p>
+         * This method is an extension point for JAX-RS implementations to support other types
          * representing asynchronous computations.
          *
-         * @param rxInvokerProvider {@link RxInvoker} subclass provider instance.
+         * @param clazz {@link RxInvoker} subclass.
          * @return reactive invoker instance.
+         * @throws IllegalStateException when provider for given class is not registered.
+         * @see javax.ws.rs.client.Invocation.Builder#rx(Class, ExecutorService)
+         * @see javax.ws.rs.client.Client#register(Class)
          * @since 2.1
-         * @see javax.ws.rs.client.Invocation.Builder#rx(RxInvokerProvider, ExecutorService)
          */
-        public <T extends RxInvoker> T rx(RxInvokerProvider<T> rxInvokerProvider);
+        public <T extends RxInvoker> T rx(Class<T> clazz);
 
         /**
-         * Access a reactive invoker based on an implementation of {@link RxInvokerProvider}
-         * provided. This method is an extension point for JAX-RS implementations to support other types
-         * representing asynchronous computations.
-         *
-         * @param clazz {@link RxInvoker} subclass provider class.
-         * @return reactive invoker instance.
-         * @since 2.1
-         * @see javax.ws.rs.client.Invocation.Builder#rx(RxInvokerProvider, ExecutorService)
-         */
-        public <T extends RxInvoker> T rx(Class<? extends RxInvokerProvider<T>> clazz);
-
-        /**
-         * Access a reactive invoker based on an implementation of {@link RxInvokerProvider}
-         * and the executor service provided. This method is an extension point for JAX-RS implementations
+         * Access a reactive invoker based on provider {@link RxInvoker} subclass. Note
+         * that corresponding {@link RxInvokerProvider} must be registered to client runtime.
+         * <p>
+         * This method is an extension point for JAX-RS implementations
          * to support other types representing asynchronous computations. Note that not
          * all executor services are supported in all runtime environments. For example, only
          * executor services provided by JSR 236 should be supported in a Java EE environment.
          *
-         * @param rxInvokerProvider {@link RxInvoker} subclass provider instance.
+         * @param clazz           {@link RxInvoker} subclass provider class.
          * @param executorService executor service to use.
-         * @throws java.lang.IllegalArgumentException if the executor service provided is not
-         *                                            supported by the runtime environment.
-         * @return default reactive invoker instance.
-         * @since 2.1
-         * @see javax.ws.rs.client.Invocation.Builder#rx()
-         */
-        public <T extends RxInvoker> T rx(RxInvokerProvider<T> rxInvokerProvider, ExecutorService executorService);
-
-        /**
-         * Access a reactive invoker based on an implementation of {@link RxInvokerProvider}
-         * and the executor service provided. This method is an extension point for JAX-RS implementations
-         * to support other types representing asynchronous computations. Note that not
-         * all executor services are supported in all runtime environments. For example, only
-         * executor services provided by JSR 236 should be supported in a Java EE environment.
-         *
-         * @param clazz {@link RxInvoker} subclass provider class.
-         * @param executorService executor service to use.
-         * @throws java.lang.IllegalArgumentException if the executor service provided is not
-         *                                            supported by the runtime environment.
          * @return default reactive invoker instance class.
-         * @since 2.1
+         * @throws java.lang.IllegalArgumentException if the executor service provided is not
+         *                                            supported by the runtime environment.
+         * @throws IllegalStateException              when provider for given class is not registered.
          * @see javax.ws.rs.client.Invocation.Builder#rx()
+         * @since 2.1
          */
-        public <T extends RxInvoker> T rx(Class<? extends RxInvokerProvider<T>> clazz, ExecutorService executorService);
+        public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService);
 
         /**
          * Access the NIO uniform request invocation interface to use non-blocking I/O
