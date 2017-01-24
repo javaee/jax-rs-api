@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013-2016 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,7 +39,6 @@
  */
 package jaxrs.examples.sse;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -87,19 +86,10 @@ public class ItemStoreResource {
         this.sseContext = sseContext;
         this.broadcaster = sseContext.newBroadcaster();
 
-        broadcaster.register(new SseBroadcaster.Listener() {
-            @Override
-            public void onException(final SseEventOutput output, final Exception exception) {
-                LOGGER.log(Level.WARNING,
-                        "An exception has been thrown while broadcasting to an event output.",
-                        exception);
-            }
+        broadcaster.onException((sseEventOutput, e) ->
+                LOGGER.log(Level.WARNING, "An exception has been thrown while broadcasting to an event output.", e));
 
-            @Override
-            public void onClose(final SseEventOutput output) {
-                LOGGER.log(Level.INFO, "SSE event output has been closed.");
-            }
-        });
+        broadcaster.onClose(sseEventOutput -> LOGGER.log(Level.INFO, "SSE event output has been closed."));
     }
 
     private static volatile long reconnectDelay = 0;
@@ -190,12 +180,7 @@ public class ItemStoreResource {
             }
         }
 
-        if (!broadcaster.register(eventOutput)) {
-            LOGGER.severe("!!! Unable to add new event output to the broadcaster !!!");
-            // let's try to force a 5s delayed client reconnect attempt
-            throw new ServiceUnavailableException(5L);
-        }
-
+        broadcaster.subscribe(eventOutput);
         return eventOutput;
     }
 
@@ -208,13 +193,11 @@ public class ItemStoreResource {
                 LOGGER.info("Replaying events - starting with id " + firstUnreceived);
                 final ListIterator<String> it = itemStore.subList(firstUnreceived, itemStore.size()).listIterator();
                 while (it.hasNext()) {
-                    eventOutput.write(createItemEvent(it.nextIndex() + firstUnreceived, it.next()));
+                    eventOutput.onNext(createItemEvent(it.nextIndex() + firstUnreceived, it.next()));
                 }
             } else {
                 LOGGER.info("No events to replay.");
             }
-        } catch (IOException ex) {
-            throw new InternalServerErrorException("Error replaying missed events", ex);
         } finally {
             storeLock.readLock().unlock();
         }

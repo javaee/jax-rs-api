@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,7 +40,14 @@
 package javax.ws.rs.sse;
 
 /**
- * TODO: javadoc.
+ * Base Server Sent Event definition.
+ * <p>
+ * This interface provides basic properties of the Server Sent Event, namely ID, Name, and Comment.
+ * It also provides access to the Reconnect delay property.
+ * <p>
+ * {@code SseEvent} is extended by another two interfaces, {@link InboundSseEvent} and
+ * {@link OutboundSseEvent}. The main difference is in how are instances created and how the stored
+ * data can be accessed (or provided).
  *
  * @author Marek Potociar
  * @since 2.1
@@ -57,7 +64,6 @@ public interface SseEvent {
      * <p>
      * Contains value of SSE {@code "id"} field. This field is optional. Method may return {@code null}, if the event
      * identifier is not specified.
-     * </p>
      *
      * @return event id.
      */
@@ -68,7 +74,6 @@ public interface SseEvent {
      * <p>
      * Contains value of SSE {@code "event"} field. This field is optional. Method may return {@code null}, if the event
      * name is not specified.
-     * </p>
      *
      * @return event name, or {@code null} if not set.
      */
@@ -79,7 +84,6 @@ public interface SseEvent {
      * <p>
      * Contains value of the comment associated with SSE event. This field is optional. Method may return {@code null},
      * if the event comment is not specified.
-     * </p>
      *
      * @return comment associated with the event.
      */
@@ -91,7 +95,6 @@ public interface SseEvent {
      * <p>
      * Contains value of SSE {@code "retry"} field. This field is optional. Method returns {@link #RECONNECT_NOT_SET}
      * if no value has been set.
-     * </p>
      *
      * @return reconnection delay in milliseconds or {@link #RECONNECT_NOT_SET} if no value has been set.
      */

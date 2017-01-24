@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012-2016 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -47,6 +47,7 @@ import java.io.Closeable;
  * The input stream lets you serially read & consume SSE events as they arrive.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
+ * @since 2.1
  */
 public interface SseEventInput extends Closeable {
 
@@ -64,13 +65,10 @@ public interface SseEventInput extends Closeable {
      * <p>
      * Note: This operation is not thread-safe and has to be explicitly synchronized in case it is used from
      * multiple threads.
-     * </p>
      *
      * @return next streamed event or {@code null} if the underlying entity input stream has been closed while reading
      * the next event data.
      * @throws IllegalStateException in case this chunked input has been closed.
      */
     InboundSseEvent read() throws IllegalStateException;
-
-
 }

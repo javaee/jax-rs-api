@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -58,7 +58,7 @@ import java.util.logging.Logger;
  * @author Paul Sandoz
  * @author Marc Hadley
  * @author Marek Potociar
- * @since 2.0
+ * @since 2.1
  */
 final class FactoryFinder {
 
@@ -132,7 +132,6 @@ final class FactoryFinder {
      * one will not be used.
      * <p>
      * This method is package private so that this code can be shared.
-     * </p>
      *
      * @param factoryId         the name of the factory to find, which is
      *                          a system property.

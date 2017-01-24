@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -51,6 +51,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.SseContext;
 import javax.ws.rs.sse.SseEventOutput;
 
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -64,6 +66,9 @@ public class ServerSentEventsResource {
     private final Object outputLock = new Object();
     private SseEventOutput sseEventOutput;
     private final SseContext sseContext;
+
+    @Resource
+    private ManagedExecutorService executorService;
 
     @Inject
     public ServerSentEventsResource(SseContext sseContext) {
@@ -86,7 +91,7 @@ public class ServerSentEventsResource {
 
     @POST
     public void addMessage(final String message) throws IOException {
-        sseEventOutput.write(sseContext.newEvent().name("custom-message").data(String.class, message).build());
+        sseEventOutput.onNext(sseContext.newEvent().name("custom-message").data(String.class, message).build());
     }
 
     @DELETE
@@ -103,28 +108,25 @@ public class ServerSentEventsResource {
     public SseEventOutput startDomain(@PathParam("id") final String id) {
         final SseEventOutput output = sseContext.newOutput();
 
-        new Thread() {
-            public void run() {
-                try {
-                    output.write(sseContext.newEvent().name("domain-progress")
-                            .data(String.class, "starting domain " + id + " ...").build());
-                    Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data("50%").build());
-                    Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data("60%").build());
-                    Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data("70%").build());
-                    Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data("99%").build());
-                    Thread.sleep(200);
-                    output.write(sseContext.newEvent().name("domain-progress").data("Done.").build());
-                    output.close();
-
-                } catch (final InterruptedException | IOException e) {
-                    e.printStackTrace();
-                }
+        executorService.submit(() -> {
+            try {
+                output.onNext(sseContext.newEvent().name("domain-progress")
+                                       .data(String.class, "starting domain " + id + " ...").build());
+                Thread.sleep(200);
+                output.onNext(sseContext.newEvent().name("domain-progress").data("50%").build());
+                Thread.sleep(200);
+                output.onNext(sseContext.newEvent().name("domain-progress").data("60%").build());
+                Thread.sleep(200);
+                output.onNext(sseContext.newEvent().name("domain-progress").data("70%").build());
+                Thread.sleep(200);
+                output.onNext(sseContext.newEvent().name("domain-progress").data("99%").build());
+                Thread.sleep(200);
+                output.onNext(sseContext.newEvent().name("domain-progress").data("Done.").build());
+                output.close();
+            } catch (final InterruptedException | IOException e) {
+                e.printStackTrace();
             }
-        }.start();
+        });
 
         return output;
     }
