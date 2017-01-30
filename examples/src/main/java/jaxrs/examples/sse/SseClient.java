@@ -116,7 +116,7 @@ public class SseClient {
 
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
-
+            subscription.request(Integer.MAX_VALUE);
         }
 
         @Override
