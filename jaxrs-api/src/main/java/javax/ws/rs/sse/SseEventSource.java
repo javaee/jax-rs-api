@@ -196,24 +196,6 @@ public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSse
          * @see #open()
          */
         public abstract SseEventSource build();
-
-        /**
-         * Build new SSE event source pointing at a SSE streaming {@link WebTarget web target}.
-         * <p>
-         * The returned event source is already {@link SseEventSource#open() connected} to the SSE endpoint
-         * and is processing any new incoming events. In case you want to build an event source instance
-         * that is already ready, but not automatically connected to the SSE endpoint, use the event source
-         * builder {@link #build()} method instead.
-         * <p>
-         * The incoming events are processed by the event source in an asynchronous task that runs in an
-         * internal single-threaded {@link ScheduledExecutorService scheduled executor service}.
-         *
-         * @param onBuilt {@link SseEventSource} consumer, called after {@code SseEventSource} is built. The
-         *                consumer is expected to subscribe to the event stream.
-         * @return new event source instance, already connected to the SSE endpoint.
-         * @see #build()
-         */
-        public abstract SseEventSource open(Consumer<SseEventSource> onBuilt);
     }
 
     /**

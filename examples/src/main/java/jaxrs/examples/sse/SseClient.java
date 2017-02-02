@@ -45,6 +45,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.InboundSseEvent;
+import javax.ws.rs.sse.SseClientSubscriber;
 import javax.ws.rs.sse.SseEventInput;
 import javax.ws.rs.sse.SseEventSource;
 
@@ -86,10 +87,30 @@ public class SseClient {
             e.printStackTrace();
         }
 
-        // open from builder
+        // using SseClientSubscriber
         try (final SseEventSource eventSource =
                      SseEventSource.target(target)
-                                   .open(sseEventSource -> sseEventSource.subscribe(subscriber))) {
+                                   .build()) {
+
+            eventSource.subscribe(SseClientSubscriber.builder().onNext(System.out::println).build());
+            eventSource.open();
+
+            for (int counter = 0; counter < 5; counter++) {
+                target.request().post(Entity.text("message " + counter));
+            }
+
+            Thread.sleep(500); // make sure all the events have time to arrive
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // using SseClientSubscriber - SseClientSubscriber#from shortcut
+        try (final SseEventSource eventSource =
+                     SseEventSource.target(target)
+                                   .build()) {
+
+            eventSource.subscribe(SseClientSubscriber.fromOnNext(System.out::println));
+            eventSource.open();
 
             for (int counter = 0; counter < 5; counter++) {
                 target.request().post(Entity.text("message " + counter));
@@ -116,7 +137,7 @@ public class SseClient {
 
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
-            subscription.request(Integer.MAX_VALUE);
+            subscription.request(Long.MAX_VALUE);
         }
 
         @Override
