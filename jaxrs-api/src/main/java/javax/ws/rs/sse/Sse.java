@@ -57,6 +57,41 @@ public interface Sse {
     OutboundSseEvent.Builder newEvent();
 
     /**
+     * Create new {@link OutboundSseEvent} from provided data.
+     * <p>
+     * The data can be string only and must not be null.
+     *
+     * @param data event data.
+     * @return created {@code OutboundSseEvent}.
+     */
+    default OutboundSseEvent newDataEvent(String data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Parameter 'data' must not be null.");
+        }
+
+        return newEvent().data(String.class, data).build();
+    }
+
+    /**
+     * Create new {@link OutboundSseEvent} from provided data and name.
+     *
+     * @param data event data.
+     * @param name event name. (see {@link OutboundSseEvent#getName()}).
+     * @return created {@code OutboundSseEvent}.
+     */
+    default OutboundSseEvent newDataEvent(String data, String name) {
+        if (data == null) {
+            throw new IllegalArgumentException("Parameter 'data' must not be null.");
+        }
+
+        if (name == null) {
+            throw new IllegalArgumentException("Parameter 'name' must not be null.");
+        }
+
+        return newEvent().data(String.class, data).name(name).build();
+    }
+
+    /**
      * Get a new SSE broadcaster.
      *
      * @return new SSE broadcaster instance.
