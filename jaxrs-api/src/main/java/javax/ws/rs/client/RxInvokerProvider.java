@@ -44,9 +44,13 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * {@link RxInvoker} provider.
+ * <p>
+ * {@code RxInvokerProvider} must be registered to the client using {@link Client#register(Class)}. It provides a way
+ * how to plug-in support for another reactive implementation, see {@link Invocation.Builder#rx(Class)}.
  *
  * @param <T> {@code RxInvoker} subclass type.
  * @author Pavel Bucek
+ * @author Santiago Pericas-Geertsen
  * @since 2.1
  */
 public interface RxInvokerProvider<T extends RxInvoker> {
@@ -64,10 +68,10 @@ public interface RxInvokerProvider<T extends RxInvoker> {
      * <p>
      * The returned instance has to be thread safe.
      *
-     * @param syncInvoker {@code SyncInvoker} used to execute current request.
-     * @param executorService   executor service, which should be used for executing reactive callbacks invocations.
-     *                          It can be {@code null}; in that case it's up to the implementation to choose the best
-     *                          {@code ExecutorService} in given environment.
+     * @param syncInvoker     {@code SyncInvoker} used to execute current request.
+     * @param executorService executor service, which should be used for executing reactive callbacks invocations.
+     *                        It can be {@code null}; in that case it's up to the implementation to choose the best
+     *                        {@code ExecutorService} in given environment.
      * @return instance of the {@code RxInvoker} subclass.
      */
     public T getRxInvoker(SyncInvoker syncInvoker, ExecutorService executorService);
