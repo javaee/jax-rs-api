@@ -48,7 +48,7 @@ import javax.ws.rs.Flow;
 /**
  * Server-Sent Events broadcasting facility.
  * <p>
- * Broadcaster can be used to manage multiple {@link SseEventOutput SseEventOutputs}. It enables
+ * Server broadcaster can be used to manage multiple {@link SseEventSink server sinks}. It enables
  * sending events to all registered event outputs and provides facility to effectively handle
  * exceptions and closures of individual registered event outputs.
  *
@@ -62,28 +62,28 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
      * to write to it or close it.
      * <p>
      * This operation is potentially slow, especially if large number of listeners get registered in the broadcaster.
-     * The {@code Broadcaster} implementation is optimized to efficiently handle small amounts of
+     * The {@code SseBroadcaster} implementation is optimized to efficiently handle small amounts of
      * concurrent listener registrations and removals and large amounts of registered listener notifications.
      *
-     * @param onException bi-consumer, taking two parameters: {@link SseEventOutput}, which is the source of the
+     * @param onException bi-consumer, taking two parameters: {@link SseEventSink}, which is the source of the
      *                    exception and the actual {@link Exception}.
      */
-    void onException(BiConsumer<SseEventOutput, Exception> onException);
+    void onException(BiConsumer<SseEventSink, Exception> onException);
 
     /**
      * Register a listener, which will be called when the SSE event output has been closed (either by client closing
-     * the connection or by calling {@link SseEventOutput#close()} on the server side.
+     * the connection or by calling {@link SseEventSink#close()} on the server side.
      * <p>
      * This operation is potentially slow, especially if large number of listeners get registered in the broadcaster.
-     * The {@code Broadcaster} implementation is optimized to efficiently handle small amounts of
+     * The {@code SseBroadcaster} implementation is optimized to efficiently handle small amounts of
      * concurrent listener registrations and removals and large amounts of registered listener notifications.
      *
-     * @param onClose consumer taking single parameter, a {@link SseEventOutput}, which was closed.
+     * @param onClose consumer taking single parameter, a {@link SseEventSink}, which was closed.
      */
-    void onClose(Consumer<SseEventOutput> onClose);
+    void onClose(Consumer<SseEventSink> onClose);
 
     /**
-     * Subscribe {@link OutboundSseEvent} subscriber (i.e. {@link SseEventOutput})
+     * Subscribe {@link OutboundSseEvent} subscriber (i.e. {@link SseEventSink})
      * to this {@code SseBroadcaster} instance.
      *
      * @param subscriber {@link Flow.Subscriber Subscriber&lt;OutboundSseEvent&gt;} to register.
@@ -92,14 +92,14 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
     void subscribe(Flow.Subscriber<? super OutboundSseEvent> subscriber);
 
     /**
-     * Broadcast an SSE event to all subscribed {@link SseEventOutput} instances.
+     * Publish an SSE event to all subscribed {@link SseEventSink} instances.
      *
-     * @param event SSE event to be broadcast.
+     * @param event SSE event to be published.
      */
     void broadcast(final OutboundSseEvent event);
 
     /**
-     * Close all subscribed {@link SseEventOutput} instances.
+     * Close all subscribed {@link SseEventSink} instances.
      */
     @Override
     void close();

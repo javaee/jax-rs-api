@@ -39,14 +39,9 @@
  */
 package jaxrs.examples.sse;
 
-import javax.ws.rs.Flow;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.sse.InboundSseEvent;
-import javax.ws.rs.sse.SseClientSubscriber;
-import javax.ws.rs.sse.SseEventInput;
 import javax.ws.rs.sse.SseEventSource;
 
 /**
@@ -60,39 +55,14 @@ public class SseClient {
 
     public static void main(String[] args) {
         consumeEventsViaSubscription();
-
-        consumeEventsViaPullModel();
     }
 
     private static void consumeEventsViaSubscription() {
-        AbstractSubscriber subscriber = new AbstractSubscriber() {
-            @Override
-            public void onNext(InboundSseEvent item) {
-                System.out.println(item);
-            }
-        };
-
-        // explicit open
-        try (final SseEventSource eventSource = SseEventSource.target(target).build()) {
-
-            eventSource.subscribe(subscriber);
-            eventSource.open();
-
-            for (int counter = 0; counter < 5; counter++) {
-                target.request().post(Entity.text("message " + counter));
-            }
-
-            Thread.sleep(500); // make sure all the events have time to arrive
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // using SseClientSubscriber
         try (final SseEventSource eventSource =
                      SseEventSource.target(target)
                                    .build()) {
 
-            eventSource.subscribe(SseClientSubscriber.builder().onNext(System.out::println).build());
+            eventSource.subscribe(System.out::println);
             eventSource.open();
 
             for (int counter = 0; counter < 5; counter++) {
@@ -102,52 +72,6 @@ public class SseClient {
             Thread.sleep(500); // make sure all the events have time to arrive
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-
-        // using SseClientSubscriber - SseClientSubscriber#from shortcut
-        try (final SseEventSource eventSource =
-                     SseEventSource.target(target)
-                                   .build()) {
-
-            eventSource.subscribe(SseClientSubscriber.fromOnNext(System.out::println));
-            eventSource.open();
-
-            for (int counter = 0; counter < 5; counter++) {
-                target.request().post(Entity.text("message " + counter));
-            }
-
-            Thread.sleep(500); // make sure all the events have time to arrive
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void consumeEventsViaPullModel() {
-        final SseEventInput eventInput = target.request(MediaType.SERVER_SENT_EVENTS).get(SseEventInput.class);
-
-        int counter = 0;
-        while (!eventInput.isClosed() && counter++ <= 5) {
-            target.request().post(Entity.text("message " + counter));
-
-            System.out.println(eventInput.read().readData());
-        }
-    }
-
-    private static abstract class AbstractSubscriber implements Flow.Subscriber<InboundSseEvent> {
-
-        @Override
-        public void onSubscribe(Flow.Subscription subscription) {
-            subscription.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-
-        }
-
-        @Override
-        public void onComplete() {
-
         }
     }
 }

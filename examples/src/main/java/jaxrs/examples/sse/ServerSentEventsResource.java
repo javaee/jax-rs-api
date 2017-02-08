@@ -47,9 +47,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.sse.SseContext;
-import javax.ws.rs.sse.SseEventOutput;
+import javax.ws.rs.sse.Sse;
+import javax.ws.rs.sse.SseEventSink;
 
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
@@ -64,70 +65,70 @@ import javax.inject.Singleton;
 public class ServerSentEventsResource {
 
     private final Object outputLock = new Object();
-    private SseEventOutput sseEventOutput;
-    private final SseContext sseContext;
+    private final Sse sse;
+    private volatile SseEventSink eventSink;
 
     @Resource
     private ManagedExecutorService executorService;
 
     @Inject
-    public ServerSentEventsResource(SseContext sseContext) {
-        this.sseContext = sseContext;
+    public ServerSentEventsResource(Sse sse) {
+        this.sse = sse;
     }
 
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public SseEventOutput getMessageQueue() {
+    public void getMessageQueue(@Context SseEventSink eventSink) {
         synchronized (outputLock) {
-            if (sseEventOutput != null) {
-                throw new IllegalStateException("Event output already served.");
+            if (this.eventSink != null) {
+                throw new IllegalStateException("Server sink already served.");
             }
-
-            sseEventOutput = sseContext.newOutput();
+            this.eventSink = eventSink;
         }
-
-        return sseEventOutput;
     }
 
     @POST
     public void addMessage(final String message) throws IOException {
-        sseEventOutput.onNext(sseContext.newEvent().name("custom-message").data(String.class, message).build());
+        if (eventSink == null) {
+            throw new IllegalStateException("No client connected.");
+        }
+        eventSink.onNext(sse.newEvent().name("custom-message").data(String.class, message).build());
     }
 
     @DELETE
     public void close() throws IOException {
         synchronized (outputLock) {
-            sseEventOutput.close();
-            sseEventOutput = sseContext.newOutput();
+            if(eventSink != null) {
+                eventSink.close();
+                eventSink = null;
+            }
         }
     }
 
     @POST
     @Path("domains/{id}")
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public SseEventOutput startDomain(@PathParam("id") final String id) {
-        final SseEventOutput output = sseContext.newOutput();
+    public void startDomain(@PathParam("id") final String id,
+                            @Context SseEventSink eventSink) {
 
         executorService.submit(() -> {
             try {
-                output.onNext(sseContext.newEvent().name("domain-progress")
-                                       .data(String.class, "starting domain " + id + " ...").build());
+                eventSink.onNext(sse.newEvent().name("domain-progress")
+                                    .data(String.class, "starting domain " + id + " ...").build());
                 Thread.sleep(200);
-                output.onNext(sseContext.newEvent().name("domain-progress").data("50%").build());
+                eventSink.onNext(sse.newEvent().name("domain-progress").data("50%").build());
                 Thread.sleep(200);
-                output.onNext(sseContext.newEvent().name("domain-progress").data("60%").build());
+                eventSink.onNext(sse.newEvent().name("domain-progress").data("60%").build());
                 Thread.sleep(200);
-                output.onNext(sseContext.newEvent().name("domain-progress").data("70%").build());
+                eventSink.onNext(sse.newEvent().name("domain-progress").data("70%").build());
                 Thread.sleep(200);
-                output.onNext(sseContext.newEvent().name("domain-progress").data("99%").build());
+                eventSink.onNext(sse.newEvent().name("domain-progress").data("99%").build());
                 Thread.sleep(200);
-                output.onNext(sseContext.newEvent().name("domain-progress").data("Done.").build());
-                output.close();
+                eventSink.onNext(sse.newEvent().name("domain-progress").data("Done.").build());
+                eventSink.close();
             } catch (final InterruptedException | IOException e) {
                 e.printStackTrace();
             }
         });
-
-        return output;
     }
 }

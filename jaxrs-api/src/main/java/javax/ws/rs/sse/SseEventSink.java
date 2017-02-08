@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,35 +39,29 @@
  */
 package javax.ws.rs.sse;
 
+import java.io.Closeable;
+
+import javax.ws.rs.Flow;
+
 /**
- * Server-side injectable Server-Sent Event Context.
- * <p>
- * The context provides a way to create {@link SseEventOutput}, {@link OutboundSseEvent}
- * and {@link SseBroadcaster}.
+ * Outbound Server-Sent Events stream.
+ *
+ * When returned from resource method, the underlying client connection is kept open and the application code
+ * is able to send events.
+ * A server-side instance implementing the interface corresponds exactly to a single client HTTP connection.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.1
  */
-public interface SseContext {
+public interface SseEventSink extends Closeable, Flow.Subscriber<OutboundSseEvent> {
 
     /**
-     * Create new SSE event output stream that will represent a single client connection for a connecting client.
+     * Check if the stream has been closed already.
      *
-     * @return new SSE event output stream.
-     */
-    SseEventOutput newOutput();
-
-    /**
-     * Get a new SSE outbound event builder.
+     * Please note that the client connection represented by this {@code SseServerSink} can be closed by the client side when
+     * a client decides to close connection and disconnect from the server.
      *
-     * @return SSE outbound event builder.
+     * @return {@code true} when closed, {@code false} otherwise.
      */
-    OutboundSseEvent.Builder newEvent();
-
-    /**
-     * Get a new SSE event broadcaster.
-     *
-     * @return SSE event broadcaster.
-     */
-    SseBroadcaster newBroadcaster();
+    boolean isClosed();
 }

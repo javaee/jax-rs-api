@@ -44,7 +44,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import javax.ws.rs.Flow;
 import javax.ws.rs.client.WebTarget;
 
 /**
@@ -61,7 +60,7 @@ import javax.ws.rs.client.WebTarget;
  * {@link Consumer<InboundSseEvent>#accept(InboundSseEvent)} method is invoked on any registered event consumers.
  * <h3>Reconnect support</h3>
  * <p>
- * The {@code EventSource} supports automated recuperation from a connection loss, including
+ * The {@code SseEventSource} supports automated recuperation from a connection loss, including
  * negotiation of delivery of any missed events based on the last received  SSE event {@code id} field value, provided
  * this field is set by the server and the negotiation facility is supported by the server. In case of a connection loss,
  * the last received SSE event {@code id} field value is send in the
@@ -89,20 +88,22 @@ import javax.ws.rs.client.WebTarget;
  * @author Marek Potociar
  * @since 2.1
  */
-public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSseEvent> {
+public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<InboundSseEvent> */ {
 
     /**
      * JAX-RS {@link SseEventSource} builder class.
      * <p>
      * Event source builder provides methods that let you conveniently configure and subsequently build
-     * a new {@code EventSource} instance. You can obtain a new event source builder instance using
-     * a static {@link SseEventSource#target(javax.ws.rs.client.WebTarget) EventSource.target(endpoint)} factory method.
+     * a new {@code SseEventSource} instance. You can obtain a new event source builder instance using
+     * a static {@link SseEventSource#target(javax.ws.rs.client.WebTarget) SseEventSource.target(endpoint)} factory method.
      * <p>
      * For example:
      * <pre>
-     * EventSource es = EventSource.target(endpoint).named("my source")
+     * SseEventSource es = SseEventSource.target(endpoint).named("my source")
      *                             .reconnectingEvery(5, SECONDS)
-     *                             .open();
+     *                             .build();
+     * es.subscribe(System.out::println);
+     * es.open();
      * </pre>
      */
     abstract class Builder {
@@ -117,7 +118,7 @@ public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSse
          * Default SSE event source builder implementation class name.
          */
         private static final String JAXRS_DEFAULT_SSE_BUILDER =
-                "org.glassfish.jersey.media.sse.EventSource$Builder";
+                "org.glassfish.jersey.media.sse.SseEventSource$Builder";
 
         /**
          * Allows custom implementations to extend the SSE event source builder class.
@@ -199,25 +200,64 @@ public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSse
     }
 
     /**
-     * Adds the given Subscriber if possible.  If already
-     * subscribed, or the attempt to subscribe fails due to policy
-     * violations or errors, the Subscriber's {@code onError}
-     * method is invoked with an {@link IllegalStateException}.
-     * Otherwise, the Subscriber's {@code onSubscribe} method is
-     * invoked with a new {@link Flow.Subscription}.  Subscribers may
-     * enable receiving items by invoking the {@code request}
-     * method of this Subscription, and may unsubscribe by
-     * invoking its {@code cancel} method.
+     * Subscribe a {@link InboundSseEvent} consumer.
      * <p>
-     * The Subscriber is subscribed only to events whose {@link InboundSseEvent#getName() name} is equal to the
-     * specified name(s).
+     * Given consumer is invoked once per each received event.
      *
-     * @param subscriber the subscriber
-     * @param eventName  inbound event name.
-     * @param eventNames additional event names.
-     * @throws NullPointerException if subscriber is null
+     * @param onEvent event consumer. Cannot be {@code null}.
+     * @throws IllegalArgumentException when the provided parameter is {@code null}.
      */
-    public abstract void subscribe(Flow.Subscriber<InboundSseEvent> subscriber, String eventName, String... eventNames);
+    void subscribe(Consumer<InboundSseEvent> onEvent);
+
+    /**
+     * Subscribe {@link InboundSseEvent} and {@link Throwable} consumers.
+     * <p>
+     * Event consumer is invoked once per each received event, {@code Throwable} consumer is invoked invoked upon a
+     * unrecoverable error encountered by a {@link SseEventSource}.
+     *
+     * @param onEvent event consumer. Cannot be {@code null}.
+     * @param onError error consumer. Cannot be {@code null}.
+     * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
+     */
+    void subscribe(Consumer<InboundSseEvent> onEvent,
+                   Consumer<Throwable> onError);
+
+    /**
+     * Subscribe {@link InboundSseEvent} and {@link Throwable} consumers and onComplete callback.
+     * <p>
+     * Event consumer is invoked once per each received event, {@code Throwable} consumer is invoked invoked upon a
+     * unrecoverable error encountered by a {@link SseEventSource}, onComplete callback is invoked when there are no
+     * further events to be received.
+     *
+     * @param onEvent    event consumer. Cannot be {@code null}.
+     * @param onError    error consumer. Cannot be {@code null}.
+     * @param onComplete onComplete handler. Cannot be {@code null}.
+     * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
+     */
+    void subscribe(Consumer<InboundSseEvent> onEvent,
+                   Consumer<Throwable> onError,
+                   Runnable onComplete);
+
+    /**
+     * Subscribe {@link InboundSseEvent}, {@link Throwable} and {@code Subscription} consumers and onComplete callback.
+     * <p>
+     * Event consumer is invoked once per each received event, {@code Throwable} consumer is invoked invoked upon a
+     * unrecoverable error encountered by a {@link SseEventSource}, onComplete callback is invoked when there are no
+     * further events to be received.
+     * <p>
+     * Please note that calling {@link SseSubscription#request(long)} and {@link SseSubscription#cancel()} will
+     * influence the invocation of registered handlers.
+     *
+     * @param onSubscribe {@link SseSubscription} consumer. Cannot be {@code null}.
+     * @param onEvent     event consumer. Cannot be {@code null}.
+     * @param onError     error consumer. Cannot be {@code null}.
+     * @param onComplete  onComplete handler. Cannot be {@code null}.
+     * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
+     */
+    void subscribe(Consumer<SseSubscription> onSubscribe,
+                   Consumer<InboundSseEvent> onEvent,
+                   Consumer<Throwable> onError,
+                   Runnable onComplete);
 
     /**
      * Create a new {@link SseEventSource.Builder event source builder} that provides convenient way how to

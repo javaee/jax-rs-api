@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -37,38 +37,38 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
+
 package javax.ws.rs.sse;
 
-import java.io.Closeable;
-
 /**
- * Inbound Server-Sent Events stream.
+ * Server-sent event subscription representation, which links
+ * {@link SseEventSource} and its subscribers.
  * <p>
- * The input stream lets you serially read & consume SSE events as they arrive.
- *
- * @author Marek Potociar (marek.potociar at oracle.com)
- * @since 2.1
+ * The methods in this interface are intended to be invoked only by their
+ * Subscribers; usages in other contexts have undefined effects.
  */
-public interface SseEventInput extends Closeable {
+public interface SseSubscription {
 
     /**
-     * Check if the chunked input has been closed.
+     * Adds the given number {@code n} of items to the current
+     * unfulfilled demand for this subscription.  If {@code n} is
+     * negative, the Subscriber will receive an {@code onError}
+     * signal with an {@link IllegalArgumentException} argument.
+     * Otherwise, the Subscriber will receive up to {@code n}
+     * additional {@code onNext} invocations (or fewer if
+     * terminated).
      *
-     * @return {@code true} if this chunked input has been closed, {@code false} otherwise.
+     * @param n the increment of demand; a value of {@code
+     *          Long.MAX_VALUE} may be considered as effectively unbounded
      */
-    boolean isClosed();
+    public void request(long n);
 
     /**
-     * Read next SSE event from the response stream and convert it to a Java instance of {@link InboundSseEvent} type.
-     * The method returns {@code null} if the underlying entity input stream has been closed (either implicitly or explicitly
-     * by calling the {@link #close()} method).
-     * <p>
-     * Note: This operation is not thread-safe and has to be explicitly synchronized in case it is used from
-     * multiple threads.
-     *
-     * @return next streamed event or {@code null} if the underlying entity input stream has been closed while reading
-     * the next event data.
-     * @throws IllegalStateException in case this chunked input has been closed.
+     * Causes the Subscriber to (eventually) stop receiving
+     * messages.  Implementation is best-effort -- additional
+     * messages may be received after invoking this method.
+     * A cancelled subscription need not ever receive an
+     * {@code onComplete} or {@code onError} signal.
      */
-    InboundSseEvent read() throws IllegalStateException;
+    public void cancel();
 }

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012-2017 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -39,29 +39,27 @@
  */
 package javax.ws.rs.sse;
 
-import java.io.Closeable;
-
-import javax.ws.rs.Flow;
-
 /**
- * Outbound Server-Sent Events stream.
- *
- * When returned from resource method, the underlying client connection is kept open and the application code
- * is able to send events.
- * A server-side instance implementing the interface corresponds exactly to a single client HTTP connection.
+ * Server-side injectable Server-Sent Event Context.
+ * <p>
+ * The context provides a way to create {@link OutboundSseEvent} and {@link SseBroadcaster}.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.1
  */
-public interface SseEventOutput extends Closeable, Flow.Subscriber<OutboundSseEvent> {
+public interface Sse {
 
     /**
-     * Check if the stream has been closed already.
+     * Get a new SSE outbound event builder.
      *
-     * Please note that the client connection represented by this {@code SseEventOutput} can be closed by the client side when
-     * a client decides to close connection and disconnect from the server.
-     *
-     * @return {@code true} when closed, {@code false} otherwise.
+     * @return SSE outbound event builder.
      */
-    boolean isClosed();
+    OutboundSseEvent.Builder newEvent();
+
+    /**
+     * Get a new SSE broadcaster.
+     *
+     * @return new SSE broadcaster instance.
+     */
+    SseBroadcaster newBroadcaster();
 }

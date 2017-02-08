@@ -55,12 +55,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.ServiceUnavailableException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.OutboundSseEvent;
+import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseBroadcaster;
-import javax.ws.rs.sse.SseContext;
-import javax.ws.rs.sse.SseEventOutput;
+import javax.ws.rs.sse.SseEventSink;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -70,6 +71,7 @@ import javax.inject.Singleton;
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  */
+@SuppressWarnings("VoidMethodAnnotatedWithGET")
 @Path("items")
 @Singleton
 public class ItemStoreResource {
@@ -78,13 +80,14 @@ public class ItemStoreResource {
 
     private final ReentrantReadWriteLock storeLock = new ReentrantReadWriteLock();
     private final LinkedList<String> itemStore = new LinkedList<>();
+
+    private final Sse sse;
     private final SseBroadcaster broadcaster;
-    private final SseContext sseContext;
 
     @Inject
-    public ItemStoreResource(SseContext sseContext) {
-        this.sseContext = sseContext;
-        this.broadcaster = sseContext.newBroadcaster();
+    public ItemStoreResource(Sse sse) {
+        this.sse = sse;
+        this.broadcaster = sse.newBroadcaster();
 
         broadcaster.onException((sseEventOutput, e) ->
                 LOGGER.log(Level.WARNING, "An exception has been thrown while broadcasting to an event output.", e));
@@ -155,16 +158,16 @@ public class ItemStoreResource {
      *
      * @param lastEventId Value of custom SSE HTTP <tt>{@value javax.ws.rs.core.HttpHeaders#LAST_EVENT_ID_HEADER}</tt> header.
      *                    Defaults to {@code -1} if not set.
-     * @return new SSE event output stream representing the (re-)established SSE client connection.
+     * @param serverSink new SSE server sink stream representing the (re-)established SSE client connection.
      * @throws InternalServerErrorException in case replaying missed events to the reconnected output stream fails.
      * @throws ServiceUnavailableException  in case the reconnect delay is set to a positive value.
      */
     @GET
     @Path("events")
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public SseEventOutput itemEvents(
-            @HeaderParam(HttpHeaders.LAST_EVENT_ID_HEADER) @DefaultValue("-1") int lastEventId) {
-        final SseEventOutput eventOutput = sseContext.newOutput();
+    public void itemEvents(
+            @HeaderParam(HttpHeaders.LAST_EVENT_ID_HEADER) @DefaultValue("-1") int lastEventId,
+            @Context SseEventSink serverSink) {
 
         if (lastEventId >= 0) {
             LOGGER.info("Received last event id :" + lastEventId);
@@ -176,15 +179,14 @@ public class ItemStoreResource {
                 throw new ServiceUnavailableException(delay);
             } else {
                 LOGGER.info("Zero reconnect delay - reconnecting.");
-                replayMissedEvents(lastEventId, eventOutput);
+                replayMissedEvents(lastEventId, serverSink);
             }
         }
 
-        broadcaster.subscribe(eventOutput);
-        return eventOutput;
+        broadcaster.subscribe(serverSink);
     }
 
-    private void replayMissedEvents(final int lastEventId, final SseEventOutput eventOutput) {
+    private void replayMissedEvents(final int lastEventId, final SseEventSink eventOutput) {
         try {
             storeLock.readLock().lock();
             final int firstUnreceived = lastEventId + 1;
@@ -225,14 +227,15 @@ public class ItemStoreResource {
             // Broadcasting an un-named event with the name of the newly added item in data
             broadcaster.broadcast(createItemEvent(eventId, name));
             // Broadcasting a named "size" event with the current size of the items collection in data
-            broadcaster.broadcast(sseContext.newEvent().name("size").data(Integer.class, eventId + 1).build());
+            broadcaster.broadcast(sse.newEvent().name("size").data(Integer.class, eventId + 1).build());
         } finally {
             storeLock.writeLock().unlock();
         }
     }
 
     private OutboundSseEvent createItemEvent(final int eventId, final String name) {
-        Logger.getLogger(ItemStoreResource.class.getName()).info("Creating event id [" + eventId + "] name [" + name + "]");
-        return sseContext.newEvent().id("" + eventId).data(String.class, name).build();
+        Logger.getLogger(ItemStoreResource.class.getName())
+              .info("Creating event id [" + eventId + "] name [" + name + "]");
+        return sse.newEvent().id("" + eventId).data(String.class, name).build();
     }
 }
