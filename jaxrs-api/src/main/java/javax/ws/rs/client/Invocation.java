@@ -293,7 +293,7 @@ public interface Invocation {
          *
          * @return default reactive invoker instance.
          * @since 2.1
-         * @see javax.ws.rs.client.Invocation.Builder#rx(RxInvokerProvider)
+         * @see javax.ws.rs.client.Invocation.Builder#rx(Class)
          */
         public CompletionStageRxInvoker rx();
 
