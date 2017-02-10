@@ -68,7 +68,7 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
      * @param onException bi-consumer, taking two parameters: {@link SseEventSink}, which is the source of the
      *                    exception and the actual {@link Exception}.
      */
-    void onException(BiConsumer<SseEventSink, Exception> onException);
+    void onException(BiConsumer<Flow.Subscriber<? super OutboundSseEvent>, Exception> onException);
 
     /**
      * Register a listener, which will be called when the SSE event output has been closed (either by client closing
@@ -80,7 +80,7 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
      *
      * @param onClose consumer taking single parameter, a {@link SseEventSink}, which was closed.
      */
-    void onClose(Consumer<SseEventSink> onClose);
+    void onClose(Consumer<Flow.Subscriber<? super OutboundSseEvent>> onClose);
 
     /**
      * Subscribe {@link OutboundSseEvent} subscriber (i.e. {@link SseEventSink})
