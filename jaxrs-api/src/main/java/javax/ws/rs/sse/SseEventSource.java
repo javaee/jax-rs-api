@@ -136,7 +136,7 @@ public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<Inbound
         static Builder newBuilder() {
             try {
                 Object delegate = FactoryFinder.find(JAXRS_DEFAULT_SSE_BUILDER_PROPERTY,
-                        JAXRS_DEFAULT_SSE_BUILDER);
+                        JAXRS_DEFAULT_SSE_BUILDER, SseEventSource.Builder.class);
                 if (!(delegate instanceof Builder)) {
                     Class pClass = Builder.class;
                     String classnameAsResource = pClass.getName().replace('.', '/') + ".class";

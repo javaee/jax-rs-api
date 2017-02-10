@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,15 +40,15 @@
 
 package javax.ws.rs.ext;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,24 +68,19 @@ final class FactoryFinder {
         // prevents instantiation
     }
 
-    static ClassLoader getContextClassLoader() {
-        return AccessController.doPrivileged(
-                new PrivilegedAction<ClassLoader>() {
-
-                    @Override
-                    public ClassLoader run() {
-                        ClassLoader cl = null;
-                        try {
-                            cl = Thread.currentThread().getContextClassLoader();
-                        } catch (SecurityException ex) {
-                            LOGGER.log(
-                                    Level.WARNING,
-                                    "Unable to get context classloader instance.",
-                                    ex);
-                        }
-                        return cl;
-                    }
-                });
+    private static ClassLoader getContextClassLoader() {
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+            ClassLoader cl = null;
+            try {
+                cl = Thread.currentThread().getContextClassLoader();
+            } catch (SecurityException ex) {
+                LOGGER.log(
+                        Level.WARNING,
+                        "Unable to get context classloader instance.",
+                        ex);
+            }
+            return cl;
+        });
     }
 
     /**
@@ -100,7 +95,7 @@ final class FactoryFinder {
      */
     private static Object newInstance(final String className, final ClassLoader classLoader) throws ClassNotFoundException {
         try {
-            Class spiClass;
+            Class<?> spiClass;
             if (classLoader == null) {
                 spiClass = Class.forName(className);
             } else {
@@ -110,13 +105,13 @@ final class FactoryFinder {
                     LOGGER.log(
                             Level.FINE,
                             "Unable to load provider class " + className
-                                    + " using custom classloader " + classLoader.getClass().getName()
-                                    + " trying again with current classloader.",
+                            + " using custom classloader " + classLoader.getClass().getName()
+                            + " trying again with current classloader.",
                             ex);
                     spiClass = Class.forName(className);
                 }
             }
-            return spiClass.newInstance();
+            return spiClass.getDeclaredConstructor().newInstance();
         } catch (ClassNotFoundException x) {
             throw x;
         } catch (Exception x) {
@@ -125,14 +120,13 @@ final class FactoryFinder {
     }
 
     /**
-     * Finds the implementation {@code Class} object for the given
-     * factory name, or if that fails, finds the {@code Class} object
-     * for the given fallback class name. The arguments supplied MUST be
+     * Finds the implementation {@code Class} for the given factory name,
+     * or if that fails, finds the {@code Class} for the given fallback
+     * class name and create its instance. The arguments supplied MUST be
      * used in order. If using the first argument is successful, the second
      * one will not be used.
      * <p>
      * This method is package private so that this code can be shared.
-     * </p>
      *
      * @param factoryId         the name of the factory to find, which is
      *                          a system property.
@@ -140,45 +134,24 @@ final class FactoryFinder {
      *                          to be used only if nothing else.
      *                          is found; {@code null} to indicate that
      *                          there is no fallback class name.
-     * @return the {@code Class} object of the specified message factory;
-     *         may not be {@code null}.
+     * @param service           service to be found.
+     * @param <T>               type of the service to be found.
+     * @return the instance of the specified service; may not be {@code null}.
      * @throws ClassNotFoundException if the given class could not be found
      *                                or could not be instantiated.
      */
-    static Object find(final String factoryId, final String fallbackClassName) throws ClassNotFoundException {
+    static <T> Object find(final String factoryId, final String fallbackClassName, Class<T> service) throws ClassNotFoundException {
         ClassLoader classLoader = getContextClassLoader();
 
-        String serviceId = "META-INF/services/" + factoryId;
-        // try to find services in CLASSPATH
-        BufferedReader reader = null;
         try {
-            InputStream is;
-            if (classLoader == null) {
-                is = ClassLoader.getSystemResourceAsStream(serviceId);
-            } else {
-                is = classLoader.getResourceAsStream(serviceId);
-            }
+            Iterator<T> iterator = ServiceLoader.load(service, FactoryFinder.getContextClassLoader()).iterator();
 
-            if (is != null) {
-                reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
-                String factoryClassName = reader.readLine();
-                if (factoryClassName != null && !"".equals(factoryClassName)) {
-                    return newInstance(factoryClassName, classLoader);
-                }
+            if(iterator.hasNext()) {
+                return iterator.next();
             }
-        } catch (Exception ex) {
-            LOGGER.log(Level.FINER, "Failed to load service " + factoryId + " from " + serviceId, ex);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException ex) {
-                    LOGGER.log(Level.FINER, String.format("Error closing %s file.", serviceId), ex);
-                }
-            }
+        } catch (Exception | ServiceConfigurationError ex) {
+            LOGGER.log(Level.FINER, "Failed to load service " + factoryId + ".", ex);
         }
-
 
         // try to read from $java.home/lib/jaxrs.properties
         FileInputStream inputStream = null;
