@@ -92,7 +92,7 @@ public class ServerSentEventsResource {
         if (eventSink == null) {
             throw new IllegalStateException("No client connected.");
         }
-        eventSink.onNext(sse.newDataEvent("custom-message"));
+        eventSink.onNext(sse.newEvent("custom-message"));
     }
 
     @DELETE
@@ -113,18 +113,18 @@ public class ServerSentEventsResource {
 
         executorService.submit(() -> {
             try {
-                eventSink.onNext(sse.newEvent().name("domain-progress")
+                eventSink.onNext(sse.newEventBuilder().name("domain-progress")
                                     .data(String.class, "starting domain " + id + " ...").build());
                 Thread.sleep(200);
-                eventSink.onNext(sse.newDataEvent("50%", "domain-progress"));
+                eventSink.onNext(sse.newEvent("domain-progress", "50%"));
                 Thread.sleep(200);
-                eventSink.onNext(sse.newDataEvent("60%", "domain-progress"));
+                eventSink.onNext(sse.newEvent("domain-progress", "60%"));
                 Thread.sleep(200);
-                eventSink.onNext(sse.newDataEvent("70%", "domain-progress"));
+                eventSink.onNext(sse.newEvent("domain-progress", "70%"));
                 Thread.sleep(200);
-                eventSink.onNext(sse.newDataEvent("99%", "domain-progress"));
+                eventSink.onNext(sse.newEvent("domain-progress", "99%"));
                 Thread.sleep(200);
-                eventSink.onNext(sse.newDataEvent("Done.", "domain-progress"));
+                eventSink.onNext(sse.newEvent("domain-progress", "Done."));
                 eventSink.close();
             } catch (final InterruptedException | IOException e) {
                 e.printStackTrace();

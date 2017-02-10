@@ -227,7 +227,7 @@ public class ItemStoreResource {
             // Broadcasting an un-named event with the name of the newly added item in data
             broadcaster.broadcast(createItemEvent(eventId, name));
             // Broadcasting a named "size" event with the current size of the items collection in data
-            broadcaster.broadcast(sse.newEvent().name("size").data(Integer.class, eventId + 1).build());
+            broadcaster.broadcast(sse.newEventBuilder().name("size").data(Integer.class, eventId + 1).build());
         } finally {
             storeLock.writeLock().unlock();
         }
@@ -236,6 +236,6 @@ public class ItemStoreResource {
     private OutboundSseEvent createItemEvent(final int eventId, final String name) {
         Logger.getLogger(ItemStoreResource.class.getName())
               .info("Creating event id [" + eventId + "] name [" + name + "]");
-        return sse.newEvent().id("" + eventId).data(String.class, name).build();
+        return sse.newEventBuilder().id("" + eventId).data(String.class, name).build();
     }
 }
