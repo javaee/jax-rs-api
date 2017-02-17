@@ -44,6 +44,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.client.WebTarget;
 
 /**
@@ -145,8 +146,8 @@ public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<Inbound
                     }
                     URL targetTypeURL = loader.getResource(classnameAsResource);
                     throw new LinkageError("ClassCastException: attempting to cast"
-                            + delegate.getClass().getClassLoader().getResource(classnameAsResource)
-                            + " to " + targetTypeURL);
+                                           + delegate.getClass().getClassLoader().getResource(classnameAsResource)
+                                           + " to " + targetTypeURL);
                 }
                 return (Builder) delegate;
             } catch (Exception ex) {
@@ -204,7 +205,7 @@ public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<Inbound
      * <p>
      * Given consumer is invoked once per each received event.
      *
-     * @param onEvent event consumer. Cannot be {@code null}.
+     * @param onEvent event consumer.
      * @throws IllegalArgumentException when the provided parameter is {@code null}.
      */
     void subscribe(Consumer<InboundSseEvent> onEvent);
@@ -215,8 +216,8 @@ public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<Inbound
      * Event consumer is invoked once per each received event, {@code Throwable} consumer is invoked invoked upon a
      * unrecoverable error encountered by a {@link SseEventSource}.
      *
-     * @param onEvent event consumer. Cannot be {@code null}.
-     * @param onError error consumer. Cannot be {@code null}.
+     * @param onEvent event consumer.
+     * @param onError error consumer.
      * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
      */
     void subscribe(Consumer<InboundSseEvent> onEvent,
@@ -229,9 +230,9 @@ public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<Inbound
      * unrecoverable error encountered by a {@link SseEventSource}, onComplete callback is invoked when there are no
      * further events to be received.
      *
-     * @param onEvent    event consumer. Cannot be {@code null}.
-     * @param onError    error consumer. Cannot be {@code null}.
-     * @param onComplete onComplete handler. Cannot be {@code null}.
+     * @param onEvent    event consumer.
+     * @param onError    error consumer.
+     * @param onComplete onComplete handler.
      * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
      */
     void subscribe(Consumer<InboundSseEvent> onEvent,
@@ -245,14 +246,19 @@ public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<Inbound
      * unrecoverable error encountered by a {@link SseEventSource}, onComplete callback is invoked when there are no
      * further events to be received.
      * <p>
-     * Please note that calling {@link SseSubscription#request(long)} and {@link SseSubscription#cancel()} will
-     * influence the invocation of registered handlers.
+     * Please note that calling {@link SseSubscription#request(long)} will
+     * influence the invocation of provided event consumer and {@link SseSubscription#cancel()} will influence the invocation
+     * of provided onComplete callback.
+     * <p>
+     * This set of parameters is meant as a replacement of having {@code Flow.Subscriber} interface copied in
+     * javax.ws.rs package, but it behaves exactly the same.
      *
-     * @param onSubscribe {@link SseSubscription} consumer. Cannot be {@code null}.
-     * @param onEvent     event consumer. Cannot be {@code null}.
-     * @param onError     error consumer. Cannot be {@code null}.
-     * @param onComplete  onComplete handler. Cannot be {@code null}.
+     * @param onSubscribe {@link SseSubscription} consumer.
+     * @param onEvent     event consumer.
+     * @param onError     error consumer.
+     * @param onComplete  onComplete handler.
      * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
+     * @see Flow.Subscription#request(long).
      */
     void subscribe(Consumer<SseSubscription> onSubscribe,
                    Consumer<InboundSseEvent> onEvent,

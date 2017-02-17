@@ -45,10 +45,22 @@ import javax.ws.rs.Flow;
 
 /**
  * Outbound Server-Sent Events stream.
- *
- * When returned from resource method, the underlying client connection is kept open and the application code
- * is able to send events.
- * A server-side instance implementing the interface corresponds exactly to a single client HTTP connection.
+ * <p>
+ * The instance of {@link SseEventSink} can be only acquired by injection of a resource method parameter:
+ * <pre>
+ * &#64;GET
+ * &#64;Path("eventStream")
+ * &#64;Produces(MediaType.SERVER_SENT_EVENTS)
+ * public void eventStream(@Context SseEventSink eventSink) {
+ *     // ...
+ * }
+ * </pre>
+ * The injected instance is then considered as a return type, so the resource method doesn't return anything,
+ * similarly as in server-side async processing.
+ * <p>
+ * The underlying client connection is kept open and the application code
+ * is able to send events. A server-side instance implementing the interface
+ * corresponds exactly to a single client HTTP connection.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.1
@@ -57,7 +69,7 @@ public interface SseEventSink extends Closeable, Flow.Subscriber<OutboundSseEven
 
     /**
      * Check if the stream has been closed already.
-     *
+     * <p>
      * Please note that the client connection represented by this {@code SseServerSink} can be closed by the client side when
      * a client decides to close connection and disconnect from the server.
      *

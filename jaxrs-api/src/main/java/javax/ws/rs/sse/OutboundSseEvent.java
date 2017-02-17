@@ -45,7 +45,9 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Representation of a single outbound SSE event.
+ * Representation of a single outbound Server-sent event.
+ * <p>
+ * Used on the server side, when creating and sending an event to a client or when broadcasting.
  *
  * @author Marek Potociar
  * @since 2.1
@@ -61,7 +63,6 @@ public interface OutboundSseEvent extends SseEvent {
          * Set the event id.
          * <p>
          * Will be send as a value of the SSE {@code "id"} field. This field is optional.
-         * </p>
          *
          * @param id event id.
          * @return updated builder instance.

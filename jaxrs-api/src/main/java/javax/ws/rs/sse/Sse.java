@@ -40,9 +40,9 @@
 package javax.ws.rs.sse;
 
 /**
- * Server-side injectable Server-Sent Event Context.
+ * Server-side entry point for creating {@link OutboundSseEvent} and {@link SseBroadcaster}.
  * <p>
- * The context provides a way to create {@link OutboundSseEvent} and {@link SseBroadcaster}.
+ * Instance of this interface can be injected into a field or as a parameter of a method or a constructor.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.1
@@ -50,7 +50,7 @@ package javax.ws.rs.sse;
 public interface Sse {
 
     /**
-     * Get a new SSE outbound event builder.
+     * Get a new outbound event builder.
      *
      * @return SSE outbound event builder.
      */
@@ -92,9 +92,9 @@ public interface Sse {
     }
 
     /**
-     * Get a new SSE broadcaster.
+     * Get a new Server-sent event broadcaster.
      *
-     * @return new SSE broadcaster instance.
+     * @return new Server-sent event broadcaster instance.
      */
     SseBroadcaster newBroadcaster();
 }

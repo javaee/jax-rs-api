@@ -46,7 +46,7 @@ import java.util.function.Consumer;
 import javax.ws.rs.Flow;
 
 /**
- * Server-Sent Events broadcasting facility.
+ * Server-Sent events broadcasting facility.
  * <p>
  * Server broadcaster can be used to manage multiple {@link SseEventSink server sinks}. It enables
  * sending events to all registered event outputs and provides facility to effectively handle
