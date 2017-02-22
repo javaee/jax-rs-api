@@ -65,10 +65,10 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
      * The {@code SseBroadcaster} implementation is optimized to efficiently handle small amounts of
      * concurrent listener registrations and removals and large amounts of registered listener notifications.
      *
-     * @param onException bi-consumer, taking two parameters: {@link SseEventSink}, which is the source of the
-     *                    exception and the actual {@link Exception}.
+     * @param onError bi-consumer, taking two parameters: {@link SseEventSink}, which is the source of the
+     *                error and the actual {@link Throwable} instance.
      */
-    void onException(BiConsumer<Flow.Subscriber<? super OutboundSseEvent>, Exception> onException);
+    void onError(BiConsumer<Flow.Subscriber<? super OutboundSseEvent>, Throwable> onError);
 
     /**
      * Register a listener, which will be called when the SSE event output has been closed (either by client closing

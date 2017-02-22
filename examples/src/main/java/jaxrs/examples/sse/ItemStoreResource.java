@@ -89,7 +89,7 @@ public class ItemStoreResource {
         this.sse = sse;
         this.broadcaster = sse.newBroadcaster();
 
-        broadcaster.onException((subscriber, e) ->
+        broadcaster.onError((subscriber, e) ->
                 LOGGER.log(Level.WARNING, "An exception has been thrown while broadcasting to an event output.", e));
 
         broadcaster.onClose(subscriber -> LOGGER.log(Level.INFO, "SSE event output has been closed."));
