@@ -39,8 +39,6 @@
  */
 package javax.ws.rs.sse;
 
-import java.io.Closeable;
-
 import javax.ws.rs.Flow;
 
 /**
@@ -61,19 +59,30 @@ import javax.ws.rs.Flow;
  * The underlying client connection is kept open and the application code
  * is able to send events. A server-side instance implementing the interface
  * corresponds exactly to a single client HTTP connection.
+ * <p>
+ * The injected instance is thread safe.
  *
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.1
  */
-public interface SseEventSink extends Closeable, Flow.Subscriber<OutboundSseEvent> {
+public interface SseEventSink extends AutoCloseable, Flow.Subscriber<OutboundSseEvent> {
 
     /**
      * Check if the stream has been closed already.
      * <p>
-     * Please note that the client connection represented by this {@code SseServerSink} can be closed by the client side when
-     * a client decides to close connection and disconnect from the server.
+     * Please note that the client connection represented by this {@code SseServerSink} can be closed by the
+     * client side when a client decides to close connection and disconnect from the server.
      *
      * @return {@code true} when closed, {@code false} otherwise.
      */
     boolean isClosed();
+
+    /**
+     * Close the {@link SseEventSink} instance.
+     * <p>
+     * Subsequent calls have no effect and are ignored. Once the {@link SseEventSink} is closed, invoking any
+     * other method on the event sink instance would result in an {@link IllegalStateException} being thrown.
+     */
+    @Override
+    void close();
 }

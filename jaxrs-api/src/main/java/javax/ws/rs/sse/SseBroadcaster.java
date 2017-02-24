@@ -51,6 +51,9 @@ import javax.ws.rs.Flow;
  * Server broadcaster can be used to manage multiple {@link SseEventSink server sinks}. It enables
  * sending events to all registered event outputs and provides facility to effectively handle
  * exceptions and closures of individual registered event outputs.
+ * <p>
+ * Instance of this interface is thread safe, meaning that it can be shared and its method invoked
+ * from different threads without causing inconsistent internal state.
  *
  * @author Marek Potociar
  * @since 2.1
@@ -99,7 +102,11 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
     void broadcast(final OutboundSseEvent event);
 
     /**
-     * Close all subscribed {@link SseEventSink} instances.
+     * Close the broadcaster and all subscribed {@link SseEventSink} instances.
+     * <p>
+     * Subsequent calls have no effect and are ignored. Once the {@link SseBroadcaster} is closed,
+     * invoking any other method on the broadcaster instance would result in an {@link IllegalStateException}
+     * being thrown.
      */
     @Override
     void close();

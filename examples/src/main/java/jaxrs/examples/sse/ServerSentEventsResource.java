@@ -126,7 +126,7 @@ public class ServerSentEventsResource {
                 Thread.sleep(200);
                 eventSink.onNext(sse.newEvent("domain-progress", "Done."));
                 eventSink.close();
-            } catch (final InterruptedException | IOException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
             }
         });
