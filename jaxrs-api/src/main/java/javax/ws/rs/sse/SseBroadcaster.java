@@ -104,6 +104,8 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
     /**
      * Close the broadcaster and all subscribed {@link SseEventSink} instances.
      * <p>
+     * Any other resources associated with the {@link SseBroadcaster} should be released.
+     * <p>
      * Subsequent calls have no effect and are ignored. Once the {@link SseBroadcaster} is closed,
      * invoking any other method on the broadcaster instance would result in an {@link IllegalStateException}
      * being thrown.

@@ -78,10 +78,11 @@ public interface SseEventSink extends AutoCloseable, Flow.Subscriber<OutboundSse
     boolean isClosed();
 
     /**
-     * Close the {@link SseEventSink} instance.
+     * Close the {@link SseEventSink} instance and release all associated resources.
      * <p>
-     * Subsequent calls have no effect and are ignored. Once the {@link SseEventSink} is closed, invoking any
-     * other method on the event sink instance would result in an {@link IllegalStateException} being thrown.
+     * Subsequent calls have no effect and are ignored. Once the {@link SseEventSink} is closed,
+     * invoking any method other than this one and {@link #isClosed()} would result in
+     * an {@link IllegalStateException} being thrown.
      */
     @Override
     void close();
