@@ -119,7 +119,7 @@ public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<Inbound
          * Default SSE event source builder implementation class name.
          */
         private static final String JAXRS_DEFAULT_SSE_BUILDER =
-                "org.glassfish.jersey.media.sse.SseEventSource$Builder";
+                "org.glassfish.jersey.media.sse.internal.JerseySseEventSource$Builder";
 
         /**
          * Allows custom implementations to extend the SSE event source builder class.
