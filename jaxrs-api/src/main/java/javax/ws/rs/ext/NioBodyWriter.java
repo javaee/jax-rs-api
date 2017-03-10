@@ -44,9 +44,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 
-import javax.ws.rs.Flow;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * @author Pavel Bucek (pavel.bucek at oracle.com)
@@ -71,13 +69,7 @@ public interface NioBodyWriter<T> {
     //                                       MediaType mediaType,
     //                                       MultivaluedMap<String, Object> httpHeaders);
 
-    void writeTo(Flow.Publisher<T> entityObjectPublisher,
-                 Flow.Subscriber<ByteBuffer> entity,
-                 Class<?> type,
-                 Type genericType,
-                 Annotation[] annotations,
-                 MediaType mediaType,
-                 MultivaluedMap<String, Object> httpHeaders);
+    void writeTo(NioBodyContext<T, ByteBuffer> nioBodyContext);
 
         // Multiple items vs single one
         //

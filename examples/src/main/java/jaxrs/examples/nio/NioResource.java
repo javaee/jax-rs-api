@@ -54,8 +54,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.NioBodyContext;
 import javax.ws.rs.ext.NioBodyReader;
 import javax.ws.rs.ext.NioBodyWriter;
 import javax.ws.rs.ext.Provider;
@@ -174,15 +174,10 @@ public class NioResource {
             }
 
             @Override
-            public Flow.Publisher<POJO> readFrom(Flow.Publisher<ByteBuffer> entity,
-                                                 Class<POJO> type,
-                                                 Type genericType,
-                                                 Annotation[] annotations,
-                                                 MediaType mediaType,
-                                                 MultivaluedMap<String, String> httpHeaders) {
+            public void readFrom(NioBodyContext<ByteBuffer, POJO> nioBodyContext) {
                 Ex2MappingProcessor mappingProcessor = new Ex2MappingProcessor();
-                entity.subscribe(mappingProcessor);
-                return mappingProcessor;
+                mappingProcessor.subscribe(nioBodyContext.getSubscriber());
+                nioBodyContext.getPublisher().subscribe(mappingProcessor);
             }
         }
 
@@ -250,13 +245,7 @@ public class NioResource {
             }
 
             @Override
-            public void writeTo(Flow.Publisher<POJO> entityObjectPublisher,
-                                Flow.Subscriber<ByteBuffer> subscriber,
-                                Class<?> type,
-                                Type genericType,
-                                Annotation[] annotations,
-                                MediaType mediaType,
-                                MultivaluedMap<String, Object> httpHeaders) {
+            public void writeTo(NioBodyContext<POJO, ByteBuffer> nioBodyContext) {
                 // map Publisher<POJO> to Publisher<ByteBuffer> and subscribe Flow.Subscriber<ByteBuffer> to it.
             }
         }

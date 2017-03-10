@@ -42,20 +42,22 @@ package javax.ws.rs.ext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.nio.ByteBuffer;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * @author Pavel Bucek (pavel.bucek at oracle.com)
  */
-public interface NioBodyReader<T> {
+public interface NioBodyContext<FROM, TO> {
 
-    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType);
+    Type getGenericType();
+    Annotation[] getAnnotations();
+    MediaType getMediaType();
+    MultivaluedMap<String, String> getHttpHeaders();
 
-    // TODO: what will be passed as a type param? Actual resource method parameter? (is that possible?;
-    // TODO: what about a client?)
-    public void readFrom(NioBodyContext<ByteBuffer, T> nioBodyContext);
+    Flow.Publisher<FROM> getPublisher();
+    Flow.Subscriber<TO> getSubscriber();
 
-    // provide Executor / ExecutorService?
 }

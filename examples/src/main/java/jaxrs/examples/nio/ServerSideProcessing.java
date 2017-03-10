@@ -55,7 +55,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.NioBodyContext;
 import javax.ws.rs.ext.NioBodyReader;
 import javax.ws.rs.ext.NioBodyWriter;
 import javax.ws.rs.ext.ReaderInterceptor;
@@ -150,13 +150,11 @@ public class ServerSideProcessing {
         }
 
         @Override
-        public Flow.Publisher<String> readFrom(Flow.Publisher<ByteBuffer> entity, Class<String> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders) {
-
+        public void readFrom(NioBodyContext<ByteBuffer, String> nioBodyContext) {
             // we might need an Executor/ExecutorService when creating a publisher
 
             BufferToStringProcessor bufferToStringProcessor = new BufferToStringProcessor();
-            entity.subscribe(bufferToStringProcessor);
-            return bufferToStringProcessor;
+            nioBodyContext.getPublisher().subscribe(bufferToStringProcessor);
         }
 
         // must be "buffering" - must return the content once the subscriber subscribes
@@ -205,14 +203,14 @@ public class ServerSideProcessing {
         }
 
         @Override
-        public void writeTo(Flow.Publisher<String> stringPublisher, Flow.Subscriber<ByteBuffer> entity, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders) {
+        public void writeTo(NioBodyContext<String, ByteBuffer> nioBodyContext) {
 
             // "convert" Publisher<String> to Publisher<ByteBuffer> and subscribe entity subscriber to it.
             // needs to support "root elements" and separators if necessary.
             // For JSON, that could be '{' at document start, ',' as a separator and '}' as document end.
 
             // we might need an Executor/ExecutorService when creating a publisher
-            BufferPublisher.from(stringPublisher).subscribe(entity);
+            BufferPublisher.from(nioBodyContext.getPublisher()).subscribe(nioBodyContext.getSubscriber());
         }
 
         static class BufferPublisher implements Flow.Publisher<ByteBuffer> {

@@ -48,8 +48,8 @@ import javax.ws.rs.Flow;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.NioBodyContext;
 import javax.ws.rs.ext.NioBodyReader;
 import javax.ws.rs.ext.NioBodyWriter;
 
@@ -102,14 +102,7 @@ public class NioClient {
             }
 
             @Override
-            public void writeTo(Flow.Publisher<NioResource.POJO> entityObjectPublisher,
-                                Flow.Subscriber<ByteBuffer> entity,
-                                Class<?> type,
-                                Type genericType,
-                                Annotation[] annotations,
-                                MediaType mediaType,
-                                MultivaluedMap<String, Object> httpHeaders) {
-
+            public void writeTo(NioBodyContext<NioResource.POJO, ByteBuffer> nioBodyContext) {
                 // map Publisher<POJO> to Publisher<ByteBuffer> and subscribe Flow.Subscriber<ByteBuffer> to it.
             }
         }
@@ -183,14 +176,10 @@ public class NioClient {
             }
 
             @Override
-            public Flow.Publisher<NioResource.POJO> readFrom(Flow.Publisher<ByteBuffer> entity, Class<NioResource.POJO> type,
-                                                             Type genericType,
-                                                             Annotation[] annotations,
-                                                             MediaType mediaType,
-                                                             MultivaluedMap<String, String> httpHeaders) {
+            public void readFrom(NioBodyContext<ByteBuffer, NioResource.POJO> nioBodyContext) {
                 NioResource.EX2.Ex2MappingProcessor mappingProcessor = new NioResource.EX2.Ex2MappingProcessor();
-                entity.subscribe(mappingProcessor);
-                return mappingProcessor;
+                mappingProcessor.subscribe(nioBodyContext.getSubscriber());
+                nioBodyContext.getPublisher().subscribe(mappingProcessor);
             }
         }
     }
