@@ -121,10 +121,10 @@ public class FileResource {
     @Path("download2")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response download2(@QueryParam("path") String path) {
-        Flow.Publisher<ByteBuffer> entityPublisher = null; // ...
+        Flow.Source<ByteBuffer> entitySource = null; // ...
 
         // Subscriber is provided by the implementation and it is subscribed to "any" publisher of ByteBuffer.
-        return Response.ok().entity(entityPublisher::subscribe).build();
+        return Response.ok().entity(entitySource::subscribe).build();
     }
 
     /**
@@ -147,7 +147,7 @@ public class FileResource {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final byte[] buffer = new byte[FOUR_KB];
 
-        request.entity().subscribe(new Flow.Subscriber<ByteBuffer>() {
+        request.entity().subscribe(new Flow.Sink<ByteBuffer>() {
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
                 subscription.request(Long.MAX_VALUE);

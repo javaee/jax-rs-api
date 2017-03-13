@@ -55,26 +55,26 @@ import javax.ws.rs.core.Response;
 public interface NioInvoker {
 
     // POST
-    Response post(Consumer<Flow.Subscriber<ByteBuffer>> writeHandler);
+    Response post(Consumer<Flow.Sink<ByteBuffer>> writeHandler);
 
     // returning publisher might not work well; it could lose some data if the responseEntity
     // is not subscribed before there publisher is notified about the first chunk of response
     // entity
-    void post(Flow.Publisher<ByteBuffer> requestEntity, Flow.Subscriber<ByteBuffer> responseEntity);
+    void post(Flow.Source<ByteBuffer> requestEntity, Flow.Sink<ByteBuffer> responseEntity);
 
     // sending a stream of pojos
-    Response post(Flow.Publisher<?> requestEntity);
+    Response post(Flow.Source<?> requestEntity);
 
     // consuming a stream of pojos -- lazy publishers (not sure whether this approach is correct in all possible scenarios)
-    <T> Flow.Publisher<T> post(Class<T> entityType);
+    <T> Flow.Source<T> post(Class<T> entityType);
 
     // consuming a stream of pojos
-    <T> void post(Class<T> entityType, Flow.Subscriber<T> entitySubscriber);
-    <T> void post(Class<T> entityType, Flow.Subscriber<T> entitySubscriber, Flow.Subscriber<T>... subscribers);
+    <T> void post(Class<T> entityType, Flow.Sink<T> entitySink);
+    <T> void post(Class<T> entityType, Flow.Sink<T> entitySink, Flow.Sink<T>... sinks);
 
     Response get();
 
-    Response put(Consumer<Flow.Subscriber<ByteBuffer>> writeHandler);
+    Response put(Consumer<Flow.Sink<ByteBuffer>> writeHandler);
 
     Response delete();
 
@@ -86,6 +86,6 @@ public interface NioInvoker {
 
     Response method(String name);
 
-    Response method(String name, Consumer<Flow.Subscriber<ByteBuffer>> writeHandler);
+    Response method(String name, Consumer<Flow.Sink<ByteBuffer>> writeHandler);
 
 }

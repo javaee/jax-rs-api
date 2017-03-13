@@ -50,14 +50,14 @@ import javax.ws.rs.core.MultivaluedMap;
 /**
  * @author Pavel Bucek (pavel.bucek at oracle.com)
  */
-public interface NioBodyContext<FROM, TO> {
+public interface NioBodyContext<SOURCE, SINK> {
 
     Type getGenericType();
     Annotation[] getAnnotations();
     MediaType getMediaType();
     MultivaluedMap<String, String> getHttpHeaders();
 
-    Flow.Publisher<FROM> getPublisher();
-    Flow.Subscriber<TO> getSubscriber();
+    Flow.Source<SOURCE> getSource();
+    Flow.Sink<SINK> getSink();
 
 }

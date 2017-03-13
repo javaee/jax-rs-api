@@ -44,8 +44,8 @@ import java.util.concurrent.Executor;
 
 /**
  * Interrelated interfaces and static methods for establishing
- * flow-controlled components in which {@link Publisher Publishers}
- * produce items consumed by one or more {@link Subscriber
+ * flow-controlled components in which {@link Source Publishers}
+ * produce items consumed by one or more {@link Sink
  * Subscribers}, each managed by a {@link Subscription
  * Subscription}.
  *
@@ -58,10 +58,10 @@ import java.util.concurrent.Executor;
  * used to avoid resource management problems that may otherwise occur
  * in "push" based systems.
  *
- * <p><b>Examples.</b> A {@link Publisher} usually defines its own
+ * <p><b>Examples.</b> A {@link Source} usually defines its own
  * {@link Subscription} implementation; constructing one in method
  * {@code subscribe} and issuing it to the calling {@link
- * Subscriber}. It publishes items to the subscriber asynchronously,
+ * Sink}. It publishes items to the subscriber asynchronously,
  * normally using an {@link Executor}.  For example, here is a very
  * simple publisher that only issues (when requested) a single {@code
  * TRUE} item to a single subscriber.  Because the subscriber receives
@@ -112,8 +112,8 @@ import java.util.concurrent.Executor;
  *   }
  * }}</pre>
  *
- * <p>A {@link Subscriber} arranges that items be requested and
- * processed.  Items (invocations of {@link Subscriber#onNext}) are
+ * <p>A {@link Sink} arranges that items be requested and
+ * processed.  Items (invocations of {@link Sink#onNext}) are
  * not issued unless requested, but multiple items may be requested.
  * Many Subscriber implementations can arrange this in the style of
  * the following example, where a buffer size of 1 single-steps, and
@@ -176,7 +176,7 @@ public final class Flow {
 
     /**
      * A producer of items (and related control messages) received by
-     * Subscribers.  Each current {@link Subscriber} receives the same
+     * Subscribers.  Each current {@link Sink} receives the same
      * items (via method {@code onNext}) in the same order, unless
      * drops or errors are encountered. If a Publisher encounters an
      * error that does not allow items to be issued to a Subscriber,
@@ -197,7 +197,7 @@ public final class Flow {
      * @param <T> the published item type
      */
     @FunctionalInterface
-    public static interface Publisher<T> {
+    public static interface Source<T> {
         /**
          * Adds the given Subscriber if possible.  If already
          * subscribed, or the attempt to subscribe fails due to policy
@@ -209,10 +209,10 @@ public final class Flow {
          * method of this Subscription, and may unsubscribe by
          * invoking its {@code cancel} method.
          *
-         * @param subscriber the subscriber
+         * @param sink the subscriber
          * @throws NullPointerException if subscriber is null
          */
-        public void subscribe(Subscriber<? super T> subscriber);
+        public void subscribe(Sink<? super T> sink);
     }
 
     /**
@@ -222,7 +222,7 @@ public final class Flow {
      *
      * @param <T> the subscribed item type
      */
-    public static interface Subscriber<T> {
+    public static interface Sink<T> {
         /**
          * Method invoked prior to invoking any other Subscriber
          * methods for the given Subscription. If this method throws
@@ -268,8 +268,8 @@ public final class Flow {
     }
 
     /**
-     * Message control linking a {@link Publisher} and {@link
-     * Subscriber}.  Subscribers receive items only when requested,
+     * Message control linking a {@link Source} and {@link
+     * Sink}.  Subscribers receive items only when requested,
      * and may cancel at any time. The methods in this interface are
      * intended to be invoked only by their Subscribers; usages in
      * other contexts have undefined effects.
@@ -305,7 +305,7 @@ public final class Flow {
      * @param <T> the subscribed item type
      * @param <R> the published item type
      */
-    public static interface Processor<T,R> extends Subscriber<T>, Publisher<R> {
+    public static interface Processor<T,R> extends Sink<T>, Source<R> {
     }
 
     static final int DEFAULT_BUFFER_SIZE = 256;

@@ -64,14 +64,14 @@ public class NioClient {
     // EX1 -- basic handling - bytes
     private static void ex1() {
         // request entity
-        Flow.Publisher<ByteBuffer> publisher = null;
+        Flow.Source<ByteBuffer> source = null;
         // response entity processor
-        Flow.Subscriber<ByteBuffer> subscriber = null;
+        Flow.Sink<ByteBuffer> sink = null;
 
         CLIENT.target("http://nio/ex1")
               .request()
               .nio()
-              .post(publisher, subscriber);
+              .post(source, sink);
 
     }
 
@@ -85,12 +85,12 @@ public class NioClient {
             CLIENT.register(Ex2NioBodyWriter.class);
 
             // request entity
-            Flow.Publisher<NioResource.POJO> publisher = null;
+            Flow.Source<NioResource.POJO> source = null;
 
             Response response = CLIENT.target("http://nio/ex1")
                                       .request()
                                       .nio()
-                                      .post(publisher);
+                                      .post(source);
 
             assert Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily());
         }
@@ -119,13 +119,13 @@ public class NioClient {
             CLIENT.register(Ex3NioBodyReader.class);
 
             // option a
-            Flow.Publisher<NioResource.POJO> pojoPublisher =
+            Flow.Source<NioResource.POJO> pojoSource =
                     CLIENT.target("http://nio/ex1")
                           .request()
                           .nio()
                           .post(NioResource.POJO.class);
 
-            pojoPublisher.subscribe(
+            pojoSource.subscribe(
                     // problem with this is that the publisher MUST BE lazy.
                     // once the code execution returns from the client implementation, underlying runtime doesn't have anything else
                     // than a publisher instance and it is legal to send events to that publisher. On the other hand, there must be
@@ -144,7 +144,7 @@ public class NioClient {
                           // passed subscriber will be automatically subscribed to the "internal publisher", before any events
                           // are passed to it. This ensures that there cannot be any missed event.
 
-                          new Flow.Subscriber<NioResource.POJO>() {
+                          new Flow.Sink<NioResource.POJO>() {
                               @Override
                               public void onSubscribe(Flow.Subscription subscription) {
 
@@ -178,8 +178,8 @@ public class NioClient {
             @Override
             public void readFrom(NioBodyContext<ByteBuffer, NioResource.POJO> nioBodyContext) {
                 NioResource.EX2.Ex2MappingProcessor mappingProcessor = new NioResource.EX2.Ex2MappingProcessor();
-                mappingProcessor.subscribe(nioBodyContext.getSubscriber());
-                nioBodyContext.getPublisher().subscribe(mappingProcessor);
+                mappingProcessor.subscribe(nioBodyContext.getSink());
+                nioBodyContext.getSource().subscribe(mappingProcessor);
             }
         }
     }

@@ -173,11 +173,11 @@ public interface Request {
     public ResponseBuilder evaluatePreconditions();
 
     /**
-     * Get the entity as a {@link Flow.Publisher} of {@link ByteBuffer}.
+     * Get the entity as a {@link Flow.Source} of {@link ByteBuffer}.
      *
      * @return nio input stream instance.
      */
-    public Flow.Publisher<ByteBuffer> entity();
+    public Flow.Source<ByteBuffer> entity();
 
     /**
      * <p>Set an NIO reader for the request entity to read it in a non-blocking
@@ -189,5 +189,5 @@ public interface Request {
      *
      * @param readerHandler NIO reader handler.
      */
-    public void entity(Consumer<Flow.Publisher<ByteBuffer>> readerHandler);
+    public void entity(Consumer<Flow.Source<ByteBuffer>> readerHandler);
 }

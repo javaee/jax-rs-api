@@ -84,7 +84,7 @@ public class FileResourceClient {
                       .post(
                               // should we define that this always runs on another thread? if so, we don't need executor
                               // service here
-                              (Consumer<Flow.Subscriber<ByteBuffer>>) nioOutputStream -> executorService.execute(() -> {
+                              (Consumer<Flow.Sink<ByteBuffer>>) nioOutputStream -> executorService.execute(() -> {
                                   try {
                                       final int n = in.read(buffer);
                                       if (n >= 0) {
@@ -111,7 +111,7 @@ public class FileResourceClient {
                                   .get();
 
         // TODO: don't promote GenericType - add "shortcut", something like <T> Publisher<T> nioReadEntity(Class<T>)
-        response.readEntity(new GenericType<Flow.Publisher<ByteBuffer>>() {}).subscribe(new Flow.Subscriber<ByteBuffer>() {
+        response.readEntity(new GenericType<Flow.Source<ByteBuffer>>() {}).subscribe(new Flow.Sink<ByteBuffer>() {
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
                 subscription.request(Long.MAX_VALUE);

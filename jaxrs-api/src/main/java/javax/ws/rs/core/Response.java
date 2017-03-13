@@ -940,7 +940,7 @@ public abstract class Response {
          * @param writeHandler the NIO writer.
          * @return updated response builder instance.
          */
-        public abstract ResponseBuilder entity(Consumer<Flow.Subscriber<ByteBuffer>> writeHandler);
+        public abstract ResponseBuilder entity(Consumer<Flow.Sink<ByteBuffer>> writeHandler);
 
         /**
          * Set the response entity in the builder.

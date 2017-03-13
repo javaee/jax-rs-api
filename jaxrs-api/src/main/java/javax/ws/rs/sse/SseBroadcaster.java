@@ -58,7 +58,7 @@ import javax.ws.rs.Flow;
  * @author Marek Potociar
  * @since 2.1
  */
-public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSseEvent> {
+public interface SseBroadcaster extends AutoCloseable, Flow.Source<OutboundSseEvent> {
 
     /**
      * Register a listener, which will be called when an exception was thrown by a given SSE event output when trying
@@ -71,7 +71,7 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
      * @param onError bi-consumer, taking two parameters: {@link SseEventSink}, which is the source of the
      *                error and the actual {@link Throwable} instance.
      */
-    void onError(BiConsumer<Flow.Subscriber<? super OutboundSseEvent>, Throwable> onError);
+    void onError(BiConsumer<Flow.Sink<? super OutboundSseEvent>, Throwable> onError);
 
     /**
      * Register a listener, which will be called when the SSE event output has been closed (either by client closing
@@ -83,16 +83,16 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
      *
      * @param onClose consumer taking single parameter, a {@link SseEventSink}, which was closed.
      */
-    void onClose(Consumer<Flow.Subscriber<? super OutboundSseEvent>> onClose);
+    void onClose(Consumer<Flow.Sink<? super OutboundSseEvent>> onClose);
 
     /**
      * Subscribe {@link OutboundSseEvent} subscriber (i.e. {@link SseEventSink})
      * to this {@code SseBroadcaster} instance.
      *
-     * @param subscriber {@link Flow.Subscriber Subscriber&lt;OutboundSseEvent&gt;} to register.
+     * @param sink {@link Flow.Sink Subscriber&lt;OutboundSseEvent&gt;} to register.
      */
     @Override
-    void subscribe(Flow.Subscriber<? super OutboundSseEvent> subscriber);
+    void subscribe(Flow.Sink<? super OutboundSseEvent> sink);
 
     /**
      * Publish an SSE event to all subscribed {@link SseEventSink} instances.

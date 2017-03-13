@@ -65,7 +65,7 @@ import javax.ws.rs.Flow;
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.1
  */
-public interface SseEventSink extends AutoCloseable, Flow.Subscriber<OutboundSseEvent> {
+public interface SseEventSink extends AutoCloseable, Flow.Sink<OutboundSseEvent> {
 
     /**
      * Check if the stream has been closed already.

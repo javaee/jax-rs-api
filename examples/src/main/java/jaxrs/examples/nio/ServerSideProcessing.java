@@ -92,7 +92,7 @@ public class ServerSideProcessing {
         }
 
         @Override
-        public void subscribe(Flow.Subscriber<? super ByteBuffer> subscriber) {
+        public void subscribe(Flow.Sink<? super ByteBuffer> sink) {
             // add subscriber
         }
     };
@@ -154,7 +154,7 @@ public class ServerSideProcessing {
             // we might need an Executor/ExecutorService when creating a publisher
 
             BufferToStringProcessor bufferToStringProcessor = new BufferToStringProcessor();
-            nioBodyContext.getPublisher().subscribe(bufferToStringProcessor);
+            nioBodyContext.getSource().subscribe(bufferToStringProcessor);
         }
 
         // must be "buffering" - must return the content once the subscriber subscribes
@@ -162,7 +162,7 @@ public class ServerSideProcessing {
             // BufferPublisher pub = BufferPublisher.from(s);
             // pub.subscribe(providedSubscriber);
             // no return, since the return type is void
-        static class BufferToStringProcessor implements Flow.Publisher<String>, Flow.Subscriber<ByteBuffer> {
+        static class BufferToStringProcessor implements Flow.Source<String>, Flow.Sink<ByteBuffer> {
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
                 subscription.request(Long.MAX_VALUE);
@@ -187,7 +187,7 @@ public class ServerSideProcessing {
             }
 
             @Override
-            public void subscribe(Flow.Subscriber<? super String> subscriber) {
+            public void subscribe(Flow.Sink<? super String> sink) {
                 // add subscriber
             }
         }
@@ -210,17 +210,17 @@ public class ServerSideProcessing {
             // For JSON, that could be '{' at document start, ',' as a separator and '}' as document end.
 
             // we might need an Executor/ExecutorService when creating a publisher
-            BufferPublisher.from(nioBodyContext.getPublisher()).subscribe(nioBodyContext.getSubscriber());
+            BufferSource.from(nioBodyContext.getSource()).subscribe(nioBodyContext.getSink());
         }
 
-        static class BufferPublisher implements Flow.Publisher<ByteBuffer> {
+        static class BufferSource implements Flow.Source<ByteBuffer> {
 
-            static BufferPublisher from(Flow.Publisher<String> s) {
+            static BufferSource from(Flow.Source<String> s) {
                 return null; // ...
             }
 
             @Override
-            public void subscribe(Flow.Subscriber<? super ByteBuffer> subscriber) {
+            public void subscribe(Flow.Sink<? super ByteBuffer> sink) {
                 // add subscriber
             }
         }

@@ -84,7 +84,7 @@ public class NioResource {
         @POST
         @Path("/ex1")
         // subscription to entity publisher must be done before returning from the response method
-        public Flow.Publisher<ByteBuffer> ex1(Flow.Publisher<ByteBuffer> entity) {
+        public Flow.Source<ByteBuffer> ex1(Flow.Source<ByteBuffer> entity) {
             Ex1Processor processor = new Ex1Processor();
 
             entity.subscribe(processor);
@@ -119,7 +119,7 @@ public class NioResource {
             }
 
             @Override
-            public void subscribe(Flow.Subscriber<? super ByteBuffer> subscriber) {
+            public void subscribe(Flow.Sink<? super ByteBuffer> sink) {
                 // add subscriber
             }
         }
@@ -135,13 +135,13 @@ public class NioResource {
         @Consumes(MediaType.APPLICATION_JSON)
         // Subscription to entity publisher must be done before returning from the response method.
         // It doesn't make sense to return anything when the request (entity) is not processed.
-        public void ex2(Flow.Publisher<POJO> entity,
+        public void ex2(Flow.Source<POJO> entity,
                         @Suspended AsyncResponse response) {
 
             // TODO: introduce a helper or modify AsyncResponse to support this pattern directly?
             entity.subscribe(
                     // POJO subscriber - consumer
-                    new Flow.Subscriber<POJO>() {
+                    new Flow.Sink<POJO>() {
                         @Override
                         public void onSubscribe(Flow.Subscription subscription) {
                             // ...
@@ -176,16 +176,16 @@ public class NioResource {
             @Override
             public void readFrom(NioBodyContext<ByteBuffer, POJO> nioBodyContext) {
                 Ex2MappingProcessor mappingProcessor = new Ex2MappingProcessor();
-                mappingProcessor.subscribe(nioBodyContext.getSubscriber());
-                nioBodyContext.getPublisher().subscribe(mappingProcessor);
+                mappingProcessor.subscribe(nioBodyContext.getSink());
+                nioBodyContext.getSource().subscribe(mappingProcessor);
             }
         }
 
         // mapping Publisher<ByteBuffer> to Publisher<POJO>
         // ByteBuffers are expected to contain JSON (indicated by @Consumes on the resource method and NioBodyReader).
-        public static class Ex2MappingProcessor implements Flow.Subscriber<ByteBuffer>, Flow.Publisher<POJO> {
+        public static class Ex2MappingProcessor implements Flow.Sink<ByteBuffer>, Flow.Source<POJO> {
             @Override
-            public void subscribe(Flow.Subscriber<? super POJO> subscriber) {
+            public void subscribe(Flow.Sink<? super POJO> sink) {
             }
 
             @Override
@@ -220,9 +220,9 @@ public class NioResource {
         @Path("/ex3")
         @Produces(MediaType.APPLICATION_JSON)
         // subscription to entity publisher must be done before returning from the response method
-        public Flow.Publisher<POJO> ex3() {
+        public Flow.Source<POJO> ex3() {
 
-            Flow.Publisher<POJO> pojoPublisher = null;
+            Flow.Source<POJO> pojoSource = null;
 
             // source of the POJO "stream" can be anything - database call, client call to
             // another service, ...
@@ -233,7 +233,7 @@ public class NioResource {
             //            // ...
             //        });
 
-            return pojoPublisher;
+            return pojoSource;
         }
 
         @Provider
@@ -263,13 +263,13 @@ public class NioResource {
         @GET
         @Path("download5")
         @Produces(MediaType.APPLICATION_JSON)
-        public Flow.Publisher<Bar> download5(@QueryParam("path") String path) {
+        public Flow.Source<Bar> download5(@QueryParam("path") String path) {
 
-            Flow.Publisher<Foo> entityPublisher = null; // ...
+            Flow.Source<Foo> entitySource = null; // ...
 
             // javax.ws.rs.Flow.Publisher -> org.reactivestreams.Publisher (rxjava2 Flowable in this case)
             Flowable<Bar> barFlowable =
-                    Flowable.fromPublisher((Publisher<Foo>) s -> entityPublisher.subscribe(new Flow.Subscriber<Foo>() {
+                    Flowable.fromPublisher((Publisher<Foo>) s -> entitySource.subscribe(new Flow.Sink<Foo>() {
                         @Override
                         public void onSubscribe(Flow.Subscription subscription) {
                             s.onSubscribe(new Subscription() {
