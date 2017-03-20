@@ -40,52 +40,22 @@
 
 package javax.ws.rs.client;
 
-import java.nio.ByteBuffer;
-import java.util.function.Consumer;
-
 import javax.ws.rs.Flow;
-import javax.ws.rs.core.Response;
 
 /**
  * Uniform interface for NIO invocation of HTTP methods.
+ * <p>
+ * It might be merged to {@link SyncInvoker}, we keep it separate for now to keep
+ * things little simpler (we don't need to deal with erasure conflicts etc..).
  *
  * @author Santiago Pericas-Geertsen
+ * @author Pavel Bucek (pavel.bucek@oracle.com)
  * @since 2.1
  */
 public interface NioInvoker {
 
-    // POST
-    Response post(Consumer<Flow.Sink<ByteBuffer>> writeHandler);
+    <T> Flow.Source<T> get(Class<T> entityType);
 
-    // returning publisher might not work well; it could lose some data if the responseEntity
-    // is not subscribed before there publisher is notified about the first chunk of response
-    // entity
-    void post(Flow.Source<ByteBuffer> requestEntity, Flow.Sink<ByteBuffer> responseEntity);
-
-    // sending a stream of pojos
-    Response post(Flow.Source<?> requestEntity);
-
-    // consuming a stream of pojos -- lazy publishers (not sure whether this approach is correct in all possible scenarios)
-    <T> Flow.Source<T> post(Class<T> entityType);
-
-    // consuming a stream of pojos
-    <T> void post(Class<T> entityType, Flow.Sink<T> entitySink);
-    <T> void post(Class<T> entityType, Flow.Sink<T> entitySink, Flow.Sink<T>... sinks);
-
-    Response get();
-
-    Response put(Consumer<Flow.Sink<ByteBuffer>> writeHandler);
-
-    Response delete();
-
-    Response head();
-
-    Response options();
-
-    Response trace();
-
-    Response method(String name);
-
-    Response method(String name, Consumer<Flow.Sink<ByteBuffer>> writeHandler);
+    <T> Flow.Source<T> post(Entity<?> requestEntity, Class<T> entityType);
 
 }

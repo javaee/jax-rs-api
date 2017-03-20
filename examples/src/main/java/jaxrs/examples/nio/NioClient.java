@@ -47,6 +47,7 @@ import java.nio.ByteBuffer;
 import javax.ws.rs.Flow;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.NioBodyContext;
@@ -71,7 +72,8 @@ public class NioClient {
         CLIENT.target("http://nio/ex1")
               .request()
               .nio()
-              .post(source, sink);
+              .post(Entity.nio(ByteBuffer.class, source, MediaType.APPLICATION_OCTET_STREAM_TYPE), ByteBuffer.class)
+              .subscribe(sink);
 
     }
 
@@ -87,10 +89,10 @@ public class NioClient {
             // request entity
             Flow.Source<NioResource.POJO> source = null;
 
-            Response response = CLIENT.target("http://nio/ex1")
-                                      .request()
-                                      .nio()
-                                      .post(source);
+            Response response =
+                    CLIENT.target("http://nio/ex1")
+                          .request()
+                          .post(Entity.nio(NioResource.POJO.class, source, MediaType.APPLICATION_JSON_TYPE));
 
             assert Response.Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily());
         }
@@ -118,12 +120,11 @@ public class NioClient {
 
             CLIENT.register(Ex3NioBodyReader.class);
 
-            // option a
             Flow.Source<NioResource.POJO> pojoSource =
                     CLIENT.target("http://nio/ex1")
                           .request()
                           .nio()
-                          .post(NioResource.POJO.class);
+                          .post(null, NioResource.POJO.class);
 
             pojoSource.subscribe(
                     // problem with this is that the publisher MUST BE lazy.
@@ -133,39 +134,6 @@ public class NioClient {
                     // missed because of "late" subscription.
                     null
             );
-
-
-            // option b
-            CLIENT.target("http://nio/ex1")
-                  .request()
-                  .nio()
-                  .post(
-                          NioResource.POJO.class,
-                          // passed subscriber will be automatically subscribed to the "internal publisher", before any events
-                          // are passed to it. This ensures that there cannot be any missed event.
-
-                          new Flow.Sink<NioResource.POJO>() {
-                              @Override
-                              public void onSubscribe(Flow.Subscription subscription) {
-
-                              }
-
-                              @Override
-                              public void onNext(NioResource.POJO item) {
-
-                              }
-
-                              @Override
-                              public void onError(Throwable throwable) {
-
-                              }
-
-                              @Override
-                              public void onComplete() {
-
-                              }
-                          });
-
 
         }
 

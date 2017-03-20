@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -41,10 +41,14 @@
 package javax.ws.rs.client;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Locale;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Variant;
@@ -205,6 +209,41 @@ public final class Entity<T> {
     public static Entity<Form> form(final MultivaluedMap<String, String> formData) {
         return new Entity<Form>(new Form(formData), MediaType.APPLICATION_FORM_URLENCODED_TYPE);
     }
+
+
+    /**
+     * I believe we need something like this, maybe not here, but Entity is final :-/
+     *
+     * Also, it doesn't really belong here, since "nio" is not a shortcut for media type.
+     *
+     * TODO
+     *
+     * @param itemType
+     * @param entity
+     * @param <T>
+     * @return
+     */
+    public static <T> Entity<Flow.Source<T>> nio(Class<T> itemType, Flow.Source<T> entity, MediaType mediaType) {
+        return new Entity(new GenericEntity<Flow.Source<T>>(entity, new ParameterizedType() {
+            @Override
+            public Type[] getActualTypeArguments() {
+                return new Type[]{itemType};
+            }
+
+            @Override
+            public Type getRawType() {
+                return Flow.Source.class;
+            }
+
+            @Override
+            public Type getOwnerType() {
+                return Flow.class;
+            }
+        }) {
+
+        }, mediaType);
+    }
+
 
     private Entity(final T entity, final MediaType mediaType) {
         this(entity, new Variant(mediaType, (Locale) null, null), null);

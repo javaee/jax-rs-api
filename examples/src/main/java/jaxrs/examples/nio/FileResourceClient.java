@@ -42,21 +42,20 @@ package jaxrs.examples.nio;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Flow;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * FileResourceClient class.
@@ -77,25 +76,36 @@ public class FileResourceClient {
         final ByteArrayInputStream in = new ByteArrayInputStream(files.get(path));
         final byte[] buffer = new byte[FOUR_KB];
 
-        Response response =
+        final InputStreamSource entitySource = new InputStreamSource(in);
+
+        Flow.Source<ResponsePojo> responseEntity =
                 client.target("/file")
                       .request(MediaType.APPLICATION_OCTET_STREAM)
                       .nio()
                       .post(
-                              // should we define that this always runs on another thread? if so, we don't need executor
-                              // service here
-                              (Consumer<Flow.Sink<ByteBuffer>>) nioOutputStream -> executorService.execute(() -> {
-                                  try {
-                                      final int n = in.read(buffer);
-                                      if (n >= 0) {
-                                          nioOutputStream.onNext(ByteBuffer.wrap(buffer, 0, n));
-                                      }
-                                      nioOutputStream.onComplete();
-                                  } catch (IOException e) {
-                                      LOGGER.log(Level.WARNING, "Exception caught while sending a file.", e);
-                                  }
-                              })
+                              Entity.nio(ByteBuffer.class, entitySource, MediaType.APPLICATION_OCTET_STREAM_TYPE),
+                              ResponsePojo.class
                       );
+
+    }
+
+    public static class ResponsePojo {
+
+    }
+
+    /**
+     * Reads provided stream an publishes it to subscriber(s).
+     */
+    public static class InputStreamSource implements Flow.Source<ByteBuffer> {
+
+        public InputStreamSource(InputStream inputStream) {
+            // ..
+        }
+
+        @Override
+        public void subscribe(Flow.Sink<? super ByteBuffer> sink) {
+
+        }
     }
 
     public void downloadClient(String path) {
@@ -104,14 +114,14 @@ public class FileResourceClient {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final byte[] buffer = new byte[FOUR_KB];
 
-        Response response = client.target("/file")
-                                  .request()
-                                  .accept(MediaType.APPLICATION_OCTET_STREAM)
-                                  .nio()
-                                  .get();
+        Flow.Source<ByteBuffer> responseEntity = client.target("/file")
+                                                       .request()
+                                                       .accept(MediaType.APPLICATION_OCTET_STREAM)
+                                                       .nio()
+                                                       .get(ByteBuffer.class);
 
         // TODO: don't promote GenericType - add "shortcut", something like <T> Publisher<T> nioReadEntity(Class<T>)
-        response.readEntity(new GenericType<Flow.Source<ByteBuffer>>() {}).subscribe(new Flow.Sink<ByteBuffer>() {
+        responseEntity.subscribe(new Flow.Sink<ByteBuffer>() {
             @Override
             public void onSubscribe(Flow.Subscription subscription) {
                 subscription.request(Long.MAX_VALUE);

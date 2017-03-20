@@ -89,7 +89,7 @@ import javax.ws.rs.client.WebTarget;
  * @author Marek Potociar
  * @since 2.1
  */
-public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<InboundSseEvent> */ {
+public interface SseEventSource extends AutoCloseable, Flow.Source<InboundSseEvent> {
 
     /**
      * JAX-RS {@link SseEventSource} builder class.

@@ -42,9 +42,7 @@ package javax.ws.rs.ext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
-import javax.ws.rs.Flow;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -93,8 +91,6 @@ public interface ReaderInterceptorContext extends InterceptorContext {
      * @param is new input stream.
      */
     public void setInputStream(InputStream is);
-
-    public void addProcessor(Flow.Processor<ByteBuffer, ByteBuffer> processor);
 
     /**
      * Get mutable map of HTTP headers.

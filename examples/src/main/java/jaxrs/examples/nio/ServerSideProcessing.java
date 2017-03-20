@@ -48,7 +48,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.ws.rs.Flow;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -58,10 +57,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.NioBodyContext;
 import javax.ws.rs.ext.NioBodyReader;
 import javax.ws.rs.ext.NioBodyWriter;
-import javax.ws.rs.ext.ReaderInterceptor;
-import javax.ws.rs.ext.ReaderInterceptorContext;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
 
 /**
  * @author Pavel Bucek (pavel.bucek at oracle.com)
@@ -106,10 +101,8 @@ public class ServerSideProcessing {
             classes = new HashSet<>();
 
             classes.add(RequestFilter.class);
-            classes.add(RequestInterceptor.class);
             classes.add(BodyReader.class);
             classes.add(BodyWriter.class);
-            classes.add(ResponseInterceptor.class);
             classes.add(ResponseFilter.class);
         }
 
@@ -125,21 +118,10 @@ public class ServerSideProcessing {
         public void filter(ContainerRequestContext requestContext) throws IOException {
 
             // we might need an Executor/ExecutorService when creating a processor
-
             requestContext.addProcessor(PROCESSOR);
         }
-    }
 
-    // reader interceptor
-    static class RequestInterceptor implements ReaderInterceptor {
-        @Override
-        public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
-
-            // we might need an Executor/ExecutorService when creating a processor
-
-            context.addProcessor(PROCESSOR);
-            return context.proceed();
-        }
+        // consider having 2 methods, filter and nioFilter.
     }
 
     static class BodyReader implements NioBodyReader<String> {
@@ -235,17 +217,6 @@ public class ServerSideProcessing {
             // we might need an Executor/ExecutorService when creating a processor
 
             responseContext.addProcessor(PROCESSOR);
-        }
-    }
-
-    // writer interceptor
-    static class ResponseInterceptor implements WriterInterceptor {
-        @Override
-        public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
-
-            // we might need an Executor/ExecutorService when creating a processor
-
-            context.addProcessor(PROCESSOR);
         }
     }
 }

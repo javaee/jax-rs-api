@@ -61,7 +61,7 @@ import reactor.core.publisher.FluxProcessor;
  * @author Pavel Bucek (pavel.bucek at oracle.com)
  */
 @SuppressWarnings("ConstantConditions")
-public class Integrations {
+public class Adapters {
 
     // rx java
     void sourceToFlowable() {
