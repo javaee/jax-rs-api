@@ -104,8 +104,9 @@ public class NioClient {
             }
 
             @Override
-            public void writeTo(NioBodyContext<NioResource.POJO, ByteBuffer> nioBodyContext) {
-                // map Publisher<POJO> to Publisher<ByteBuffer> and subscribe Flow.Subscriber<ByteBuffer> to it.
+            public Flow.Source<ByteBuffer> writeTo(NioBodyContext<NioResource.POJO> nioBodyContext) {
+                // map Publisher<POJO> to Publisher<ByteBuffer> and return it.
+                return null;
             }
         }
     }
@@ -144,10 +145,10 @@ public class NioClient {
             }
 
             @Override
-            public void readFrom(NioBodyContext<ByteBuffer, NioResource.POJO> nioBodyContext) {
+            public Flow.Source<NioResource.POJO> readFrom(NioBodyContext<ByteBuffer> nioBodyContext) {
                 NioResource.EX2.Ex2MappingProcessor mappingProcessor = new NioResource.EX2.Ex2MappingProcessor();
-                mappingProcessor.subscribe(nioBodyContext.getSink());
                 nioBodyContext.getSource().subscribe(mappingProcessor);
+                return mappingProcessor;
             }
         }
     }

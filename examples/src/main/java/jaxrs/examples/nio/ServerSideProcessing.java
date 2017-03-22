@@ -132,11 +132,12 @@ public class ServerSideProcessing {
         }
 
         @Override
-        public void readFrom(NioBodyContext<ByteBuffer, String> nioBodyContext) {
+        public Flow.Source<String> readFrom(NioBodyContext<ByteBuffer> nioBodyContext) {
             // we might need an Executor/ExecutorService when creating a publisher
-
             BufferToStringProcessor bufferToStringProcessor = new BufferToStringProcessor();
             nioBodyContext.getSource().subscribe(bufferToStringProcessor);
+
+            return bufferToStringProcessor;
         }
 
         // must be "buffering" - must return the content once the subscriber subscribes
@@ -185,14 +186,14 @@ public class ServerSideProcessing {
         }
 
         @Override
-        public void writeTo(NioBodyContext<String, ByteBuffer> nioBodyContext) {
+        public Flow.Source<ByteBuffer> writeTo(NioBodyContext<String> nioBodyContext) {
 
-            // "convert" Publisher<String> to Publisher<ByteBuffer> and subscribe entity subscriber to it.
+            // "convert" Publisher<String> to Publisher<ByteBuffer> and return it.
             // needs to support "root elements" and separators if necessary.
             // For JSON, that could be '{' at document start, ',' as a separator and '}' as document end.
 
             // we might need an Executor/ExecutorService when creating a publisher
-            BufferSource.from(nioBodyContext.getSource()).subscribe(nioBodyContext.getSink());
+            return BufferSource.from(nioBodyContext.getSource());
         }
 
         static class BufferSource implements Flow.Source<ByteBuffer> {

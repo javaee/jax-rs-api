@@ -44,6 +44,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -51,13 +52,11 @@ import javax.ws.rs.core.MediaType;
  */
 public interface NioBodyReader<T> {
 
-    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType);
+    boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType);
 
     // TODO: what will be passed as a type param? Actual resource method parameter? (is that possible?;
     // TODO: what about a client?)
-    public void readFrom(NioBodyContext<ByteBuffer, T> nioBodyContext);
-
-    // provide Executor / ExecutorService?
+    Flow.Source<T> readFrom(NioBodyContext<ByteBuffer> nioBodyContext) throws java.io.IOException, javax.ws.rs.WebApplicationException;
 }
 
 

@@ -44,6 +44,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 
+import javax.ws.rs.Flow;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -69,7 +70,7 @@ public interface NioBodyWriter<T> {
     //                                       MediaType mediaType,
     //                                       MultivaluedMap<String, Object> httpHeaders);
 
-    void writeTo(NioBodyContext<T, ByteBuffer> nioBodyContext);
+    Flow.Source<ByteBuffer> writeTo(NioBodyContext<T> nioBodyContext) throws java.io.IOException, javax.ws.rs.WebApplicationException;
 
         // Multiple items vs single one
         //

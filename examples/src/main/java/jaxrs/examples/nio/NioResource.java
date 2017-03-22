@@ -174,10 +174,11 @@ public class NioResource {
             }
 
             @Override
-            public void readFrom(NioBodyContext<ByteBuffer, POJO> nioBodyContext) {
+            public Flow.Source<POJO> readFrom(NioBodyContext<ByteBuffer> nioBodyContext) {
                 Ex2MappingProcessor mappingProcessor = new Ex2MappingProcessor();
-                mappingProcessor.subscribe(nioBodyContext.getSink());
                 nioBodyContext.getSource().subscribe(mappingProcessor);
+
+                return mappingProcessor;
             }
         }
 
@@ -245,8 +246,10 @@ public class NioResource {
             }
 
             @Override
-            public void writeTo(NioBodyContext<POJO, ByteBuffer> nioBodyContext) {
+            public Flow.Source<ByteBuffer> writeTo(NioBodyContext<POJO> nioBodyContext) {
                 // map Publisher<POJO> to Publisher<ByteBuffer> and subscribe Flow.Subscriber<ByteBuffer> to it.
+
+                return null;
             }
         }
     }
