@@ -89,7 +89,7 @@ import javax.ws.rs.client.WebTarget;
  * @author Marek Potociar
  * @since 2.1
  */
-public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<InboundSseEvent> */ {
+public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSseEvent> {
 
     /**
      * JAX-RS {@link SseEventSource} builder class.
@@ -156,18 +156,6 @@ public interface SseEventSource extends AutoCloseable /*, Flow.Publisher<Inbound
         }
 
         protected abstract Builder target(WebTarget endpoint);
-
-        /**
-         * Set a custom name for the event source.
-         * <p>
-         * At present, custom event source name is mainly useful to be able to distinguish different event source
-         * event processing threads from one another. If not set, a default name will be generated using the
-         * SSE endpoint URI.
-         *
-         * @param name custom event source name.
-         * @return updated event source builder instance.
-         */
-        public abstract Builder named(String name);
 
         /**
          * Set the initial reconnect delay to be used by the event source.
