@@ -181,53 +181,6 @@ public interface OutboundSseEvent extends SseEvent {
     }
 
     /**
-     * Get event identifier.
-     * <p>
-     * This field is optional. If specified, the value is send as a value of the SSE {@code "id"} field.
-     *
-     * @return event identifier, or {@code null} if not set.
-     */
-    String getId();
-
-    /**
-     * Get event name.
-     * <p>
-     * This field is optional. If specified, will be send as a value of the SSE {@code "event"} field.
-     *
-     * @return event name, or {@code null} if not set.
-     */
-    String getName();
-
-    /**
-     * Get a comment string that accompanies the event.
-     * <p>
-     * If specified, the comment value is sent with the event as one or more SSE comment lines
-     * (depending on line breaks in the actual data string), before any actual event data are serialized.
-     * If the event instance does not contain any data, a separate "event" that contains only the comment
-     * will be sent. Comment information is optional, provided the event data are set.
-     *
-     * @return comment associated with the event.
-     */
-    String getComment();
-
-    /**
-     * Get connection retry time in milliseconds the event receiver should wait before attempting to
-     * reconnect after a connection to the SSE source is lost.
-     * <p>
-     * This field is optional. If specified, the value is send as a value of the SSE {@code "retry"} field.
-     *
-     * @return reconnection delay in milliseconds or {@link SseEvent#RECONNECT_NOT_SET} if no value has been set.
-     */
-    long getReconnectDelay();
-
-    /**
-     * Check if the connection retry time has been set in the event.
-     *
-     * @return {@code true} if reconnection delay in milliseconds has been set in the event, {@code false} otherwise.
-     */
-    boolean isReconnectDelaySet();
-
-    /**
      * Get data type.
      * <p>
      * This information is used to select a proper {@link javax.ws.rs.ext.MessageBodyWriter} to be used for
