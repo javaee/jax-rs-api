@@ -47,7 +47,6 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.CompletionStageRxInvoker;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.NioInvoker;
 import javax.ws.rs.client.RxInvoker;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Cookie;
@@ -304,11 +303,6 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
 
     @Override
     public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public NioInvoker nio() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

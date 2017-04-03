@@ -39,15 +39,10 @@
  */
 package jaxrs.examples.sse;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.sse.InboundSseEvent;
 import javax.ws.rs.sse.SseEventSource;
-import javax.ws.rs.sse.SseSubscription;
 
 /**
  * Examples of Client-side Server-sent events processing.
@@ -64,7 +59,7 @@ public class SseClient {
 
     private static void consumeAllEvents() {
 
-        // EventSource#subscribe(Consumer<InboundSseEvent>)
+        // EventSource#register(Consumer<InboundSseEvent>)
         // consumes all events, writes then on standard out (System.out::println)
         try (final SseEventSource eventSource =
                      SseEventSource.target(target)
@@ -82,7 +77,7 @@ public class SseClient {
             e.printStackTrace();
         }
 
-        // EventSource#subscribe(Consumer<InboundSseEvent>, Consumer<Throwable>)
+        // EventSource#register(Consumer<InboundSseEvent>, Consumer<Throwable>)
         // consumes all events and all exceptions, writing both on standard out.
         try (final SseEventSource eventSource = SseEventSource.target(target).build()) {
 
@@ -98,7 +93,7 @@ public class SseClient {
             e.printStackTrace();
         }
 
-        // EventSource#subscribe(Consumer<InboundSseEvent>, Consumer<Throwable>, Runnable)
+        // EventSource#register(Consumer<InboundSseEvent>, Consumer<Throwable>, Runnable)
         // consumes all events and all exceptions, writing both on standard out.
         // registers onComplete callback, which will print out a message "There will be no further events."
         try (final SseEventSource eventSource = SseEventSource.target(target).build()) {
@@ -116,96 +111,6 @@ public class SseClient {
             Thread.sleep(500); // make sure all the events have time to arrive
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-
-        // EventSource#subscribe(Consumer<InboundSseEvent>, Consumer<Throwable>, Runnable)
-        // consumes all events and all exceptions, writing both on standard out.
-        // registers onComplete callback, which will print out a message "There will be no further events."
-        // consumes SseSubscription, which can control backpressure. This particular case requests all evens which can
-        //   possibly be received.
-        try (final SseEventSource eventSource = SseEventSource.target(target).build()) {
-
-            eventSource.subscribe(
-                    sseSubscription -> {
-                        sseSubscription.request(Long.MAX_VALUE);
-                    },
-                    System.out::println,
-                    Throwable::printStackTrace,
-                    () -> System.out.println("There will be no further events."));
-            eventSource.open();
-
-            for (int counter = 0; counter < 5; counter++) {
-                target.request().post(Entity.text("message " + counter));
-            }
-
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // EventSource#subscribe(Consumer<InboundSseEvent>, Consumer<Throwable>, Runnable)
-        // consumes all events and all exceptions, writing both on standard out.
-        // registers onComplete callback, which will print out a message "There will be no further events."
-        // consumes SseSubscription, which can control backpressure.
-        // uses CustomSseSubscriber to group all callbacks and consumes events one by one; requesting next event when
-        // the previous one is processed.
-        try (final SseEventSource eventSource = SseEventSource.target(target).build()) {
-
-            CustomSseSubscriber customSseSubscriber = new CustomSseSubscriber();
-
-            eventSource.subscribe(
-                    customSseSubscriber::onSubscribe,
-                    customSseSubscriber::onEvent,
-                    customSseSubscriber::onError,
-                    customSseSubscriber::onComplete);
-
-            eventSource.open();
-
-            for (int counter = 0; counter < 5; counter++) {
-                target.request().post(Entity.text("message " + counter));
-            }
-
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static class CustomSseSubscriber {
-
-        private final ExecutorService eventProcessorService  = Executors.newCachedThreadPool();
-
-        private volatile SseSubscription subscription;
-
-        void onSubscribe(SseSubscription subscription) {
-            this.subscription = subscription;
-            // request first event
-            subscription.request(1);
-        }
-
-        void onEvent(InboundSseEvent event) {
-            eventProcessorService.submit(() -> {
-                // fire event processing in the new thread; assuming this is dedicated pool for long running
-                // operations
-                processEvent(event);
-
-                // event processing is done, request another event
-                subscription.request(1);
-
-                // or do subscription.cancel(); if you wish to unsubscribe
-            });
-        }
-
-        void onError(Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
-        void onComplete() {
-            System.out.println("There will be no further events.");
-        }
-
-        private void processEvent(InboundSseEvent event) {
-            // do something with the event.
         }
     }
 }

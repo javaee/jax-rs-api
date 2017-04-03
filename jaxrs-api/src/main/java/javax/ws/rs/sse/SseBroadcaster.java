@@ -40,10 +40,9 @@
 
 package javax.ws.rs.sse;
 
+import java.util.concurrent.CompletionStage;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
-import javax.ws.rs.Flow;
 
 /**
  * Server-Sent events broadcasting facility.
@@ -58,7 +57,7 @@ import javax.ws.rs.Flow;
  * @author Marek Potociar
  * @since 2.1
  */
-public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSseEvent> {
+public interface SseBroadcaster extends AutoCloseable {
 
     /**
      * Register a listener, which will be called when an exception was thrown by a given SSE event output when trying
@@ -71,7 +70,7 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
      * @param onError bi-consumer, taking two parameters: {@link SseEventSink}, which is the source of the
      *                error and the actual {@link Throwable} instance.
      */
-    void onError(BiConsumer<Flow.Subscriber<? super OutboundSseEvent>, Throwable> onError);
+    void onError(BiConsumer<SseEventSink, Throwable> onError);
 
     /**
      * Register a listener, which will be called when the SSE event output has been closed (either by client closing
@@ -83,23 +82,22 @@ public interface SseBroadcaster extends AutoCloseable, Flow.Publisher<OutboundSs
      *
      * @param onClose consumer taking single parameter, a {@link SseEventSink}, which was closed.
      */
-    void onClose(Consumer<Flow.Subscriber<? super OutboundSseEvent>> onClose);
+    void onClose(Consumer<SseEventSink> onClose);
 
     /**
-     * Subscribe {@link OutboundSseEvent} subscriber (i.e. {@link SseEventSink})
-     * to this {@code SseBroadcaster} instance.
+     * Register provided {@link SseEventSink} instance to this {@code SseBroadcaster}.
      *
-     * @param subscriber {@link Flow.Subscriber Subscriber&lt;OutboundSseEvent&gt;} to register.
+     * @param sseEventSink to be registered.
      */
-    @Override
-    void subscribe(Flow.Subscriber<? super OutboundSseEvent> subscriber);
+    void register(SseEventSink sseEventSink);
 
     /**
      * Publish an SSE event to all subscribed {@link SseEventSink} instances.
      *
      * @param event SSE event to be published.
+     * @return completion stage that completes when the event has been broadcast to all registered event sinks.
      */
-    void broadcast(final OutboundSseEvent event);
+    CompletionStage<?> broadcast(final OutboundSseEvent event);
 
     /**
      * Close the broadcaster and all subscribed {@link SseEventSink} instances.

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,9 +40,10 @@
 
 package javax.ws.rs.core;
 
-import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.Date;
 import java.util.List;
+
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 /**
  * An injectable helper for request processing, all methods throw an
@@ -168,57 +169,4 @@ public interface Request {
      */
     public ResponseBuilder evaluatePreconditions();
 
-    /**
-     * <p>Set an NIO reader for the request entity to read it in a non-blocking
-     * manner. The handler must be called only when reading data is possible
-     * without blocking.</p>
-     *
-     * <p>Any error or exception encountered during the writing process will be
-     * thrown and processed by the JAX-RS runtime.</p>
-     *
-     * @param reader NIO reader handler.
-     */
-    public void entity(NioReaderHandler reader);
-
-    /**
-     * <p>Set an NIO reader for the request entity to read it in a non-blocking
-     * manner. The handler must be called only when reading data is possible
-     * without blocking.</p>
-     *
-     * <p>The completion handler must be called when there is not more data to
-     * read.</p>
-     *
-     * <p>Any error or exception encountered during the writing process will be
-     * thrown and processed by the JAX-RS runtime.</p>
-     *
-     * @param reader NIO reader handler.
-     */
-    public void entity(NioReaderHandler reader, NioCompletionHandler completion);
-
-    /**
-     * <p>Set an NIO reader for the request entity to read it in a non-blocking
-     * manner. The handler must be called only when reading data is possible
-     * without blocking.</p>
-     *
-     * <p>Any error or exception encountered during the writing process must be
-     * reported to the error handler.</p>
-     *
-     * @param reader NIO reader handler.
-     */
-    public void entity(NioReaderHandler reader, NioErrorHandler error);
-
-    /**
-     * <p>Set an NIO reader for the request entity to read it in a non-blocking
-     * manner. The handler must be called only when reading data is possible
-     * without blocking.</p>
-     *
-     * <p>The completion handler must be called when there is not more data to
-     * read.</p>
-     *
-     * <p>Any error or exception encountered during the writing process must be
-     * reported to the error handler.</p>
-     *
-     * @param reader NIO reader handler.
-     */
-    public void entity(NioReaderHandler reader, NioCompletionHandler completion, NioErrorHandler error);
 }

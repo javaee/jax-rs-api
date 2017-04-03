@@ -39,7 +39,7 @@
  */
 package javax.ws.rs.sse;
 
-import javax.ws.rs.Flow;
+import java.util.concurrent.CompletionStage;
 
 /**
  * Outbound Server-Sent Events stream.
@@ -65,7 +65,7 @@ import javax.ws.rs.Flow;
  * @author Marek Potociar (marek.potociar at oracle.com)
  * @since 2.1
  */
-public interface SseEventSink extends AutoCloseable, Flow.Subscriber<OutboundSseEvent> {
+public interface SseEventSink extends AutoCloseable {
 
     /**
      * Check if the stream has been closed already.
@@ -76,6 +76,17 @@ public interface SseEventSink extends AutoCloseable, Flow.Subscriber<OutboundSse
      * @return {@code true} when closed, {@code false} otherwise.
      */
     boolean isClosed();
+
+    /**
+     * Send an outbound Server-sent event to this sink.
+     * <p>
+     * Event will be serialized and sent to the client.
+     *
+     * @param event event to be written.
+     * @return completion stage that completes when the event has been sent. If there is a problem during sending of
+     * an event, completion stage will be completed exceptionally.
+     */
+    public CompletionStage<?> send(OutboundSseEvent event);
 
     /**
      * Close the {@link SseEventSink} instance and release all associated resources.

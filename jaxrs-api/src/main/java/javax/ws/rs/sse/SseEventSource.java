@@ -44,7 +44,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import javax.ws.rs.Flow;
 import javax.ws.rs.client.WebTarget;
 
 /**
@@ -89,7 +88,7 @@ import javax.ws.rs.client.WebTarget;
  * @author Marek Potociar
  * @since 2.1
  */
-public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSseEvent> {
+public interface SseEventSource extends AutoCloseable {
 
     /**
      * JAX-RS {@link SseEventSource} builder class.
@@ -103,7 +102,7 @@ public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSse
      * SseEventSource es = SseEventSource.target(endpoint).named("my source")
      *                             .reconnectingEvery(5, SECONDS)
      *                             .build();
-     * es.subscribe(System.out::println);
+     * es.register(System.out::println);
      * es.open();
      * </pre>
      */
@@ -228,32 +227,6 @@ public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSse
                    Runnable onComplete);
 
     /**
-     * Subscribe {@link InboundSseEvent}, {@link Throwable} and {@code Subscription} consumers and onComplete callback.
-     * <p>
-     * Event consumer is invoked once per each received event, {@code Throwable} consumer is invoked invoked upon a
-     * unrecoverable error encountered by a {@link SseEventSource}, onComplete callback is invoked when there are no
-     * further events to be received.
-     * <p>
-     * Please note that calling {@link SseSubscription#request(long)} will
-     * influence the invocation of provided event consumer and {@link SseSubscription#cancel()} will influence the invocation
-     * of provided onComplete callback.
-     * <p>
-     * This set of parameters is meant as a replacement of having {@code Flow.Subscriber} interface copied in
-     * javax.ws.rs package, but it behaves exactly the same.
-     *
-     * @param onSubscribe {@link SseSubscription} consumer.
-     * @param onEvent     event consumer.
-     * @param onError     error consumer.
-     * @param onComplete  onComplete handler.
-     * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
-     * @see Flow.Subscription#request(long).
-     */
-    void subscribe(Consumer<SseSubscription> onSubscribe,
-                   Consumer<InboundSseEvent> onEvent,
-                   Consumer<Throwable> onError,
-                   Runnable onComplete);
-
-    /**
      * Create a new {@link SseEventSource.Builder event source builder} that provides convenient way how to
      * configure and fine-tune various aspects of a newly prepared event source instance.
      *
@@ -285,6 +258,7 @@ public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSse
      * <p>
      * The method will wait up to 5 seconds for the internal event processing tasks to complete.
      */
+    @Override
     default void close() {
         close(5, TimeUnit.SECONDS);
     }

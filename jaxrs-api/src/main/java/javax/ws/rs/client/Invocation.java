@@ -347,14 +347,6 @@ public interface Invocation {
          * @since 2.1
          */
         public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService);
-
-        /**
-         * Access the NIO uniform request invocation interface to use non-blocking I/O
-         * to read/write entities.
-         *
-         * @return NIO uniform request invocation interface.
-         */
-        public NioInvoker nio();
     }
 
     /**

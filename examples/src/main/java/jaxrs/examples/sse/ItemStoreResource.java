@@ -39,6 +39,7 @@
  */
 package jaxrs.examples.sse;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -179,14 +180,18 @@ public class ItemStoreResource {
                 throw new ServiceUnavailableException(delay);
             } else {
                 LOGGER.info("Zero reconnect delay - reconnecting.");
-                replayMissedEvents(lastEventId, serverSink);
+                try {
+                    replayMissedEvents(lastEventId, serverSink);
+                } catch (IOException e) {
+                    // handle I/O failure.
+                }
             }
         }
 
-        broadcaster.subscribe(serverSink);
+        broadcaster.register(serverSink);
     }
 
-    private void replayMissedEvents(final int lastEventId, final SseEventSink eventOutput) {
+    private void replayMissedEvents(final int lastEventId, final SseEventSink eventOutput) throws IOException {
         try {
             storeLock.readLock().lock();
             final int firstUnreceived = lastEventId + 1;
@@ -195,7 +200,7 @@ public class ItemStoreResource {
                 LOGGER.info("Replaying events - starting with id " + firstUnreceived);
                 final ListIterator<String> it = itemStore.subList(firstUnreceived, itemStore.size()).listIterator();
                 while (it.hasNext()) {
-                    eventOutput.onNext(createItemEvent(it.nextIndex() + firstUnreceived, it.next()));
+                    eventOutput.send(createItemEvent(it.nextIndex() + firstUnreceived, it.next()));
                 }
             } else {
                 LOGGER.info("No events to replay.");
