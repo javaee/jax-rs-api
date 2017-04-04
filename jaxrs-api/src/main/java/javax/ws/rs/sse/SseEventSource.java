@@ -285,6 +285,7 @@ public interface SseEventSource extends AutoCloseable, Flow.Publisher<InboundSse
      * <p>
      * The method will wait up to 5 seconds for the internal event processing tasks to complete.
      */
+    @Override
     default void close() {
         close(5, TimeUnit.SECONDS);
     }
