@@ -72,7 +72,7 @@ import java.util.Set;
  * @see Response.ResponseBuilder
  * @since 1.0
  */
-public abstract class Response {
+public abstract class Response implements AutoCloseable {
 
     /**
      * Protected constructor, use one of the static methods to obtain a
@@ -92,7 +92,7 @@ public abstract class Response {
      * Get the complete status information associated with the response.
      *
      * @return the response status information. The returned value is never
-     *         {@code null}.
+     * {@code null}.
      * @since 2.0
      */
     public abstract StatusType getStatusInfo();
@@ -350,7 +350,9 @@ public abstract class Response {
      *
      * @throws ProcessingException if there is an error closing the response.
      * @since 2.0
+     * @see AutoCloseable#close() close
      */
+    @Override
     public abstract void close();
 
     /**
@@ -905,14 +907,14 @@ public abstract class Response {
         }
 
         /**
-         * Set the response entity in the builder.
-         * <p />
-         * Any Java type instance for a response entity, that is supported by the
+         * <p>Set the response entity in the builder.</p>
+         * 
+         * <p>Any Java type instance for a response entity, that is supported by the
          * runtime can be passed. It is the callers responsibility to wrap the
          * actual entity with {@link GenericEntity} if preservation of its generic
          * type is required. Note that the entity can be also set as an
-         * {@link java.io.InputStream input stream}.
-         * <p />
+         * {@link java.io.InputStream input stream}.</p>
+         * 
          * A specific entity media type can be set using one of the {@code type(...)}
          * methods.
          *
@@ -954,14 +956,14 @@ public abstract class Response {
         public abstract ResponseBuilder entity(NioWriterHandler writer, NioErrorHandler error);
 
         /**
-         * Set the response entity in the builder.
-         * <p />
-         * Any Java type instance for a response entity, that is supported by the
+         * <p>Set the response entity in the builder.</p>
+         *
+         * <p>Any Java type instance for a response entity, that is supported by the
          * runtime can be passed. It is the callers responsibility to wrap the
          * actual entity with {@link GenericEntity} if preservation of its generic
          * type is required. Note that the entity can be also set as an
-         * {@link java.io.InputStream input stream}.
-         * <p />
+         * {@link java.io.InputStream input stream}.</p>
+         *
          * A specific entity media type can be set using one of the {@code type(...)}
          * methods.
          *
@@ -1079,8 +1081,8 @@ public abstract class Response {
         public abstract ResponseBuilder type(String type);
 
         /**
-         * Set message entity representation metadata.
-         * <p/>
+         * <p>Set message entity representation metadata.</p>
+         *
          * Equivalent to setting the values of content type, content language,
          * and content encoding separately using the values of the variant properties.
          *
@@ -1153,8 +1155,8 @@ public abstract class Response {
         public abstract ResponseBuilder tag(EntityTag tag);
 
         /**
-         * Set a strong response entity tag.
-         * <p/>
+         * <p>Set a strong response entity tag.</p>
+         *
          * This is a shortcut for <code>tag(new EntityTag(<i>value</i>))</code>.
          *
          * @param tag the string content of a strong entity tag. The JAX-RS

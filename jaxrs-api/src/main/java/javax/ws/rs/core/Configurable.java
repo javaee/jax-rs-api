@@ -158,6 +158,7 @@ import java.util.Map;
  * </p>
  *
  * @author Marek Potociar
+ * @param <C> type that extends Configurable
  * @since 2.0
  */
 public interface Configurable<C extends Configurable> {

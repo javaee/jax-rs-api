@@ -50,9 +50,9 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
 /**
- * Client is the main entry point to the fluent API used to build and execute client
- * requests in order to consume responses returned.
- * <p/>
+ * <p>Client is the main entry point to the fluent API used to build and execute client
+ * requests in order to consume responses returned.</p>
+ *
  * Clients are heavy-weight objects that manage the client-side communication
  * infrastructure. Initialization as well as disposal of a {@code Client} instance
  * may be a rather expensive operation. It is therefore advised to construct only
@@ -64,18 +64,21 @@ import javax.net.ssl.SSLContext;
  * @see javax.ws.rs.core.Configurable
  * @since 2.0
  */
-public interface Client extends Configurable<Client> {
+public interface Client extends Configurable<Client>, AutoCloseable {
 
     /**
-     * Close client instance and all it's associated resources. Subsequent calls
+     * <p>Close client instance and all it's associated resources. Subsequent calls
      * have no effect and are ignored. Once the client is closed, invoking any
-     * other method on the client instance would result in an {@link IllegalStateException}
+     * other method on the client instance would result in an {@link IllegalStateException}</p>
      * being thrown.
-     * <p/>
+     *
      * Calling this method effectively invalidates all {@link WebTarget resource targets}
      * produced by the client instance. Invoking any method on such targets once the client
      * is closed would result in an {@link IllegalStateException} being thrown.
+     * 
+     * @see AutoCloseable#close() close
      */
+    @Override
     public void close();
 
     /**
