@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -387,6 +387,59 @@ public interface SyncInvoker {
      *                                     {@link javax.ws.rs.core.Response}.
      */
     <T> T trace(GenericType<T> responseType);
+
+    // PATCH
+
+    /**
+     * Invoke HTTP PATCH method for the current request synchronously.
+     *
+     * @return invocation response.
+     * @throws ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a filter
+     *                                     or during conversion of the response entity data to an instance
+     *                                     of a particular Java type).
+     * @throws ProcessingException         in case the request processing or subsequent I/O operation fails.
+     * @since 2.1
+     */
+    Response patch();
+
+    /**
+     * Invoke HTTP PATCH method for the current request synchronously.
+     *
+     * @param <T>          response entity type.
+     * @param responseType Java type the response entity will be converted to.
+     * @return invocation response.
+     * @throws ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a filter
+     *                                     or during conversion of the response entity data to an instance
+     *                                     of a particular Java type).
+     * @throws ProcessingException         in case the request processing or subsequent I/O operation fails.
+     * @throws WebApplicationException     in case the response status code of the response
+     *                                     returned by the server is not
+     *                                     {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL
+     *                                     successful} and the specified response type is not
+     *                                     {@link javax.ws.rs.core.Response}.
+     * @since 2.1
+     */
+    <T> T patch(Class<T> responseType);
+
+    /**
+     * Invoke HTTP PATCH method for the current request synchronously.
+     *
+     * @param <T>          generic response entity type.
+     * @param responseType representation of a generic Java type the response
+     *                     entity will be converted to.
+     * @return invocation response.
+     * @throws ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a filter
+     *                                     or during conversion of the response entity data to an instance
+     *                                     of a particular Java type).
+     * @throws ProcessingException         in case the request processing or subsequent I/O operation fails.
+     * @throws WebApplicationException     in case the response status code of the response
+     *                                     returned by the server is not
+     *                                     {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL
+     *                                     successful} and the specified generic response type does not represent
+     *                                     {@link javax.ws.rs.core.Response}.
+     * @since 2.1
+     */
+    <T> T patch(GenericType<T> responseType);
 
     // ARBITRARY METHOD
 

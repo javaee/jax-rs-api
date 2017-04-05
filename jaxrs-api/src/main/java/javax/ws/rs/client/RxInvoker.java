@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -338,7 +338,7 @@ public interface RxInvoker<T> {
     public T trace();
 
     /**
-     * Invoke HTTP OPTIONS method for the current request.
+     * Invoke HTTP TRACE method for the current request.
      *
      * @param responseType Java type the response entity will be converted to.
      * @param <R>          response entity type.
@@ -372,6 +372,53 @@ public interface RxInvoker<T> {
      *                                                        {@link javax.ws.rs.core.Response}.
      */
     public <R> T trace(GenericType<R> responseType);
+
+    /**
+     * Invoke HTTP PATCH method for the current request.
+     *
+     * @return invocation response wrapped in the completion aware type.
+     * @throws javax.ws.rs.client.ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a
+     *                                                        filter or during conversion of the response entity data to an
+     *                                                        instance of a particular Java type).
+     * @throws javax.ws.rs.ProcessingException                in case the request processing or subsequent I/O operation fails.
+     */
+    public T patch();
+
+    /**
+     * Invoke HTTP PATCH method for the current request.
+     *
+     * @param responseType Java type the response entity will be converted to.
+     * @param <R>          response entity type.
+     * @return invocation response wrapped in the completion aware type.
+     * @throws javax.ws.rs.client.ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a
+     *                                                        filter or during conversion of the response entity data to an
+     *                                                        instance of a particular Java type).
+     * @throws javax.ws.rs.ProcessingException                in case the request processing or subsequent I/O operation fails.
+     * @throws javax.ws.rs.WebApplicationException            in case the response status code of the response returned by the
+     *                                                        server is not
+     *                                                        {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL
+     *                                                        successful} and the specified response type is not
+     *                                                        {@link javax.ws.rs.core.Response}.
+     */
+    public <R> T patch(Class<R> responseType);
+
+    /**
+     * Invoke HTTP PATCH method for the current request.
+     *
+     * @param responseType representation of a generic Java type the response entity will be converted to.
+     * @param <R>          generic response entity type.
+     * @return invocation response wrapped in the completion aware type.
+     * @throws javax.ws.rs.client.ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a
+     *                                                        filter or during conversion of the response entity data to an
+     *                                                        instance of a particular Java type).
+     * @throws javax.ws.rs.ProcessingException                in case the request processing or subsequent I/O operation fails.
+     * @throws javax.ws.rs.WebApplicationException            in case the response status code of the response returned by the
+     *                                                        server is not
+     *                                                        {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL
+     *                                                        successful} and the specified response type is not
+     *                                                        {@link javax.ws.rs.core.Response}.
+     */
+    public <R> T patch(GenericType<R> responseType);
 
     /**
      * Invoke an arbitrary method for the current request.

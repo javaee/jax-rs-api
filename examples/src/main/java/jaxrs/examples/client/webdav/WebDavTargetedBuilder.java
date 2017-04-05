@@ -311,4 +311,19 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     public NioInvoker nio() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public Response patch() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> T patch(Class<T> responseType) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T> T patch(GenericType<T> responseType) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

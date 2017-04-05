@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -175,6 +175,14 @@ public class MediaType {
      * Server sent events media type.
      */
     public static final MediaType SERVER_SENT_EVENTS_TYPE = new MediaType("text", "event-stream");
+    /**
+     * {@link String} representation of {@value #APPLICATION_JSON_PATCH_JSON} media type..
+     */
+    public static final String APPLICATION_JSON_PATCH_JSON = "application/json-patch+json";
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_JSON_PATCH_JSON} media type.
+     */
+    public static final MediaType APPLICATION_JSON_PATCH_JSON_TYPE = new MediaType("application", "json-patch+json");
 
     /**
      * Creates a new instance of {@code MediaType} by parsing the supplied string.

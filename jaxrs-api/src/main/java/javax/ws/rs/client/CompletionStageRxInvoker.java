@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,9 +40,10 @@
 
 package javax.ws.rs.client;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.util.concurrent.CompletionStage;
 
 /**
  * Reactive invoker based {@link java.util.concurrent.CompletionStage}.
@@ -109,6 +110,15 @@ public interface CompletionStageRxInvoker extends RxInvoker<CompletionStage> {
 
     @Override
     public <T> CompletionStage<T> trace(GenericType<T> responseType);
+
+    @Override
+    CompletionStage<Response> patch();
+
+    @Override
+    <T> CompletionStage<T> patch(Class<T> responseType);
+
+    @Override
+    <T> CompletionStage<T> patch(GenericType<T> responseType);
 
     @Override
     public CompletionStage<Response> method(String name);
