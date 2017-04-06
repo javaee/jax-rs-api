@@ -73,6 +73,7 @@ public interface RxInvokerProvider<T extends RxInvoker> {
      *                        It can be {@code null}; in that case it's up to the implementation to choose the best
      *                        {@code ExecutorService} in given environment.
      * @return instance of the {@code RxInvoker} subclass.
+     * @see ClientBuilder#executorService(ExecutorService)
      */
     public T getRxInvoker(SyncInvoker syncInvoker, ExecutorService executorService);
 

@@ -41,7 +41,6 @@
 package jaxrs.examples.client.webdav;
 
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.CompletionStageRxInvoker;
@@ -292,17 +291,7 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
     }
 
     @Override
-    public CompletionStageRxInvoker rx(ExecutorService executorService) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public <T extends RxInvoker> T rx(Class<T> clazz) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

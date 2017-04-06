@@ -298,21 +298,6 @@ public interface Invocation {
         public CompletionStageRxInvoker rx();
 
         /**
-         * Access the default reactive invoker based on {@link java.util.concurrent.CompletionStage}
-         * and provide an {@link java.util.concurrent.ExecutorService} for it. Note that not
-         * all executor services are supported in all runtime environments. For example, only
-         * executor services provided by JSR 236 should be supported in a Java EE environment.
-         *
-         * @param executorService executor service to use.
-         * @throws java.lang.IllegalArgumentException if the executor service provided is not
-         *                                            supported by the runtime environment.
-         * @return default reactive invoker instance.
-         * @since 2.1
-         * @see javax.ws.rs.client.Invocation.Builder#rx()
-         */
-        public CompletionStageRxInvoker rx(ExecutorService executorService);
-
-        /**
          * Access a reactive invoker based on provider {@link RxInvoker} subclass. Note
          * that corresponding {@link RxInvokerProvider} must be registered to client runtime.
          * <p>
@@ -322,31 +307,11 @@ public interface Invocation {
          * @param clazz {@link RxInvoker} subclass.
          * @return reactive invoker instance.
          * @throws IllegalStateException when provider for given class is not registered.
-         * @see javax.ws.rs.client.Invocation.Builder#rx(Class, ExecutorService)
          * @see javax.ws.rs.client.Client#register(Class)
          * @since 2.1
          */
         public <T extends RxInvoker> T rx(Class<T> clazz);
 
-        /**
-         * Access a reactive invoker based on provider {@link RxInvoker} subclass. Note
-         * that corresponding {@link RxInvokerProvider} must be registered to client runtime.
-         * <p>
-         * This method is an extension point for JAX-RS implementations
-         * to support other types representing asynchronous computations. Note that not
-         * all executor services are supported in all runtime environments. For example, only
-         * executor services provided by JSR 236 should be supported in a Java EE environment.
-         *
-         * @param clazz           {@link RxInvoker} subclass provider class.
-         * @param executorService executor service to use.
-         * @return default reactive invoker instance class.
-         * @throws java.lang.IllegalArgumentException if the executor service provided is not
-         *                                            supported by the runtime environment.
-         * @throws IllegalStateException              when provider for given class is not registered.
-         * @see javax.ws.rs.client.Invocation.Builder#rx()
-         * @since 2.1
-         */
-        public <T extends RxInvoker> T rx(Class<T> clazz, ExecutorService executorService);
     }
 
     /**

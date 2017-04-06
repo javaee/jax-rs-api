@@ -42,9 +42,13 @@ package javax.ws.rs.client;
 
 import java.net.URL;
 import java.security.KeyStore;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
+import javax.ws.rs.sse.SseEventSource;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -236,6 +240,38 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * @return an updated client builder instance.
      */
     public abstract ClientBuilder hostnameVerifier(final HostnameVerifier verifier);
+
+    /**
+     * Set the client-side {@link ExecutorService}.
+     * <p>
+     * Provided executor service will be used for executing asynchronous tasks.
+     * <p>
+     * When not set, the implementation is responsible for using the best appropriate executor service for
+     * the current environment. When running in Java EE container, the default has to be container-managed executor
+     * service.
+     *
+     * @param executorService executor service to be used for async invocations.
+     * @return an updated client builder instance.
+     * @see Invocation.Builder#async()
+     * @see Invocation.Builder#rx()
+     * @see RxInvokerProvider#getRxInvoker(SyncInvoker, ExecutorService)
+     */
+    public abstract ClientBuilder executorService(final ExecutorService executorService);
+
+    /**
+     * Set the client-side {@link ScheduledExecutorService}.
+     * <p>
+     * Provided executor service will be used for executing scheduled asynchronous tasks.
+     * <p>
+     * When not set, the implementation is responsible for using the best appropriate executor service for
+     * the current environment. When running in Java EE container, the default has to be container-managed scheduled
+     * executor service.
+     *
+     * @param scheduledExecutorService executor service to be used for scheduled async invocations.
+     * @return an updated client builder instance.
+     * @see SseEventSource.Builder#reconnectingEvery(long, TimeUnit)
+     */
+    public abstract ClientBuilder scheduledExecutorService(final ScheduledExecutorService scheduledExecutorService);
 
     /**
      * Build a new client instance using all the configuration previously specified
