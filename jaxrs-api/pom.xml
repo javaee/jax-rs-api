@@ -273,14 +273,6 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.felix</groupId>
-                        <artifactId>maven-bundle-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.glassfish.build</groupId>
-                        <artifactId>spec-version-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
                         <!-- TODO: overriding paren pom (profile jvnet-release) - we should find nicer way -->
                         <!-- 1.8- javadoc cannot handle module-info -->
                         <groupId>org.apache.maven.plugins</groupId>
@@ -409,6 +401,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
+                            <_failok>true</_failok>
                             <Build-Id>${buildNumber}</Build-Id>
                             <Bundle-Description>Java API for RESTful Web Services (JAX-RS)</Bundle-Description>
                             <Bundle-Version>${spec.bundle.version}</Bundle-Version>
@@ -585,6 +578,14 @@
         </pluginManagement>
         <plugins>
             <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.glassfish.build</groupId>
+                <artifactId>spec-version-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
@@ -638,7 +639,7 @@
         <apidocs.title>JAX-RS ${spec.version} API Specification ${spec.version.revision}</apidocs.title>
         <java.version>1.8</java.version>
         <last.final.spec.version>2.0</last.final.spec.version>
-        <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
+        <maven.bundle.plugin.version>3.3.0</maven.bundle.plugin.version>
         <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
         <maven.javadoc.plugin.version>2.10.4</maven.javadoc.plugin.version>
         <milestone.number>01</milestone.number>
