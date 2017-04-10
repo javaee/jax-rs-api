@@ -55,11 +55,14 @@ import java.lang.annotation.Target;
  *
  * @author Paul Sandoz
  * @author Marc Hadley
+ * @author Sebastian Daschner
  * @see GET
  * @see POST
  * @see PUT
  * @see DELETE
+ * @see PATCH
  * @see HEAD
+ * @see OPTIONS
  * @since 1.0
  */
 @Target({ElementType.ANNOTATION_TYPE})
@@ -83,6 +86,10 @@ public @interface HttpMethod {
      * HTTP DELETE method.
      */
     public static final String DELETE = "DELETE";
+    /**
+     * HTTP PATCH method.
+     */
+    public static final String PATCH = "PATCH";
     /**
      * HTTP HEAD method.
      */
