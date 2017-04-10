@@ -55,7 +55,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@HttpMethod(HttpMethod.GET)
+@HttpMethod(HttpMethod.PATCH)
 @Documented
 public @interface PATCH {
 }
