@@ -255,6 +255,7 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * @see Invocation.Builder#async()
      * @see Invocation.Builder#rx()
      * @see RxInvokerProvider#getRxInvoker(SyncInvoker, ExecutorService)
+     * @since 2.1
      */
     public abstract ClientBuilder executorService(final ExecutorService executorService);
 
@@ -270,6 +271,7 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * @param scheduledExecutorService executor service to be used for scheduled async invocations.
      * @return an updated client builder instance.
      * @see SseEventSource.Builder#reconnectingEvery(long, TimeUnit)
+     * @since 2.1
      */
     public abstract ClientBuilder scheduledExecutorService(final ScheduledExecutorService scheduledExecutorService);
 
