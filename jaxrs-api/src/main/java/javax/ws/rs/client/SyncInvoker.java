@@ -393,6 +393,10 @@ public interface SyncInvoker {
     /**
      * Invoke HTTP PATCH method for the current request synchronously.
      *
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response.
      * @throws ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a filter
      *                                     or during conversion of the response entity data to an instance
@@ -400,13 +404,17 @@ public interface SyncInvoker {
      * @throws ProcessingException         in case the request processing or subsequent I/O operation fails.
      * @since 2.1
      */
-    Response patch();
+    Response patch(Entity<?> entity);
 
     /**
      * Invoke HTTP PATCH method for the current request synchronously.
      *
      * @param <T>          response entity type.
      * @param responseType Java type the response entity will be converted to.
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response.
      * @throws ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a filter
      *                                     or during conversion of the response entity data to an instance
@@ -419,7 +427,7 @@ public interface SyncInvoker {
      *                                     {@link javax.ws.rs.core.Response}.
      * @since 2.1
      */
-    <T> T patch(Class<T> responseType);
+    <T> T patch(Entity<?> entity, Class<T> responseType);
 
     /**
      * Invoke HTTP PATCH method for the current request synchronously.
@@ -427,6 +435,10 @@ public interface SyncInvoker {
      * @param <T>          generic response entity type.
      * @param responseType representation of a generic Java type the response
      *                     entity will be converted to.
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response.
      * @throws ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a filter
      *                                     or during conversion of the response entity data to an instance
@@ -439,7 +451,7 @@ public interface SyncInvoker {
      *                                     {@link javax.ws.rs.core.Response}.
      * @since 2.1
      */
-    <T> T patch(GenericType<T> responseType);
+    <T> T patch(Entity<?> entity, GenericType<T> responseType);
 
     // ARBITRARY METHOD
 

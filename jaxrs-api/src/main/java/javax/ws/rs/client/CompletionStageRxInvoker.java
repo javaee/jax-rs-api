@@ -112,13 +112,13 @@ public interface CompletionStageRxInvoker extends RxInvoker<CompletionStage> {
     public <T> CompletionStage<T> trace(GenericType<T> responseType);
 
     @Override
-    CompletionStage<Response> patch();
+    CompletionStage<Response> patch(Entity<?> entity);
 
     @Override
-    <T> CompletionStage<T> patch(Class<T> responseType);
+    <T> CompletionStage<T> patch(Entity<?> entity, Class<T> responseType);
 
     @Override
-    <T> CompletionStage<T> patch(GenericType<T> responseType);
+    <T> CompletionStage<T> patch(Entity<?> entity, GenericType<T> responseType);
 
     @Override
     public CompletionStage<Response> method(String name);

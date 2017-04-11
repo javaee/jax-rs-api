@@ -590,10 +590,14 @@ public interface AsyncInvoker {
      * will be of {@link ResponseProcessingException} type and will contain the {@link Response}
      * instance whose processing has failed.
      *
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response {@link Future future}.
      * @since 2.1
      */
-    Future<Response> patch();
+    Future<Response> patch(Entity<?> entity);
 
     /**
      * Invoke HTTP PATCH method for the current request asynchronously.
@@ -610,10 +614,14 @@ public interface AsyncInvoker {
      *
      * @param <T>          response entity type.
      * @param responseType Java type the response entity will be converted to.
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response {@link Future future}.
      * @since 2.1
      */
-    <T> Future<T> patch(Class<T> responseType);
+    <T> Future<T> patch(Entity<?> entity, Class<T> responseType);
 
     /**
      * Invoke HTTP PATCH method for the current request asynchronously.
@@ -631,10 +639,14 @@ public interface AsyncInvoker {
      * @param <T>          generic response entity type.
      * @param responseType representation of a generic Java type the response
      *                     entity will be converted to.
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response {@link Future future}.
      * @since 2.1
      */
-    <T> Future<T> patch(GenericType<T> responseType);
+    <T> Future<T> patch(Entity<?> entity, GenericType<T> responseType);
 
     /**
      * Invoke HTTP PATCH method for the current request asynchronously.
@@ -652,10 +664,14 @@ public interface AsyncInvoker {
      *
      * @param <T>      generic response entity type.
      * @param callback asynchronous invocation callback.
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response {@link Future future}.
      * @since 2.1
      */
-    <T> Future<T> patch(InvocationCallback<T> callback);
+    <T> Future<T> patch(Entity<?> entity, InvocationCallback<T> callback);
 
     // ARBITRARY METHOD
 

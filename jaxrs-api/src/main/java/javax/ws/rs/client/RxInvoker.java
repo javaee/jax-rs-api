@@ -376,19 +376,27 @@ public interface RxInvoker<T> {
     /**
      * Invoke HTTP PATCH method for the current request.
      *
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response wrapped in the completion aware type.
      * @throws javax.ws.rs.client.ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a
      *                                                        filter or during conversion of the response entity data to an
      *                                                        instance of a particular Java type).
      * @throws javax.ws.rs.ProcessingException                in case the request processing or subsequent I/O operation fails.
      */
-    public T patch();
+    public T patch(Entity<?> entity);
 
     /**
      * Invoke HTTP PATCH method for the current request.
      *
      * @param responseType Java type the response entity will be converted to.
      * @param <R>          response entity type.
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response wrapped in the completion aware type.
      * @throws javax.ws.rs.client.ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a
      *                                                        filter or during conversion of the response entity data to an
@@ -400,13 +408,17 @@ public interface RxInvoker<T> {
      *                                                        successful} and the specified response type is not
      *                                                        {@link javax.ws.rs.core.Response}.
      */
-    public <R> T patch(Class<R> responseType);
+    public <R> T patch(Entity<?> entity, Class<R> responseType);
 
     /**
      * Invoke HTTP PATCH method for the current request.
      *
      * @param responseType representation of a generic Java type the response entity will be converted to.
      * @param <R>          generic response entity type.
+     * @param entity request entity, including it's full {@link javax.ws.rs.core.Variant} information.
+     *               Any variant-related HTTP headers previously set (namely {@code Content-Type},
+     *               {@code Content-Language} and {@code Content-Encoding}) will be overwritten using
+     *               the entity variant information.
      * @return invocation response wrapped in the completion aware type.
      * @throws javax.ws.rs.client.ResponseProcessingException in case processing of a received HTTP response fails (e.g. in a
      *                                                        filter or during conversion of the response entity data to an
@@ -418,7 +430,7 @@ public interface RxInvoker<T> {
      *                                                        successful} and the specified response type is not
      *                                                        {@link javax.ws.rs.core.Response}.
      */
-    public <R> T patch(GenericType<R> responseType);
+    public <R> T patch(Entity<?> entity, GenericType<R> responseType);
 
     /**
      * Invoke an arbitrary method for the current request.
