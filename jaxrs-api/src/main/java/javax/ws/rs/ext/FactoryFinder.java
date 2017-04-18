@@ -153,6 +153,16 @@ final class FactoryFinder {
             LOGGER.log(Level.FINER, "Failed to load service " + factoryId + ".", ex);
         }
 
+        try {
+            Iterator<T> iterator = ServiceLoader.load(service, FactoryFinder.class.getClassLoader()).iterator();
+
+            if(iterator.hasNext()) {
+                return iterator.next();
+            }
+        } catch (Exception | ServiceConfigurationError ex) {
+            LOGGER.log(Level.FINER, "Failed to load service " + factoryId + ".", ex);
+        }
+
         // try to read from $java.home/lib/jaxrs.properties
         FileInputStream inputStream = null;
         String configFile = null;
