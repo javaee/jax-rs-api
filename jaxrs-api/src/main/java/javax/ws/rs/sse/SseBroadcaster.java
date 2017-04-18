@@ -92,7 +92,7 @@ public interface SseBroadcaster extends AutoCloseable {
     void register(SseEventSink sseEventSink);
 
     /**
-     * Publish an SSE event to all subscribed {@link SseEventSink} instances.
+     * Publish an SSE event to all registered {@link SseEventSink} instances.
      *
      * @param event SSE event to be published.
      * @return completion stage that completes when the event has been broadcast to all registered event sinks.
@@ -100,7 +100,7 @@ public interface SseBroadcaster extends AutoCloseable {
     CompletionStage<?> broadcast(final OutboundSseEvent event);
 
     /**
-     * Close the broadcaster and all subscribed {@link SseEventSink} instances.
+     * Close the broadcaster and all registered {@link SseEventSink} instances.
      * <p>
      * Any other resources associated with the {@link SseBroadcaster} should be released.
      * <p>

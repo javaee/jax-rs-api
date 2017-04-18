@@ -99,7 +99,7 @@ public interface SseEventSource extends AutoCloseable {
      * <p>
      * For example:
      * <pre>
-     * SseEventSource es = SseEventSource.target(endpoint).named("my source")
+     * SseEventSource es = SseEventSource.target(endpoint)
      *                             .reconnectingEvery(5, SECONDS)
      *                             .build();
      * es.register(System.out::println);
@@ -188,17 +188,17 @@ public interface SseEventSource extends AutoCloseable {
     }
 
     /**
-     * Subscribe a {@link InboundSseEvent} consumer.
+     * Register a {@link InboundSseEvent} consumer.
      * <p>
      * Given consumer is invoked once per each received event.
      *
      * @param onEvent event consumer.
      * @throws IllegalArgumentException when the provided parameter is {@code null}.
      */
-    void subscribe(Consumer<InboundSseEvent> onEvent);
+    void register(Consumer<InboundSseEvent> onEvent);
 
     /**
-     * Subscribe {@link InboundSseEvent} and {@link Throwable} consumers.
+     * Register {@link InboundSseEvent} and {@link Throwable} consumers.
      * <p>
      * Event consumer is invoked once per each received event, {@code Throwable} consumer is invoked invoked upon a
      * unrecoverable error encountered by a {@link SseEventSource}.
@@ -207,11 +207,11 @@ public interface SseEventSource extends AutoCloseable {
      * @param onError error consumer.
      * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
      */
-    void subscribe(Consumer<InboundSseEvent> onEvent,
-                   Consumer<Throwable> onError);
+    void register(Consumer<InboundSseEvent> onEvent,
+                  Consumer<Throwable> onError);
 
     /**
-     * Subscribe {@link InboundSseEvent} and {@link Throwable} consumers and onComplete callback.
+     * Register {@link InboundSseEvent} and {@link Throwable} consumers and onComplete callback.
      * <p>
      * Event consumer is invoked once per each received event, {@code Throwable} consumer is invoked invoked upon a
      * unrecoverable error encountered by a {@link SseEventSource}, onComplete callback is invoked when there are no
@@ -222,9 +222,9 @@ public interface SseEventSource extends AutoCloseable {
      * @param onComplete onComplete handler.
      * @throws IllegalArgumentException when the any of the provided parameters is {@code null}.
      */
-    void subscribe(Consumer<InboundSseEvent> onEvent,
-                   Consumer<Throwable> onError,
-                   Runnable onComplete);
+    void register(Consumer<InboundSseEvent> onEvent,
+                  Consumer<Throwable> onError,
+                  Runnable onComplete);
 
     /**
      * Create a new {@link SseEventSource.Builder event source builder} that provides convenient way how to
