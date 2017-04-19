@@ -882,6 +882,17 @@ public abstract class Response {
         /**
          * Set the status on the ResponseBuilder.
          *
+         * @param status       the response status.
+         * @param reasonPhrase the reason phrase.
+         * @return the updated response builder.
+         * @throws IllegalArgumentException if status is less than {@code 100} or greater
+         *                                  than {@code 599}.
+         */
+        public abstract ResponseBuilder status(int status, String reasonPhrase);
+
+        /**
+         * Set the status on the ResponseBuilder.
+         *
          * @param status the response status.
          * @return the updated response builder.
          * @throws IllegalArgumentException if status is {@code null}.
@@ -891,7 +902,7 @@ public abstract class Response {
             if (status == null) {
                 throw new IllegalArgumentException();
             }
-            return status(status.getStatusCode());
+            return status(status.getStatusCode(), status.getReasonPhrase());
         }
 
         /**
