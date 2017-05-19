@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -47,7 +47,7 @@ package javax.ws.rs.core;
  * (e.g. filters or interceptors) and/or properties.
  * <p>
  * A {@code Feature} is a special type of JAX-RS configuration meta-provider. Once a feature is registered,
- * it's {@link #configure(FeatureContext)} method is invoked during JAX-RS runtime configuration and bootstrapping
+ * its {@link #configure(FeatureContext)} method is invoked during JAX-RS runtime configuration and bootstrapping
  * phase allowing the feature to further configure the runtime context in which it has been registered.
  * From within the invoked {@code configure(...)} method a feature may provide additional runtime configuration
  * for the facility or conceptual domain it represents, such as registering additional contract providers,
