@@ -41,7 +41,6 @@
 package javax.ws.rs.client;
 
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import javax.ws.rs.ProcessingException;
@@ -360,7 +359,8 @@ public interface Invocation {
      * @throws WebApplicationException     in case the response status code of the response
      *                                     returned by the server is not
      *                                     {@link javax.ws.rs.core.Response.Status.Family#SUCCESSFUL
-     *                                     successful}.
+     *                                     successful} and the specified response type is not
+     *                                     {@link javax.ws.rs.core.Response}.
      */
     public <T> T invoke(Class<T> responseType);
 
