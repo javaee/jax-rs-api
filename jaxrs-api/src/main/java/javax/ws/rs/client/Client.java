@@ -67,6 +67,20 @@ import javax.net.ssl.SSLContext;
 public interface Client extends Configurable<Client> {
 
     /**
+     * Name of the property specifying the amount of time (in milliseconds)
+     * that the client will attempt to establish a connection before it times out.
+     * @since 2.1
+     */
+    public static final String CONNECT_TIMEOUT_PROPERTY = "javax.ws.rs.client.http.connectTimeout";
+
+    /**
+     * Name of the property specifying the amount of time (in milliseconds)
+     * that the client will wait for a response before it times out.
+     * @since 2.1
+     */
+    public static final String READ_TIMEOUT_PROPERTY = "javax.ws.rs.client.http.readTimeout";
+
+    /**
      * Close client instance and all it's associated resources. Subsequent calls
      * have no effect and are ignored. Once the client is closed, invoking any
      * other method on the client instance would result in an {@link IllegalStateException}
