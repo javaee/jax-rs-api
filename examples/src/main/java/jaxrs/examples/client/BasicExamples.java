@@ -139,6 +139,19 @@ public class BasicExamples {
         assert response.getStatus() == 200;
     }
 
+    public void autoCloseableResponse() {
+        final Client client = ClientBuilder.newClient();
+
+        try (Response response =
+                     client.target("http://jaxrs.examples.org/jaxrsApplication/customers")
+                           .request(MediaType.APPLICATION_XML)
+                           .header("Foo", "Bar")
+                           .get();
+        ) {
+            assert response.getStatus() == 200;
+        }
+    }
+
     public void creatingClientInstanceUsingClientBuilder() {
         final SSLContext sslContext = null;
         // ...initialize SSL context...

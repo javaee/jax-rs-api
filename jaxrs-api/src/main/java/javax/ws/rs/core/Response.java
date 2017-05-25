@@ -73,7 +73,7 @@ import javax.ws.rs.ext.RuntimeDelegate;
  * @see Response.ResponseBuilder
  * @since 1.0
  */
-public abstract class Response {
+public abstract class Response implements AutoCloseable {
 
     /**
      * Protected constructor, use one of the static methods to obtain a
@@ -352,6 +352,7 @@ public abstract class Response {
      * @throws ProcessingException if there is an error closing the response.
      * @since 2.0
      */
+    @Override
     public abstract void close();
 
     /**
@@ -887,6 +888,7 @@ public abstract class Response {
          * @return the updated response builder.
          * @throws IllegalArgumentException if status is less than {@code 100} or greater
          *                                  than {@code 599}.
+         * @since 2.1
          */
         public abstract ResponseBuilder status(int status, String reasonPhrase);
 
