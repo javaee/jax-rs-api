@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013-2015 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013-2017 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -85,6 +85,8 @@ public final class Priorities {
     public static final int ENTITY_CODER = 4000;
     /**
      * User-level filter/interceptor priority.
+     *
+     * This value is also used as a default priority for application-supplied providers.
      */
     public static final int USER = 5000;
 }
