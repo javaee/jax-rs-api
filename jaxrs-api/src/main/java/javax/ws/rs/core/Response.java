@@ -1382,6 +1382,24 @@ public abstract class Response {
          */
         EXPECTATION_FAILED(417, "Expectation Failed"),
         /**
+         * 428 Precondition required, see {@link <a href="https://tools.ietf.org/html/rfc6585#section-3">RFC 6585: Additional HTTP Status Codes</a>}.
+         *
+         * @since 2.1
+         */
+        PRECONDITION_REQUIRED(428, "Precondition Required"),
+        /**
+         * 429 Too Many Requests, see {@link <a href="https://tools.ietf.org/html/rfc6585#section-4">RFC 6585: Additional HTTP Status Codes</a>}.
+         *
+         * @since 2.1
+         */
+        TOO_MANY_REQUESTS(429, "Too Many Requests"),
+        /**
+         * 431 Request Header Fields Too Large, see {@link <a href="https://tools.ietf.org/html/rfc6585#section-5">RFC 6585: Additional HTTP Status Codes</a>}.
+         *
+         * @since 2.1
+         */
+        REQUEST_HEADER_FIELDS_TOO_LARGE(431, "Request Header Fields Too Large"),
+        /**
          * 500 Internal Server Error, see {@link <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">HTTP/1.1 documentation</a>}.
          */
         INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
@@ -1412,7 +1430,14 @@ public abstract class Response {
          *
          * @since 2.0
          */
-        HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version Not Supported");
+        HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version Not Supported"),
+        /**
+         * 511 Network Authentication Required, see {@link <a href="https://tools.ietf.org/html/rfc6585#section-6">RFC 6585: Additional HTTP Status Codes</a>}.
+         *
+         * @since 2.1
+         */
+        NETWORK_AUTHENTICATION_REQUIRED(511, "Network Authentication Required");
+
         private final int code;
         private final String reason;
         private final Family family;
