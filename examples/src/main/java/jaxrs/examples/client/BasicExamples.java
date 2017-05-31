@@ -416,4 +416,30 @@ public class BasicExamples {
                                      .scheduledExecutorService(scheduledExecutorService)
                                      .build();
     }
+
+    public void responseStatus20() {
+        Client client = ClientBuilder.newClient();
+
+        Response response = client.target("https://github.com/jax-rs/").request().get();
+
+        switch (response.getStatus()) {
+            case 200: return;
+            case 201: return;
+            case 404: return;
+            case 500:
+        }
+    }
+
+    public void responseStatus21() {
+        Client client = ClientBuilder.newClient();
+
+        Response response = client.target("https://github.com/jax-rs/").request().get();
+
+        switch (response.getStatusInfo().toEnum()) {
+            case OK: return;
+            case CREATED: return;
+            case NOT_FOUND: return;
+            case INTERNAL_SERVER_ERROR:
+        }
+    }
 }

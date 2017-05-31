@@ -1227,6 +1227,19 @@ public abstract class Response implements AutoCloseable {
          * @return the reason phrase.
          */
         public String getReasonPhrase();
+
+        /**
+         * Get the this Status Type as a {@link Status}.
+         * <p>
+         * Please note that returned status contains only a status code, the reason phrase is
+         * set to default one (corresponding to the status code).
+         *
+         * @return {@link Status} representing this status type.
+         * @since 2.1
+         */
+        public default Status toEnum() {
+            return Status.fromStatusCode(getStatusCode());
+        }
     }
 
     /**
