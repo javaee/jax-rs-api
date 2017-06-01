@@ -295,18 +295,4 @@ public class WebDavTargetedBuilder implements Invocation.Builder, WebDavSyncInvo
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public Response patch(Entity<?> entity) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public <T> T patch(Entity<?> entity, Class<T> responseType) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public <T> T patch(Entity<?> entity, GenericType<T> responseType) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }
