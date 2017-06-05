@@ -45,7 +45,9 @@ import java.security.KeyStore;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.sse.SseEventSource;
@@ -274,6 +276,35 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * @since 2.1
      */
     public abstract ClientBuilder scheduledExecutorService(final ScheduledExecutorService scheduledExecutorService);
+
+    /**
+     * Set the connect timeout.
+     * <p>
+     * Value {@code 0} represents infinity. Negative values are not allowed.
+     *
+     * @param timeout the maximum time to wait.
+     * @param unit    the time unit of the timeout argument.
+     * @return an updated client builder instance.
+     * @throws IllegalArgumentException when the value is negative.
+     * @since 2.1
+     */
+    public abstract ClientBuilder connectTimeout(long timeout, TimeUnit unit);
+
+    /**
+     * Set the read timeout.
+     * <p>
+     * The value is the timeout on reading a response. If the server doesn't respond withing the defined timeframe,
+     * {@link ProcessingException} is thrown (with {@link TimeoutException} as a cause).
+     * <p>
+     * Value {@code 0} represents infinity. Negative values are not allowed.
+     *
+     * @param timeout the maximum time to wait.
+     * @param unit    the time unit of the timeout argument.
+     * @return an updated client builder instance.
+     * @throws IllegalArgumentException when the value is negative.
+     * @since 2.1
+     */
+    public abstract ClientBuilder readTimeout(long timeout, TimeUnit unit);
 
     /**
      * Build a new client instance using all the configuration previously specified
