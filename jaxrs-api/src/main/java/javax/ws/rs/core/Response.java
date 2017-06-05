@@ -616,6 +616,20 @@ public abstract class Response implements AutoCloseable {
     }
 
     /**
+     * Create a new ResponseBuilder with the supplied status and reason phrase.
+     *
+     * @param status       the response status.
+     * @param reasonPhrase the reason phrase.
+     * @return the updated response builder.
+     * @throws IllegalArgumentException if status is less than {@code 100} or greater
+     *                                  than {@code 599}.
+     * @since 2.1
+     */
+    public static ResponseBuilder status(int status, String reasonPhrase) {
+        return ResponseBuilder.newInstance().status(status, reasonPhrase);
+    }
+
+    /**
      * Create a new ResponseBuilder with an OK status.
      *
      * @return a new response builder.
