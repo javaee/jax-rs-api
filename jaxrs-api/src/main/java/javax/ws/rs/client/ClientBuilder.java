@@ -248,9 +248,8 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * <p>
      * Provided executor service will be used for executing asynchronous tasks.
      * <p>
-     * When not set, the implementation is responsible for using the best appropriate executor service for
-     * the current environment. When running in Java EE container, the default has to be container-managed executor
-     * service.
+     * When running in a Java EE container, implementations are required to use the container-managed
+     * executor service.
      *
      * @param executorService executor service to be used for async invocations.
      * @return an updated client builder instance.
@@ -266,9 +265,8 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
      * <p>
      * Provided executor service will be used for executing scheduled asynchronous tasks.
      * <p>
-     * When not set, the implementation is responsible for using the best appropriate executor service for
-     * the current environment. When running in Java EE container, the default has to be container-managed scheduled
-     * executor service.
+     * When running in a Java EE container, implementations are required to use the container-managed
+     * scheduled executor service.
      *
      * @param scheduledExecutorService executor service to be used for scheduled async invocations.
      * @return an updated client builder instance.
@@ -293,8 +291,8 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
     /**
      * Set the read timeout.
      * <p>
-     * The value is the timeout on reading a response. If the server doesn't respond within the defined timeframe,
-     * {@link ProcessingException} is thrown (with {@link TimeoutException} as a cause).
+     * The value is the timeout to read a response. If the server doesn't respond within the defined timeframe,
+     * {@link ProcessingException} is thrown with {@link TimeoutException} as a cause.
      * <p>
      * Value {@code 0} represents infinity. Negative values are not allowed.
      *

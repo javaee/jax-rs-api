@@ -297,8 +297,8 @@ public interface Invocation {
         public CompletionStageRxInvoker rx();
 
         /**
-         * Access a reactive invoker based on provider {@link RxInvoker} subclass. Note
-         * that corresponding {@link RxInvokerProvider} must be registered to client runtime.
+         * Access a reactive invoker based on a {@link RxInvoker} subclass provider. Note
+         * that corresponding {@link RxInvokerProvider} must be registered in the client runtime.
          * <p>
          * This method is an extension point for JAX-RS implementations to support other types
          * representing asynchronous computations.

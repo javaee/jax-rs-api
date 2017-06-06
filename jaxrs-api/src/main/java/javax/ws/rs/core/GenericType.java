@@ -106,12 +106,12 @@ public class GenericType<T> {
     private final Class<?> rawType;
 
     /**
-     * Create a {@link javax.ws.rs.core.GenericType generic type} information for a given
+     * Create a {@link javax.ws.rs.core.GenericType generic type} from a
      * Java {@code instance}.
      * <p>
-     * If the supplied instance is an instance of {@link javax.ws.rs.core.GenericEntity}, the generic type
-     * information will be computed using the {@link javax.ws.rs.core.GenericEntity#getType()}
-     * information. Otherwise the {@code instance.getClass()} will be used.
+     * If the supplied instance is a {@link javax.ws.rs.core.GenericEntity}, the generic type
+     * will be computed using the {@link javax.ws.rs.core.GenericEntity#getType()}.
+     * Otherwise {@code instance.getClass()} will be used.
      * </p>
      *
      * @param instance Java instance for which the {@code GenericType} description should be created.

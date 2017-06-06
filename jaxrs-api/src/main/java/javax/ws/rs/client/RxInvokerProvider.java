@@ -45,8 +45,9 @@ import java.util.concurrent.ExecutorService;
 /**
  * {@link RxInvoker} provider.
  * <p>
- * {@code RxInvokerProvider} must be registered to the client using {@link Client#register(Class)}. It provides a way
- * how to plug-in support for another reactive implementation, see {@link Invocation.Builder#rx(Class)}.
+ * {@code RxInvokerProvider} must be registered in the client runtime using {@link Client#register(Class)}.
+ * It provides a way to plug-in support for other reactive implementations,
+ * see {@link Invocation.Builder#rx(Class)}.
  *
  * @param <T> {@code RxInvoker} subclass type.
  * @author Pavel Bucek
@@ -56,7 +57,7 @@ import java.util.concurrent.ExecutorService;
 public interface RxInvokerProvider<T extends RxInvoker> {
 
     /**
-     * Find out whether current instance provides given {@link RxInvoker} subclass.
+     * Determine if this is a provider for the given {@link RxInvoker} subclass.
      *
      * @param clazz {@code RxInvoker} subclass.
      * @return {@code true} when this provider provides given {@code RxInvoker} subclass, {@code false} otherwise.
