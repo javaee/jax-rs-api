@@ -293,7 +293,7 @@ public abstract class ClientBuilder implements Configurable<ClientBuilder> {
     /**
      * Set the read timeout.
      * <p>
-     * The value is the timeout on reading a response. If the server doesn't respond withing the defined timeframe,
+     * The value is the timeout on reading a response. If the server doesn't respond within the defined timeframe,
      * {@link ProcessingException} is thrown (with {@link TimeoutException} as a cause).
      * <p>
      * Value {@code 0} represents infinity. Negative values are not allowed.
