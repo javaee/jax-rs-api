@@ -123,7 +123,7 @@ public interface OutboundSseEvent extends SseEvent {
         /**
          * Set event data and java type of event data.
          * <p>
-         * Type information  will be used for {@link javax.ws.rs.ext.MessageBodyWriter} lookup.
+         * Type information will be used for {@link javax.ws.rs.ext.MessageBodyWriter} lookup.
          * <p>
          * Note that multiple invocations of this method result in previous even data being replaced with new one.
          *
