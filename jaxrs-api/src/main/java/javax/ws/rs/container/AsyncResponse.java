@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * A new instance of {@code AsyncResponse} may be injected into a
  * {@link javax.ws.rs.HttpMethod resource or sub-resource method} parameter using
- * the {@link Suspended &#64;Suspend} annotation.
+ * the {@link Suspended &#64;Suspended} annotation.
  * </p>
  * Each asynchronous response instance is bound to the running request and can be used to
  * asynchronously provide the request processing result or otherwise manipulate the suspended
