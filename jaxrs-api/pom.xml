@@ -100,23 +100,23 @@
 
     <developers>
         <developer>
-            <email>m_potociar@java.net</email>
-            <id>Marek</id>
-            <name>Marek Potociar</name>
+            <email>pavel.bucek@oracle.com</email>
+            <id>Pavel</id>
+            <name>Pavel Bucek</name>
             <organization>Oracle</organization>
-            <organizationUrl>http://jax-rs-spec.java.net</organizationUrl>
+            <organizationUrl>https://github.com/jax-rs</organizationUrl>
             <roles>
                 <role>JAX-RS Spec Lead</role>
             </roles>
             <timezone>CET</timezone>
-            <url>http://marek.potociar.net/topics/web-services/rest/</url>
+            <url>https://blogs.oracle.com/pavelbucek</url>
         </developer>
         <developer>
             <email>spericas@java.net</email>
             <id>Santiago</id>
             <name>Santiago Pericas-Geertsen</name>
             <organization>Oracle</organization>
-            <organizationUrl>http://jax-rs-spec.java.net</organizationUrl>
+            <organizationUrl>https://github.com/jax-rs</organizationUrl>
             <roles>
                 <role>JAX-RS Spec Lead</role>
             </roles>
@@ -639,10 +639,12 @@
     <properties>
         <apidocs.title>JAX-RS ${spec.version} API Specification ${spec.version.revision}</apidocs.title>
         <java.version>1.8</java.version>
-        <last.final.spec.version>2.0</last.final.spec.version>
+
         <maven.bundle.plugin.version>3.3.0</maven.bundle.plugin.version>
         <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
         <maven.javadoc.plugin.version>2.10.4</maven.javadoc.plugin.version>
+
+        <last.final.spec.version>2.0</last.final.spec.version>
         <milestone.number>01</milestone.number>
         <next.final.spec.version>2.1</next.final.spec.version>
         <new.spec.version>${next.final.spec.version}</new.spec.version>
