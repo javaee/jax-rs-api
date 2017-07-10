@@ -65,6 +65,7 @@ public interface Sse {
      *
      * @param data event data.
      * @return created {@code OutboundSseEvent}.
+     * @throws IllegalArgumentException when data is {@code null}.
      */
     default OutboundSseEvent newEvent(String data) {
         if (data == null) {
@@ -80,6 +81,7 @@ public interface Sse {
      * @param name event name. (see {@link OutboundSseEvent#getName()}).
      * @param data event data.
      * @return created {@code OutboundSseEvent}.
+     * @throws IllegalArgumentException when name or data is {@code null}.
      */
     default OutboundSseEvent newEvent(String name, String data) {
         if (data == null) {
