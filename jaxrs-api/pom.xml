@@ -92,9 +92,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://java.net/jax-rs-spec~git</connection>
-        <developerConnection>scm:git:ssh://git.java.net/jax-rs-spec~git</developerConnection>
-        <url>http://java.net/projects/jax-rs-spec/sources/git/show</url>
+        <connection>scm:git:https://github.com/jax-rs/api.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:jax-rs/api.git</developerConnection>
+        <url>https://github.com/jax-rs/api</url>
         <tag>HEAD</tag>
     </scm>
 
