@@ -26,6 +26,8 @@
 /MANIFEST.MF
 /META-INF/services/
 /README
+/LICENSE.txt
+/CONTRIBUTING.md
 GenericEntity.java
 spec-license.html
 copyright-exclude
