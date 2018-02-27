@@ -40,13 +40,21 @@
 
 package jaxrs.examples.client;
 
+import static javax.ws.rs.client.Entity.form;
+import static javax.ws.rs.client.Entity.text;
+import static javax.ws.rs.client.Entity.xml;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -69,14 +77,9 @@ import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
-
-import javax.net.ssl.SSLContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import jaxrs.examples.client.custom.ThrottledClient;
-import static javax.ws.rs.client.Entity.form;
-import static javax.ws.rs.client.Entity.text;
-import static javax.ws.rs.client.Entity.xml;
 
 /**
  * Basic client-side examples.
@@ -384,17 +387,25 @@ public class BasicExamples {
 
         @Override
         public void filter(ContainerRequestContext requestContext) throws IOException {
-            // TODO: implement method.
+        	String methodOverride = requestContext.getHeaderString("X-Http-Method-Override");
+            if (methodOverride != null)
+            	requestContext.setMethod(methodOverride);
         }
 
         @Override
         public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
-            return null;  // TODO: implement method.
+            final InputStream originalInputStream = context.getInputStream();
+            context.setInputStream(new GZIPInputStream(originalInputStream));
+            return context.proceed();
         }
 
         @Override
         public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException {
-            // TODO: implement method.
+            GZIPOutputStream os = new GZIPOutputStream(context.getOutputStream());
+            context.getHeaders().putSingle("Content-Encoding", "gzip");
+            context.setOutputStream(os);
+            context.proceed();
+            return;
         }
     }
 
